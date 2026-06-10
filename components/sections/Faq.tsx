@@ -10,14 +10,21 @@ function Item({ q, a }: { q: string; a: string }) {
     <div className="border-b-2 border-border">
       <button
         type="button"
-        className="flex w-full items-center justify-between gap-4 py-4 text-left"
+        className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-colors duration-[120ms] ease-out hover:bg-brand"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
         <span className="t-body">{q}</span>
         {open ? <Minus className="h-6 w-6 shrink-0" /> : <Plus className="h-6 w-6 shrink-0" />}
       </button>
-      {open && <p className="t-body pb-5 pr-10 opacity-80">{a}</p>}
+      <div
+        className="grid transition-[grid-template-rows] duration-[120ms] ease-out"
+        style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
+      >
+        <div className="overflow-hidden" aria-hidden={!open}>
+          <p className="t-body pb-5 pl-4 pr-10 opacity-80">{a}</p>
+        </div>
+      </div>
     </div>
   );
 }
