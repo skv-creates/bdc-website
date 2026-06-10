@@ -5,18 +5,21 @@ import { cta } from "@/lib/home-content";
 export function Cta() {
   return (
     <section id="cta" className="py-20 md:py-28">
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-[304px_1fr] md:gap-16 lg:items-center">
-        <div className="relative aspect-[304/405] w-full max-w-[304px] overflow-hidden bg-black/5">
-          <Image
-            src={cta.image}
-            alt=""
-            fill
-            sizes="(max-width: 767px) 90vw, 304px"
-            className="object-cover"
-          />
+      {/* photo: 3 cols · 1-col gap · content: 6 cols (5–10), top-aligned */}
+      <div className="bdc-grid items-start gap-y-10">
+        <div className="col-span-4 md:col-span-3">
+          <div className="relative aspect-[304/405] w-full overflow-hidden bg-black/5">
+            <Image
+              src={cta.image}
+              alt=""
+              fill
+              sizes="(max-width: 767px) 90vw, 304px"
+              className="object-cover"
+            />
+          </div>
         </div>
 
-        <div className="max-w-[632px]">
+        <div className="col-span-4 md:col-span-5 lg:col-start-5 lg:col-span-6">
           <h2 className="t-h03">{cta.heading}</h2>
           <p className="t-body mt-4">{cta.subheading}</p>
 

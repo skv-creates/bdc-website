@@ -12,12 +12,12 @@ export function SiteFooter() {
       style={{ paddingInline: "var(--page-gutter)" }}
     >
       <div className="bdc-grid gap-y-20 py-24 md:py-32">
-        <div className="col-span-12 md:col-span-6 lg:col-span-7">
+        <div className="col-span-4 md:col-span-4 lg:col-span-7">
           <Logo variant="white" className="h-10 w-auto" />
           <p className="t-caption mt-20 max-w-md">{footer.copyright}</p>
         </div>
 
-        <div className="col-span-12 flex flex-col gap-4 md:col-span-6 lg:col-span-5 lg:items-start">
+        <div className="col-span-4 flex flex-col gap-4 md:col-span-4 lg:col-span-4 lg:items-start">
           <p className="t-caption font-bold">{footer.contactHeading}</p>
           <a href={`tel:${footer.phone.replace(/\s/g, "")}`} className="t-caption hover:opacity-70">
             {footer.phone}

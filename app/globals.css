@@ -43,8 +43,8 @@
   /* ---- Layout ----------------------------------------------------------- */
   --rail-w: 197px;             /* pattern rail width (Figma) — steps below     */
   --rail-gap: 24px;            /* gap between content and rail (Figma)         */
-  --page-gutter: clamp(1.25rem, 4vw, 7rem);   /* Figma uses 112px desktop pad */
-  --grid-cols: 12;
+  --page-gutter: clamp(1.25rem, 7.4vw, 7rem);  /* ≈112px at the 1512 design width, capped at 7rem */
+  --grid-cols: 11;  /* content uses 11 cols; the rail occupies the 12th + gap */
   --grid-gap: 24px;            /* Figma column gap                            */
 
   /* ---- Typography · raw scale (px, exact from Figma) -------------------- */

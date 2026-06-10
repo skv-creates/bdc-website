@@ -1,23 +1,27 @@
 import { MemberCard } from "@/components/ui/MemberCard";
 import { team, type Member } from "@/lib/home-content";
 
-/* Core team: explicit 3-col checkerboard on lg (2 / 1-centered / 2 across three
-   rows), matching Figma. Below lg it collapses to a plain flowing grid. */
+/* Each member spans 3 of the 11 page columns (≈304px, matching Figma).
+   On desktop (lg) members sit on the page grid; below lg they fall back to a
+   simple 2-up / 2-up flow. */
+const MEMBER_SPAN = "col-span-2 md:col-span-4 lg:col-span-3";
+
+/* Core team checkerboard on lg: top (cols 1–3 & 7–9), middle (4–6), bottom. */
 const CORE_PLACEMENT = [
   "lg:col-start-1 lg:row-start-1",
-  "lg:col-start-3 lg:row-start-1",
-  "lg:col-start-2 lg:row-start-2",
+  "lg:col-start-7 lg:row-start-1",
+  "lg:col-start-4 lg:row-start-2",
   "lg:col-start-1 lg:row-start-3",
-  "lg:col-start-3 lg:row-start-3",
+  "lg:col-start-7 lg:row-start-3",
 ];
 
 function CoreGrid({ heading, members }: { heading: string; members: Member[] }) {
   return (
     <div>
       <h3 className="t-h03">{heading}</h3>
-      <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:grid-rows-3">
+      <div className="bdc-grid mt-8 gap-y-12">
         {members.map((m, i) => (
-          <div key={`${m.name}-${i}`} className={CORE_PLACEMENT[i] ?? ""}>
+          <div key={`${m.name}-${i}`} className={`${MEMBER_SPAN} ${CORE_PLACEMENT[i] ?? ""}`}>
             <MemberCard {...m} />
           </div>
         ))}
@@ -26,14 +30,16 @@ function CoreGrid({ heading, members }: { heading: string; members: Member[] }) 
   );
 }
 
-/* Council: plain grid — fills left-to-right (3 then 2). */
+/* Council: plain flow — 3 then 2 across (cols 1–3 / 4–6 / 7–9, then 1–3 / 4–6). */
 function CouncilGrid({ heading, members }: { heading: string; members: Member[] }) {
   return (
     <div>
       <h3 className="t-h03">{heading}</h3>
-      <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3">
+      <div className="bdc-grid mt-8 gap-y-12">
         {members.map((m, i) => (
-          <MemberCard key={`${m.name}-${i}`} {...m} />
+          <div key={`${m.name}-${i}`} className={MEMBER_SPAN}>
+            <MemberCard {...m} />
+          </div>
         ))}
       </div>
     </div>
