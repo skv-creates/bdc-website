@@ -1,4 +1,5 @@
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
+import { GridOverlay } from "@/components/GridOverlay";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { Hero } from "@/components/sections/Hero";
@@ -21,6 +22,7 @@ export default function Home() {
   return (
     <>
       <SmoothScroll />
+      {process.env.NODE_ENV !== "production" && <GridOverlay />}
       <PatternRail />
 
       <div
