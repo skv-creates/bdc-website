@@ -1,4 +1,5 @@
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { Hero } from "@/components/sections/Hero";
 import { Mission } from "@/components/sections/Mission";
@@ -19,6 +20,7 @@ import { SiteFooter } from "@/components/sections/SiteFooter";
 export default function Home() {
   return (
     <>
+      <SmoothScroll />
       <PatternRail />
 
       <div
