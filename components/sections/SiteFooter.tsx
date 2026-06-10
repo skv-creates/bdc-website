@@ -9,7 +9,12 @@ export function SiteFooter() {
     <footer
       id="footer"
       className="relative z-30 bg-dark text-text-invert"
-      style={{ paddingInline: "var(--page-gutter)" }}
+      style={{
+        // match the page content grid (gutter left, rail+gap right) so the
+        // footer columns line up with the rest of the page
+        paddingInlineStart: "var(--page-gutter)",
+        paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))",
+      }}
     >
       <div className="bdc-grid gap-y-20 py-24 md:py-32">
         <div className="col-span-4 md:col-span-4 lg:col-span-7">
@@ -17,7 +22,7 @@ export function SiteFooter() {
           <p className="t-caption mt-20 max-w-md">{footer.copyright}</p>
         </div>
 
-        <div className="col-span-4 flex flex-col gap-4 md:col-span-4 lg:col-span-4 lg:items-start">
+        <div className="col-span-4 flex flex-col gap-4 md:col-span-4 lg:col-start-9 lg:col-span-3 lg:items-start">
           <p className="t-caption font-bold">{footer.contactHeading}</p>
           <a href={`tel:${footer.phone.replace(/\s/g, "")}`} className="t-caption hover:opacity-70">
             {footer.phone}

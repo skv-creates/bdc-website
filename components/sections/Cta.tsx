@@ -23,15 +23,22 @@ export function Cta() {
           <h2 className="t-h03">{cta.heading}</h2>
           <p className="t-body mt-4">{cta.subheading}</p>
 
-          <form className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center" action="#">
+          {/* email spans 4 cols, button 2 cols, with the 24px gutter between */}
+          <form className="mt-10 grid grid-cols-1 items-center gap-6 sm:grid-cols-[1fr_auto] lg:grid-cols-6" action="#">
             <input
               type="email"
               required
               placeholder={cta.inputPlaceholder}
               aria-label={cta.inputPlaceholder}
-              className="t-body flex-1 border-b-2 border-border bg-transparent py-4 outline-none placeholder:text-text/60 focus:border-brand"
+              className="t-body w-full border-b-2 border-border bg-transparent py-4 outline-none placeholder:text-text/60 focus:border-brand lg:col-span-4"
             />
-            <Button variant="primary" type="submit">{cta.button}</Button>
+            <Button
+              variant="primary"
+              type="submit"
+              className="w-full sm:w-auto lg:col-span-2 lg:w-full"
+            >
+              {cta.button}
+            </Button>
           </form>
         </div>
       </div>

@@ -32,12 +32,14 @@ function Item({ q, a }: { q: string; a: string }) {
 export function Faq() {
   return (
     <section id="faq" className="py-20 md:py-28">
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-x-16">
-        <div className="max-w-[632px]">
-          <h2 className="t-h03">{faq.heading}</h2>
-          <p className="t-body mt-6">{faq.subheading}</p>
-        </div>
-        <div className="lg:pt-1">
+      <div className="max-w-[632px]">
+        <h2 className="t-h03">{faq.heading}</h2>
+        <p className="t-body mt-6">{faq.subheading}</p>
+      </div>
+
+      {/* list: 80px below the intro, spanning cols 5–10 on desktop */}
+      <div className="bdc-grid mt-20">
+        <div className="col-span-4 md:col-span-8 lg:col-start-5 lg:col-span-6">
           {faq.items.map((it) => (
             <Item key={it.q} q={it.q} a={it.a} />
           ))}
