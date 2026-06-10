@@ -1,0 +1,38 @@
+/* Full-height fixed rail pinned to the right edge. Width is token-driven and
+   steps down per breakpoint (160 → 120 → 72 → 24px). */
+.rail {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: var(--rail-w);
+  height: 100dvh;
+  overflow: hidden;
+  z-index: 20;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background: var(--pattern-c4); /* fallback while SVG paints */
+}
+
+/* The drifting layer. Offset up by one tile period and grown by the same so the
+   JS parallax (translateY in [0, TILE)) always fully covers the viewport. The
+   transform is set imperatively by PatternRail's scroll handler.
+   NOTE: the 196px here must equal TILE in patterns.tsx. */
+.tile {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: -196px;
+  height: calc(100% + 196px);
+  width: 100%;
+  display: block;
+  will-change: transform;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Reduced motion: the scroll handler bails out, so the tile simply stays put
+   (offset up by one tile period still fully covers the rail). */

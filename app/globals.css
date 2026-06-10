@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   BDC — DESIGN TOKENS  (exact values from Figma, file PCN64wGsbMFvHDlwsnN4in)
+   Single source of truth. Swap nothing downstream — change values here only.
+============================================================================= */
+
+:root {
+  /* ---- Color · brand primitives ----------------------------------------- */
+  --bdc-amber: #fed140;
+  --bdc-orange: #f47e38;
+  --bdc-tomato: #f25254;
+  --bdc-burgundy: #770f42;
+  --bdc-rose: #f3a3ca;
+  --bdc-indigo: #2e0984;
+  --bdc-lavender: #927df2;
+  --bdc-dark: #151515;
+  --bdc-white: #ffffff;
+
+  /* ---- Color · semantics ------------------------------------------------- */
+  --color-page: var(--bdc-white);          /* page background — WHITE        */
+  --color-text: var(--bdc-dark);           /* primary text                  */
+  --color-text-invert: var(--bdc-white);
+  --color-border: var(--bdc-dark);
+  --color-brand: var(--bdc-rose);          /* primary button / accent       */
+  --color-brand-hover: var(--bdc-dark);
+
+  /* ---- Pattern rail recolor slots --------------------------------------
+     Cycled on click (see PatternRail). Defaults are placeholder brand mix
+     until the real 3–4 pattern designs land. */
+  --pattern-c1: var(--bdc-tomato);
+  --pattern-c2: var(--bdc-rose);
+  --pattern-c3: var(--bdc-burgundy);
+  --pattern-c4: var(--bdc-orange);
+
+  /* ---- Spacing / radius -------------------------------------------------- */
+  --space-sm: 8px;
+  --space-lg: 16px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --radius-full: 9999px;
+
+  /* ---- Layout ----------------------------------------------------------- */
+  --rail-w: 197px;             /* pattern rail width (Figma) — steps below     */
+  --rail-gap: 24px;            /* gap between content and rail (Figma)         */
+  --page-gutter: clamp(1.25rem, 4vw, 7rem);   /* Figma uses 112px desktop pad */
+  --grid-cols: 12;
+  --grid-gap: 24px;            /* Figma column gap                            */
+
+  /* ---- Typography · raw scale (px, exact from Figma) -------------------- */
+  --fs-5xl: 80px;   /* h01  */
+  --fs-4xl: 64px;   /* h02  */
+  --fs-3xl: 48px;   /* h03  */
+  --fs-2xl: 40px;   /* h04  */
+  --fs-xl: 32px;    /* h05  */
+  --fs-lg: 24px;    /* body-large */
+  --fs-md: 20px;    /* body-default, label */
+  --fs-sm: 16px;    /* caption */
+  --fs-digit: 120px;/* stat numbers */
+
+  --ls-tight: -1px; /* letter-spacing-tight  */
+  --ls-normal: 0px; /* letter-spacing-normal */
+  --ls-wide: 0.05px;/* letter-spacing-wide   */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  /* font stacks — both faces loaded via next/font in layout.tsx */
+  --font-display: var(--font-about-beige), var(--font-fallback), system-ui, sans-serif;
+  --font-body: var(--font-about-beige), var(--font-fallback), system-ui, sans-serif;
+}
+
+/* Expose semantic colors to Tailwind utilities (bg-brand, text-text, …) */
+@theme inline {
+  --color-amber: var(--bdc-amber);
+  --color-orange: var(--bdc-orange);
+  --color-tomato: var(--bdc-tomato);
+  --color-burgundy: var(--bdc-burgundy);
+  --color-rose: var(--bdc-rose);
+  --color-indigo: var(--bdc-indigo);
+  --color-lavender: var(--bdc-lavender);
+  --color-dark: var(--bdc-dark);
+
+  --color-page: var(--color-page);
+  --color-text: var(--color-text);
+  --color-text-invert: var(--color-text-invert);
+  --color-border: var(--color-border);
+  --color-brand: var(--color-brand);
+  --color-brand-hover: var(--color-brand-hover);
+}
+
+/* =============================================================================
+   TEXT STYLES — mirror Figma named styles 1:1.
+   Sizes are fluid (clamp) capped at the exact Figma desktop px (commented).
+   Placed in @layer base so Tailwind utilities (font-bold, leading-*, …) can
+   override them when combined on the same element.
+============================================================================= */
+@layer base {
+.t-h01   { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: clamp(2.5rem, 6vw, 5rem);      line-height: 1.1; letter-spacing: var(--ls-tight); }   /* 80 */
+.t-h02   { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: clamp(2rem, 5vw, 4rem);        line-height: 1.1; letter-spacing: var(--ls-tight); }   /* 64 */
+.t-h03   { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: clamp(1.75rem, 4vw, 3rem);     line-height: 1.1; letter-spacing: var(--ls-tight); }   /* 48 */
+.t-h04   { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: clamp(1.5rem, 3vw, 2.5rem);    line-height: 1.1; letter-spacing: var(--ls-tight); }   /* 40 */
+.t-h05   { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: clamp(1.375rem, 2vw, 2rem);    line-height: 1.1; letter-spacing: var(--ls-tight); }   /* 32 */
+.t-digit { font-family: var(--font-display); font-weight: var(--weight-regular); font-size: clamp(4rem, 12vw, 7.5rem); line-height: 1;   letter-spacing: var(--ls-tight); }   /* 120 */
+.t-body-lg { font-family: var(--font-body); font-weight: var(--weight-regular); font-size: clamp(1.125rem, 1.6vw, 1.5rem); line-height: 1.5; letter-spacing: var(--ls-normal); } /* 24 */
+.t-body    { font-family: var(--font-body); font-weight: var(--weight-regular); font-size: 1.25rem; line-height: 1.4; letter-spacing: var(--ls-normal); }                       /* 20 */
+.t-label   { font-family: var(--font-body); font-weight: var(--weight-medium);  font-size: 1.25rem; line-height: 1.4; letter-spacing: var(--ls-wide); }                         /* 20 */
+.t-caption { font-family: var(--font-body); font-weight: var(--weight-medium);  font-size: 1rem;    line-height: 1.5; letter-spacing: var(--ls-normal); }                       /* 16 */
+}
+
+/* =============================================================================
+   BASE
+============================================================================= */
+html { color-scheme: light; }
+
+body {
+  background: var(--color-page);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-feature-settings: "ss16" 1;   /* stylistic set used throughout Figma */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The page column grid (the "stripes" in the mock = this grid guide). */
+.bdc-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+}
+
+/* ---- Responsive: rail width steps + grid density ------------------------- */
+@media (max-width: 1279px) { :root { --rail-w: 140px; } }
+@media (max-width: 1023px) { :root { --rail-w: 88px; --grid-cols: 8; } }
+@media (max-width: 767px)  { :root { --rail-w: 24px; --rail-gap: 12px; --grid-cols: 4; } }
