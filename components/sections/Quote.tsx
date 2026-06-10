@@ -4,8 +4,9 @@ export function Quote() {
   return (
     <section className="py-20 md:py-28">
       <div className="max-w-[1072px]">
-        <span aria-hidden className="t-h01 block leading-none text-brand">„</span>
-        <blockquote className="t-h02 mt-2">{quote.text}</blockquote>
+        {/* 200px glyph overflows its box ~23px; mt accounts for that + 40px gap */}
+        <span aria-hidden className="t-h01 block text-[200px] leading-none text-brand">„</span>
+        <blockquote className="t-h02 mt-[63px]">{quote.text}</blockquote>
         <p className="t-body mt-8 font-bold">{quote.author}</p>
       </div>
     </section>

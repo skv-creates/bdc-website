@@ -17,7 +17,7 @@ export function SiteNav() {
       {/* desktop nav */}
       <nav className="hidden items-center gap-6 lg:flex">
         {nav.links.map((l) => (
-          <a key={l.label} href={l.href} className="t-body border-b-2 border-transparent transition-colors hover:border-current">
+          <a key={l.label} href={l.href} className="t-caption border-b-2 border-transparent transition-colors hover:border-current">
             {l.label}
           </a>
         ))}
@@ -25,7 +25,7 @@ export function SiteNav() {
 
       <div className="hidden items-center gap-4 lg:flex">
         <Button variant="small" href={nav.cta.href}>{nav.cta.label}</Button>
-        <a href={nav.lang.href} className="t-body border-b-2 border-transparent transition-colors hover:border-current">
+        <a href={nav.lang.href} className="t-caption border-b-2 border-transparent transition-colors hover:border-current">
           {nav.lang.label}
         </a>
       </div>
