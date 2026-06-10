@@ -50,6 +50,31 @@ function Pattern02({ id }: { id: string }): JSX.Element {
   );
 }
 
+/** pattern-03 — three vertical bars on a burgundy ground, each bar segmented
+ *  into rose/tomato/burgundy blocks. Same slot mapping (rose→c2, tomato→c1,
+ *  burgundy→c3). Burgundy segments blend into the ground, as in the source. */
+function Pattern03({ id }: { id: string }): JSX.Element {
+  return (
+    <pattern id={id} width={TILE} height={TILE} patternUnits="userSpaceOnUse">
+      <rect width={TILE} height={TILE} fill="var(--pattern-c3)" />
+      {/* left bar (x ≈ 0–56) */}
+      <rect x={-0.32} y={-81.996} width={56.63} height={120} fill="var(--pattern-c2)" />
+      <rect x={-0.32} y={38.004} width={56.63} height={60} fill="var(--pattern-c1)" />
+      <rect x={-0.32} y={98.004} width={56.63} height={20} fill="var(--pattern-c3)" />
+      <rect x={-0.32} y={118.004} width={56.63} height={120} fill="var(--pattern-c2)" />
+      {/* middle bar (x ≈ 70–126) */}
+      <rect x={69.68} y={-3.996} width={56.63} height={20} fill="var(--pattern-c3)" />
+      <rect x={69.68} y={16.004} width={56.63} height={120} fill="var(--pattern-c2)" />
+      <rect x={69.68} y={136.004} width={56.63} height={60} fill="var(--pattern-c1)" />
+      {/* right bar (x ≈ 140–196) */}
+      <rect x={139.68} y={-81.996} width={56.63} height={120} fill="var(--pattern-c2)" />
+      <rect x={139.68} y={38.004} width={56.63} height={60} fill="var(--pattern-c1)" />
+      <rect x={139.68} y={98.004} width={56.63} height={20} fill="var(--pattern-c3)" />
+      <rect x={139.68} y={118.004} width={56.63} height={120} fill="var(--pattern-c2)" />
+    </pattern>
+  );
+}
+
 /** Mobile tile — simple stacked horizontal bands for the thin (<768px) rail.
  *  rose→c2 (top), tomato→c1 (mid), burgundy→c3 (bottom): matches the source. */
 export function PatternMobile({ id }: { id: string }): JSX.Element {
@@ -67,6 +92,7 @@ export function PatternMobile({ id }: { id: string }): JSX.Element {
 export const PATTERNS: ReadonlyArray<(props: { id: string }) => JSX.Element> = [
   Pattern01,
   Pattern02,
+  Pattern03,
 ];
 
 /**
