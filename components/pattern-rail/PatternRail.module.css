@@ -28,8 +28,9 @@
   will-change: transform;
 }
 
+/* display is controlled per-breakpoint by Tailwind (hidden/block/md:*) so the
+   mobile vs desktop tile can be toggled; keep only sizing here. */
 .svg {
-  display: block;
   width: 100%;
   height: 100%;
 }

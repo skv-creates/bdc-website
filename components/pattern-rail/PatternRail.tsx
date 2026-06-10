@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import styles from "./PatternRail.module.css";
-import { PALETTES, PATTERNS, TILE } from "./patterns";
+import { PALETTES, PATTERNS, PatternMobile, TILE } from "./patterns";
 
 /** Pattern drifts at a quarter of the user's scroll speed, same direction. */
 const PARALLAX_FACTOR = 0.25;
@@ -84,11 +84,19 @@ export function PatternRail() {
       title="Смени цвета на шарката"
     >
       <span ref={tileRef} className={styles.tile} aria-hidden="true">
-        <svg className={styles.svg} preserveAspectRatio="xMidYMid slice">
+        {/* tablet / desktop (≥768px): random diagonal-or-mesh tile */}
+        <svg className={`${styles.svg} hidden md:block`} preserveAspectRatio="xMidYMid slice">
           <defs>
             <Tile id={patternId} />
           </defs>
           <rect width="100%" height="100%" fill={`url(#${patternId})`} />
+        </svg>
+        {/* mobile (<768px): simple banded strip */}
+        <svg className={`${styles.svg} block md:hidden`} preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <PatternMobile id={`${patternId}m`} />
+          </defs>
+          <rect width="100%" height="100%" fill={`url(#${patternId}m)`} />
         </svg>
       </span>
     </button>

@@ -31,9 +31,42 @@ function Pattern01({ id }: { id: string }): JSX.Element {
   );
 }
 
-/** All available tiles. Add the real designs to this array. */
+/** pattern-02 — interlocking parallelogram mesh on a WHITE ground (this tile is
+ *  light, unlike pattern-01). Shape fills mapped to the same recolor slots:
+ *  rose→c2 (accent), tomato→c1 (band), burgundy→c3 (ground). */
+function Pattern02({ id }: { id: string }): JSX.Element {
+  return (
+    <pattern id={id} width={TILE} height={TILE} patternUnits="userSpaceOnUse">
+      <rect width={TILE} height={TILE} fill="#ffffff" />
+      <polygon points="83.6,-46 -31.6,-46 -2.8,26 112.4,26" fill="var(--pattern-c3)" />
+      <polygon points="198.8,-46 83.6,-46 112.4,26 227.6,26" fill="var(--pattern-c1)" />
+      <polygon points="-2.8,26 112.4,26 83.6,98 -31.6,98" fill="var(--pattern-c2)" />
+      <polygon points="112.4,26 227.6,26 198.8,98 83.6,98" fill="var(--pattern-c3)" />
+      <polygon points="83.6,98 -31.6,98 -2.8,170 112.4,170" fill="var(--pattern-c1)" />
+      <polygon points="198.8,98 83.6,98 112.4,170 227.6,170" fill="var(--pattern-c3)" />
+      <polygon points="-2.8,170 112.4,170 83.6,242 -31.6,242" fill="var(--pattern-c3)" />
+      <polygon points="112.4,170 227.6,170 198.8,242 83.6,242" fill="var(--pattern-c2)" />
+    </pattern>
+  );
+}
+
+/** Mobile tile — simple stacked horizontal bands for the thin (<768px) rail.
+ *  rose→c2 (top), tomato→c1 (mid), burgundy→c3 (bottom): matches the source. */
+export function PatternMobile({ id }: { id: string }): JSX.Element {
+  return (
+    <pattern id={id} width={TILE} height={TILE} patternUnits="userSpaceOnUse">
+      <rect width={TILE} height={TILE} fill="#ffffff" />
+      <rect width={TILE} height={100} fill="var(--pattern-c2)" />
+      <rect y={100} width={TILE} height={64} fill="var(--pattern-c1)" />
+      <rect y={164} width={TILE} height={32} fill="var(--pattern-c3)" />
+    </pattern>
+  );
+}
+
+/** Desktop/tablet tiles — the rail picks one at random per load. */
 export const PATTERNS: ReadonlyArray<(props: { id: string }) => JSX.Element> = [
   Pattern01,
+  Pattern02,
 ];
 
 /**
