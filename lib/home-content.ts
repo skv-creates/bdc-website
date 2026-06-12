@@ -7,26 +7,26 @@
 
 export const nav = {
   links: [
+    { label: "Инициативи", href: "#initiatives" },
+    { label: "Мисия", href: "#mission" },
     { label: "Екип", href: "#team" },
-    { label: "Членство", href: "#cta" },
-    { label: "Контакт", href: "#footer" },
-    { label: "Въпроси", href: "#faq" },
   ],
-  cta: { label: "Стани член →", href: "#cta" },
+  cta: { label: "Стани част от БДС →", href: "https://tally.so/r/81PbQA" },
   lang: { label: "EN", href: "#" },
 };
 
 export const hero = {
-  heading: "Бъди гласа на българския дизайн.",
+  heading: "Дизайнът движи нации. Ние го задвижваме в България.",
   subheading:
-    "Българският Дизайн Съвет обединява професионалисти, експерти и организации с една обща мисия – да развиваме.",
-  primary: { label: "Стани член", href: "#cta" },
-  secondary: { label: "Бюлетин", href: "#cta" },
+    "Български Дизайн Съвет обединява 40 000+ дизайн професионалисти, бизнеса, образованието и институциите в една платформа, с една обща мисия: да създаде България бъдещето си, с умисъл.",
+  primary: { label: "Стани част от БДС", href: "https://tally.so/r/81PbQA" },
 };
 
 export const mission = {
   label: "Нашата Мисия",
-  heading: "Изграждаме устойчива и разпознаваема дизайн култура в България",
+  heading:
+    "Развиваме национален дизайн капацитет за иновации и устойчиви обществени системи, интегрирайки България в световната екосистема.",
+  // v02 mission is label + heading only; stats kept here for later reuse.
   stats: [
     {
       value: "6",
@@ -49,6 +49,57 @@ export const mission = {
       text: "Експертни направления, фокусирани върху образование, UX/UI, брандинг и архитектура",
     },
   ],
+};
+
+/**
+ * Initiatives carousel. Each card has a FIXED pattern (1–4) shown in its
+ * thumbnail. Colors come from the pattern rail's active triad — card
+ * backgrounds run accent → band → ground by position, and each pattern is
+ * inked in a triad color that isn't its background. Card 4 reuses pattern 2.
+ */
+export type Initiative = {
+  label: string;
+  title: string;
+  text: string;
+  pattern: 1 | 2 | 3 | 4;
+  cta?: { label: string; href: string };
+};
+
+export const initiatives = {
+  heading: "Инициативи",
+  items: [
+    {
+      label: "Проект",
+      title: "България чрез Дизайн",
+      text: "Визуална идентичност на българските институции, която засилва вярата в институциите и националната гордост.",
+      pattern: 1,
+      cta: { label: "Към проекта →", href: "#" },
+    },
+    {
+      label: "Лаборатория",
+      title: "Future Makers Lab",
+      text: "Лаборатория за юноши, която развива системно мислене, проблемно рамкиране, изследователска култура, включващ дизайн и отговорна работа с AI.",
+      pattern: 2,
+    },
+    {
+      label: "Инструмент",
+      title: "Оценка на дизайн зрялост",
+      text: "Инструмент за самооценка на дизайн зрелостта на бизнес организации и насоки за повишаването ѝ.",
+      pattern: 3,
+    },
+    {
+      label: "Лекция",
+      title: "Дизайн отвъд екрана: силата на ко-дизайна в сложни системи",
+      text: "Лекция за ролята на дизайна отвъд визуалния аспект – като инструмент за разбиране на хора, системи, последствия и бъдещи сценарии.",
+      pattern: 2,
+    },
+    {
+      label: "Награда",
+      title: "Дизайн за Добро",
+      text: "БДС връчи три награди „Дизайн за добро“ на първия Студентски дизайн маратон в НБУ. Отличаваме идеи, в които дизайнът е инструмент за смислена промяна за хората, общностите и средата ни.",
+      pattern: 4,
+    },
+  ] as Initiative[],
 };
 
 export const event = {
