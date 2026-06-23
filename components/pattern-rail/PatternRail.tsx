@@ -66,11 +66,17 @@ export function PatternRail() {
     "--pattern-c4": palette.c4,
   } as CSSProperties;
 
-  // Cycle the combo and recolor the site-wide brand accent to match (rose/amber).
+  // Cycle the combo and recolor the site-wide brand accent + the initiative-card
+  // triad to match (the cards read --tri-accent/--tri-band/--tri-ground).
   const cyclePalette = () =>
     setPaletteIndex((i) => {
       const next = (i + 1) % PALETTES.length;
-      document.documentElement.style.setProperty("--color-brand", PALETTES[next].brand);
+      const p = PALETTES[next];
+      const root = document.documentElement.style;
+      root.setProperty("--color-brand", p.brand);
+      root.setProperty("--tri-accent", p.c2); // accent
+      root.setProperty("--tri-band", p.c1); // band
+      root.setProperty("--tri-ground", p.c3); // ground
       return next;
     });
 

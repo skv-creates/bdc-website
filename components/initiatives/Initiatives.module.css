@@ -1,0 +1,31 @@
+/* Horizontal, scroll-snapping carousel.
+   Desktop: each card spans 6 of the 11 content columns, so one full card plus a
+   peek of the next is visible. Tablet/mobile: wider cards, still horizontal. */
+.track {
+  display: flex;
+  gap: var(--grid-gap, 24px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  /* arrow motion is JS-driven (120ms ease-out); native scroll/swipe stays default */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* room so the snapped card's shadow/edge isn't clipped */
+  padding-block: 2px;
+}
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  /* 6-column span of the 11-column grid (incl. 5 inner gaps) */
+  width: calc((100% - 10 * var(--grid-gap, 24px)) / 11 * 6 + 5 * var(--grid-gap, 24px));
+}
+
+@media (max-width: 1023px) {
+  .card { width: 66%; }
+}
+@media (max-width: 767px) {
+  .card { width: 86%; }
+}
