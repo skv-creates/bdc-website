@@ -120,31 +120,49 @@ export const about = {
   ],
 };
 
-export type Member = { name: string; role: string; photo: string };
+// `photo` is optional — members awaiting a portrait render a placeholder tile.
+export type Member = { name: string; role: string; photo?: string };
 
 export const team = {
   heading: "Екип",
   vision:
-    "Визията ни е да отстояваме силата на дизайна да развива икономиката, да укрепва общностите и да оформя едно устойчиво, проспериращо и културно уверено бъдеще за нацията ни.",
-  core: {
-    heading: "Управителен съвет",
+    "Oтстояваме силата на дизайна да развива икономиката, да укрепва общностите и да оформя едно устойчиво, проспериращо и културно уверено бъдеще за нацията ни.",
+  // Управителен съвет
+  board: {
+    eyebrow: "— Управителен съвет",
     members: [
-      { name: "Добра Славкова", role: "Председател", photo: "/figma/member-1.png" },
-      { name: "Радина Донева", role: "Секретар", photo: "/figma/member-2.png" },
-      { name: "Стефи Пейкова", role: "Заместник-председател", photo: "/figma/member-3.png" },
-      { name: "Зинаида Илер", role: "Член на Управителния съвет", photo: "/figma/member-4.png" },
-      { name: "Име Фамилия", role: "Член на Управителния съвет", photo: "/figma/member-5.png" }, // PLACEHOLDER name
+      { name: "Добра Славкова", role: "Председател", photo: "/figma/team/dobra-slavkova.png" },
+      { name: "Стефи Пейкова-Кришнан", role: "Заместник-председател", photo: "/figma/team/stefi-peykova-krishnan.png" },
+      { name: "Радина Донева", role: "Секретар", photo: "/figma/team/radina-doneva.png" },
+      { name: "Зинаида Илер", role: "Член на Управителния съвет", photo: "/figma/team/zinaida-iler.png" },
+      { name: "Стефан Владимиров", role: "Член на Управителния съвет", photo: "/figma/team/stefan-vladimirov.png" },
     ] as Member[],
   },
-  council: {
-    heading: "Консултативен съвет",
-    // PLACEHOLDER names — Figma used generic "Доброволец" cards
+  // Консултативен съвет
+  advisory: {
+    eyebrow: "— Консултативен съвет",
+    intro:
+      "Експерти от дизайн, образование, бизнес, култура и технологии, които помагат на Българския дизайн съвет да развива инициативи с реална стойност за страната.",
     members: [
-      { name: "Име Фамилия", role: "Доброволец", photo: "/figma/member-6.jpg" },
-      { name: "Име Фамилия", role: "Доброволец", photo: "/figma/member-7.jpg" },
-      { name: "Име Фамилия", role: "Доброволец", photo: "/figma/member-8.png" },
-      { name: "Име Фамилия", role: "Доброволец", photo: "/figma/member-9.png" },
-      { name: "Име Фамилия", role: "Доброволец", photo: "/figma/member-10.jpg" },
+      { name: "Ida Persson", role: "Член на Консултативния съвет", photo: "/figma/team/ida-persson.png" },
+      { name: "Милен Донев", role: "Член на Консултативния съвет", photo: "/figma/team/milen-donev.png" },
+      { name: "Brandon Gien", role: "Член на Консултативния съвет", photo: "/figma/team/brandon-gien.png" },
+    ] as Member[],
+  },
+  // Доброволци
+  volunteers: {
+    eyebrow: "— Доброволци",
+    intro:
+      "Съществуваме благодарение на хора, които даряват време, знания и енергия. Доброволците ни не помагат „отстрани“, а участват пряко в изграждането на нова дизайн култура за България.",
+    cta: { label: "Стани доброволец", href: "https://tally.so/r/81PbQA" },
+    members: [
+      { name: "Йоанна Тодорова", role: "Доброволец", photo: "/figma/team/yoanna-todorova.png" },
+      { name: "Кая Содева", role: "Доброволец", photo: "/figma/team/kaya-sodeva.png" },
+      { name: "Мариана Ташутева", role: "Доброволец", photo: "/figma/team/mariana-tashuteva.png" },
+      { name: "Кристин Озанян", role: "Доброволец" }, // photo pending
+      { name: "Кирил Велчев", role: "Доброволец", photo: "/figma/team/kiril-velchev.png" },
+      { name: "Невена Пеева", role: "Асоцииран член", photo: "/figma/team/nevena-peeva.png" },
+      { name: "Моника Велкова", role: "Доброволец" }, // photo pending
     ] as Member[],
   },
 };
