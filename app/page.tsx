@@ -7,11 +7,11 @@ import { Initiatives } from "@/components/initiatives/Initiatives";
 import { Mission } from "@/components/sections/Mission";
 import { Team } from "@/components/sections/Team";
 import { Quote } from "@/components/sections/Quote";
+import { Faq } from "@/components/sections/Faq";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 // Temporarily hidden — kept for later reuse:
 // import { Events } from "@/components/sections/Events";
 // import { About } from "@/components/sections/About";
-// import { Faq } from "@/components/sections/Faq";
 // import { Cta } from "@/components/sections/Cta";
 
 /**
@@ -40,8 +40,9 @@ export default function Home() {
           <Mission />
           <Team />
           <Quote />
+          <Faq />
           {/* Temporarily hidden — to be reused later:
-          <Events /> <About /> <Faq /> <Cta /> */}
+          <Events /> <About /> <Cta /> */}
         </main>
       </div>
 
