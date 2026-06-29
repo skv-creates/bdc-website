@@ -9,7 +9,7 @@ export function SiteNav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 flex items-center justify-between gap-6 bg-page py-6">
+    <header className="sticky top-0 z-40 flex items-center justify-between gap-6 bg-page py-6 before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:h-[50vh] before:bg-page before:content-['']">
       <a href="#" aria-label="Начало" className="shrink-0">
         <Logo variant="dark" className="h-8 w-auto md:h-10" />
       </a>
