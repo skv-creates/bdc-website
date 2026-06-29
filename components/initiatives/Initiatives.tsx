@@ -39,14 +39,14 @@ function Card({ item, index }: { item: Initiative; index: number }) {
   } as CSSProperties;
 
   return (
-    <article className={`${styles.card} flex flex-col gap-12 p-12`} style={style}>
-      <div className="relative h-[240px] w-full overflow-hidden">
+    <article className={`${styles.card} flex flex-col gap-12 p-6`} style={style}>
+      <div className="relative hidden h-[240px] w-full overflow-hidden md:block">
         <PatternTile n={item.pattern} />
       </div>
 
       <div className="flex items-center gap-5">
         <LabelMark />
-        <span className="text-[24px] font-bold leading-[1.5]">{item.label}</span>
+        <span className="text-[1.2rem] font-bold leading-[1.5] md:text-[24px]">{item.label}</span>
       </div>
 
       <div className="flex flex-1 flex-col gap-8">

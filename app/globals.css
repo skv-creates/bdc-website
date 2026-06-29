@@ -132,6 +132,30 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Skip-navigation link — off-screen until it receives keyboard focus, then
+   pinned top-left so keyboard / screen-reader users can jump past the nav
+   straight to <main>. (WCAG 2.4.1 Bypass Blocks.) */
+.skip-link {
+  position: absolute;
+  left: var(--space-sm);
+  top: var(--space-sm);
+  z-index: 50;
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--color-dark);
+  color: var(--color-text-invert);
+  border-radius: var(--radius-full);
+  transform: translateY(-150%);
+  transition: transform 120ms ease-out;
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+/* <main> only takes focus programmatically (via the skip link); don't paint a
+   full-width focus ring around it. */
+main:focus { outline: none; }
+
 /* The page column grid (the "stripes" in the mock = this grid guide). */
 .bdc-grid {
   display: grid;
@@ -142,4 +166,16 @@ body {
 /* ---- Responsive: rail width steps + grid density ------------------------- */
 @media (max-width: 1279px) { :root { --rail-w: 140px; } }
 @media (max-width: 1023px) { :root { --rail-w: 88px; --grid-cols: 8; } }
-@media (max-width: 767px)  { :root { --rail-w: 24px; --rail-gap: 12px; --grid-cols: 4; } }
+@media (max-width: 767px)  { :root { --rail-w: 24px; --rail-gap: 12px; --grid-cols: 4; --grid-gap: 12px; } }
+
+/* ---- Responsive: mobile type scale (≤767px) -----------------------------
+   Tighter headings + slightly larger body/label/button text on phones.
+   Unlayered so they override the @layer base .t-* styles on mobile only. */
+@media (max-width: 767px) {
+  .t-h01    { font-size: 2rem; }
+  .t-h02    { font-size: 1.8rem; line-height: 1.1; }
+  .t-h03    { font-size: 1.6rem; }
+  .t-body   { font-size: 1.2rem; }
+  .t-label  { font-size: 1.2rem; }   /* buttons (primary/secondary, CTA, arrows) */
+  .t-caption{ line-height: 1.2; }
+}

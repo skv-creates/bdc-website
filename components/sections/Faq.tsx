@@ -10,7 +10,7 @@ function Item({ q, a }: { q: string; a: string }) {
     <div className="border-b-2 border-border">
       <button
         type="button"
-        className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-colors duration-[120ms] ease-out hover:bg-brand"
+        className="flex w-full items-center justify-between gap-4 px-0 py-4 text-left transition-colors duration-[120ms] ease-out hover:bg-brand md:px-4"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
@@ -22,7 +22,7 @@ function Item({ q, a }: { q: string; a: string }) {
         style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
       >
         <div className="overflow-hidden" aria-hidden={!open}>
-          <p className="t-body pb-5 pl-4 pr-10 opacity-80">{a}</p>
+          <p className="t-body pb-5 opacity-80 md:pl-4 md:pr-10">{a}</p>
         </div>
       </div>
     </div>
