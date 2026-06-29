@@ -24,9 +24,6 @@ export function SiteFooter() {
 
         <div className="col-span-4 flex flex-col gap-4 md:col-span-4 lg:col-start-9 lg:col-span-3 lg:items-start">
           <p className="t-caption font-bold">{footer.contactHeading}</p>
-          <a href={`tel:${footer.phone.replace(/\s/g, "")}`} className="t-caption hover:opacity-70">
-            {footer.phone}
-          </a>
           <a href={`mailto:${footer.email}`} className="t-caption hover:opacity-70">
             {footer.email}
           </a>
