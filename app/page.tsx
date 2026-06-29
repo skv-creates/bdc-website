@@ -23,6 +23,9 @@ import { SiteFooter } from "@/components/sections/SiteFooter";
 export default function Home() {
   return (
     <>
+      <a href="#main" className="skip-link t-caption font-bold">
+        Прескочи към съдържанието
+      </a>
       <SmoothScroll />
       {process.env.NODE_ENV !== "production" && <GridOverlay />}
       <PatternRail />
@@ -34,7 +37,7 @@ export default function Home() {
         }}
       >
         <SiteNav />
-        <main>
+        <main id="main" tabIndex={-1}>
           <Hero />
           <Initiatives />
           <Mission />

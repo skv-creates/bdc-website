@@ -207,7 +207,7 @@ export const footer = {
   phone: "+359 2 123 4567",
   email: "info@bulgariandesigncouncil.bg",
   social: [
-    { label: "Instagram", href: "#" },
-    { label: "LinkedIn", href: "#" },
+    { label: "Instagram", href: "https://www.instagram.com/bulgarian.design.council/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/company/bulgarian-design-council/posts/?feedView=all" },
   ],
 };

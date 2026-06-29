@@ -26,6 +26,10 @@ export function SmoothScroll() {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
       history.pushState(null, "", hash);
+      // Move focus to the target (e.g. the skip link → <main>) without a second
+      // jump, so keyboard / screen-reader users continue from there. No-op for
+      // non-focusable section targets, preserving the visual-only nav behavior.
+      target.focus({ preventScroll: true });
     };
 
     document.addEventListener("click", onClick);
