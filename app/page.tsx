@@ -26,13 +26,6 @@ export default function Home() {
       <a href="#main" className="skip-link t-caption font-bold">
         Прескочи към съдържанието
       </a>
-      {/* iOS: paint the status-bar safe area white, anchored to the true viewport
-          top, so page content never peeks above the sticky nav. */}
-      <div
-        aria-hidden
-        className="fixed inset-x-0 top-0 z-50 bg-page"
-        style={{ height: "env(safe-area-inset-top)" }}
-      />
       <SmoothScroll />
       {process.env.NODE_ENV !== "production" && <GridOverlay />}
       <PatternRail />
