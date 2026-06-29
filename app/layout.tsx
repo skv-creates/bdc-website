@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -22,6 +22,13 @@ const fallback = Inter({
   weight: ["400", "500", "700"],
   display: "swap",
 });
+
+/* Opt into the full screen so env(safe-area-inset-*) returns the real notch /
+   status-bar insets — used by the sticky nav to paint white under the iOS
+   status bar (otherwise content peeks above the header). */
+export const viewport: Viewport = {
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "Български Дизайн Съвет",
