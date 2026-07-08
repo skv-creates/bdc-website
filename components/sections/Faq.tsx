@@ -2,9 +2,41 @@
 
 import { useState } from "react";
 import { Plus, Minus } from "@/components/ui/icons";
-import { faq } from "@/lib/home-content";
+import { faq, type FaqBlock } from "@/lib/home-content";
 
-function Item({ q, a }: { q: string; a: string }) {
+function Answer({ blocks }: { blocks: FaqBlock[] }) {
+  return (
+    <div className="pb-6 md:pl-4 md:pr-10">
+      {blocks.map((b, i) => {
+        if ("h" in b) {
+          return (
+            <p key={i} className="t-body font-medium mt-5 first:mt-0">
+              {b.h}
+            </p>
+          );
+        }
+        if ("ul" in b) {
+          return (
+            <ul key={i} className="mt-3 list-disc space-y-1.5 pl-5">
+              {b.ul.map((li, j) => (
+                <li key={j} className="t-body opacity-80">
+                  {li}
+                </li>
+              ))}
+            </ul>
+          );
+        }
+        return (
+          <p key={i} className="t-body mt-3 opacity-80 first:mt-0">
+            {b.p}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
+function Item({ q, a }: { q: string; a: FaqBlock[] }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b-2 border-border">
@@ -22,7 +54,7 @@ function Item({ q, a }: { q: string; a: string }) {
         style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
       >
         <div className="overflow-hidden" aria-hidden={!open}>
-          <p className="t-body pb-5 opacity-80 md:pl-4 md:pr-10">{a}</p>
+          <Answer blocks={a} />
         </div>
       </div>
     </div>
@@ -40,8 +72,15 @@ export function Faq() {
       {/* list: 80px below the intro, spanning cols 5–10 on desktop */}
       <div className="bdc-grid mt-20">
         <div className="col-span-4 md:col-span-8 lg:col-start-5 lg:col-span-6">
-          {faq.items.map((it) => (
-            <Item key={it.q} q={it.q} a={it.a} />
+          {faq.groups.map((group, gi) => (
+            <div key={group.title} className={gi > 0 ? "mt-14" : undefined}>
+              <h3 className="t-h04">{group.title}</h3>
+              <div className="mt-6 border-t-2 border-border">
+                {group.items.map((it) => (
+                  <Item key={it.q} q={it.q} a={it.a} />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>
