@@ -19,7 +19,7 @@ function Answer({ blocks }: { blocks: FaqBlock[] }) {
           return (
             <ul key={i} className="mt-3 list-disc space-y-1.5 pl-5">
               {b.ul.map((li, j) => (
-                <li key={j} className="t-body opacity-80">
+                <li key={j} className="t-body">
                   {li}
                 </li>
               ))}
@@ -27,7 +27,7 @@ function Answer({ blocks }: { blocks: FaqBlock[] }) {
           );
         }
         return (
-          <p key={i} className="t-body mt-3 opacity-80 first:mt-0">
+          <p key={i} className="t-body mt-3 first:mt-0">
             {b.p}
           </p>
         );

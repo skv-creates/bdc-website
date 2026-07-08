@@ -1,24 +1,7 @@
-import { MemberCard } from "@/components/ui/MemberCard";
+import { BoardGrid } from "@/components/ui/BoardGrid";
 import { TeamList } from "@/components/ui/TeamList";
 import { Button } from "@/components/ui/Button";
 import { team, type Member } from "@/lib/home-content";
-
-/* Each member spans 3 of the 11 page columns (≈304px, matching Figma).
-   Cards flow left→right and wrap (3-up on lg, 2-up below), leaving the trailing
-   page columns empty — same as the Figma checkerboard reads. */
-const MEMBER_SPAN = "col-span-2 md:col-span-4 lg:col-span-3";
-
-function MemberGrid({ members }: { members: Member[] }) {
-  return (
-    <div className="bdc-grid mt-10 gap-y-12 md:mt-14">
-      {members.map((m, i) => (
-        <div key={`${m.name}-${i}`} className={MEMBER_SPAN}>
-          <MemberCard {...m} />
-        </div>
-      ))}
-    </div>
-  );
-}
 
 /* Eyebrow label on the left, an optional intro paragraph (and CTA) on the right —
    echoes the section headers in Figma (label cols 1–3, copy cols 4–9). */
@@ -63,7 +46,7 @@ export function Team() {
       <div className="mt-16 flex flex-col gap-20 md:mt-24 md:gap-28">
         <div>
           <GroupHeader eyebrow={board.eyebrow} />
-          <MemberGrid members={board.members} />
+          <BoardGrid members={board.members} />
         </div>
 
         <div>

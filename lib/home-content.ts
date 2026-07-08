@@ -122,7 +122,14 @@ export const about = {
 
 // `photo` is optional — members awaiting a portrait render a placeholder tile.
 // `bio` is shown in the reveal panel of the combined council/volunteers list.
-export type Member = { name: string; role: string; photo?: string; bio?: string };
+// `photoHover` is an optional alternate portrait that cross-fades in on hover.
+export type Member = {
+  name: string;
+  role: string;
+  photo?: string;
+  photoHover?: string;
+  bio?: string;
+};
 
 export const team = {
   heading: "Екип",
@@ -132,11 +139,36 @@ export const team = {
   board: {
     eyebrow: "— Управителен съвет",
     members: [
-      { name: "Добра Славкова", role: "Председател", photo: "/figma/team/dobra-slavkova.png" },
-      { name: "Стефи Пейкова-Кришнан", role: "Заместник-председател", photo: "/figma/team/stefi-peykova-krishnan.png" },
-      { name: "Радина Донева", role: "Секретар", photo: "/figma/team/radina-doneva.png" },
-      { name: "Зинаида Илер", role: "Член на Управителния съвет", photo: "/figma/team/zinaida-iler.png" },
-      { name: "Стефан Владимиров", role: "Член на Управителния съвет", photo: "/figma/team/stefan-vladimirov.png" },
+      {
+        name: "Добра Славкова",
+        role: "Председател",
+        photo: "/figma/team/dobra-slavkova.png",
+        photoHover: "/figma/team/dobra-slavkova-hover.jpg",
+      },
+      {
+        name: "Стефи Пейкова-Кришнан",
+        role: "Заместник-председател",
+        photo: "/figma/team/stefi-peykova-krishnan.png",
+        photoHover: "/figma/team/stefi-peykova-krishnan-hover.jpg",
+      },
+      {
+        name: "Радина Донева",
+        role: "Секретар",
+        photo: "/figma/team/radina-doneva.png",
+        photoHover: "/figma/team/radina-doneva-hover.jpg",
+      },
+      {
+        name: "Зинаида Илер",
+        role: "Член на Управителния съвет",
+        photo: "/figma/team/zinaida-iler.png",
+        photoHover: "/figma/team/zinaida-iler-hover.jpg",
+      },
+      {
+        name: "Стефан Владимиров",
+        role: "Член на Управителния съвет",
+        photo: "/figma/team/stefan-vladimirov.png",
+        photoHover: "/figma/team/stefan-vladimirov-hover.jpg",
+      },
     ] as Member[],
   },
   // Консултативен съвет
