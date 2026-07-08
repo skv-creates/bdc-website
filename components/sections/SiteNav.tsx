@@ -46,21 +46,28 @@ export function SiteNav() {
         className="fixed left-0 top-0 z-40 bg-page pb-6 pt-[calc(env(safe-area-inset-top)+1.5rem)]"
         style={headerStyle}
       >
-        <div className="flex items-center justify-between gap-6">
-          <a href="#" aria-label="Начало" className="shrink-0">
+        <div className="flex items-center justify-between gap-6 lg:grid lg:grid-cols-11 lg:gap-x-[var(--grid-gap)]">
+          <a href="#" aria-label="Начало" className="shrink-0 lg:col-start-1 lg:col-span-3 lg:justify-self-start">
             <Logo variant="dark" className="h-8 w-auto md:h-10" />
           </a>
 
-          {/* desktop nav */}
-          <nav className="hidden items-center gap-6 lg:flex">
-            {nav.links.map((l) => (
-              <a key={l.label} href={l.href} className="t-caption border-b-2 border-transparent transition-colors hover:border-current">
+          {/* desktop nav — display:contents so the links become direct items of
+              the header's own 11-col grid, letting each align its left edge to a
+              page-grid column (Инициативи→4, Мисия→5, Екип→6). */}
+          <nav className="hidden lg:contents">
+            {nav.links.map((l, i) => (
+              <a
+                key={l.label}
+                href={l.href}
+                style={{ gridColumnStart: 4 + i }}
+                className="t-caption whitespace-nowrap border-b-2 border-transparent transition-colors hover:border-current lg:justify-self-start"
+              >
                 {l.label}
               </a>
             ))}
           </nav>
 
-          <div className="hidden items-center gap-4 lg:flex">
+          <div className="hidden items-center gap-4 lg:col-start-8 lg:col-span-4 lg:flex lg:justify-end">
             <Button variant="small" href={nav.cta.href}>{nav.cta.label}</Button>
             <a href={nav.lang.href} className="t-caption border-b-2 border-transparent transition-colors hover:border-current">
               {nav.lang.label}
