@@ -5,10 +5,20 @@ import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { nav } from "@/lib/home-content";
 
-/* Match the page content column: gutter on the left, rail + gap on the right. */
+/* Match the page content column: gutter on the left, gap on the right.
+   The header itself stops at the rail's left edge (see headerStyle) so its
+   bg-page background never paints over the fixed pattern rail; the content
+   then only needs the gap on its end to clear into the space before the rail. */
 const padStyle = {
   paddingInlineStart: "var(--page-gutter)",
-  paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))",
+  paddingInlineEnd: "var(--rail-gap)",
+} as const;
+
+/* The fixed header is full-bleed at the top to cover the iOS status-bar area,
+   but its right edge stops where the rail begins so it doesn't overlap it. */
+const headerStyle = {
+  ...padStyle,
+  insetInlineEnd: "var(--rail-w)",
 } as const;
 
 export function SiteNav() {
@@ -33,8 +43,8 @@ export function SiteNav() {
     <>
       <header
         ref={headerRef}
-        className="fixed inset-x-0 top-0 z-40 bg-page pb-6 pt-[calc(env(safe-area-inset-top)+1.5rem)]"
-        style={padStyle}
+        className="fixed left-0 top-0 z-40 bg-page pb-6 pt-[calc(env(safe-area-inset-top)+1.5rem)]"
+        style={headerStyle}
       >
         <div className="flex items-center justify-between gap-6">
           <a href="#" aria-label="Начало" className="shrink-0">
