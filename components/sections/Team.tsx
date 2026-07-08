@@ -1,4 +1,5 @@
 import { MemberCard } from "@/components/ui/MemberCard";
+import { TeamList } from "@/components/ui/TeamList";
 import { Button } from "@/components/ui/Button";
 import { team, type Member } from "@/lib/home-content";
 
@@ -46,6 +47,10 @@ function GroupHeader({
 export function Team() {
   const { board, advisory, volunteers } = team;
 
+  // Council + volunteers share one interactive list; each row's role tells them
+  // apart (— matches the "combine the council and volunteers" Figma design).
+  const community: Member[] = [...advisory.members, ...volunteers.members];
+
   return (
     <section id="team" className="py-20 md:py-28">
       <div className="bdc-grid gap-y-10">
@@ -62,15 +67,10 @@ export function Team() {
         </div>
 
         <div>
-          <GroupHeader eyebrow={advisory.eyebrow} intro={advisory.intro} />
-          <MemberGrid members={advisory.members} />
-        </div>
-
-        <div>
           <GroupHeader eyebrow={volunteers.eyebrow} intro={volunteers.intro}>
             <Button href={volunteers.cta.href}>{volunteers.cta.label}</Button>
           </GroupHeader>
-          <MemberGrid members={volunteers.members} />
+          <TeamList members={community} />
         </div>
       </div>
     </section>
