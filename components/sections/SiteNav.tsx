@@ -64,16 +64,14 @@ export function SiteNav({
             <Logo variant="dark" className="h-8 w-auto md:h-10" />
           </a>
 
-          {/* desktop nav — display:contents so the links become direct items of
-              the header's own 11-col grid, letting each align its left edge to a
-              page-grid column (Инициативи→4, Мисия→5, Екип→6). */}
-          <nav className="hidden lg:contents">
-            {nav.links.map((l, i) => (
+          {/* desktop nav — one row starting at page-grid column 4, links spaced
+              by a fixed 16px gap (they no longer snap to a column each). */}
+          <nav className="hidden lg:col-start-4 lg:col-span-4 lg:flex lg:items-center lg:gap-4 lg:justify-self-start">
+            {nav.links.map((l) => (
               <a
                 key={l.label}
                 href={l.href}
-                style={{ gridColumnStart: 4 + i }}
-                className="t-caption whitespace-nowrap border-b-2 border-transparent transition-colors hover:border-current lg:justify-self-start"
+                className="t-caption whitespace-nowrap border-b-2 border-transparent transition-colors hover:border-current"
               >
                 {l.label}
               </a>
