@@ -110,7 +110,7 @@ const bg = {
         title: "България чрез Дизайн",
         text: "Визуална идентичност на българските институции, която засилва вярата в институциите и националната гордост.",
         pattern: 1,
-        cta: { label: "Към проекта →", href: "#" },
+        cta: { label: "Към проекта →", href: "https://bulgariabydesign.com" },
       },
       {
         label: "Лаборатория",
@@ -533,7 +533,7 @@ const bg = {
     copyright: "© 2026 Bulgarian Design Council. All rights reserved.",
     contactHeading: "Контакти",
     phone: "+359 2 123 4567",
-    email: "info@bulgariandesigncouncil.bg",
+    email: "info@bulgariandesigncouncil.org",
     social: [
       { label: "Instagram", href: "https://www.instagram.com/bulgarian.design.council/" },
       { label: "LinkedIn", href: "https://www.linkedin.com/company/bulgarian-design-council/posts/?feedView=all" },
@@ -613,7 +613,7 @@ const en: typeof bg = {
         title: "Bulgaria by Design",
         text: "A visual identity for Bulgaria's institutions that strengthens public trust and national pride.",
         pattern: 1,
-        cta: { label: "View the project →", href: "#" },
+        cta: { label: "View the project →", href: "https://bulgariabydesign.com" },
       },
       {
         label: "Lab",
@@ -1036,7 +1036,7 @@ const en: typeof bg = {
     copyright: "© 2026 Bulgarian Design Council. All rights reserved.",
     contactHeading: "Contacts",
     phone: "+359 2 123 4567",
-    email: "info@bulgariandesigncouncil.bg",
+    email: "info@bulgariandesigncouncil.org",
     social: [
       { label: "Instagram", href: "https://www.instagram.com/bulgarian.design.council/" },
       { label: "LinkedIn", href: "https://www.linkedin.com/company/bulgarian-design-council/posts/?feedView=all" },

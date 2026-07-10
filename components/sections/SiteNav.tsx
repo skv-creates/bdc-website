@@ -42,6 +42,13 @@ export function SiteNav({
   const headerRef = useRef<HTMLElement>(null);
   const [navH, setNavH] = useState(0);
 
+  // Remember the language being viewed so a later bare visit to `/` lands here
+  // again (app/route.ts reads this cookie before falling back to
+  // Accept-Language). Written client-side because the locale pages are static.
+  useEffect(() => {
+    document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+  }, [locale]);
+
   useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
@@ -65,8 +72,8 @@ export function SiteNav({
           </a>
 
           {/* desktop nav — one row starting at page-grid column 4, links spaced
-              by a fixed 16px gap (they no longer snap to a column each). */}
-          <nav className="hidden lg:col-start-4 lg:col-span-4 lg:flex lg:items-center lg:gap-4 lg:justify-self-start">
+              by a fixed 20px gap (they no longer snap to a column each). */}
+          <nav className="hidden lg:col-start-4 lg:col-span-4 lg:flex lg:items-center lg:gap-5 lg:justify-self-start">
             {nav.links.map((l) => (
               <a
                 key={l.label}
