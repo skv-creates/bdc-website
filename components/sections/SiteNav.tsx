@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
-import { nav } from "@/lib/home-content";
+import type { Locale, SiteContent } from "@/lib/home-content";
 
 /* Match the page content column: gutter on the left, gap on the right.
    The header itself stops at the rail's left edge (see headerStyle) so its
@@ -21,8 +21,21 @@ const headerStyle = {
   insetInlineEnd: "var(--rail-w)",
 } as const;
 
-export function SiteNav() {
+export function SiteNav({
+  nav,
+  ui,
+  locale,
+}: {
+  nav: SiteContent["nav"];
+  ui: SiteContent["ui"];
+  locale: Locale;
+}) {
   const [open, setOpen] = useState(false);
+
+  // Language toggle points at the same page in the other locale.
+  const otherLocale: Locale = locale === "bg" ? "en" : "bg";
+  const switchHref = `/${otherLocale}`;
+  const switchLabel = otherLocale.toUpperCase(); // compact "EN" / "BG"
   // The header is position:fixed (so it reliably covers the very top of the
   // viewport on iOS — sticky pins below the status-bar inset there). A spacer
   // matching its measured height keeps the content flowing below it.
@@ -47,7 +60,7 @@ export function SiteNav() {
         style={headerStyle}
       >
         <div className="flex items-center justify-between gap-6 lg:grid lg:grid-cols-11 lg:gap-x-[var(--grid-gap)]">
-          <a href="#" aria-label="Начало" className="shrink-0 lg:col-start-1 lg:col-span-3 lg:justify-self-start">
+          <a href="#" aria-label={ui.home} className="shrink-0 lg:col-start-1 lg:col-span-3 lg:justify-self-start">
             <Logo variant="dark" className="h-8 w-auto md:h-10" />
           </a>
 
@@ -69,8 +82,8 @@ export function SiteNav() {
 
           <div className="hidden items-center gap-4 lg:col-start-8 lg:col-span-4 lg:flex lg:justify-end">
             <Button variant="small" href={nav.cta.href}>{nav.cta.label}</Button>
-            <a href={nav.lang.href} className="t-caption border-b-2 border-transparent transition-colors hover:border-current">
-              {nav.lang.label}
+            <a href={switchHref} aria-label={ui.switchLanguage} className="t-caption border-b-2 border-transparent transition-colors hover:border-current">
+              {switchLabel}
             </a>
           </div>
 
@@ -78,7 +91,7 @@ export function SiteNav() {
           <button
             type="button"
             className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden"
-            aria-label="Меню"
+            aria-label={ui.menu}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
@@ -98,7 +111,7 @@ export function SiteNav() {
             ))}
             <div className="flex items-center gap-4 pt-2">
               <Button variant="small" href={nav.cta.href}>{nav.cta.label}</Button>
-              <a href={nav.lang.href} className="t-body">{nav.lang.label}</a>
+              <a href={switchHref} aria-label={ui.switchLanguage} className="t-body">{switchLabel}</a>
             </div>
           </div>
         )}

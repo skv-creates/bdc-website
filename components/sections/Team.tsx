@@ -1,7 +1,7 @@
 import { BoardGrid } from "@/components/ui/BoardGrid";
 import { TeamList } from "@/components/ui/TeamList";
 import { Button } from "@/components/ui/Button";
-import { team, type Member } from "@/lib/home-content";
+import type { Member, SiteContent } from "@/lib/home-content";
 
 /* Eyebrow label on the left, an optional intro paragraph (and CTA) on the right —
    echoes the section headers in Figma (label cols 1–3, copy cols 4–9). */
@@ -27,12 +27,17 @@ function GroupHeader({
   );
 }
 
-export function Team() {
+export function Team({ team }: { team: SiteContent["team"] }) {
   const { board, advisory, volunteers } = team;
 
   // Council + volunteers share one interactive list; each row's role tells them
   // apart (— matches the "combine the council and volunteers" Figma design).
-  const community: Member[] = [...advisory.members, ...volunteers.members];
+  // The advisory council members are withheld until their listing is confirmed.
+  const showAdvisory = false;
+  const community: Member[] = [
+    ...(showAdvisory ? advisory.members : []),
+    ...volunteers.members,
+  ];
 
   return (
     <section id="team" className="py-20 md:py-28">

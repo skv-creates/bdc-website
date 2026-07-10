@@ -1,6 +1,9 @@
-import { about } from "@/lib/home-content";
+import { getContent, defaultLocale } from "@/lib/home-content";
 
+// Dormant section (not rendered on the live page). Defaults to the base locale
+// so it keeps compiling; wire it to a locale prop if it's brought back.
 export function About() {
+  const { about } = getContent(defaultLocale);
   return (
     <section className="py-20 md:py-28">
       <p className="t-label">{about.label}</p>

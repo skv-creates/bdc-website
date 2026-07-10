@@ -42,3 +42,8 @@ next-env.d.ts
 
 # claude code local session state
 .claude/
+
+# cloudflare / opennext
+.open-next/
+.wrangler/
+cloudflare-env.d.ts

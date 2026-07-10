@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, type CSSProperties } from "react";
 import styles from "./Initiatives.module.css";
 import { PatternTile } from "./patterns";
-import { initiatives, type Initiative } from "@/lib/home-content";
+import type { Initiative, SiteContent } from "@/lib/home-content";
 
 /** Arrow-scroll animation: 120ms ease-out. */
 const SCROLL_MS = 120;
@@ -65,21 +65,17 @@ function Card({ item, index }: { item: Initiative; index: number }) {
   );
 }
 
-const N = initiatives.items.length;
-// Render the list 3× so the sequence always continues in both directions;
-// the scroll is silently recentered onto the middle copy (see effect below).
-const LOOP = [0, 1, 2].flatMap(() => initiatives.items);
-
-// Width of one full copy = offset of the first card of the 2nd copy.
-const copyWidth = (track: HTMLDivElement) => {
-  const second = track.children[N] as HTMLElement | undefined;
+// Width of one full copy = offset of the first card of the 2nd copy (n = the
+// number of cards in one copy).
+const copyWidth = (track: HTMLDivElement, n: number) => {
+  const second = track.children[n] as HTMLElement | undefined;
   return second ? second.offsetLeft : 0;
 };
 
 // Instantly snap scroll back onto the middle copy when it drifts off either
 // end. Each copy is identical, so the jump lands on the same card invisibly.
-const recenter = (track: HTMLDivElement) => {
-  const w = copyWidth(track);
+const recenter = (track: HTMLDivElement, n: number) => {
+  const w = copyWidth(track, n);
   if (w <= 0) return;
   let target = track.scrollLeft;
   if (target >= 2 * w - 1) target -= w;
@@ -87,23 +83,35 @@ const recenter = (track: HTMLDivElement) => {
   if (target !== track.scrollLeft) track.scrollLeft = target;
 };
 
-export function Initiatives() {
+export function Initiatives({
+  initiatives,
+  ui,
+}: {
+  initiatives: SiteContent["initiatives"];
+  ui: SiteContent["ui"];
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef(0);
+
+  const items = initiatives.items;
+  const N = items.length;
+  // Render the list 3× so the sequence always continues in both directions;
+  // the scroll is silently recentered onto the middle copy (see effect below).
+  const LOOP = useMemo(() => [0, 1, 2].flatMap(() => items), [items]);
 
   // Start on the middle copy; recenter once scrolling settles (clicks & swipe).
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
     const start = () => {
-      const w = copyWidth(track);
+      const w = copyWidth(track, N);
       if (w > 0) track.scrollLeft = w;
     };
     start();
     let settle: ReturnType<typeof setTimeout>;
     const onScroll = () => {
       clearTimeout(settle);
-      settle = setTimeout(() => recenter(track), 120);
+      settle = setTimeout(() => recenter(track, N), 120);
     };
     track.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", start);
@@ -113,12 +121,12 @@ export function Initiatives() {
       track.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", start);
     };
-  }, []);
+  }, [N]);
 
   const scrollByCard = (dir: 1 | -1) => {
     const track = trackRef.current;
     if (!track) return;
-    recenter(track); // keep within the middle copy before stepping (mash-proof)
+    recenter(track, N); // keep within the middle copy before stepping (mash-proof)
     const card = track.firstElementChild as HTMLElement | null;
     const gap = parseFloat(getComputedStyle(track).columnGap) || 24;
     const step = card ? card.offsetWidth + gap : track.clientWidth * 0.6;
@@ -157,8 +165,8 @@ export function Initiatives() {
       </div>
 
       <div className="mt-12 flex justify-end gap-4">
-        <Arrow dir={-1} onClick={() => scrollByCard(-1)} label="Назад" glyph="←" />
-        <Arrow dir={1} onClick={() => scrollByCard(1)} label="Напред" glyph="→" />
+        <Arrow dir={-1} onClick={() => scrollByCard(-1)} label={ui.prev} glyph="←" />
+        <Arrow dir={1} onClick={() => scrollByCard(1)} label={ui.next} glyph="→" />
       </div>
     </section>
   );

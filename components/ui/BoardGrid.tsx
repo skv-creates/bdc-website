@@ -8,26 +8,26 @@ import type { Member } from "@/lib/home-content";
 const PLACEHOLDER_BIO =
   "Кратко представяне на този член от Управителния съвет — професионален опит, ключови проекти и роля в развитието на Българския дизайн съвет. Пълната биография предстои да бъде добавена съвсем скоро.";
 
-// Phones: single-column stack (full-width card + full-width tap bio). Tablet
-// keeps 2-up; desktop uses the explicit 3-up placement below.
+// Phones: single-column stack (full-width card + full-width tap bio).
 const MEMBER_SPAN = "col-span-full md:col-span-4 lg:col-span-3";
 
-/* Explicit lg placement so the bio can land in the neighbouring 3-col slot.
-   3-up on lg: cols 1 / 4 / 7 on row 1, cols 1 / 4 on row 2. First-in-row
-   members (0 and 3) show their bio to the right; the rest show it to the left. */
+/* Explicit md/lg placement so the bio can land in the neighbouring slot.
+   md is an 8-col grid, 2-up: cols 1 / 5. lg is a 12-col grid, 3-up: cols
+   1 / 4 / 7. In both, a member that starts a row shows its bio to the right;
+   the rest show it to the left, in the slot the previous card sits in. */
 const CARD_POS = [
-  "lg:col-start-1 lg:row-start-1",
-  "lg:col-start-4 lg:row-start-1",
-  "lg:col-start-7 lg:row-start-1",
-  "lg:col-start-1 lg:row-start-2",
-  "lg:col-start-4 lg:row-start-2",
+  "md:col-start-1 md:row-start-1 lg:col-start-1 lg:row-start-1",
+  "md:col-start-5 md:row-start-1 lg:col-start-4 lg:row-start-1",
+  "md:col-start-1 md:row-start-2 lg:col-start-7 lg:row-start-1",
+  "md:col-start-5 md:row-start-2 lg:col-start-1 lg:row-start-2",
+  "md:col-start-1 md:row-start-3 lg:col-start-4 lg:row-start-2",
 ];
 const BIO_POS = [
-  "lg:col-start-4 lg:row-start-1",
-  "lg:col-start-1 lg:row-start-1",
-  "lg:col-start-4 lg:row-start-1",
-  "lg:col-start-4 lg:row-start-2",
-  "lg:col-start-1 lg:row-start-2",
+  "md:col-start-5 md:row-start-1 lg:col-start-4 lg:row-start-1",
+  "md:col-start-1 md:row-start-1 lg:col-start-1 lg:row-start-1",
+  "md:col-start-5 md:row-start-2 lg:col-start-4 lg:row-start-1",
+  "md:col-start-1 md:row-start-2 lg:col-start-4 lg:row-start-2",
+  "md:col-start-5 md:row-start-3 lg:col-start-1 lg:row-start-2",
 ];
 
 export function BoardGrid({ members }: { members: Member[] }) {
@@ -64,7 +64,7 @@ export function BoardGrid({ members }: { members: Member[] }) {
             {/* Member card — dims (keeps its cell) when another is hovered. */}
             <button
               type="button"
-              className={`${MEMBER_SPAN} ${CARD_POS[i]} block text-left lg:transition-opacity lg:duration-[120ms] lg:ease-out ${dimmed ? "lg:opacity-5" : "lg:opacity-100"}`}
+              className={`${MEMBER_SPAN} ${CARD_POS[i]} block text-left md:transition-opacity md:duration-[120ms] md:ease-out ${dimmed ? "md:opacity-5" : "md:opacity-100"}`}
               onFocus={() => activate(i)}
               onBlur={scheduleDismiss}
               aria-expanded={isOpen}
@@ -76,9 +76,9 @@ export function BoardGrid({ members }: { members: Member[] }) {
                 photoProps={{ onMouseEnter: () => activate(i), onMouseLeave: scheduleDismiss }}
               />
 
-              {/* Mobile inline reveal (tap) — desktop uses the side slot instead. */}
+              {/* Phone inline reveal (tap) — md and up use the side slot instead. */}
               <div
-                className="grid transition-[grid-template-rows] duration-[160ms] ease-out lg:hidden"
+                className="grid transition-[grid-template-rows] duration-[160ms] ease-out md:hidden"
                 style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
               >
                 <div className="overflow-hidden" aria-hidden={!isOpen}>
@@ -87,9 +87,9 @@ export function BoardGrid({ members }: { members: Member[] }) {
               </div>
             </button>
 
-            {/* Desktop bio — sits in the neighbouring slot; shown only on hover. */}
+            {/* Bio — sits in the neighbouring slot; shown only on hover/focus. */}
             <div
-              className={`hidden ${BIO_POS[i]} lg:col-span-3 lg:block lg:transition-opacity lg:duration-[120ms] lg:ease-out ${isHovered ? "lg:opacity-100" : "lg:pointer-events-none lg:opacity-0"}`}
+              className={`hidden ${BIO_POS[i]} md:col-span-4 md:block md:transition-opacity md:duration-[120ms] md:ease-out lg:col-span-3 ${isHovered ? "md:opacity-100" : "md:pointer-events-none md:opacity-0"}`}
               aria-hidden={!isHovered}
             >
               <p className="t-body">{bio}</p>
