@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { GridOverlay } from "@/components/GridOverlay";
 import { SmoothScroll } from "@/components/SmoothScroll";
@@ -9,6 +10,7 @@ import { Team } from "@/components/sections/Team";
 import { Quote } from "@/components/sections/Quote";
 import { Faq } from "@/components/sections/Faq";
 import { SiteFooter } from "@/components/sections/SiteFooter";
+import { getContent, hasLocale } from "@/lib/home-content";
 // Temporarily hidden — kept for later reuse:
 // import { Events } from "@/components/sections/Events";
 // import { About } from "@/components/sections/About";
@@ -19,12 +21,20 @@ import { SiteFooter } from "@/components/sections/SiteFooter";
  *   1. <PatternRail/> — fixed, full-height, parallaxing rail on the right.
  *   2. content column — padded on the end so it clears the rail; the
  *      full-width footer paints above the rail (z-30) so the rail ends there.
+ *
+ * All copy is resolved once here (server-side) from the active locale and
+ * threaded into each section as props — so the client bundle never ships both
+ * languages, and server/client sections share one mechanism.
  */
-export default function Home() {
+export default async function Home({ params }: PageProps<"/[locale]">) {
+  const { locale } = await params;
+  if (!hasLocale(locale)) notFound();
+  const c = getContent(locale);
+
   return (
     <>
       <a href="#main" className="skip-link t-caption font-bold">
-        Прескочи към съдържанието
+        {c.ui.skipToContent}
       </a>
       <SmoothScroll />
       {process.env.NODE_ENV !== "production" && <GridOverlay />}
@@ -36,20 +46,20 @@ export default function Home() {
           paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))",
         }}
       >
-        <SiteNav />
+        <SiteNav nav={c.nav} ui={c.ui} locale={locale} />
         <main id="main" tabIndex={-1}>
-          <Hero />
-          <Initiatives />
-          <Mission />
-          <Team />
-          <Quote />
-          <Faq />
+          <Hero hero={c.hero} />
+          <Initiatives initiatives={c.initiatives} ui={c.ui} />
+          <Mission mission={c.mission} />
+          <Team team={c.team} />
+          <Quote quote={c.quote} />
+          <Faq faq={c.faq} />
           {/* Temporarily hidden — to be reused later:
           <Events /> <About /> <Cta /> */}
         </main>
       </div>
 
-      <SiteFooter />
+      <SiteFooter footer={c.footer} />
     </>
   );
 }

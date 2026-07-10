@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
-import { hero } from "@/lib/home-content";
+import type { SiteContent } from "@/lib/home-content";
 
-export function Hero() {
+export function Hero({ hero }: { hero: SiteContent["hero"] }) {
   return (
     <section className="pt-10 pb-20 md:pt-16 md:pb-28">
       <div>

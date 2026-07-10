@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Plus, Minus } from "@/components/ui/icons";
-import { faq, type FaqBlock } from "@/lib/home-content";
+import type { FaqBlock, SiteContent } from "@/lib/home-content";
 
 function Answer({ blocks }: { blocks: FaqBlock[] }) {
   return (
@@ -61,7 +61,7 @@ function Item({ q, a }: { q: string; a: FaqBlock[] }) {
   );
 }
 
-export function Faq() {
+export function Faq({ faq }: { faq: SiteContent["faq"] }) {
   return (
     <section id="faq" className="py-20 md:py-28">
       <div className="max-w-[632px]">

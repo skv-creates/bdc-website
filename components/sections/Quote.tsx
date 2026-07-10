@@ -1,6 +1,6 @@
-import { quote } from "@/lib/home-content";
+import type { SiteContent } from "@/lib/home-content";
 
-export function Quote() {
+export function Quote({ quote }: { quote: SiteContent["quote"] }) {
   return (
     <section className="py-20 md:py-28">
       <div className="max-w-[1072px]">

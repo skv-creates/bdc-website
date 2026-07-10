@@ -1,10 +1,10 @@
 import { Logo } from "@/components/ui/Logo";
 import { Instagram, LinkedIn } from "@/components/ui/icons";
-import { footer } from "@/lib/home-content";
+import type { SiteContent } from "@/lib/home-content";
 
 /* Full-width dark footer. Sits above the fixed pattern rail (z-30) so the rail
    visually ends here, matching the Figma frame. */
-export function SiteFooter() {
+export function SiteFooter({ footer }: { footer: SiteContent["footer"] }) {
   return (
     <footer
       id="footer"

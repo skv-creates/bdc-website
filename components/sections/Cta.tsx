@@ -1,8 +1,11 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { cta } from "@/lib/home-content";
+import { getContent, defaultLocale } from "@/lib/home-content";
 
+// Dormant section (not rendered on the live page). Defaults to the base locale
+// so it keeps compiling; wire it to a locale prop if it's brought back.
 export function Cta() {
+  const { cta } = getContent(defaultLocale);
   return (
     <section id="cta" className="py-20 md:py-28">
       {/* photo: 3 cols · 1-col gap · content: 6 cols (5–10), top-aligned */}

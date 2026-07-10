@@ -1,7 +1,7 @@
-import { mission } from "@/lib/home-content";
+import type { SiteContent } from "@/lib/home-content";
 
 /* v02: mission is just the label + a large statement (no stat grid). */
-export function Mission() {
+export function Mission({ mission }: { mission: SiteContent["mission"] }) {
   return (
     <section id="mission" className="py-20 md:py-28">
       <p className="t-label">{mission.label}</p>
