@@ -56,6 +56,9 @@ function Card({ item, index }: { item: Initiative; index: number }) {
           <a
             href={item.cta.href}
             className="t-label mt-auto inline-flex items-center justify-center self-start rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
+            {...(/^https?:\/\//.test(item.cta.href)
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
           >
             {item.cta.label}
           </a>
