@@ -33,10 +33,12 @@ export function Team({ team }: { team: SiteContent["team"] }) {
   // Council + volunteers share one interactive list; each row's role tells them
   // apart (— matches the "combine the council and volunteers" Figma design).
   // The advisory council members are withheld until their listing is confirmed.
+  // The volunteer list is temporarily hidden; the recruitment CTA stays visible.
   const showAdvisory = false;
+  const showVolunteers = false;
   const community: Member[] = [
     ...(showAdvisory ? advisory.members : []),
-    ...volunteers.members,
+    ...(showVolunteers ? volunteers.members : []),
   ];
 
   return (
@@ -58,7 +60,7 @@ export function Team({ team }: { team: SiteContent["team"] }) {
           <GroupHeader eyebrow={volunteers.eyebrow} intro={volunteers.intro}>
             <Button href={volunteers.cta.href}>{volunteers.cta.label}</Button>
           </GroupHeader>
-          <TeamList members={community} />
+          {community.length > 0 && <TeamList members={community} />}
         </div>
       </div>
     </section>

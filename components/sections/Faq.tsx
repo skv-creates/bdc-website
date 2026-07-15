@@ -6,7 +6,7 @@ import type { FaqBlock, SiteContent } from "@/lib/home-content";
 
 function Answer({ blocks }: { blocks: FaqBlock[] }) {
   return (
-    <div className="pb-6 md:pl-4 md:pr-10">
+    <div className="pb-6 pt-4 md:pl-4 md:pr-10">
       {blocks.map((b, i) => {
         if ("h" in b) {
           return (
