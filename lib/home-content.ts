@@ -209,16 +209,16 @@ const bg = {
       eyebrow: "— Доброволци",
       intro:
         "Съществуваме благодарение на хора, които даряват време, знания и енергия. Доброволците ни не помагат „отстрани“, а участват пряко в изграждането на нова дизайн култура за България.",
-      cta: { label: "Стани доброволец", href: "https://tally.so/r/81PbQA" },
+      cta: { label: "Стани доброволец", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
       members: [
-        { name: "Милен Донев", role: "Съмишленик", photo: "/figma/team/milen-donev.png" },
         { name: "Йоанна Тодорова", role: "Съмишленик", photo: "/figma/team/yoanna-todorova.png" },
         { name: "Кая Содева", role: "Съмишленик", photo: "/figma/team/kaya-sodeva.png" },
-        { name: "Мариана Ташутева", role: "Съмишленик", photo: "/figma/team/mariana-tashuteva.png" },
-        { name: "Кристин Озанян", role: "Съмишленик" }, // photo pending
         { name: "Кирил Велчев", role: "Съмишленик", photo: "/figma/team/kiril-velchev.png" },
-        { name: "Невена Пеева", role: "Съмишленик", photo: "/figma/team/nevena-peeva.png" },
+        { name: "Кристин Озанян", role: "Съмишленик" }, // photo pending
+        { name: "Мариана Ташутева", role: "Съмишленик", photo: "/figma/team/mariana-tashuteva.png" },
+        { name: "Милен Донев", role: "Съмишленик", photo: "/figma/team/milen-donev.png" },
         { name: "Моника Велкова", role: "Съмишленик" }, // photo pending
+        { name: "Невена Пеева", role: "Съмишленик", photo: "/figma/team/nevena-peeva.png" },
       ] as Member[],
     },
   },
@@ -712,16 +712,16 @@ const en: typeof bg = {
       eyebrow: "— Volunteers",
       intro:
         "We exist thanks to people who give their time, knowledge and energy. Our volunteers don't help „from the sidelines“ — they take direct part in building a new design culture for Bulgaria.",
-      cta: { label: "Become a volunteer", href: "https://tally.so/r/81PbQA" },
+      cta: { label: "Become a volunteer", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
       members: [
-        { name: "Milen Donev", role: "Supporter", photo: "/figma/team/milen-donev.png" },
-        { name: "Yoanna Todorova", role: "Supporter", photo: "/figma/team/yoanna-todorova.png" },
         { name: "Kaya Sodeva", role: "Supporter", photo: "/figma/team/kaya-sodeva.png" },
-        { name: "Mariana Tashuteva", role: "Supporter", photo: "/figma/team/mariana-tashuteva.png" },
-        { name: "Kristin Ozanyan", role: "Supporter" }, // photo pending
         { name: "Kiril Velchev", role: "Supporter", photo: "/figma/team/kiril-velchev.png" },
-        { name: "Nevena Peeva", role: "Supporter", photo: "/figma/team/nevena-peeva.png" },
+        { name: "Kristin Ozanyan", role: "Supporter" }, // photo pending
+        { name: "Mariana Tashuteva", role: "Supporter", photo: "/figma/team/mariana-tashuteva.png" },
+        { name: "Milen Donev", role: "Supporter", photo: "/figma/team/milen-donev.png" },
         { name: "Monika Velkova", role: "Supporter" }, // photo pending
+        { name: "Nevena Peeva", role: "Supporter", photo: "/figma/team/nevena-peeva.png" },
+        { name: "Yoanna Todorova", role: "Supporter", photo: "/figma/team/yoanna-todorova.png" },
       ] as Member[],
     },
   },
