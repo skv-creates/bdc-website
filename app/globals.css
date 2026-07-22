@@ -53,6 +53,11 @@
   --page-gutter: clamp(1.25rem, 7.4vw, 7rem);  /* ≈112px at the 1512 design width, capped at 7rem */
   --grid-cols: 11;  /* content uses 11 cols; the rail occupies the 12th + gap */
   --grid-gap: 24px;            /* Figma column gap                            */
+  /* Left inset of the OverlayPanel = --page-gutter from md up, so the panel's
+     grid lines up with the page grid; a wider fixed band on mobile fits the ✕.
+     Applied via inline style (not a Tailwind arbitrary-var class, which Safari
+     can drop) so it resolves identically across browsers. */
+  --overlay-panel-left: var(--page-gutter);
 
   /* ---- Typography · raw scale (px, exact from Figma) --------------------
      v02 rescale: h02 64→56, h03 48→40, and a new `quote` style at 64/1.2. */
@@ -163,10 +168,32 @@ main:focus { outline: none; }
   column-gap: var(--grid-gap);
 }
 
+/* =============================================================================
+   OVERLAY BOTTOM STRIP — three brand blocks whose split follows the site grid:
+   block 1 ends at the start of col 2, block 2 spans cols 2–6, block 3 fills the
+   rest. Colours are the pattern-rail recolour slots (--tri-*), so a click on the
+   rail restyles the strip too. Widths use grid math (Safari-safe hand-written
+   CSS, not Tailwind var() classes). --strip-col mirrors one grid column; 100%
+   here is the panel width, so (100% − rail) is the grid width.
+============================================================================= */
+.overlay-strip {
+  --strip-col: calc(
+    (100% - var(--rail-w) - var(--rail-gap) - (var(--grid-cols) - 1) * var(--grid-gap)) / var(--grid-cols)
+  );
+}
+.overlay-strip > .strip-1 { width: calc(var(--strip-col) + var(--grid-gap)); background: var(--tri-accent); }
+.overlay-strip > .strip-2 { width: calc(5 * var(--strip-col) + 4 * var(--grid-gap)); background: var(--tri-band); }
+.overlay-strip > .strip-3 { flex: 1 1 0%; background: var(--tri-ground); }
+/* Mobile grid is 4 cols, so a 5-col span doesn't apply — fall back to a simple split. */
+@media (max-width: 767px) {
+  .overlay-strip > .strip-1 { width: 12%; }
+  .overlay-strip > .strip-2 { width: 46%; }
+}
+
 /* ---- Responsive: rail width steps + grid density ------------------------- */
 @media (max-width: 1279px) { :root { --rail-w: 140px; } }
 @media (max-width: 1023px) { :root { --rail-w: 88px; --grid-cols: 8; } }
-@media (max-width: 767px)  { :root { --rail-w: 24px; --rail-gap: 12px; --grid-cols: 4; --grid-gap: 12px; } }
+@media (max-width: 767px)  { :root { --rail-w: 24px; --rail-gap: 12px; --grid-cols: 4; --grid-gap: 12px; --overlay-panel-left: 4rem; } }
 
 /* ---- Responsive: mobile type scale (≤767px) -----------------------------
    Tighter headings + slightly larger body/label/button text on phones.

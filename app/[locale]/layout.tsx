@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
@@ -48,14 +49,24 @@ export async function generateMetadata({
 
 export default async function RootLayout({
   children,
+  modal,
   params,
-}: LayoutProps<"/[locale]">) {
+}: {
+  // `modal` is the @modal parallel-route slot (intercepted event overlays);
+  // renders null (its default.js) whenever no event route is active.
+  children: ReactNode;
+  modal: ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   if (!hasLocale(locale)) notFound();
 
   return (
     <html lang={locale} className={`${aboutBeige.variable} ${fallback.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        {modal}
+      </body>
     </html>
   );
 }

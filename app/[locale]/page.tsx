@@ -5,6 +5,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { Hero } from "@/components/sections/Hero";
 import { Initiatives } from "@/components/initiatives/Initiatives";
+import { Activities } from "@/components/sections/Activities";
 import { Mission } from "@/components/sections/Mission";
 import { Team } from "@/components/sections/Team";
 import { Quote } from "@/components/sections/Quote";
@@ -50,6 +51,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         <main id="main" tabIndex={-1}>
           <Hero hero={c.hero} />
           <Initiatives initiatives={c.initiatives} ui={c.ui} />
+          <Activities locale={locale} heading={c.activities.heading} />
           <Mission mission={c.mission} />
           <Team team={c.team} />
           <Quote quote={c.quote} />

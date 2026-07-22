@@ -139,6 +139,12 @@ const bg = {
     ] as Initiative[],
   },
 
+  // Heading for the "Активности" list; the rows themselves come from Notion
+  // (build-time) via lib/events.ts.
+  activities: {
+    heading: "Активности",
+  },
+
   event: {
     label: "Събитие",
     title:
@@ -640,6 +646,10 @@ const en: typeof bg = {
         pattern: 4,
       },
     ] as Initiative[],
+  },
+
+  activities: {
+    heading: "Activities",
   },
 
   event: {
