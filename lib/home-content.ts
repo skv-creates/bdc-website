@@ -571,7 +571,7 @@ const en: typeof bg = {
   },
 
   hero: {
-    heading: "Design moves nations. We set it in motion in Bulgaria.",
+    heading: "Design moves nations. We are putting it to work for Bulgaria.",
     subheading:
       "The Bulgarian Design Council unites design professionals, business, education and institutions on one platform, with one shared mission: to help Bulgaria shape its future, by design.",
     primary: { label: "Join the BDC", href: "https://tally.so/r/81PbQA" },
