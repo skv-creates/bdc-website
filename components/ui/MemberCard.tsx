@@ -1,42 +1,51 @@
-import type { HTMLAttributes } from "react";
 import Image from "next/image";
 import type { Member } from "@/lib/home-content";
 
-// `photoProps` lets callers scope interactions (e.g. hover) to the photo only.
+/**
+ * Board member card. On hover/focus (driven by `showAlt` from the parent, not
+ * CSS :hover, so the state can be shared): the portrait cross-fades to the
+ * alternate photo AND insets by 16px inside a brand-coloured box — the box uses
+ * --color-brand (the current hover colour, which the pattern rail recolours).
+ * Padding on the outer box shrinks the inner wrapper; the fill images track it.
+ */
 export function MemberCard({
   name,
   role,
   photo,
   photoHover,
-  photoProps,
   showAlt = false,
-}: Member & { photoProps?: HTMLAttributes<HTMLDivElement>; showAlt?: boolean }) {
+}: Member & { showAlt?: boolean }) {
   const sizes = "(max-width: 767px) 90vw, (max-width: 1023px) 45vw, 304px";
   return (
     <figure className="flex flex-col gap-3">
-      <div
-        {...photoProps}
-        className="relative aspect-[304/405] w-full overflow-hidden bg-black/5"
-      >
-        {photo ? (
-          <Image src={photo} alt={name} fill sizes={sizes} className="object-cover" />
-        ) : (
-          // Portrait pending — Figma placeholder tile.
-          <div className="size-full bg-[#9faacb]" aria-hidden />
-        )}
-        {/* Alternate portrait — cross-fades in while this member is the active
-            one (driven by `showAlt`, not CSS :hover, so it stays put across the
-            gutter as the reveal does). */}
-        {photoHover && (
-          <Image
-            src={photoHover}
-            alt=""
-            aria-hidden
-            fill
-            sizes={sizes}
-            className={`object-cover transition-opacity duration-[120ms] ease-out ${showAlt ? "opacity-100" : "opacity-0"}`}
-          />
-        )}
+      {/* Brand box behind; the inner photo insets 16px on hover (absolute inset,
+          so the brand shows evenly on all four sides — padding + aspect-ratio
+          dropped the bottom edge). */}
+      <div className="relative aspect-[304/405] w-full overflow-hidden bg-brand">
+        <div
+          className={`absolute overflow-hidden bg-black/5 transition-all duration-[120ms] ease-out ${
+            showAlt ? "inset-4" : "inset-0"
+          }`}
+        >
+          {photo ? (
+            <Image src={photo} alt={name} fill sizes={sizes} className="object-cover" />
+          ) : (
+            // Portrait pending — Figma placeholder tile.
+            <div className="size-full bg-[#9faacb]" aria-hidden />
+          )}
+          {photoHover && (
+            <Image
+              src={photoHover}
+              alt=""
+              aria-hidden
+              fill
+              sizes={sizes}
+              className={`object-cover transition-opacity duration-[120ms] ease-out ${
+                showAlt ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          )}
+        </div>
       </div>
       <figcaption>
         <p className="t-body font-bold">{name}</p>

@@ -33,10 +33,14 @@ export function OverlayPanel({
   children,
   homeHref,
   intercepted = false,
+  onClose,
 }: {
   children: ReactNode;
-  homeHref: string;
+  // Routable use (events): dismiss navigates via homeHref / router.back().
+  homeHref?: string;
   intercepted?: boolean;
+  // Client-modal use (board members): dismiss calls onClose instead of routing.
+  onClose?: () => void;
 }) {
   const router = useRouter();
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -52,14 +56,15 @@ export function OverlayPanel({
   const close = useCallback(() => {
     if (closingRef.current) return; // guard against Esc + click double-fire
     closingRef.current = true;
-    const navigate = () => (intercepted ? router.back() : router.push(homeHref));
+    const dismiss =
+      onClose ?? (() => (intercepted ? router.back() : router.push(homeHref ?? "/")));
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      navigate();
+      dismiss();
       return;
     }
     setExiting(true);
-    window.setTimeout(navigate, 80);
-  }, [intercepted, homeHref, router]);
+    window.setTimeout(dismiss, 80);
+  }, [onClose, intercepted, homeHref, router]);
 
   useEffect(() => {
     closeRef.current?.focus();

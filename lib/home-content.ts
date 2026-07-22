@@ -169,6 +169,7 @@ const bg = {
       "Oтстояваме силата на дизайна да развива икономиката, да укрепва общностите и да оформя едно устойчиво, проспериращо и културно уверено бъдеще за нацията ни.",
     board: {
       eyebrow: "— Управителен съвет",
+      mandate: "— Мандат 2026–2031",
       members: [
         {
           name: "Добра Славкова",
@@ -676,6 +677,7 @@ const en: typeof bg = {
       "We champion the power of design to grow the economy, strengthen communities and shape a sustainable, prosperous and culturally confident future for our nation.",
     board: {
       eyebrow: "— Board of Directors",
+      mandate: "— Term 2026–2031",
       members: [
         {
           name: "Dobra Slavkova",
