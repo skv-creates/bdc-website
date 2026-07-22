@@ -137,6 +137,17 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Global: clickable elements show the pointer hand. Native <button> defaults to
+   the arrow cursor, so this covers buttons, role="button", links, form labels
+   and <summary>. Disabled buttons keep the default cursor. */
+button:not(:disabled),
+[role="button"],
+a[href],
+label[for],
+summary {
+  cursor: pointer;
+}
+
 /* Skip-navigation link — off-screen until it receives keyboard focus, then
    pinned top-left so keyboard / screen-reader users can jump past the nav
    straight to <main>. (WCAG 2.4.1 Bypass Blocks.) */
