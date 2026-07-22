@@ -55,6 +55,14 @@ export function LinkedIn(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function Close(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M6 6 18 18M18 6 6 18" />
+    </svg>
+  );
+}
+
 /** The small triangular accent that precedes the event label. */
 export function HighlightDetail(props: SVGProps<SVGSVGElement>) {
   return (

@@ -1,0 +1,293 @@
+/**
+ * Events / "Активности" — data layer.
+ *
+ * Source of truth is a Notion database (build-time fetch: events refresh when
+ * CI redeploys, not per request). The Notion integration isn't wired yet, so
+ * `getEvents` falls back to the typed MOCK below whenever `NOTION_TOKEN` /
+ * `NOTION_EVENTS_DB` are absent or a fetch fails — the build never breaks.
+ *
+ * Bilingual: every human-facing string carries `bg` + `en`. `getEvents(locale)`
+ * / `getEvent(locale, slug)` return already-localized `BdcEvent`s so components
+ * stay locale-agnostic.
+ *
+ * To go live, see the "NOTION WIRING" block near the bottom.
+ */
+import type { Locale } from "./i18n";
+import { locales } from "./i18n";
+
+/* =============================================================================
+   Types
+============================================================================= */
+
+/** A localized event, ready to render. */
+export type BdcEvent = {
+  slug: string;
+  /** ISO date (YYYY-MM-DD) — used for sorting only. */
+  date: string;
+  /** "25.04" — list column. */
+  dateShort: string;
+  /** "25.04.2026" — overlay meta. */
+  dateLong: string;
+  /** Localized title. */
+  name: string;
+  /** Localized type label + its brand accent colour. */
+  type: { label: string; accent: string };
+  /** Localized description (overlay body). */
+  description: string;
+  /** Cover image (overlay). Optional — list rows don't use it. */
+  cover?: string;
+};
+
+/** Event-type key → accent colour + bilingual label. Extend as new types appear. */
+const TYPE_META = {
+  conference: { accent: "var(--bdc-tomato)", label: { bg: "Конференция", en: "Conference" } },
+  workshop: { accent: "var(--bdc-orange)", label: { bg: "Работилница", en: "Workshop" } },
+  lecture: { accent: "var(--bdc-lavender)", label: { bg: "Лекция", en: "Lecture" } },
+  award: { accent: "var(--bdc-amber)", label: { bg: "Награда", en: "Award" } },
+  meeting: { accent: "var(--bdc-burgundy)", label: { bg: "Среща", en: "Meeting" } },
+} as const;
+
+type EventType = keyof typeof TYPE_META;
+
+/** Raw, un-localized event as stored in mock / mapped from Notion. */
+type RawEvent = {
+  slug: string;
+  date: string; // ISO YYYY-MM-DD
+  type: EventType;
+  name: Record<Locale, string>;
+  description: Record<Locale, string>;
+  cover?: string;
+};
+
+/* =============================================================================
+   MOCK — shape mirrors the intended Notion rows. Replace via NOTION WIRING.
+============================================================================= */
+const MOCK: RawEvent[] = [
+  {
+    slug: "icod-regional-meeting-2026",
+    date: "2026-04-25",
+    type: "conference",
+    name: {
+      bg: "Regional Meeting of the International Council of Design (ICoD)",
+      en: "Regional Meeting of the International Council of Design (ICoD)",
+    },
+    description: {
+      bg: "Организирана от UX Bulgaria, със специален гост Зинаида Илер, работилницата събра студенти от различни специалности в New Bulgarian University, за да се запознаят с UX процеса.",
+      en: "Organized by UX Bulgaria with special guest Zinaida Iler, the workshop brought together students from different disciplines at New Bulgarian University to get acquainted with the UX process.",
+    },
+    cover: "/figma/event-cover.png",
+  },
+  {
+    slug: "pechakucha-night-sofia-42",
+    date: "2026-03-18",
+    type: "conference",
+    name: { bg: "PechaKucha Night Sofia #42", en: "PechaKucha Night Sofia #42" },
+    description: {
+      bg: "Вечер на бързи, вдъхновяващи презентации по формата 20×20 — двадесет кадъра, всеки по двадесет секунди — с говорители от дизайна, архитектурата и технологиите.",
+      en: "An evening of fast, inspiring 20×20 talks — twenty slides, twenty seconds each — with speakers from design, architecture and technology.",
+    },
+    cover: "/figma/event-cover.png",
+  },
+  {
+    slug: "future-makers-lab-workshop",
+    date: "2026-02-14",
+    type: "workshop",
+    name: { bg: "Future Makers Lab: системно мислене", en: "Future Makers Lab: systems thinking" },
+    description: {
+      bg: "Практическа работилница за юноши, която развива системно мислене, проблемно рамкиране и отговорна работа с AI.",
+      en: "A hands-on workshop for teenagers building systems thinking, problem framing and responsible work with AI.",
+    },
+    cover: "/figma/event-cover.png",
+  },
+  {
+    slug: "design-for-good-awards",
+    date: "2026-01-30",
+    type: "award",
+    name: { bg: "Дизайн за Добро — награди", en: "Design for Good — Awards" },
+    description: {
+      bg: "БДС връчи три награди „Дизайн за добро“ на първия Студентски дизайн маратон в НБУ, отличавайки идеи, в които дизайнът е инструмент за смислена промяна.",
+      en: "The BDC awarded three „Design for Good“ prizes at the first Student Design Marathon at NBU, recognizing ideas in which design is a tool for meaningful change.",
+    },
+    cover: "/figma/event-cover.png",
+  },
+];
+
+/* =============================================================================
+   Localization + formatting
+============================================================================= */
+
+/** "2026-04-25" → { short: "25.04", long: "25.04.2026" } (locale-neutral, numeric). */
+function formatDate(iso: string): { short: string; long: string } {
+  const [y, m, d] = iso.split("-");
+  return { short: `${d}.${m}`, long: `${d}.${m}.${y}` };
+}
+
+function localize(raw: RawEvent, locale: Locale): BdcEvent {
+  const { short, long } = formatDate(raw.date);
+  const meta = TYPE_META[raw.type];
+  return {
+    slug: raw.slug,
+    date: raw.date,
+    dateShort: short,
+    dateLong: long,
+    name: raw.name[locale],
+    type: { label: meta.label[locale], accent: meta.accent },
+    description: raw.description[locale],
+    cover: raw.cover,
+  };
+}
+
+/** Newest first. */
+function byDateDesc(a: RawEvent, b: RawEvent) {
+  return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+}
+
+/* =============================================================================
+   Public API
+============================================================================= */
+
+/** All events for a locale, newest first. Notion when configured, else MOCK. */
+export async function getEvents(locale: Locale): Promise<BdcEvent[]> {
+  const raw = (await fetchRawEvents()).slice().sort(byDateDesc);
+  return raw.map((e) => localize(e, locale));
+}
+
+/** One event by slug, or null. */
+export async function getEvent(locale: Locale, slug: string): Promise<BdcEvent | null> {
+  const raw = (await fetchRawEvents()).find((e) => e.slug === slug);
+  return raw ? localize(raw, locale) : null;
+}
+
+/**
+ * Slug list for `generateStaticParams`. Locale-neutral (slugs are shared across
+ * locales), so both the full page and the intercepted modal prerender the same
+ * set under each `[locale]`.
+ */
+export async function getEventSlugs(): Promise<{ slug: string }[]> {
+  return (await fetchRawEvents()).map((e) => ({ slug: e.slug }));
+}
+
+/** Locales this module knows about (re-export for callers building param grids). */
+export { locales };
+
+/* =============================================================================
+   NOTION WIRING — build-time fetch. Currently returns MOCK.
+
+   To go live:
+   1. In Notion, create an internal integration and copy its secret.
+   2. Share the events database with that integration.
+   3. Set build-time env vars (locally in `.env`, and as GitHub Actions secrets
+      for the deploy workflow):
+        NOTION_TOKEN=secret_xxx
+        NOTION_EVENTS_DB=<database id>
+   4. Adjust PROP below to match your Notion property names, and confirm the
+      types (Title, Date, Select, Rich text, Files). Then replace the MOCK
+      return in `fetchRawEvents` with `fetchNotionEvents()`.
+
+   Kept as a documented stub so the build stays green until the DB is ready.
+============================================================================= */
+
+// Expected Notion property names — EDIT to match the real database.
+// (Bilingual fields assume separate BG/EN columns.)
+const PROP = {
+  nameBg: "Name (BG)",
+  nameEn: "Name (EN)",
+  date: "Date",
+  type: "Type", // a Select whose options map to TYPE_META keys
+  descBg: "Description (BG)",
+  descEn: "Description (EN)",
+  cover: "Cover",
+  slug: "Slug",
+} as const;
+
+async function fetchRawEvents(): Promise<RawEvent[]> {
+  const token = process.env.NOTION_TOKEN;
+  const db = process.env.NOTION_EVENTS_DB;
+  if (!token || !db) return MOCK; // not configured yet → mock
+
+  try {
+    return await fetchNotionEvents(token, db);
+  } catch (err) {
+    console.warn("[events] Notion fetch failed, falling back to mock:", err);
+    return MOCK;
+  }
+}
+
+async function fetchNotionEvents(token: string, db: string): Promise<RawEvent[]> {
+  const res = await fetch(`https://api.notion.com/v1/databases/${db}/query`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Notion-Version": "2022-06-28",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ sorts: [{ property: PROP.date, direction: "descending" }] }),
+  });
+  if (!res.ok) throw new Error(`Notion ${res.status}`);
+  const data = (await res.json()) as { results: NotionPage[] };
+  return data.results.map(mapNotionPage).filter((e): e is RawEvent => e !== null);
+}
+
+/* Minimal Notion shapes — only the property kinds we read. */
+type RichText = { plain_text: string }[];
+// Discriminated on `type`; only the property kinds we read are modelled — any
+// other Notion property type simply won't match our `.type ===` guards.
+type NotionProp =
+  | { type: "title"; title: RichText }
+  | { type: "rich_text"; rich_text: RichText }
+  | { type: "date"; date: { start: string } | null }
+  | { type: "select"; select: { name: string } | null }
+  | { type: "files"; files: { file?: { url: string }; external?: { url: string } }[] };
+type NotionPage = { properties: Record<string, NotionProp> };
+
+function plain(p?: NotionProp): string {
+  if (!p) return "";
+  if (p.type === "title") return p.title.map((t) => t.plain_text).join("");
+  if (p.type === "rich_text") return p.rich_text.map((t) => t.plain_text).join("");
+  return "";
+}
+
+function mapNotionPage(page: NotionPage): RawEvent | null {
+  const props = page.properties;
+
+  const dateProp = props[PROP.date];
+  const date = dateProp?.type === "date" ? dateProp.date?.start ?? "" : "";
+
+  const typeProp = props[PROP.type];
+  const typeName = typeProp?.type === "select" ? typeProp.select?.name ?? "" : "";
+  const type = (typeName.toLowerCase() as EventType) in TYPE_META
+    ? (typeName.toLowerCase() as EventType)
+    : "conference";
+  const nameBg = plain(props[PROP.nameBg]);
+  const nameEn = plain(props[PROP.nameEn]) || nameBg;
+  if (!date || !nameBg) return null; // skip incomplete rows
+
+  const filesProp = props[PROP.cover];
+  const cover =
+    filesProp?.type === "files"
+      ? filesProp.files[0]?.file?.url ?? filesProp.files[0]?.external?.url
+      : undefined;
+
+  const slug = plain(props[PROP.slug]) || slugify(nameEn);
+
+  return {
+    slug,
+    date: date.slice(0, 10),
+    type,
+    name: { bg: nameBg, en: nameEn },
+    description: {
+      bg: plain(props[PROP.descBg]),
+      en: plain(props[PROP.descEn]) || plain(props[PROP.descBg]),
+    },
+    cover,
+  };
+}
+
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
