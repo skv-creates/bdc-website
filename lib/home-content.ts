@@ -538,6 +538,7 @@ const bg = {
 
   footer: {
     copyright: "© 2026 Bulgarian Design Council. All rights reserved.",
+    privacy: "Политика за поверителност",
     contactHeading: "Контакти",
     phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
@@ -1046,6 +1047,7 @@ const en: typeof bg = {
 
   footer: {
     copyright: "© 2026 Bulgarian Design Council. All rights reserved.",
+    privacy: "Privacy Policy",
     contactHeading: "Contacts",
     phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
