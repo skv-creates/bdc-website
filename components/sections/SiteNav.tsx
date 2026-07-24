@@ -25,16 +25,25 @@ export function SiteNav({
   nav,
   ui,
   locale,
+  path = "",
 }: {
   nav: SiteContent["nav"];
   ui: SiteContent["ui"];
   locale: Locale;
+  /** Route path after the locale (e.g. "/privacy"); "" on the home page.
+      Off home, the in-page "#..." links and the logo have to point back at the
+      home route, and the language toggle has to stay on the current page. */
+  path?: string;
 }) {
   const [open, setOpen] = useState(false);
 
+  const homeHref = path ? `/${locale}` : "#";
+  const linkHref = (href: string) =>
+    path && href.startsWith("#") ? `/${locale}${href}` : href;
+
   // Language toggle points at the same page in the other locale.
   const otherLocale: Locale = locale === "bg" ? "en" : "bg";
-  const switchHref = `/${otherLocale}`;
+  const switchHref = `/${otherLocale}${path}`;
   const switchLabel = otherLocale.toUpperCase(); // compact "EN" / "BG"
   // The header is position:fixed (so it reliably covers the very top of the
   // viewport on iOS — sticky pins below the status-bar inset there). A spacer
@@ -67,7 +76,7 @@ export function SiteNav({
         style={headerStyle}
       >
         <div className="flex items-center justify-between gap-6 lg:grid lg:grid-cols-11 lg:gap-x-[var(--grid-gap)]">
-          <a href="#" aria-label={ui.home} className="shrink-0 lg:col-start-1 lg:col-span-3 lg:justify-self-start">
+          <a href={homeHref} aria-label={ui.home} className="shrink-0 lg:col-start-1 lg:col-span-3 lg:justify-self-start">
             <Logo variant="dark" className="h-8 w-auto md:h-10" />
           </a>
 
@@ -77,7 +86,7 @@ export function SiteNav({
             {nav.links.map((l) => (
               <a
                 key={l.label}
-                href={l.href}
+                href={linkHref(l.href)}
                 className="t-caption whitespace-nowrap border-b-2 border-transparent transition-colors hover:border-current"
               >
                 {l.label}
@@ -110,7 +119,7 @@ export function SiteNav({
         {open && (
           <div className="absolute inset-x-0 top-full z-30 flex flex-col gap-5 bg-page pb-6 lg:hidden" style={padStyle}>
             {nav.links.map((l) => (
-              <a key={l.label} href={l.href} className="t-h05" onClick={() => setOpen(false)}>
+              <a key={l.label} href={linkHref(l.href)} className="t-h05" onClick={() => setOpen(false)}>
                 {l.label}
               </a>
             ))}
