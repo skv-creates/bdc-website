@@ -1,0 +1,42 @@
+#!/bin/sh
+# Blocks secrets from reaching this repo, which is PUBLIC.
+#
+# Wired up automatically by `npm install` (see the "prepare" script in
+# package.json, which sets core.hooksPath). To run it by hand:
+#   git config core.hooksPath .githooks
+#
+# Bypass with `git commit --no-verify` only if you are certain the match is a
+# false positive — a secret in a public repo's history is not fixable by a later
+# commit. Rotate the credential instead.
+
+fail=0
+
+# 1. Any .env file other than the template. Belt and braces: .gitignore already
+#    covers these, but `git add -f` walks straight past .gitignore.
+env_staged=$(git diff --cached --name-only --diff-filter=ACM \
+  | grep -E '(^|/)\.env' | grep -v '^\.env\.example$')
+if [ -n "$env_staged" ]; then
+  echo "pre-commit: refusing to commit env file(s):"
+  echo "$env_staged" | sed 's/^/  /'
+  fail=1
+fi
+
+# 2. Credential-shaped strings in staged content. Deliberately narrow — patterns
+#    for the services this repo actually touches, so it stays quiet in normal use.
+#    ntn_/secret_ = Notion, ghp_/gho_ = GitHub, sk-/AKIA = OpenAI/AWS.
+patterns='ntn_[A-Za-z0-9]{40,}|secret_[A-Za-z0-9]{40,}|gh[pousr]_[A-Za-z0-9]{36,}|sk-[A-Za-z0-9]{32,}|AKIA[0-9A-Z]{16}'
+hits=$(git diff --cached --diff-filter=ACM -U0 \
+  | grep -E '^\+' | grep -vE '^\+\+\+' | grep -nEo "$patterns" | head -5)
+if [ -n "$hits" ]; then
+  echo "pre-commit: staged changes look like they contain a credential:"
+  # Show only a prefix — don't echo the full secret into terminal scrollback.
+  echo "$hits" | cut -c1-28 | sed 's/$/.../' | sed 's/^/  /'
+  fail=1
+fi
+
+if [ "$fail" -ne 0 ]; then
+  echo
+  echo "Nothing was committed. This repo is public — if a real credential was"
+  echo "involved, rotate it rather than relying on it staying unnoticed."
+  exit 1
+fi
