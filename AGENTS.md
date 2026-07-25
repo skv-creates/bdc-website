@@ -17,6 +17,10 @@ put it in `.env.local` themselves.
 `npm install` points `core.hooksPath` at `.githooks`, whose `pre-commit` blocks
 `.env` files (including force-added ones) and credential-shaped strings.
 
+More than one person works on this repo. Nobody shares a Notion token: each
+person creates their own read-only integration (see `.env.example`). A token is
+never sent over chat, email or a shared document.
+
 # Team bios come from Notion
 
 Bios live in the **Екип** tab of the *Website CMS: Съдържание* database, not in
@@ -43,3 +47,15 @@ Rows are matched to members by a slug derived from the photo filename, not by
 name — so renaming a person on either side cannot silently orphan their bio.
 `home-content.ts` merges only `bio`; names, roles, photos and ordering stay
 hand-edited in that file.
+
+Because the generated JSON is committed and several people sync, two branches
+can both regenerate it. `.gitattributes` marks it `-merge` so git refuses to
+splice two versions together. Never hand-resolve it — take either side and
+re-run the sync:
+
+    git checkout --ours lib/team-bios.generated.json
+    npm run sync:bios
+    git add lib/team-bios.generated.json
+
+The output is deterministic (keys sorted), so whoever runs it last simply
+reproduces the current state of Notion.
