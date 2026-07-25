@@ -12,9 +12,11 @@ const MEMBER_SPAN = "col-span-full md:col-span-4 lg:col-span-3";
 export function BoardGrid({
   members,
   eyebrow,
+  bioPlaceholder,
 }: {
   members: Member[];
   eyebrow?: string;
+  bioPlaceholder: string;
 }) {
   // Desktop hover drives the card's swap-and-inset state (see MemberCard).
   const [hovered, setHovered] = useState<number | null>(null);
@@ -45,7 +47,11 @@ export function BoardGrid({
 
       {openIndex !== null && (
         <OverlayPanel onClose={() => setOpenIndex(null)}>
-          <MemberOverlayContent member={members[openIndex]} eyebrow={eyebrow} />
+          <MemberOverlayContent
+            member={members[openIndex]}
+            eyebrow={eyebrow}
+            bioPlaceholder={bioPlaceholder}
+          />
         </OverlayPanel>
       )}
     </>

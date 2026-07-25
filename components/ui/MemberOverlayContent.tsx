@@ -9,16 +9,15 @@
 import Image from "next/image";
 import type { Member } from "@/lib/home-content";
 
-// Shown until real board bios are supplied per member.
-const PLACEHOLDER_BIO =
-  "Кратко представяне на този член от екипа — професионален опит, ключови проекти и роля в развитието на Българския дизайн съвет. Пълната биография предстои да бъде добавена съвсем скоро.";
-
 export function MemberOverlayContent({
   member,
   eyebrow,
+  bioPlaceholder,
 }: {
   member: Member;
   eyebrow?: string;
+  /** Locale-correct fallback copy, from the content dictionary. */
+  bioPlaceholder: string;
 }) {
   return (
     <div
@@ -47,7 +46,7 @@ export function MemberOverlayContent({
         <h1 className="t-h02">{member.name}</h1>
         <p className="t-caption font-bold">{member.role}</p>
         <div className="h-px w-full bg-border" />
-        <p className="t-body">{member.bio ?? PLACEHOLDER_BIO}</p>
+        <p className="t-body">{member.bio ?? bioPlaceholder}</p>
       </div>
     </div>
   );
