@@ -1,0 +1,50 @@
+{
+  "dobra-slavkova": {
+    "bg": {
+      "name": "Добра Славкова",
+      "role": "Председател",
+      "bio": "Икономист по образование, дизайнер по сърце, Добра работи над 10 години в пресечната точка между международен бизнес, пазарни проучвания, събития и иновации, с ключов опит в Advantage Austria, по-конкретно в сферите на образованието, енергетиката, технологиите, околната среда и инвестициите. Участва активно и в проекти, свързани със социално предприемачество и стартиращи компании. Опитът ѝ в държавния, частния и неправителствения сектор я води до убеждението, че дизайнът като стратегически инструмент, свързващ хора, процеси и системи, е двигател на положителната обществена промяна и устойчиви решения. Добра е съосновател и председател на Управителния съвет на Български дизайн съвет, акредитиран Service Design Practitioner и член на глобалната Service Design Network."
+    },
+    "en": {
+      "name": "Dobra Slavkova",
+      "role": "Chair",
+      "bio": "Economist by education and designer at heart, Dobra has worked for over 10 years at the intersection of international business, market research, events, and innovation, with key experience at Advantage Austria, in the fields of education, energy, technology, environment, and investment. She’s been actively involved in projects related to social entrepreneurship and startups. Her experience across the public, private, and non-profit sectors has led her to the belief that design, as a strategic tool connecting people, processes, and systems, is a driver of positive social change and sustainable solutions. Dobra is co-founder and chair of the Bulgarian Design Council’s board, an accredited Service Design Practitioner, and a member of the global Service Design Network."
+    }
+  },
+  "radina-doneva": {
+    "bg": {
+      "name": "Радина Донева",
+      "role": "Секретар",
+      "bio": "Радина е дизайн изследовател с над 10 години международен опит в дизайн агенции, продуктови екипи и независима консултантска практика. Има магистратура по Digital Experience Design и е работила в здравеопазването, фармацията, застраховането, финтех, блокчейн и изящните изкуства. В работата си свързва изследванията, човешкия опит и стратегическото мислене, за да помага на организациите да вземат по-информирани решения. Радина е съосновател на Български дизайн съвет, където понастоящем е секретар и член на Управителния съвет."
+    },
+    "en": {
+      "name": "Radina Doneva",
+      "role": "Secretary",
+      "bio": "Radina is a design researcher with over 10 years of international experience across design agencies, in-house product teams, and as an independent consultant. She holds a MA in Digital Experience Design and has worked on design challenges across sectors - from healthcare and pharmacy to banking, fintech, blockchain, and fine art. Radina is a co-founder of the Bulgarian Design Council, where she currently serves as Secretary and a Board member."
+    }
+  },
+  "stefan-vladimirov": {
+    "bg": {
+      "name": "Стефан Владимиров",
+      "role": "Член на Управителния съвет",
+      "bio": "Стефан е дизайнер с 15 години международен опит, преминал през стартъп екосистемите на Копенхаген и Сан Франциско. Работил е по известни български брандове като Payhawk. За него дизайнът и визуалната култура са инструменти за социална промяна, който подреждат сложността, създават доверие и да променят начина, по който едно общество вижда себе си. Тази идея стои в основата на неговия манифест, TEDx лекция и работа по концепция за нова визуална система на българската държава. Стефан е член на Управителния съвет на Български дизайн съвет, където понастоящем води инициативата “България чрез дизайн”"
+    },
+    "en": {
+      "name": "Stefan Vladimirov",
+      "role": "Board Member",
+      "bio": "Stefan is a designer with 15 years of international experience, shaped by the startup ecosystems of Copenhagen and San Francisco. He has worked with well-known Bulgarian brands such as Payhawk. For him, design and visual culture are instruments of social change that organize complexity, build trust, and shift the way a society sees itself. That idea underpins his manifesto, his TEDx talk, and his work on a concept for a new visual system for the Bulgarian state. Stefan is a Board Member of the Bulgarian Design Council, where he currently leads the \"Bulgaria by Design\" initiative."
+    }
+  },
+  "zinaida-iler": {
+    "bg": {
+      "name": "Зинаида Илер",
+      "role": "Член на Управителния съвет",
+      "bio": "Зина е продуктов дизайнер с над 30 години международен опит в областта на дигиталните продукти, потребителското преживяване и достъпността. Като основател на zinosign тя работи на пресечната точка между дизайн, технологии и регулаторни изисквания, помагайки на организации да създават приобщаващи и ориентирани към човека продукти и услуги. За нея дизайнът е стратегически инструмент, правещ сложните системи разбираеми, достъпни и полезни за всички. В работата си превръща достъпността от формално изискване в основен критерий за качество и равноправно участие. Зина е член на Управителния съвет на Български дизайн съвет и активен член на German UPA и IAAP D-A-CH – германоезичното подразделение на международната асоциация на професионалисти по достъпност, което обединява експерти от Германия, Австрия и Швейцария."
+    },
+    "en": {
+      "name": "Zinaida Iler",
+      "role": "Board Member",
+      "bio": "Zinaida is a Product Designer with over 30 years of international experience in digital products, user experience, and accessibility. As the founder of zinosign, she works at the intersection of design, technology, and regulatory requirements, helping organizations create inclusive, human-centered products and services. She believes design is a strategic tool that makes complex systems understandable, accessible, and valuable for everyone. In her work, she transforms accessibility from a compliance requirement into a key measure of quality, user experience, and equal participation. Zina is a Board Member of the Bulgarian Design Council and an active member of German UPA and IAAP D-A-CH, the German-speaking chapter of the International Association of Accessibility Professionals, bringing together accessibility experts from Germany, Austria, and Switzerland."
+    }
+  }
+}
