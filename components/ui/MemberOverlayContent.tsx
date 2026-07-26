@@ -2,20 +2,18 @@
  * MemberOverlayContent — the team-member inside of <OverlayPanel/>.
  *
  * Same shell + grid as EventOverlayContent, but the order is reversed: portrait
- * on the left (cols 2–5), info on the right (cols 7–11 — mandate eyebrow, name,
- * role, separator, bio). Portrait comes first in the DOM, so on mobile it stacks
- * on top. Server-renderable (no interactivity).
+ * on the left (cols 2–5), info on the right (cols 7–11 — name, role, separator,
+ * bio). Portrait comes first in the DOM, so on mobile it stacks on top.
+ * Server-renderable (no interactivity).
  */
 import Image from "next/image";
 import type { Member } from "@/lib/home-content";
 
 export function MemberOverlayContent({
   member,
-  eyebrow,
   bioPlaceholder,
 }: {
   member: Member;
-  eyebrow?: string;
   /** Locale-correct fallback copy, from the content dictionary. */
   bioPlaceholder: string;
 }) {
@@ -42,7 +40,6 @@ export function MemberOverlayContent({
 
       {/* Info — page grid cols 7–11 on desktop. */}
       <div className="col-span-full flex flex-col gap-8 lg:col-start-7 lg:col-span-5">
-        {eyebrow && <p className="t-caption">{eyebrow}</p>}
         <h1 className="t-h02">{member.name}</h1>
         <p className="t-caption font-bold">{member.role}</p>
         <div className="h-px w-full bg-border" />
