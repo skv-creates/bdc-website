@@ -54,7 +54,8 @@
   --grid-cols: 11;  /* content uses 11 cols; the rail occupies the 12th + gap */
   --grid-gap: 24px;            /* Figma column gap                            */
   /* Left inset of the OverlayPanel = --page-gutter from md up, so the panel's
-     grid lines up with the page grid; a wider fixed band on mobile fits the ✕.
+     grid lines up with the page grid; a fixed 48px band on mobile, sized to the
+     24px ✕ plus 12px either side.
      Applied via inline style (not a Tailwind arbitrary-var class, which Safari
      can drop) so it resolves identically across browsers. */
   --overlay-panel-left: var(--page-gutter);
@@ -204,7 +205,7 @@ main:focus { outline: none; }
 /* ---- Responsive: rail width steps + grid density ------------------------- */
 @media (max-width: 1279px) { :root { --rail-w: 140px; } }
 @media (max-width: 1023px) { :root { --rail-w: 88px; --grid-cols: 8; } }
-@media (max-width: 767px)  { :root { --rail-w: 24px; --rail-gap: 12px; --grid-cols: 4; --grid-gap: 12px; --overlay-panel-left: 4rem; } }
+@media (max-width: 767px)  { :root { --rail-w: 24px; --rail-gap: 12px; --grid-cols: 4; --grid-gap: 12px; --overlay-panel-left: 3rem; } }
 
 /* ---- Responsive: mobile type scale (≤767px) -----------------------------
    Tighter headings + slightly larger body/label/button text on phones.

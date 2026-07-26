@@ -174,6 +174,8 @@ const bg = {
       "Кратко представяне на този член от екипа — професионален опит, ключови проекти и роля в развитието на Българския дизайн съвет. Пълната биография предстои да бъде добавена съвсем скоро.",
     board: {
       eyebrow: "— Управителен съвет",
+      // Retained but no longer rendered — the member overlay dropped its
+      // mandate eyebrow. Re-wire via BoardGrid if it should return.
       mandate: "— Мандат 2026–2031",
       members: [
         {

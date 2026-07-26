@@ -117,7 +117,10 @@ export function OverlayPanel({
           click on it (anywhere not covered by the panel) dismisses. */}
       <div
         onClick={close}
-        className={`absolute inset-0 bg-dark/80 ${
+        // Fully opaque on phones — the 48px band is too narrow for the page
+        // showing through to read as anything but noise. 90% from md up, where
+        // the band is wide enough for the translucency to look deliberate.
+        className={`absolute inset-0 bg-dark md:bg-dark/90 ${
           reduced ? "" : "transition-opacity duration-[240ms] ease-out"
         } ${entered ? "opacity-100" : "opacity-0"}`}
       >
@@ -126,7 +129,16 @@ export function OverlayPanel({
           type="button"
           onClick={close}
           aria-label="Close"
-          className="absolute left-6 top-9 text-text-invert transition-opacity hover:opacity-70 lg:left-12 lg:top-11"
+          // 44px hit area (WCAG 2.5.5 target size) with the 24px glyph centred
+          // inside it. `left` centres that 44px box in the scrim band at every
+          // width, so it tracks --overlay-panel-left instead of needing a
+          // per-breakpoint offset. Inline style rather than a Tailwind
+          // arbitrary-var class, which Safari can drop — same reason as the
+          // panel's own left below.
+          style={{ left: "calc((var(--overlay-panel-left) - 44px) / 2)" }}
+          // top-12/lg:top-14 with -translate-y-1/2 keeps the glyph's centre
+          // where it was (48px, 56px on lg) now that the box is 44px tall.
+          className="absolute top-12 grid size-11 -translate-y-1/2 place-items-center text-text-invert transition-opacity hover:opacity-70 lg:top-14"
         >
           <Close />
         </button>
