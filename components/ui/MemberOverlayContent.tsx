@@ -7,7 +7,7 @@
  * Server-renderable (no interactivity).
  */
 import Image from "next/image";
-import { LinkedIn } from "@/components/ui/icons";
+import { LinkedInFilled } from "@/components/ui/icons";
 import type { Member } from "@/lib/home-content";
 
 export function MemberOverlayContent({
@@ -46,21 +46,26 @@ export function MemberOverlayContent({
           tablet, sharing its col-2 start so both align to one edge. */}
       <div className="col-span-full flex flex-col gap-8 md:col-start-2 md:col-span-6 lg:col-start-7 lg:col-span-5">
         <h1 className="t-h02">{member.name}</h1>
-        <p className="t-caption font-bold">{member.role}</p>
-        {member.linkedin && (
-          // -ml-2.5 pulls the 44px hit area back so the glyph itself still
-          // aligns to the text column; the padding is what makes the target
-          // tappable (WCAG 2.5.5), same treatment as the overlay's ✕.
-          <a
-            href={member.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${member.name} on LinkedIn`}
-            className="-ml-2.5 -mt-4 grid size-11 place-items-center transition-opacity hover:opacity-70"
-          >
-            <LinkedIn className="h-6 w-6" />
-          </a>
-        )}
+
+        {/* Role and LinkedIn share one row, the mark pushed to the far edge of
+            the info column — same on desktop and mobile. */}
+        <div className="flex items-center justify-between gap-4">
+          <p className="t-caption font-bold">{member.role}</p>
+          {member.linkedin && (
+            <a
+              href={member.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${member.name} on LinkedIn`}
+              // -m-2.5 + p-2.5 grows the tap target to 44px (WCAG 2.5.5)
+              // without the padding adding height to this row.
+              className="-m-2.5 shrink-0 p-2.5 transition-opacity hover:opacity-70"
+            >
+              <LinkedInFilled className="h-6 w-6" />
+            </a>
+          )}
+        </div>
+
         <div className="h-px w-full bg-border" />
         <p className="t-body">{member.bio ?? bioPlaceholder}</p>
       </div>
