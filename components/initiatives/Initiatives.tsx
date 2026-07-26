@@ -209,10 +209,7 @@ export function Initiatives({
 
       {openIndex !== null && (
         <OverlayPanel onClose={() => setOpenIndex(null)}>
-          <InitiativeOverlayContent
-            initiative={items[openIndex]}
-            patternStyle={slotStyle(openIndex)}
-          />
+          <InitiativeOverlayContent initiative={items[openIndex]} />
         </OverlayPanel>
       )}
     </section>
