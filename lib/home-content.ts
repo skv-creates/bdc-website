@@ -80,7 +80,7 @@ const bg = {
   mission: {
     label: "Нашата Мисия",
     heading:
-      "България да бъде държава, в която дизайнът е разпознат и утвърден като стратегическа сила за иновации, обществено благополучие, културна увереност и устойчиво развитие.",
+      "България да бъде държава, в която дизайнът е разпознат и утвърден като стратегическа сила за иновации, обществено благополучe и устойчиво развитие.",
     body: [
       "Една държава има дизайн капацитет, когато добрите решения не зависят само от отделен талант, щастлива случайност или външен изпълнител.",
       "Именно затова една от целите ни е да развием национален дизайн капацитет, който ускорява иновациите, укрепва сътрудничеството между секторите и създава по-ефективни, справедливи и устойчиви обществени системи.",
@@ -603,7 +603,7 @@ const en: typeof bg = {
   mission: {
     label: "Our Mission",
     heading:
-      "For Bulgaria to be a country where design is recognized and established as a strategic force for innovation, social wellbeing, cultural confidence and sustainable development.",
+      "For Bulgaria to be a country where design is recognized and established as a strategic force for innovation, social wellbeing and sustainable development.",
     body: [
       "A country has design capability when good outcomes don’t depend on a single talent, a lucky break or an outside contractor.",
       "That is why one of our goals is to build national design capability that accelerates innovation, strengthens collaboration across sectors, and creates more effective, equitable and resilient public systems.",
