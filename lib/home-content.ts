@@ -73,14 +73,20 @@ const bg = {
   hero: {
     heading: "Дизайнът движи нации. Ние го задвижваме в България.",
     subheading:
-      "Български Дизайн Съвет обединява дизайн професионалисти, бизнеса, образованието и институциите в една платформа, с една обща мисия: да създаде България бъдещето си, с умисъл.",
+      "Българският дизайн съвет укрепва националния дизайн капацитет на България, утвърждавайки дизайна като стратегическа сила за иновации, между-секторно сътрудничество и устойчиво, проспериращо и културно уверено бъдеще.",
     primary: { label: "Стани част от БДС", href: "https://tally.so/r/81PbQA" },
   },
 
   mission: {
     label: "Нашата Мисия",
     heading:
-      "Развиваме национален дизайн капацитет за иновации и устойчиви обществени системи, интегрирайки България в световната екосистема.",
+      "България да бъде държава, в която дизайнът е разпознат и утвърден като стратегическа сила за иновации, обществено благополучие, културна увереност и устойчиво развитие.",
+    body: [
+      "Една държава има дизайн капацитет, когато добрите решения не зависят само от отделен талант, щастлива случайност или външен изпълнител.",
+      "Именно затова една от целите ни е да развием национален дизайн капацитет, който ускорява иновациите, укрепва сътрудничеството между секторите и създава по-ефективни, справедливи и устойчиви обществени системи.",
+    ],
+    /** Closing line, set bold under the body. */
+    emphasis: "България има дизайн интелигентност. Време е тя да бъде видима",
     // v02 mission is label + heading only; stats kept here for later reuse.
     stats: [
       {
@@ -590,14 +596,19 @@ const en: typeof bg = {
   hero: {
     heading: "Design moves nations. We are putting it to work for Bulgaria.",
     subheading:
-      "The Bulgarian Design Council unites design professionals, business, education and institutions on one platform, with one shared mission: to help Bulgaria shape its future, by design.",
+      "The Bulgarian Design Council strengthens Bulgaria’s national design capability, positioning design as a strategic force for innovation, cross-sector collaboration, and a sustainable, prosperous, and culturally confident future.",
     primary: { label: "Join the BDC", href: "https://tally.so/r/81PbQA" },
   },
 
   mission: {
     label: "Our Mission",
     heading:
-      "We build national design capacity for innovation and sustainable public systems, integrating Bulgaria into the global ecosystem.",
+      "For Bulgaria to be a country where design is recognized and established as a strategic force for innovation, social wellbeing, cultural confidence and sustainable development.",
+    body: [
+      "A country has design capability when good outcomes don’t depend on a single talent, a lucky break or an outside contractor.",
+      "That is why one of our goals is to build national design capability that accelerates innovation, strengthens collaboration across sectors, and creates more effective, equitable and resilient public systems.",
+    ],
+    emphasis: "Bulgaria has design intelligence. It’s time it became visible.",
     stats: [
       {
         value: "6",

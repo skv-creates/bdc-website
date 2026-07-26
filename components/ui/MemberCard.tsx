@@ -49,7 +49,10 @@ export function MemberCard({
       </div>
       <figcaption>
         <p className="t-body font-bold">{name}</p>
-        <p className="t-caption">{role}</p>
+        {/* Grid cards carry the role only. Notion stores the full title
+            ("Председател / Съосновател") for the overlay; everything from the
+            first " / " onward is trimmed here so the cards stay one line. */}
+        <p className="t-caption">{role.split(" / ")[0]}</p>
       </figcaption>
     </figure>
   );
