@@ -53,11 +53,7 @@ export function Team({ team }: { team: SiteContent["team"] }) {
       <div className="mt-16 flex flex-col gap-20 md:mt-24 md:gap-28">
         <div>
           <GroupHeader eyebrow={board.eyebrow} />
-          <BoardGrid
-            members={board.members}
-            eyebrow={board.mandate}
-            bioPlaceholder={team.bioPlaceholder}
-          />
+          <BoardGrid members={board.members} bioPlaceholder={team.bioPlaceholder} />
         </div>
 
         <div>
