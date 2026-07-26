@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import styles from "./Initiatives.module.css";
 import { PatternTile } from "./patterns";
+import { OverlayPanel } from "@/components/ui/OverlayPanel";
+import { InitiativeOverlayContent } from "@/components/ui/InitiativeOverlayContent";
 import type { Initiative, SiteContent } from "@/lib/home-content";
 
 /** Arrow-scroll animation: 120ms ease-out. */
@@ -28,18 +30,45 @@ function LabelMark() {
   );
 }
 
-function Card({ item, index }: { item: Initiative; index: number }) {
+/** Pattern ink/ground for a card position — shared by the card and its overlay. */
+const slotStyle = (index: number) => {
   const slot = SLOTS[index % SLOTS.length];
-
-  const style = {
+  return {
     background: slot.bg,
     color: slot.invert ? "var(--bdc-white)" : "var(--bdc-dark)",
     "--p1": slot.ink,
     "--p2": slot.bg,
   } as CSSProperties;
+};
+
+function Card({
+  item,
+  index,
+  onOpen,
+}: {
+  item: Initiative;
+  index: number;
+  onOpen: () => void;
+}) {
+  const style = slotStyle(index);
 
   return (
-    <article className={`${styles.card} flex flex-col gap-12 p-6`} style={style}>
+    <article
+      className={`${styles.card} flex cursor-pointer flex-col gap-12 p-6`}
+      style={style}
+      onClick={onOpen}
+      // The card is a click target but not a <button>: it contains the CTA
+      // anchor, and nesting interactive elements is invalid. Role + key handler
+      // give it the same keyboard affordance without the nesting.
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
+    >
       <div className="relative hidden h-[240px] w-full overflow-hidden md:block">
         <PatternTile n={item.pattern} />
       </div>
@@ -55,6 +84,9 @@ function Card({ item, index }: { item: Initiative; index: number }) {
         {item.cta && (
           <a
             href={item.cta.href}
+            // Stop the click bubbling to the card, or following the CTA would
+            // also open the overlay behind it.
+            onClick={(e) => e.stopPropagation()}
             className="t-label mt-auto inline-flex items-center justify-center self-start rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
             {...(/^https?:\/\//.test(item.cta.href)
               ? { target: "_blank", rel: "noopener noreferrer" }
@@ -95,6 +127,9 @@ export function Initiatives({
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef(0);
+  // Index into `items`, not into the tripled loop — the same initiative appears
+  // three times in the track and all three must open the same overlay.
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const items = initiatives.items;
   const N = items.length;
@@ -163,7 +198,7 @@ export function Initiatives({
 
       <div ref={trackRef} className={`${styles.track} mt-12`}>
         {LOOP.map((item, i) => (
-          <Card key={i} item={item} index={i % N} />
+          <Card key={i} item={item} index={i % N} onOpen={() => setOpenIndex(i % N)} />
         ))}
       </div>
 
@@ -171,6 +206,15 @@ export function Initiatives({
         <Arrow dir={-1} onClick={() => scrollByCard(-1)} label={ui.prev} glyph="←" />
         <Arrow dir={1} onClick={() => scrollByCard(1)} label={ui.next} glyph="→" />
       </div>
+
+      {openIndex !== null && (
+        <OverlayPanel onClose={() => setOpenIndex(null)}>
+          <InitiativeOverlayContent
+            initiative={items[openIndex]}
+            patternStyle={slotStyle(openIndex)}
+          />
+        </OverlayPanel>
+      )}
     </section>
   );
 }
