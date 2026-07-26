@@ -57,6 +57,9 @@ const plain = (prop) => {
   return (parts ?? []).map((t) => t.plain_text).join("").trim();
 };
 
+/** Notion url property -> string ("" when unset). */
+const url = (prop) => (prop && prop.type === "url" && prop.url ? prop.url.trim() : "");
+
 async function queryAll(dataSourceId, token) {
   const rows = [];
   let cursor;
@@ -130,6 +133,9 @@ for (const row of rows) {
   }
 
   bios[slugify(nameEn)] = {
+    // Locale-independent, so it sits above the bg/en split rather than being
+    // duplicated into both.
+    linkedin: url(p["LinkedIn профил"]),
     bg: { name: nameBg, role: plain(p["Позиция"]), bio: bioBg },
     en: { name: nameEn, role: plain(p["Position (EN)"]), bio: bioEn },
   };
