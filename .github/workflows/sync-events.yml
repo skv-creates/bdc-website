@@ -1,0 +1,79 @@
+name: Sync events from Notion
+
+# Pulls the Събития tab into lib/events.generated.json every 8 hours and commits
+# the result to main when it changed.
+#
+# This is the one place a Notion token exists outside an editor's laptop. It is
+# a repository secret, not a file in the repo — Actions never exposes secrets to
+# workflows triggered by forked pull requests, so a public repo does not leak it.
+# The token still only needs "Read content"; nothing here writes back to Notion.
+#
+# Scheduled workflows only run from the default branch, so this file has to be on
+# main to fire at all.
+on:
+  schedule:
+    - cron: "0 */8 * * *" # 00:00, 08:00, 16:00 UTC
+  workflow_dispatch:
+
+# Let the job commit the regenerated JSON.
+permissions:
+  contents: write
+
+# A manual run while the scheduled one is mid-flight would race on the same
+# file; queue instead of cancelling, so a started sync always finishes.
+concurrency:
+  group: sync-events
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Exits non-zero when Notion returns no publishable rows, which leaves the
+      # committed JSON alone rather than blanking the section on the live site.
+      - name: Pull events
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_EVENTS_DATA_SOURCE_ID: ${{ vars.NOTION_EVENTS_DATA_SOURCE_ID }}
+          # Which Notion column counts as publishable. Set the variable to move
+          # the site to e.g. "Обявено" without touching this workflow.
+          NOTION_EVENTS_STATUS: ${{ vars.NOTION_EVENTS_STATUS }}
+        run: npm run sync:events
+
+      # The sync output is deterministic, so an unchanged Notion means an
+      # unchanged file and no commit — the schedule stays quiet on quiet days.
+      - name: Commit if changed
+        id: commit
+        run: |
+          if git diff --quiet -- lib/events.generated.json; then
+            echo "No change."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lib/events.generated.json
+          git commit -m "Events: sync from Notion"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # A push made with GITHUB_TOKEN deliberately does not start other
+      # workflows, so deploy.yml will not see the commit above. Deploy from here
+      # instead — same command and secrets it uses.
+      - name: Deploy
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npm run deploy

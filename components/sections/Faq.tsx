@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Plus, Minus } from "@/components/ui/icons";
+import { Button } from "@/components/ui/Button";
 import type { FaqBlock, SiteContent } from "@/lib/home-content";
 
 function Answer({ blocks }: { blocks: FaqBlock[] }) {
@@ -12,6 +13,15 @@ function Answer({ blocks }: { blocks: FaqBlock[] }) {
           return (
             <p key={i} className="t-body font-medium mt-5 first:mt-0">
               {b.h}
+            </p>
+          );
+        }
+        if ("link" in b) {
+          return (
+            <p key={i} className="mt-4 first:mt-0">
+              <Button variant="tertiary" href={b.link.href}>
+                {b.link.label}
+              </Button>
             </p>
           );
         }

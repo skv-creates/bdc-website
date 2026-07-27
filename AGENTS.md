@@ -35,10 +35,9 @@ published bio fall back to `team.bioPlaceholder`, which is per-locale.
 
 Two things that are easy to get wrong:
 
-- The sync runs **on a person's machine, never in CI**. The deploy workflow
-  builds from the committed JSON and has no Notion token. This is deliberate:
-  it keeps the token off GitHub entirely, which matters because the repo is
-  public.
+- The bios sync runs **on a person's machine, not in CI**. The deploy workflow
+  builds from the committed JSON and has no Notion token. Events are the one
+  exception — see below.
 - `NOTION_TEAM_DATA_SOURCE_ID` is a **data source** id, not a database id. The
   CMS database has six data sources, and current Notion API versions cannot
   query those by database id.
@@ -59,3 +58,38 @@ re-run the sync:
 
 The output is deterministic (keys sorted), so whoever runs it last simply
 reproduces the current state of Notion.
+
+# Events sync on a schedule — the one token on GitHub
+
+`.github/workflows/sync-events.yml` runs `npm run sync:events` every 8 hours on
+`main`, commits `lib/events.generated.json` when it changed, and deploys.
+
+This is the only place a Notion token lives outside a laptop. It is a
+**repository secret**, not a file in the repo: Actions never hands secrets to
+workflows triggered by forked pull requests, so a public repo does not leak it.
+The token still only needs **Read content** — nothing in CI writes to Notion.
+To set it up once:
+
+    gh secret set NOTION_TOKEN                          # your read-only secret
+    gh variable set NOTION_EVENTS_DATA_SOURCE_ID --body b51c7693-aa03-8324-9099-87dd784391f9
+    gh variable set NOTION_EVENTS_STATUS --body 'Чернова / Да се преработи'
+
+The data source id and the status are **variables**, not secrets — neither is
+sensitive, and keeping the status out of the workflow file means moving the site
+to a different Notion column (say `Обявено`) is a settings change, not a commit.
+
+Three things worth knowing before you touch it:
+
+- The scheduled job pushes with `GITHUB_TOKEN`, and GitHub deliberately does not
+  start other workflows from such a push. `deploy.yml` would never see the
+  commit, so the sync job deploys itself with the same command and secrets.
+- A sync that finds no publishable rows **fails instead of writing an empty
+  list**. Blanking the section on the live site is a worse outcome than a red
+  run, and the committed JSON is left alone.
+- Събития has no Slug column, so slugs are transliterated from the title —
+  renaming an event in Notion changes its URL. Add a Slug column and read it in
+  `scripts/sync-notion-events.mjs` if that ever matters.
+
+The FAQ (`npm run sync:faq`) is still hand-run: its `--publish` flag writes back
+to Notion and so needs a write-capable integration, which is not something to
+hand to a scheduled job.
