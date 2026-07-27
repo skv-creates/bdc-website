@@ -32,8 +32,6 @@ export type InitiativeDetail = {
   cover?: { src: string; alt: string };
   /** Paragraphs under the cover image. */
   body: string[];
-  /** Call to action directly under the body copy. */
-  bodyCta?: { label: string; href: string };
   feature: {
     label: string;
     heading: string;
@@ -116,6 +114,8 @@ const bg = {
     prev: "Назад",
     next: "Напред",
     switchLanguage: "English",
+    /** Initiative card button on inside pages (Figma 351:1097). */
+    seeMore: "Виж повече",
   },
 
   nav: {
@@ -199,17 +199,13 @@ const bg = {
             ],
           ],
           cover: {
-            src: "/figma/initiatives/policy-lab-hero.png",
-            alt: "Жена, която чете книгата „How to Public Sector?“ на червен фон",
+            src: "/figma/initiatives/policy-lab-hero.jpg",
+            alt: "Жена, която чете книгата „How to Public Sector?“ пред остъклена офис врата",
           },
           body: [
             "Лабораторията за политики помага на публичните институции да изследват сложни предизвикателства, преди да се обвържат с един предварително избран отговор.",
             "Свързваме институционално знание, доказателства, житейски опит, дизайн и системно мислене, за да разработим по-силни възможности, да проверим допусканията и да създадем по-ясен път към прилагане.",
           ],
-          bodyCta: {
-            label: "Да поговорим за партньорство ↗",
-            href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab",
-          },
           feature: {
             label: "Какво и защо",
             heading: "От сложен проблем към споделена посока.",
@@ -230,13 +226,13 @@ const bg = {
             "Решението има дългосрочни обществени, икономически или екологични последствия.",
           ],
           actions: [
-            { label: "Да поговорим за партньорство ↗", href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab" },
-            { label: "Предложете казус", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
+            { label: "Партнирай с нас", href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab" },
+            { label: "Предложи казус", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
           ],
           team: {
             heading: "Да изградим заедно с(ъ)вета",
             text: "Инициативи като тази, съществуват благодарение на хора, които даряват време, знания и енергия.",
-            cta: { label: "Стани доброволец", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
+            cta: { label: "Включи се в проект", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
             // The break is in the design (329:2180): the initiative name keeps
             // its own line under "Екипа зад".
             creditLabel: "Екипа зад\n„Лаборатория за политики“",
@@ -722,6 +718,7 @@ const en: typeof bg = {
     prev: "Previous",
     next: "Next",
     switchLanguage: "Български",
+    seeMore: "See more",
   },
 
   nav: {
@@ -798,17 +795,13 @@ const en: typeof bg = {
             ],
           ],
           cover: {
-            src: "/figma/initiatives/policy-lab-hero.png",
-            alt: "A woman reading the book “How to Public Sector?” against a red background",
+            src: "/figma/initiatives/policy-lab-hero.jpg",
+            alt: "A woman reading the book “How to Public Sector?” in a glass-walled office doorway",
           },
           body: [
             "The Policy Lab helps public institutions explore complex challenges before committing to a single, pre-selected answer.",
             "We connect institutional knowledge, evidence, lived experience, design and systems thinking in order to develop stronger options, test assumptions and create a clearer path to implementation.",
           ],
-          bodyCta: {
-            label: "Let’s talk partnership ↗",
-            href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab",
-          },
           feature: {
             label: "What and why",
             heading: "From a complex problem to a shared direction.",
@@ -829,13 +822,13 @@ const en: typeof bg = {
             "The decision carries long-term social, economic or environmental consequences.",
           ],
           actions: [
-            { label: "Let’s talk partnership ↗", href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab" },
+            { label: "Partner with us", href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab" },
             { label: "Propose a case", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
           ],
           team: {
             heading: "Let’s build the council together",
             text: "Initiatives like this one exist thanks to people who give their time, knowledge and energy.",
-            cta: { label: "Become a volunteer", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
+            cta: { label: "Join a project", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
             creditLabel: "The team behind\n“Policy Lab”",
             members: [
               "dobra-slavkova",
