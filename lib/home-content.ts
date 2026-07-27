@@ -122,18 +122,19 @@ const bg = {
     links: [
       { label: "Инициативи", href: "#initiatives" },
       { label: "Мисия", href: "#mission" },
+      { label: "Събития", href: "#activities" },
       { label: "Екип", href: "#team" },
     ],
-    cta: { label: "Стани част от БДС →", href: "https://tally.so/r/81PbQA" },
+    cta: { label: "Членувай →", href: "https://tally.so/r/81PbQA" },
   },
 
   hero: {
     heading: "Дизайнът движи нации. Ние го задвижваме в България.",
     subheading:
       "България, която не догонва бъдещето, а го проектира чрез дизайн капацитет, движещ нацията напред.",
-    primary: { label: "Стани част от БДС  ↗", href: "https://tally.so/r/81PbQA" },
+    primary: { label: "Стани член ↗", href: "https://tally.so/r/81PbQA" },
     secondary: {
-      label: "Да поговорим за партньорство",
+      label: "Партнирай с нас",
       href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership",
     },
   },
@@ -143,7 +144,7 @@ const bg = {
     heading:
       "България e държава, в която дизайнът е разпознат и утвърден като стратегическа сила за иновации, обществено благополучие и устойчиво развитие.",
     body: [
-      "Ние обединяваме дизайнерите, бизнеса, образованието и институциите в една обща мисия: да създаде България бъдещето си, с умисъл.",
+      "Oбединяваме дизайнерите, бизнеса, образованието и институциите в една обща мисия: да създаде България бъдещето си, с умисъл.",
     ],
     /**
      * Closing line. The section as drawn in Figma 332:3279 ends at `body`, so
@@ -390,7 +391,7 @@ const bg = {
   },
 
   faq: {
-    heading: "Често задавани въпроси",
+    heading: "Въпроси? Отговори.",
     subheading:
       "Българският Дизайн Съвет е независима неправителствена организация, създадена от дизайнери за дизайнери, с цел да изгради устойчива, свързана и силно конкурентна дизайн екосистема в България.",
     groups: [
@@ -727,18 +728,19 @@ const en: typeof bg = {
     links: [
       { label: "Initiatives", href: "#initiatives" },
       { label: "Mission", href: "#mission" },
+      { label: "Events", href: "#activities" },
       { label: "Team", href: "#team" },
     ],
-    cta: { label: "Join the BDC →", href: "https://tally.so/r/81PbQA" },
+    cta: { label: "Become a member →", href: "https://tally.so/r/81PbQA" },
   },
 
   hero: {
     heading: "Design moves nations. We are putting it to work for Bulgaria.",
     subheading:
       "A Bulgaria that does not chase the future but designs it, through design capability that moves the nation forward.",
-    primary: { label: "Join the BDC  ↗", href: "https://tally.so/r/81PbQA" },
+    primary: { label: "Become a member ↗", href: "https://tally.so/r/81PbQA" },
     secondary: {
-      label: "Let’s talk partnership",
+      label: "Build a partnership",
       href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership",
     },
   },
@@ -981,7 +983,7 @@ const en: typeof bg = {
   },
 
   faq: {
-    heading: "Frequently Asked Questions",
+    heading: "Questions? Answers.",
     subheading:
       "The Bulgarian Design Council is an independent non-governmental organization, created by designers for designers, with the goal of building a sustainable, connected and highly competitive design ecosystem in Bulgaria.",
     groups: [
