@@ -50,9 +50,11 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         <SiteNav nav={c.nav} ui={c.ui} locale={locale} />
         <main id="main" tabIndex={-1}>
           <Hero hero={c.hero} />
-          <Initiatives initiatives={c.initiatives} ui={c.ui} />
-          <Activities locale={locale} heading={c.activities.heading} />
+          {/* Mission reads as the second half of the opening statement, so it
+              sits directly under the hero rather than further down the page. */}
           <Mission mission={c.mission} />
+          <Initiatives initiatives={c.initiatives} ui={c.ui} locale={locale} />
+          <Activities locale={locale} heading={c.activities.heading} />
           <Team team={c.team} />
           <Quote quote={c.quote} />
           <Faq faq={c.faq} />

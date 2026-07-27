@@ -1,21 +1,34 @@
 import type { SiteContent } from "@/lib/home-content";
 
-/* v02: mission is just the label + a large statement (no stat grid). */
+/**
+ * Mission — Figma 332:3279, the band directly under the hero.
+ *
+ * Accent + label, the statement at h02, then one short paragraph at 24px. The
+ * three blocks are 32px apart, and the paragraph is held to 5 of the 11 columns
+ * while the statement runs the full width — the same wide/narrow contrast the
+ * hero above it uses, so the two read as one opening.
+ */
 export function Mission({ mission }: { mission: SiteContent["mission"] }) {
   return (
-    <section id="mission" className="py-20 md:py-28">
-      <p className="t-label">{mission.label}</p>
-      <h2 className="t-h02 mt-10 max-w-[1000px]">{mission.heading}</h2>
+    // bdc-stop-11 for the same reason as the hero: the spans are Figma's own
+    // 11-column ones, and a 56px statement running into the rail reads badly.
+    <section id="mission" className="bdc-stop-11 bdc-grid gap-y-8 py-20">
+      <div className="col-span-full flex items-center gap-2.5">
+        {/* 16×8 mark, recoloured with the pattern rail like every other accent. */}
+        <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
+        <p className="t-label">{mission.label}</p>
+      </div>
 
-      {/* Supporting copy at body-default (20px), narrower than the statement so
-          it reads as a second voice rather than a continuation of the heading. */}
-      <div className="mt-10 flex max-w-[800px] flex-col gap-6">
+      {/* The design sets the statement at 80% black rather than full ink, which
+          is what keeps it from competing with the hero heading above it. */}
+      <h2 className="t-h02 col-span-full text-[rgba(0,0,0,0.8)]">{mission.heading}</h2>
+
+      <div className="col-span-full flex flex-col gap-6 lg:col-span-5">
         {mission.body.map((p) => (
-          <p key={p} className="t-body">
+          <p key={p} className="t-body-lg">
             {p}
           </p>
         ))}
-        <p className="t-body font-bold">{mission.emphasis}</p>
       </div>
     </section>
   );

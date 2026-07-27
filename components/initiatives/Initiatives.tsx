@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, type CSSProperties } from "react";
+import Link from "next/link";
 import styles from "./Initiatives.module.css";
 import { PatternTile } from "./patterns";
-import type { Initiative, SiteContent } from "@/lib/home-content";
+import type { Initiative, Locale, SiteContent } from "@/lib/home-content";
 
 /** Arrow-scroll animation: 120ms ease-out. */
 const SCROLL_MS = 120;
@@ -28,18 +29,33 @@ function LabelMark() {
   );
 }
 
-function Card({ item, index }: { item: Initiative; index: number }) {
+/** Pattern ink/ground for a card position — shared by the card and its overlay. */
+const slotStyle = (index: number) => {
   const slot = SLOTS[index % SLOTS.length];
-
-  const style = {
+  return {
     background: slot.bg,
     color: slot.invert ? "var(--bdc-white)" : "var(--bdc-dark)",
     "--p1": slot.ink,
     "--p2": slot.bg,
   } as CSSProperties;
+};
+
+function Card({
+  item,
+  index,
+  locale,
+}: {
+  item: Initiative;
+  index: number;
+  locale: Locale;
+}) {
+  const style = slotStyle(index);
 
   return (
-    <article className={`${styles.card} flex flex-col gap-12 p-6`} style={style}>
+    <article
+      className={`${styles.card} relative flex cursor-pointer flex-col gap-12 p-6`}
+      style={style}
+    >
       <div className="relative hidden h-[240px] w-full overflow-hidden md:block">
         <PatternTile n={item.pattern} />
       </div>
@@ -50,12 +66,30 @@ function Card({ item, index }: { item: Initiative; index: number }) {
       </div>
 
       <div className="flex flex-1 flex-col gap-8">
-        <h3 className="t-h03">{item.title}</h3>
+        <h3 className="t-h03">
+          {/* Stretched link: the ::after covers the whole card, so a click
+              anywhere navigates, while in the DOM this stays a sibling of the
+              CTA anchor below — never an <a> inside an <a>. The title is the
+              accessible name, and Enter works natively, so the old
+              role="button" + keydown handler is gone.
+              NB: anything interactive added to this card later needs
+              `relative z-10` to sit above the ::after. */}
+          <Link
+            href={`/${locale}/initiatives/${item.slug}`}
+            className="after:absolute after:inset-0 after:content-['']"
+          >
+            {item.title}
+          </Link>
+        </h3>
         <p className="t-body">{item.text}</p>
         {item.cta && (
           <a
             href={item.cta.href}
-            className="t-label mt-auto inline-flex items-center justify-center self-start rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
+            // relative z-10 lifts this above the title link's stretched ::after,
+            // so a click here follows the CTA rather than opening the
+            // initiative. No stopPropagation needed — there is no ancestor
+            // handler any more, just stacking order.
+            className="t-label relative z-10 mt-auto inline-flex items-center justify-center self-start rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
             {...(/^https?:\/\//.test(item.cta.href)
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
@@ -89,9 +123,11 @@ const recenter = (track: HTMLDivElement, n: number) => {
 export function Initiatives({
   initiatives,
   ui,
+  locale,
 }: {
   initiatives: SiteContent["initiatives"];
   ui: SiteContent["ui"];
+  locale: Locale;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef(0);
@@ -159,11 +195,16 @@ export function Initiatives({
 
   return (
     <section id="initiatives" className="bdc-stop-11 py-20 md:py-28">
-      <h2 className="t-h02">{initiatives.heading}</h2>
+      {/* Heading left, standfirst in the second column — on the home page the
+          lede is simply absent, so the heading sits alone as before. */}
+      <div className="grid gap-y-6 lg:grid-cols-2 lg:gap-x-[120px]">
+        <h2 className="t-h02">{initiatives.heading}</h2>
+        {initiatives.lede && <p className="t-body-lg font-bold">{initiatives.lede}</p>}
+      </div>
 
       <div ref={trackRef} className={`${styles.track} mt-12`}>
         {LOOP.map((item, i) => (
-          <Card key={i} item={item} index={i % N} />
+          <Card key={i} item={item} index={i % N} locale={locale} />
         ))}
       </div>
 
