@@ -45,6 +45,18 @@ export type InitiativeDetail = {
   checklist: string[];
   /** Closing button row. */
   actions?: { label: string; href: string; variant?: "primary" | "secondary" }[];
+  /**
+   * "The team behind X" panel. `members` are member slugs (the photo filename
+   * stem, as used by the Notion merge) — resolved to portraits by the page.
+   */
+  team?: {
+    heading: string;
+    text: string;
+    cta: { label: string; href: string };
+    /** Right-aligned caption above the avatar stack. */
+    creditLabel: string;
+    members: string[];
+  };
 };
 
 export type Initiative = {
@@ -151,6 +163,8 @@ const bg = {
 
   initiatives: {
     heading: "Инициативи",
+    /** Standfirst beside the heading in the related-initiatives section. */
+    lede: "Идеите намират почва, когато хората се съберат около тях.",
     items: [
       {
         slug: "policy-lab",
@@ -170,7 +184,7 @@ const bg = {
           ],
           cover: {
             src: "/figma/initiatives/policy-lab.png",
-            alt: "Ръце, държащи книга с надпис „Make it now!“ на червен фон",
+            alt: "Жена, която чете книгата „Как да работим с публичния сектор?“ на червен фон",
           },
           body: [
             "Лабораторията за политики помага на публичните институции да изследват сложни предизвикателства, преди да се обвържат с един предварително избран отговор.",
@@ -203,6 +217,19 @@ const bg = {
             { label: "Да поговорим за партньорство ↗", href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab" },
             { label: "Предложете казус", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
           ],
+          team: {
+            heading: "Да изградим заедно с(ъ)вета",
+            text: "Инициативи като тази, съществуват благодарение на хора, които даряват време, знания и енергия.",
+            cta: { label: "Стани доброволец", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
+            creditLabel: "Екипа зад „Лаборатория за политики“",
+            members: [
+              "dobra-slavkova",
+            "stefi-peykova-krishnan",
+            "radina-doneva",
+            "zinaida-iler",
+            "stefan-vladimirov",
+            ],
+          },
         },
       },
       {
@@ -730,6 +757,7 @@ const en: typeof bg = {
 
   initiatives: {
     heading: "Initiatives",
+    lede: "Ideas take root when people gather around them.",
     items: [
       {
         slug: "policy-lab",
@@ -749,7 +777,7 @@ const en: typeof bg = {
           ],
           cover: {
             src: "/figma/initiatives/policy-lab.png",
-            alt: "Hands holding a book reading “Make it now!” against a red background",
+            alt: "A woman reading the book “How to work with the public sector?” against a red background",
           },
           body: [
             "The Policy Lab helps public institutions explore complex challenges before committing to a single, pre-selected answer.",
@@ -782,6 +810,19 @@ const en: typeof bg = {
             { label: "Let’s talk partnership ↗", href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab" },
             { label: "Propose a case", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
           ],
+          team: {
+            heading: "Let’s build the council together",
+            text: "Initiatives like this one exist thanks to people who give their time, knowledge and energy.",
+            cta: { label: "Become a volunteer", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
+            creditLabel: "The team behind “Policy Lab”",
+            members: [
+              "dobra-slavkova",
+            "stefi-peykova-krishnan",
+            "radina-doneva",
+            "zinaida-iler",
+            "stefan-vladimirov",
+            ],
+          },
         },
       },
       {

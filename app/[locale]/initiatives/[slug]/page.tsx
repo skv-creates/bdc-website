@@ -16,7 +16,10 @@ import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { InitiativeOverlayContent } from "@/components/ui/InitiativeOverlayContent";
+import { InitiativeTeamPanel } from "@/components/ui/InitiativeTeamPanel";
+import { Initiatives } from "@/components/initiatives/Initiatives";
 import { getContent, getInitiative, getInitiativeSlugs, hasLocale } from "@/lib/home-content";
+import type { Member } from "@/lib/home-content";
 
 export async function generateStaticParams() {
   return getInitiativeSlugs();
@@ -50,6 +53,23 @@ export default async function InitiativePage({
   if (!initiative) notFound();
   const c = getContent(locale);
 
+  // Resolve the team panel's member slugs against every group, keeping the
+  // authored order. Slug = photo filename stem, the same key the Notion merge
+  // uses, so the two stay consistent.
+  const allMembers: Member[] = [
+    ...c.team.board.members,
+    ...c.team.advisory.members,
+    ...c.team.volunteers.members,
+  ];
+  const slugOf = (m: Member) => m.photo?.split("/").pop()?.replace(/\.[^.]+$/, "") ?? "";
+  const teamMembers =
+    initiative.detail?.team?.members
+      .map((s) => allMembers.find((m) => slugOf(m) === s))
+      .filter((m): m is Member => Boolean(m)) ?? [];
+
+  // Related carousel: every other initiative, current one excluded.
+  const related = c.initiatives.items.filter((i) => i.slug !== slug);
+
   return (
     <>
       <a href="#main" className="skip-link t-caption font-bold">
@@ -76,6 +96,20 @@ export default async function InitiativePage({
 
         <main id="main" tabIndex={-1} className="py-16 md:py-20">
           <InitiativeOverlayContent initiative={initiative} variant="page" />
+
+          {initiative.detail?.team && (
+            <div className="py-12">
+              <InitiativeTeamPanel team={initiative.detail.team} members={teamMembers} />
+            </div>
+          )}
+
+          {related.length > 0 && (
+            <Initiatives
+              initiatives={{ ...c.initiatives, items: related }}
+              ui={c.ui}
+              locale={locale}
+            />
+          )}
         </main>
       </div>
 

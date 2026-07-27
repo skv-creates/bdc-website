@@ -195,7 +195,12 @@ export function Initiatives({
 
   return (
     <section id="initiatives" className="py-20 md:py-28">
-      <h2 className="t-h02">{initiatives.heading}</h2>
+      {/* Heading left, standfirst in the second column — on the home page the
+          lede is simply absent, so the heading sits alone as before. */}
+      <div className="grid gap-y-6 lg:grid-cols-2 lg:gap-x-[120px]">
+        <h2 className="t-h02">{initiatives.heading}</h2>
+        {initiatives.lede && <p className="t-body-lg font-bold">{initiatives.lede}</p>}
+      </div>
 
       <div ref={trackRef} className={`${styles.track} mt-12`}>
         {LOOP.map((item, i) => (
