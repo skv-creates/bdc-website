@@ -1,10 +1,22 @@
 /**
- * InitiativeOverlayContent — the initiative inside of <OverlayPanel/>.
+ * InitiativeOverlayContent — the initiative body, shared by the standalone page
+ * and the <OverlayPanel/> overlay.
  *
  * Long-form document rather than the two-up split used by the event and member
- * bodies, following Figma "home-desktop-info-overlay" (node 246:707): title →
+ * bodies, following Figma "home-desktop-info-overlay" (node 327:1137): title →
  * category → separator → standfirst → two text columns → cover → body →
- * feature block → checklist rows.
+ * feature block → checklist rows → closing CTAs.
+ *
+ * Two rules carried over from that frame and easy to undo by accident:
+ *
+ * - Every two-up row is a plain 50/50 split with the 24px grid gutter between
+ *   the halves (516 + 24 + 516 on the 1056 column), not a wide editorial gap.
+ *   Widening it reflows every heading in the page.
+ * - Vertical rhythm is owned by the blocks, not by a gap on the wrapper: 48px
+ *   between the hero and the cover on each side (96 total), then 80px above and
+ *   below the feature and checklist-question rows (160 between them), 48 around
+ *   the closing CTAs. Sizes below lg are halved to 48 so the page doesn't turn
+ *   into whitespace on a phone.
  *
  * `detail` is optional. Initiatives without it (everything except Policy Lab
  * today) fall back to the short card copy, so adding one to the carousel never
@@ -56,13 +68,21 @@ export function InitiativeOverlayContent({
     ? "col-span-full"
     : "col-span-full md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10";
 
+  /** Two-up row: 50/50 from lg, split by the grid gutter. */
+  const twoUp = "grid gap-y-8 lg:grid-cols-2 lg:gap-x-[var(--grid-gap)]";
+
   return (
     <div
-      className={`bdc-grid gap-y-12 ${inPage ? "" : "px-6 pt-16 md:px-0 lg:pt-20"}`}
+      className={`bdc-grid ${inPage ? "" : "px-6 md:px-0"}`}
       style={inPage ? undefined : { paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))" }}
     >
-      <div className={`${cols} flex flex-col gap-12`}>
-        <h1 className="t-h01 max-w-[720px]">{initiative.title}</h1>
+      {/* section-mission — title through the two intro columns. */}
+      <div
+        className={`${cols} flex flex-col gap-12 pb-12 ${
+          inPage ? "pt-16 lg:pt-[120px]" : "pt-16 lg:pt-20"
+        }`}
+      >
+        <h1 className="t-h01 max-w-[732px]">{initiative.title}</h1>
 
         <div className="flex items-center gap-3">
           <Accent />
@@ -73,11 +93,11 @@ export function InitiativeOverlayContent({
 
         {d ? (
           <>
-            <p className="t-body-lg max-w-[540px] font-bold leading-[1.1]">{d.lead}</p>
+            <p className="t-body-lg max-w-[540px] font-bold leading-[1.1] tracking-[-1px]">
+              {d.lead}
+            </p>
 
-            {/* Two equal text columns on desktop with a 120px gutter, stacked
-                below lg. */}
-            <div className="grid gap-y-6 lg:grid-cols-2 lg:gap-x-[120px]">
+            <div className={twoUp}>
               {d.columns.map((column, i) => (
                 <div key={i} className="flex flex-col gap-5">
                   {column.map((p) => (
@@ -95,22 +115,24 @@ export function InitiativeOverlayContent({
       </div>
 
       {d?.cover && (
-        <div className={`relative aspect-[1056/570] w-full overflow-hidden ${cols}`}>
-          <Image
-            src={d.cover.src}
-            alt={d.cover.alt}
-            fill
-            sizes="(max-width: 1023px) 90vw, 80vw"
-            className="object-cover"
-          />
+        <div className={`${cols} py-12`}>
+          <div className="relative aspect-[1092/589] w-full overflow-hidden">
+            <Image
+              src={d.cover.src}
+              alt={d.cover.alt}
+              fill
+              sizes="(max-width: 1023px) 90vw, 80vw"
+              className="object-cover"
+            />
+          </div>
         </div>
       )}
 
       {d && (
-        <div className={`${cols} flex flex-col gap-12`}>
+        <div className={`${cols} pt-12 pb-12 lg:pb-20`}>
           {/* Body copy and its CTA occupy the left column only; the right
               stays empty, as in the design. */}
-          <div className="grid gap-y-8 lg:grid-cols-2 lg:gap-x-[120px]">
+          <div className={`${twoUp} pb-12 lg:pb-20`}>
             <div className="flex flex-col items-start gap-12">
               <div className="flex flex-col gap-5">
                 {d.body.map((p) => (
@@ -124,15 +146,21 @@ export function InitiativeOverlayContent({
           </div>
 
           {/* Feature — label + statement on the left, body-medium column on the
-              right. body-medium is 24px/1.5 in the design system, i.e. t-body-lg. */}
-          <div className="grid gap-y-8 py-12 lg:grid-cols-2 lg:gap-x-[120px]">
+              right. body-medium is 24px/1.5 in the design system, i.e. t-body-lg.
+              The right column drops 72px so its first line sits against the
+              statement rather than the label above it. */}
+          <div className={`${twoUp} py-12 lg:py-20`}>
             <div className="flex flex-col gap-8">
               <p className="t-body font-bold tracking-[0.05px]">{d.feature.label}</p>
               <h2 className="t-h02">{d.feature.heading}</h2>
             </div>
 
             <div className="flex flex-col gap-6 lg:pt-[72px]">
-              <p className="t-body-lg font-bold">{d.feature.intro}</p>
+              {/* In the design the opening line and the paragraph under it are
+                  one text block separated by a blank line, so the gap there
+                  reads as a full 36px line rather than the 24px between the
+                  paragraphs that follow. */}
+              <p className="t-body-lg pb-3 font-bold">{d.feature.intro}</p>
               {d.feature.paragraphs.map((p) => (
                 <p key={p} className="t-body-lg">
                   {p}
@@ -142,7 +170,7 @@ export function InitiativeOverlayContent({
           </div>
 
           {/* Checklist question — left column only, right intentionally empty. */}
-          <div className="grid gap-y-8 py-12 lg:grid-cols-2 lg:gap-x-[120px]">
+          <div className={`${twoUp} py-12 lg:py-20`}>
             <h2 className="t-h02">{d.checklistHeading}</h2>
           </div>
 
@@ -150,14 +178,14 @@ export function InitiativeOverlayContent({
               margin, so the rule spans the full column while only the bullet is
               inset (in Figma the border sits on the row, the 36px offset on the
               list item inside it). */}
-          <ul className="flex flex-col pb-20">
+          <ul className="flex flex-col pb-12">
             {d.checklist.map((row) => (
               <li
                 key={row}
                 // list-inside keeps the marker within the padded box, so the
                 // bullet sits 36px inside the rule rather than hanging left of
                 // it (the default list-outside puts it before the padding).
-                className="t-body-lg list-inside list-disc border-t border-border py-3 ps-9 font-bold leading-[1.1]"
+                className="t-body-lg list-inside list-disc border-t border-border py-3 ps-9 font-bold leading-[1.1] tracking-[-1px]"
               >
                 {row}
               </li>
@@ -165,7 +193,7 @@ export function InitiativeOverlayContent({
           </ul>
 
           {d.actions && (
-            <div className="flex flex-wrap gap-6 pb-16">
+            <div className="flex flex-wrap gap-6 py-12">
               {d.actions.map((a) => (
                 <Button key={a.href + a.label} href={a.href} variant={a.variant ?? "primary"}>
                   {a.label}
@@ -177,7 +205,7 @@ export function InitiativeOverlayContent({
       )}
 
       {initiative.cta && !d && (
-        <div className={cols}>
+        <div className={`${cols} pb-12`}>
           <Button href={initiative.cta.href} variant="secondary">
             {initiative.cta.label}
           </Button>

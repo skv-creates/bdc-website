@@ -94,7 +94,13 @@ export default async function InitiativePage({
             because slugs are locale-neutral. */}
         <SiteNav nav={c.nav} ui={c.ui} locale={locale} path={`/initiatives/${slug}`} />
 
-        <main id="main" tabIndex={-1} className="py-16 md:py-20">
+        {/* No padding of its own: each section below carries the vertical
+            rhythm from Figma 327:1137, so adding some here shifts all of it.
+
+            The column stays fluid — the design's 1056 is one artboard width, not
+            a cap; the proportions (11 columns, 24px gutters, the 50/50 rows)
+            are what carry over. */}
+        <main id="main" tabIndex={-1}>
           <InitiativeOverlayContent initiative={initiative} variant="page" />
 
           {initiative.detail?.team && (
@@ -111,6 +117,14 @@ export default async function InitiativePage({
             />
           )}
         </main>
+      </div>
+
+      {/* Brand strip closing the page above the footer, its splits following the
+          page grid — same rule as the overlay's (see .overlay-strip). */}
+      <div className="overlay-strip relative z-30 flex" aria-hidden>
+        <div className="strip-1 h-3" />
+        <div className="strip-2 h-3" />
+        <div className="strip-3 h-3" />
       </div>
 
       <SiteFooter footer={c.footer} locale={locale} />
