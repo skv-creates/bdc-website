@@ -25,13 +25,26 @@ function Accent() {
   );
 }
 
-export function InitiativeOverlayContent({ initiative }: { initiative: Initiative }) {
+export function InitiativeOverlayContent({
+  initiative,
+  variant = "overlay",
+}: {
+  initiative: Initiative;
+  /**
+   * "overlay" — inside <OverlayPanel/>, which spans over the rail, so the body
+   * supplies its own gutters and rail inset.
+   * "page" — inside the standalone page shell, whose wrapper already applies
+   * both. Repeating them there double-pads the right edge.
+   */
+  variant?: "overlay" | "page";
+}) {
   const d = initiative.detail;
+  const inPage = variant === "page";
 
   return (
     <div
-      className="bdc-grid gap-y-12 px-6 pt-16 md:px-0 lg:pt-20"
-      style={{ paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))" }}
+      className={`bdc-grid gap-y-12 ${inPage ? "" : "px-6 pt-16 md:px-0 lg:pt-20"}`}
+      style={inPage ? undefined : { paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))" }}
     >
       {/* Head — grid col 2 onward, matching the page gutter. The md placement
           is load-bearing: px-0 starts at md but the lg offset doesn't, so

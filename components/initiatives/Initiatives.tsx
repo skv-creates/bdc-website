@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, type CSSProperties } from "react";
+import Link from "next/link";
 import styles from "./Initiatives.module.css";
 import { PatternTile } from "./patterns";
-import { OverlayPanel } from "@/components/ui/OverlayPanel";
-import { InitiativeOverlayContent } from "@/components/ui/InitiativeOverlayContent";
-import type { Initiative, SiteContent } from "@/lib/home-content";
+import type { Initiative, Locale, SiteContent } from "@/lib/home-content";
 
 /** Arrow-scroll animation: 120ms ease-out. */
 const SCROLL_MS = 120;
@@ -44,30 +43,18 @@ const slotStyle = (index: number) => {
 function Card({
   item,
   index,
-  onOpen,
+  locale,
 }: {
   item: Initiative;
   index: number;
-  onOpen: () => void;
+  locale: Locale;
 }) {
   const style = slotStyle(index);
 
   return (
     <article
-      className={`${styles.card} flex cursor-pointer flex-col gap-12 p-6`}
+      className={`${styles.card} relative flex cursor-pointer flex-col gap-12 p-6`}
       style={style}
-      onClick={onOpen}
-      // The card is a click target but not a <button>: it contains the CTA
-      // anchor, and nesting interactive elements is invalid. Role + key handler
-      // give it the same keyboard affordance without the nesting.
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onOpen();
-        }
-      }}
     >
       <div className="relative hidden h-[240px] w-full overflow-hidden md:block">
         <PatternTile n={item.pattern} />
@@ -79,15 +66,30 @@ function Card({
       </div>
 
       <div className="flex flex-1 flex-col gap-8">
-        <h3 className="t-h03">{item.title}</h3>
+        <h3 className="t-h03">
+          {/* Stretched link: the ::after covers the whole card, so a click
+              anywhere navigates, while in the DOM this stays a sibling of the
+              CTA anchor below — never an <a> inside an <a>. The title is the
+              accessible name, and Enter works natively, so the old
+              role="button" + keydown handler is gone.
+              NB: anything interactive added to this card later needs
+              `relative z-10` to sit above the ::after. */}
+          <Link
+            href={`/${locale}/initiatives/${item.slug}`}
+            className="after:absolute after:inset-0 after:content-['']"
+          >
+            {item.title}
+          </Link>
+        </h3>
         <p className="t-body">{item.text}</p>
         {item.cta && (
           <a
             href={item.cta.href}
-            // Stop the click bubbling to the card, or following the CTA would
-            // also open the overlay behind it.
-            onClick={(e) => e.stopPropagation()}
-            className="t-label mt-auto inline-flex items-center justify-center self-start rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
+            // relative z-10 lifts this above the title link's stretched ::after,
+            // so a click here follows the CTA rather than opening the
+            // initiative. No stopPropagation needed — there is no ancestor
+            // handler any more, just stacking order.
+            className="t-label relative z-10 mt-auto inline-flex items-center justify-center self-start rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
             {...(/^https?:\/\//.test(item.cta.href)
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
@@ -121,15 +123,14 @@ const recenter = (track: HTMLDivElement, n: number) => {
 export function Initiatives({
   initiatives,
   ui,
+  locale,
 }: {
   initiatives: SiteContent["initiatives"];
   ui: SiteContent["ui"];
+  locale: Locale;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef(0);
-  // Index into `items`, not into the tripled loop — the same initiative appears
-  // three times in the track and all three must open the same overlay.
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const items = initiatives.items;
   const N = items.length;
@@ -198,7 +199,7 @@ export function Initiatives({
 
       <div ref={trackRef} className={`${styles.track} mt-12`}>
         {LOOP.map((item, i) => (
-          <Card key={i} item={item} index={i % N} onOpen={() => setOpenIndex(i % N)} />
+          <Card key={i} item={item} index={i % N} locale={locale} />
         ))}
       </div>
 
@@ -206,12 +207,6 @@ export function Initiatives({
         <Arrow dir={-1} onClick={() => scrollByCard(-1)} label={ui.prev} glyph="←" />
         <Arrow dir={1} onClick={() => scrollByCard(1)} label={ui.next} glyph="→" />
       </div>
-
-      {openIndex !== null && (
-        <OverlayPanel onClose={() => setOpenIndex(null)}>
-          <InitiativeOverlayContent initiative={items[openIndex]} />
-        </OverlayPanel>
-      )}
     </section>
   );
 }
