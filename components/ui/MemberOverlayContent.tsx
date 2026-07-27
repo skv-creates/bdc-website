@@ -2,8 +2,10 @@
  * MemberOverlayContent — the team-member inside of <OverlayPanel/>.
  *
  * Same shell + grid as EventOverlayContent, but the order is reversed: portrait
- * on the left (cols 2–5), info on the right (cols 7–11 — name, role, separator,
- * bio). Portrait comes first in the DOM, so on mobile it stacks on top.
+ * on the left (cols 2–6), info on the right (cols 8–12 — name, role, separator,
+ * bio) — mirrors EventOverlayContent's spans so the bottom pattern strip traces
+ * the left block the same way. Portrait comes first in the DOM, so on mobile it
+ * stacks on top.
  * Server-renderable (no interactivity).
  */
 import Image from "next/image";
@@ -28,7 +30,7 @@ export function MemberOverlayContent({
           from md) nor a column offset (lg only), so content sat flush against
           the panel edge and the portrait ballooned to ~88% of it. 3:4 at all
           sizes, so its height grows with the column width. */}
-      <div className="relative col-span-full aspect-[3/4] w-full md:col-start-2 md:col-span-4 lg:col-start-2 lg:col-span-4">
+      <div className="relative col-span-full aspect-[3/4] w-full md:col-start-2 md:col-span-4 lg:col-start-2 lg:col-span-5">
         {member.photo ? (
           <Image
             src={member.photo}
@@ -42,9 +44,9 @@ export function MemberOverlayContent({
         )}
       </div>
 
-      {/* Info — page grid cols 7–11 on desktop; stacks under the portrait on
+      {/* Info — page grid cols 8–12 on desktop; stacks under the portrait on
           tablet, sharing its col-2 start so both align to one edge. */}
-      <div className="col-span-full flex flex-col gap-8 md:col-start-2 md:col-span-6 lg:col-start-7 lg:col-span-6">
+      <div className="col-span-full flex flex-col gap-8 md:col-start-2 md:col-span-6 lg:col-start-8 lg:col-span-5">
         <h1 className="t-h02">{member.name}</h1>
 
         {/* Role and LinkedIn share one row, the mark pushed to the far edge of
