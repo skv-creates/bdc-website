@@ -40,7 +40,11 @@ export function MemberCard({
               aria-hidden
               fill
               sizes={sizes}
-              className={`object-cover transition-opacity duration-[120ms] ease-out ${
+              // object-top, unlike the portrait above it: the hover frames are
+              // 2:3 against this 3:4 box, so a centred crop trims ~11% of the
+              // height and takes the top of the head with it. The slack in
+              // these shots is at the bottom.
+              className={`object-cover object-top transition-opacity duration-[120ms] ease-out ${
                 showAlt ? "opacity-100" : "opacity-0"
               }`}
             />

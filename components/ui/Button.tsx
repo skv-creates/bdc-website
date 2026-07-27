@@ -43,9 +43,12 @@ export function Button({
   type = "button",
   fullWidth = false,
 }: Props) {
-  const cls = `transition-colors duration-200 ${variants[variant]} ${
-    fullWidth ? "w-full" : ""
-  } ${className}`;
+  // The two pill CTAs span the full width on phones and shrink to content from
+  // sm up. `small` (the nav button) and `tertiary` (a text link) are excluded —
+  // stretching either reads as a mistake rather than a button.
+  const stretchOnMobile = variant === "primary" || variant === "secondary";
+  const width = fullWidth ? "w-full" : stretchOnMobile ? "w-full sm:w-auto" : "";
+  const cls = `transition-colors duration-200 ${variants[variant]} ${width} ${className}`;
 
   // The arrow belongs to the tertiary component itself, so callers pass only a
   // label. aria-hidden because it is decoration — the label already says where

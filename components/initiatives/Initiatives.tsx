@@ -44,21 +44,35 @@ function Card({
   item,
   index,
   locale,
+  inside = false,
+  seeMore,
 }: {
   item: Initiative;
   index: number;
   locale: Locale;
+  /** The inside-pages form (Figma 327:1543) — see the note on <Initiatives/>. */
+  inside?: boolean;
+  seeMore: string;
 }) {
   const style = slotStyle(index);
+  const href = `/${locale}/initiatives/${item.slug}`;
 
   return (
     <article
-      className={`${styles.card} relative flex cursor-pointer flex-col gap-12 p-6`}
+      // .card carries the flex/scroll-snap behaviour for both forms; .cardInside
+      // only overrides the width, and is declared after it so it wins.
+      className={`${styles.card} ${
+        inside ? `${styles.cardInside} p-8` : "p-6"
+      } relative flex cursor-pointer flex-col gap-12`}
       style={style}
     >
-      <div className="relative hidden h-[240px] w-full overflow-hidden md:block">
-        <PatternTile n={item.pattern} />
-      </div>
+      {/* The inside-pages card drops the pattern tile — those pages already
+          carry a cover image and a team panel, so the tiles read as noise. */}
+      {!inside && (
+        <div className="relative hidden h-[240px] w-full overflow-hidden md:block">
+          <PatternTile n={item.pattern} />
+        </div>
+      )}
 
       <div className="flex items-center gap-5">
         <LabelMark />
@@ -66,7 +80,10 @@ function Card({
       </div>
 
       <div className="flex flex-1 flex-col gap-8">
-        <h3 className="t-h03">
+        {/* Inside pages reserve two lines for the title and exactly three for
+            the blurb (the design's 88px + 84px boxes). That is what makes every
+            card the same height and lands all the buttons on one line. */}
+        <h3 className={`t-h03 ${inside ? "min-h-[2.2em]" : ""}`}>
           {/* Stretched link: the ::after covers the whole card, so a click
               anywhere navigates, while in the DOM this stays a sibling of the
               CTA anchor below — never an <a> inside an <a>. The title is the
@@ -74,28 +91,43 @@ function Card({
               role="button" + keydown handler is gone.
               NB: anything interactive added to this card later needs
               `relative z-10` to sit above the ::after. */}
-          <Link
-            href={`/${locale}/initiatives/${item.slug}`}
-            className="after:absolute after:inset-0 after:content-['']"
-          >
+          <Link href={href} className="after:absolute after:inset-0 after:content-['']">
             {item.title}
           </Link>
         </h3>
-        <p className="t-body">{item.text}</p>
-        {item.cta && (
-          <a
-            href={item.cta.href}
-            // relative z-10 lifts this above the title link's stretched ::after,
-            // so a click here follows the CTA rather than opening the
-            // initiative. No stopPropagation needed — there is no ancestor
-            // handler any more, just stacking order.
-            className="t-label relative z-10 mt-auto inline-flex items-center justify-center self-start rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
-            {...(/^https?:\/\//.test(item.cta.href)
-              ? { target: "_blank", rel: "noopener noreferrer" }
-              : {})}
-          >
-            {item.cta.label}
-          </a>
+        <p className={`t-body ${inside ? "line-clamp-3 min-h-[4.2em]" : ""}`}>{item.text}</p>
+
+        {inside ? (
+          // aria-hidden + tabIndex -1: the title link above already exposes this
+          // destination, and without it every card is announced and tabbed
+          // through twice. mt-auto pins it to the card's foot; the pt-4 turns
+          // the column's 32px gap into the design's 48.
+          <span className="mt-auto pt-4">
+            <Link
+              href={href}
+              aria-hidden
+              tabIndex={-1}
+              className="t-label relative z-10 inline-flex items-center justify-center rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
+            >
+              {seeMore}
+            </Link>
+          </span>
+        ) : (
+          item.cta && (
+            <a
+              href={item.cta.href}
+              // relative z-10 lifts this above the title link's stretched ::after,
+              // so a click here follows the CTA rather than opening the
+              // initiative. No stopPropagation needed — there is no ancestor
+              // handler any more, just stacking order.
+              className="t-label relative z-10 mt-auto inline-flex items-center justify-center self-start rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
+              {...(/^https?:\/\//.test(item.cta.href)
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
+            >
+              {item.cta.label}
+            </a>
+          )
         )}
       </div>
     </article>
@@ -124,10 +156,18 @@ export function Initiatives({
   initiatives,
   ui,
   locale,
+  inside = false,
 }: {
   initiatives: SiteContent["initiatives"];
   ui: SiteContent["ui"];
   locale: Locale;
+  /**
+   * "section-initiatives-inside-pages" (Figma 327:1543) rather than the landing
+   * page's. Heading only — no standfirst — and the card loses its pattern tile,
+   * gains a "Виж повече" button, and fixes its title and blurb at two and three
+   * lines so every card is the same height and the buttons line up.
+   */
+  inside?: boolean;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef(0);
@@ -196,19 +236,36 @@ export function Initiatives({
   return (
     <section id="initiatives" className="bdc-stop-11 py-20 md:py-28">
       {/* Heading left, standfirst in the second column — on the home page the
-          lede is simply absent, so the heading sits alone as before. */}
-      <div className="grid gap-y-6 lg:grid-cols-2 lg:gap-x-[120px]">
-        <h2 className="t-h02">{initiatives.heading}</h2>
-        {initiatives.lede && <p className="t-body-lg font-bold">{initiatives.lede}</p>}
-      </div>
+          lede is simply absent, so the heading sits alone as before. Inside
+          pages drop the standfirst entirely and let the heading run wide. */}
+      {inside ? (
+        // Inside pages lead with the standfirst, not the word "Инициативи" —
+        // in the frame this is the 732×186 heading, three lines at 56px, which
+        // is the sentence rather than the one-word title.
+        <h2 className="t-h02 max-w-[732px]">{initiatives.lede ?? initiatives.heading}</h2>
+      ) : (
+        <div className="grid gap-y-6 lg:grid-cols-2 lg:gap-x-[120px]">
+          <h2 className="t-h02">{initiatives.heading}</h2>
+          {initiatives.lede && <p className="t-body-lg font-bold">{initiatives.lede}</p>}
+        </div>
+      )}
 
-      <div ref={trackRef} className={`${styles.track} mt-12`}>
+      <div className={`${styles.track} ${inside ? "mt-12 lg:mt-20" : "mt-12"}`} ref={trackRef}>
         {LOOP.map((item, i) => (
-          <Card key={i} item={item} index={i % N} locale={locale} />
+          <Card
+            key={i}
+            item={item}
+            index={i % N}
+            locale={locale}
+            inside={inside}
+            seeMore={ui.seeMore}
+          />
         ))}
       </div>
 
-      <div className="mt-12 flex justify-end gap-4">
+      <div
+        className={`flex justify-end gap-4 ${inside ? "mt-12 lg:mt-20" : "mt-12"}`}
+      >
         <Arrow dir={-1} onClick={() => scrollByCard(-1)} label={ui.prev} glyph="←" />
         <Arrow dir={1} onClick={() => scrollByCard(1)} label={ui.next} glyph="→" />
       </div>
