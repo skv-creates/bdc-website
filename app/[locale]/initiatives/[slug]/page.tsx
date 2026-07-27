@@ -57,10 +57,16 @@ export default async function InitiativePage({
       </a>
       <PatternRail />
 
+      {/* Long-form reading column. The end inset clears the rail by a full
+          --page-gutter rather than the 24px --rail-gap the home page uses, so
+          the text is inset from the rail by the same amount as from the page
+          edge — matching Figma 327:1137, where the copy stops ~120px short of
+          the pattern stripe. It scales with the gutter's own clamp, so narrow
+          viewports don't lose the column to padding. */}
       <div
         style={{
           paddingInlineStart: "var(--page-gutter)",
-          paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))",
+          paddingInlineEnd: "calc(var(--rail-w) + var(--page-gutter))",
         }}
       >
         {/* `path` keeps the nav's "#..." links pointing back at the home route
