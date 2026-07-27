@@ -25,11 +25,11 @@ export async function Activities({
   return (
     <section id="activities" className="py-20 md:py-28">
       <div className="bdc-grid">
-        <h2 className="t-h02 col-span-full lg:col-span-8 lg:col-start-2">{heading}</h2>
+        <h2 className="t-h02 col-span-full lg:col-span-8">{heading}</h2>
 
-        {/* Rows align to the heading: full width until lg, then indented to
-            start at column 2 (cols 2–11), so the rules begin under it. */}
-        <ul className="col-span-full mt-12 border-b border-border md:mt-16 lg:col-span-10 lg:col-start-2">
+        {/* Starts at column 1 like every other section on the page — the old
+            column-2 indent left this one block out of line with the rest. */}
+        <ul className="col-span-full mt-12 border-b border-border md:mt-16">
           {events.map((e) => (
             <li key={e.slug} className="border-t border-border">
               <Link
