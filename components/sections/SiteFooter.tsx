@@ -19,7 +19,7 @@ export function SiteFooter({
         // match the page content grid (gutter left, rail+gap right) so the
         // footer columns line up with the rest of the page
         paddingInlineStart: "var(--page-gutter)",
-        paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))",
+        paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))",
       }}
     >
       <div className="py-24 md:py-32">
@@ -29,7 +29,7 @@ export function SiteFooter({
             <Logo variant="white" className="h-10 w-auto" />
           </div>
 
-          <div className="col-span-4 flex flex-col gap-4 md:col-span-4 lg:col-start-9 lg:col-span-3 lg:items-start">
+          <div className="col-span-4 flex flex-col gap-4 md:col-span-4 lg:col-start-9 lg:col-span-4 lg:items-start">
             <p className="t-caption font-bold">{footer.contactHeading}</p>
             <a href={`mailto:${footer.email}`} className="t-caption hover:opacity-70">
               {footer.email}
@@ -53,7 +53,7 @@ export function SiteFooter({
           </p>
           <a
             href={`/${locale}/privacy`}
-            className="t-caption col-span-4 justify-self-start border-b-2 border-transparent transition-colors hover:border-current md:col-span-4 lg:col-start-9 lg:col-span-3"
+            className="t-caption col-span-4 justify-self-start border-b-2 border-transparent transition-colors hover:border-current md:col-span-4 lg:col-start-9 lg:col-span-4"
           >
             {footer.privacy}
           </a>

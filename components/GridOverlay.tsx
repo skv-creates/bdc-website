@@ -43,7 +43,7 @@ export function GridOverlay() {
       className="pointer-events-none fixed inset-0 z-[100]"
       style={{
         paddingInlineStart: "var(--page-gutter)",
-        paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))",
+        paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))",
       }}
     >
       <div className="bdc-grid h-full">

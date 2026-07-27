@@ -23,7 +23,7 @@ export async function Activities({
   if (events.length === 0) return null;
 
   return (
-    <section id="activities" className="py-20 md:py-28">
+    <section id="activities" className="bdc-stop-11 py-20 md:py-28">
       <div className="bdc-grid">
         <h2 className="t-h02 col-span-full lg:col-span-8 lg:col-start-2">{heading}</h2>
 
