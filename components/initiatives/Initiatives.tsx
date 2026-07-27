@@ -158,7 +158,7 @@ export function Initiatives({
   };
 
   return (
-    <section id="initiatives" className="py-20 md:py-28">
+    <section id="initiatives" className="bdc-stop-11 py-20 md:py-28">
       <h2 className="t-h02">{initiatives.heading}</h2>
 
       <div ref={trackRef} className={`${styles.track} mt-12`}>

@@ -42,7 +42,7 @@ export function Team({ team }: { team: SiteContent["team"] }) {
   ];
 
   return (
-    <section id="team" className="py-20 md:py-28">
+    <section id="team" className="bdc-stop-11 py-20 md:py-28">
       <div className="bdc-grid gap-y-10">
         <h2 className="t-h02 col-span-full lg:col-span-2">{team.heading}</h2>
         <p className="t-h05 leading-tight col-span-full lg:col-start-4 lg:col-span-6">
