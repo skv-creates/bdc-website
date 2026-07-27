@@ -5,17 +5,18 @@ import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import type { Locale, SiteContent } from "@/lib/home-content";
 
-/* Match the page content column: gutter on the left, gap on the right.
-   The header itself stops at the rail's left edge (see headerStyle) so its
-   bg-page background never paints over the fixed pattern rail; the content
-   then only needs the gap on its end to clear into the space before the rail. */
+/* Match the page content column: gutter on the left, and on the right only
+   --rail-clear — the header already stops at the rail's left edge (see
+   headerStyle), which is where the page grid ends, so it needs just the same
+   mobile breathing room the rest of the page gets (0 from md up). */
 const padStyle = {
   paddingInlineStart: "var(--page-gutter)",
-  paddingInlineEnd: "var(--rail-gap)",
+  paddingInlineEnd: "var(--rail-clear)",
 } as const;
 
 /* The fixed header is full-bleed at the top to cover the iOS status-bar area,
-   but its right edge stops where the rail begins so it doesn't overlap it. */
+   but its right edge stops where the rail begins so its bg-page never paints
+   over the pattern. */
 const headerStyle = {
   ...padStyle,
   insetInlineEnd: "var(--rail-w)",
@@ -75,7 +76,7 @@ export function SiteNav({
         className="fixed left-0 top-0 z-40 bg-page pb-6 pt-[calc(env(safe-area-inset-top)+1.5rem)]"
         style={headerStyle}
       >
-        <div className="flex items-center justify-between gap-6 lg:grid lg:grid-cols-11 lg:gap-x-[var(--grid-gap)]">
+        <div className="flex items-center justify-between gap-6 lg:grid lg:grid-cols-12 lg:gap-x-[var(--grid-gap)]">
           <a href={homeHref} aria-label={ui.home} className="shrink-0 lg:col-start-1 lg:col-span-3 lg:justify-self-start">
             <Logo variant="dark" className="h-8 w-auto md:h-10" />
           </a>
@@ -94,6 +95,8 @@ export function SiteNav({
             ))}
           </nav>
 
+          {/* justify-end against cols 8–11 lands the CTA + language toggle on
+              the right edge of column 11, clear of the rail. */}
           <div className="hidden items-center gap-4 lg:col-start-8 lg:col-span-4 lg:flex lg:justify-end">
             <Button variant="small" href={nav.cta.href}>{nav.cta.label}</Button>
             <a href={switchHref} aria-label={ui.switchLanguage} className="t-caption border-b-2 border-transparent transition-colors hover:border-current">
