@@ -27,9 +27,9 @@ export async function Activities({
       <div className="bdc-grid">
         <h2 className="t-h02 col-span-full lg:col-span-8">{heading}</h2>
 
-        {/* Starts at column 1 like every other section on the page — the old
-            column-2 indent left this one block out of line with the rest. */}
-        <ul className="col-span-full mt-12 border-b border-border md:mt-16">
+        {/* Indented to start at column 2 on desktop (per design); the list then
+            runs to the grid's right edge. Full width on tablet/mobile. */}
+        <ul className="col-span-full mt-12 border-b border-border md:mt-16 lg:col-start-2 lg:col-span-10">
           {events.map((e) => (
             <li key={e.slug} className="border-t border-border">
               <Link

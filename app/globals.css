@@ -136,6 +136,16 @@
 }
 
 /* =============================================================================
+   TEXT BALANCE — Framer's "Balance", as CSS. `text-wrap` inherits, so body copy
+   defaults to `pretty` (kills orphans / lonely last words on long text) via the
+   body rule below, and display text opts up to `balance` (even line lengths).
+   Browsers cap `balance` at ~6 lines, so it stays safe on long strings.
+============================================================================= */
+@layer base {
+  .t-h01, .t-h02, .t-h03, .t-h04, .t-h05, .t-quote { text-wrap: balance; }
+}
+
+/* =============================================================================
    BASE
 ============================================================================= */
 html { color-scheme: light; }
@@ -147,6 +157,7 @@ body {
   font-feature-settings: "ss16" 1;   /* stylistic set used throughout Figma */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  text-wrap: pretty;                 /* orphan-free body copy by default (inherited) */
 }
 
 /* Global: clickable elements show the pointer hand. Native <button> defaults to
@@ -205,6 +216,16 @@ main:focus { outline: none; }
     margin-inline-end: calc((100% - 11 * var(--grid-gap)) / 12 + var(--grid-gap));
   }
 }
+
+/* OverlayPanel is sometimes mounted inside a .bdc-stop-11 section — the Team
+   grid opens the member modal from within #team. --grid-cols inherits through
+   the DOM, so that section's 11 leaks into the fixed overlay and knocks its
+   grid (and the bottom strip) out of step with the page, and with the event
+   overlay, which isn't nested in such a section. Re-assert the page's own
+   responsive column count so the overlay is self-contained wherever it's used. */
+.overlay-root { --grid-cols: 12; }
+@media (max-width: 1023px) { .overlay-root { --grid-cols: 8; } }
+@media (max-width: 767px)  { .overlay-root { --grid-cols: 4; } }
 
 /* =============================================================================
    OVERLAY BOTTOM STRIP — three brand blocks whose split follows the site grid:
