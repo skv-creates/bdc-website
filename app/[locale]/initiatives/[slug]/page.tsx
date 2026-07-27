@@ -77,16 +77,14 @@ export default async function InitiativePage({
       </a>
       <PatternRail />
 
-      {/* Long-form reading column. The end inset clears the rail by a full
-          --page-gutter rather than the 24px --rail-gap the home page uses, so
-          the text is inset from the rail by the same amount as from the page
-          edge — matching Figma 327:1137, where the copy stops ~120px short of
-          the pattern stripe. It scales with the gutter's own clamp, so narrow
-          viewports don't lose the column to padding. */}
+      {/* Same symmetric shell as every other page: gutter left, rail right. The
+          clearance Figma 327:1137 shows between the copy and the pattern stripe
+          comes from .bdc-stop-11 on <main> below, not from extra padding here —
+          padding would push the column off centre again. */}
       <div
         style={{
           paddingInlineStart: "var(--page-gutter)",
-          paddingInlineEnd: "calc(var(--rail-w) + var(--page-gutter))",
+          paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))",
         }}
       >
         {/* `path` keeps the nav's "#..." links pointing back at the home route
@@ -100,7 +98,10 @@ export default async function InitiativePage({
             The column stays fluid — the design's 1056 is one artboard width, not
             a cap; the proportions (11 columns, 24px gutters, the 50/50 rows)
             are what carry over. */}
-        <main id="main" tabIndex={-1}>
+        {/* Long-form reading column: stops at column 11 so the copy never runs
+            up against the pattern, and every nested .bdc-grid inherits the
+            11-column track this sets. */}
+        <main id="main" tabIndex={-1} className="bdc-stop-11">
           <InitiativeOverlayContent initiative={initiative} variant="page" />
 
           {initiative.detail?.team && (

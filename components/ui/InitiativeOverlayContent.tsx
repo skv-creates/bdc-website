@@ -74,7 +74,7 @@ export function InitiativeOverlayContent({
   return (
     <div
       className={`bdc-grid ${inPage ? "" : "px-6 md:px-0"}`}
-      style={inPage ? undefined : { paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))" }}
+      style={inPage ? undefined : { paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))" }}
     >
       {/* section-mission — title through the two intro columns. */}
       <div

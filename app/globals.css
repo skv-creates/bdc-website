@@ -48,10 +48,21 @@
   --radius-full: 9999px;
 
   /* ---- Layout ----------------------------------------------------------- */
-  --rail-w: 180px;             /* pattern rail width (Figma) — steps below     */
-  --rail-gap: 24px;            /* gap between content and rail (Figma)         */
+  /* The page is symmetric: --page-gutter of margin on the left, and a rail of
+     exactly the same width filling the right margin, so content sits centred
+     between them:
+       [--page-gutter][content — --grid-cols columns][--rail-clear][--rail-w rail]
+     Every content container pads its end by --rail-w + --rail-clear. From md up
+     --rail-clear is 0, so content runs flush into the rail and stays exactly
+     centred; sections that want room there opt into .bdc-stop-11 instead. On
+     phones there is no spare column to give up, so --rail-clear becomes 12px —
+     content sits 12px left of true centre, which is imperceptible at that width
+     and keeps text off the pattern. Because the rail no longer overlaps the
+     grid, the grid is a full 12 columns again. */
   --page-gutter: clamp(1.25rem, 7.4vw, 7rem);  /* ≈112px at the 1512 design width, capped at 7rem */
-  --grid-cols: 11;  /* content uses 11 cols; the rail occupies the 12th + gap */
+  --rail-w: var(--page-gutter); /* rail fills the right margin, mirroring the gutter */
+  --rail-clear: 0px;           /* breathing room before the rail (mobile only)  */
+  --grid-cols: 12;             /* full 12-col grid; drops to 8 then 4 below    */
   --grid-gap: 24px;            /* Figma column gap                            */
   /* Left inset of the OverlayPanel = --page-gutter from md up, so the panel's
      grid lines up with the page grid; a fixed 48px band on mobile, sized to the
@@ -180,6 +191,21 @@ main:focus { outline: none; }
   column-gap: var(--grid-gap);
 }
 
+/* Sections that stop at column 11, leaving column 12 as breathing room before
+   the rail so their content never runs up against the pattern.
+   Two halves that must stay in step: the box narrows by exactly one column +
+   one gap, and the grid inside drops to 11 columns. Because
+   (12 cols + 11 gaps) − (1 col + 1 gap) == (11 cols + 10 gaps), those 11 tracks
+   keep the SAME width as the page's and land exactly on page columns 1–11 —
+   so these sections still align with the full-width ones.
+   Only meaningful on the 12-col layout; below lg the section is full width. */
+@media (min-width: 1024px) {
+  .bdc-stop-11 {
+    --grid-cols: 11;
+    margin-inline-end: calc((100% - 11 * var(--grid-gap)) / 12 + var(--grid-gap));
+  }
+}
+
 /* =============================================================================
    OVERLAY BOTTOM STRIP — three brand blocks whose split follows the site grid:
    block 1 ends at the start of col 2, block 2 spans cols 2–6, block 3 fills the
@@ -190,7 +216,7 @@ main:focus { outline: none; }
 ============================================================================= */
 .overlay-strip {
   --strip-col: calc(
-    (100% - var(--rail-w) - var(--rail-gap) - (var(--grid-cols) - 1) * var(--grid-gap)) / var(--grid-cols)
+    (100% - var(--rail-w) - (var(--grid-cols) - 1) * var(--grid-gap)) / var(--grid-cols)
   );
 }
 .overlay-strip > .strip-1 { width: calc(var(--strip-col) + var(--grid-gap)); background: var(--tri-accent); }
@@ -202,10 +228,12 @@ main:focus { outline: none; }
   .overlay-strip > .strip-2 { width: 46%; }
 }
 
-/* ---- Responsive: rail width steps + grid density ------------------------- */
-@media (max-width: 1279px) { :root { --rail-w: 140px; } }
-@media (max-width: 1023px) { :root { --rail-w: 88px; --grid-cols: 8; } }
-@media (max-width: 767px)  { :root { --rail-w: 24px; --rail-gap: 12px; --grid-cols: 4; --grid-gap: 12px; --overlay-panel-left: 3rem; } }
+/* ---- Responsive: grid density -------------------------------------------
+   The rail no longer steps per breakpoint — it tracks --page-gutter, which is
+   already fluid (≈112px at 1512 down to 20px), so both margins stay equal at
+   every width. Only the column count and gap change here. */
+@media (max-width: 1023px) { :root { --grid-cols: 8; } }
+@media (max-width: 767px)  { :root { --grid-cols: 4; --grid-gap: 12px; --overlay-panel-left: 3rem; --rail-clear: 12px; } }
 
 /* ---- Responsive: mobile type scale (≤767px) -----------------------------
    Tighter headings + slightly larger body/label/button text on phones.

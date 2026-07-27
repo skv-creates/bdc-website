@@ -1,5 +1,8 @@
-/* Full-height fixed rail pinned to the right edge. Width is token-driven and
-   steps down per breakpoint (160 → 120 → 72 → 24px). */
+/* Full-height fixed rail pinned to the right edge. It fills the right page
+   margin exactly — --rail-w mirrors --page-gutter on the left — so content
+   sits centred between the two and runs flush into the rail. Fluid width is
+   safe: the tiles use patternUnits="userSpaceOnUse" with a fixed TILE and the
+   <svg> has no viewBox, so width reveals more or less tile, never scales it. */
 .rail {
   position: fixed;
   inset-block: 0;

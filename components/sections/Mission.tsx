@@ -10,7 +10,9 @@ import type { SiteContent } from "@/lib/home-content";
  */
 export function Mission({ mission }: { mission: SiteContent["mission"] }) {
   return (
-    <section id="mission" className="bdc-grid gap-y-8 py-20">
+    // bdc-stop-11 for the same reason as the hero: the spans are Figma's own
+    // 11-column ones, and a 56px statement running into the rail reads badly.
+    <section id="mission" className="bdc-stop-11 bdc-grid gap-y-8 py-20">
       <div className="col-span-full flex items-center gap-2.5">
         {/* 16×8 mark, recoloured with the pattern rail like every other accent. */}
         <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
