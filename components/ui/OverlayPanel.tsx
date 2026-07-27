@@ -107,7 +107,7 @@ export function OverlayPanel({
 
   return (
     <div
-      className={`fixed inset-0 z-[60] ${
+      className={`overlay-root fixed inset-0 z-[60] ${
         exiting ? "opacity-0 transition-opacity duration-[80ms] ease-out" : ""
       }`}
       role="dialog"
