@@ -95,7 +95,7 @@ export function InitiativeOverlayContent({
       </div>
 
       {d?.cover && (
-        <div className={`relative aspect-[1233/542] w-full overflow-hidden ${cols}`}>
+        <div className={`relative aspect-[1056/570] w-full overflow-hidden ${cols}`}>
           <Image
             src={d.cover.src}
             alt={d.cover.alt}
