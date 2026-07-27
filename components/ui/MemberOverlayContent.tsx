@@ -21,7 +21,7 @@ export function MemberOverlayContent({
   return (
     <div
       className="bdc-grid gap-y-10 px-6 pt-16 md:px-0 lg:gap-y-0 lg:pt-20"
-      style={{ paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))" }}
+      style={{ paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))" }}
     >
       {/* Portrait — grid cols 2–5 on desktop, 2–5 of the 8-col tablet grid.
           Without the md placement the 768–1023 band had neither padding (px-0
@@ -44,7 +44,7 @@ export function MemberOverlayContent({
 
       {/* Info — page grid cols 7–11 on desktop; stacks under the portrait on
           tablet, sharing its col-2 start so both align to one edge. */}
-      <div className="col-span-full flex flex-col gap-8 md:col-start-2 md:col-span-6 lg:col-start-7 lg:col-span-5">
+      <div className="col-span-full flex flex-col gap-8 md:col-start-2 md:col-span-6 lg:col-start-7 lg:col-span-6">
         <h1 className="t-h02">{member.name}</h1>
 
         {/* Role and LinkedIn share one row, the mark pushed to the far edge of

@@ -46,7 +46,7 @@ export default async function PrivacyPage({
       <div
         style={{
           paddingInlineStart: "var(--page-gutter)",
-          paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))",
+          paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))",
         }}
       >
         <SiteNav nav={c.nav} ui={c.ui} locale={locale} path="/privacy" />
