@@ -41,16 +41,27 @@ export function InitiativeOverlayContent({
   const d = initiative.detail;
   const inPage = variant === "page";
 
+  /**
+   * Column placement per variant.
+   *
+   * overlay — the panel has no gutter of its own, so col 1 acts as one and
+   *   every block starts at col 2. The md step is load-bearing: px-0 begins at
+   *   md but the lg offset doesn't, and without it content sits flush against
+   *   the panel edge (same bug fixed earlier on the event/member bodies).
+   * page — the shell already applies --page-gutter, so blocks start at col 1
+   *   and run the full grid. Starting at col 2 here indents everything one
+   *   column past the logo.
+   */
+  const cols = inPage
+    ? "col-span-full"
+    : "col-span-full md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10";
+
   return (
     <div
       className={`bdc-grid gap-y-12 ${inPage ? "" : "px-6 pt-16 md:px-0 lg:pt-20"}`}
       style={inPage ? undefined : { paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))" }}
     >
-      {/* Head — grid col 2 onward, matching the page gutter. The md placement
-          is load-bearing: px-0 starts at md but the lg offset doesn't, so
-          without it this sits flush against the panel edge (see the tablet
-          inset fix on the event/member bodies). */}
-      <div className="col-span-full flex flex-col gap-12 md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10">
+      <div className={`${cols} flex flex-col gap-12`}>
         <h1 className="t-h01 max-w-[720px]">{initiative.title}</h1>
 
         <div className="flex items-center gap-3">
@@ -84,7 +95,7 @@ export function InitiativeOverlayContent({
       </div>
 
       {d?.cover && (
-        <div className="relative col-span-full aspect-[1233/542] w-full overflow-hidden md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10">
+        <div className={`relative aspect-[1233/542] w-full overflow-hidden ${cols}`}>
           <Image
             src={d.cover.src}
             alt={d.cover.alt}
@@ -96,7 +107,7 @@ export function InitiativeOverlayContent({
       )}
 
       {d && (
-        <div className="col-span-full flex flex-col gap-12 md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10">
+        <div className={`${cols} flex flex-col gap-12`}>
           {/* Body copy and its CTA occupy the left column only; the right
               stays empty, as in the design. */}
           <div className="grid gap-y-8 lg:grid-cols-2 lg:gap-x-[120px]">
@@ -135,12 +146,18 @@ export function InitiativeOverlayContent({
             <h2 className="t-h02">{d.checklistHeading}</h2>
           </div>
 
-          {/* Checklist — one bordered row per line. */}
+          {/* Checklist — one bordered row per line. The indent is padding, not
+              margin, so the rule spans the full column while only the bullet is
+              inset (in Figma the border sits on the row, the 36px offset on the
+              list item inside it). */}
           <ul className="flex flex-col pb-20">
             {d.checklist.map((row) => (
               <li
                 key={row}
-                className="t-body-lg list-disc border-t border-border py-3 font-bold leading-[1.1] ms-9"
+                // list-inside keeps the marker within the padded box, so the
+                // bullet sits 36px inside the rule rather than hanging left of
+                // it (the default list-outside puts it before the padding).
+                className="t-body-lg list-inside list-disc border-t border-border py-3 ps-9 font-bold leading-[1.1]"
               >
                 {row}
               </li>
@@ -160,7 +177,7 @@ export function InitiativeOverlayContent({
       )}
 
       {initiative.cta && !d && (
-        <div className="col-span-full md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10">
+        <div className={cols}>
           <Button href={initiative.cta.href} variant="secondary">
             {initiative.cta.label}
           </Button>
