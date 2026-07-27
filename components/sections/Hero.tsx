@@ -12,7 +12,10 @@ import type { SiteContent } from "@/lib/home-content";
  */
 export function Hero({ hero }: { hero: SiteContent["hero"] }) {
   return (
-    <section className="bdc-grid gap-y-12 pt-16 pb-20 lg:pt-[120px]">
+    // bdc-stop-11 keeps the column spans below literally the ones Figma draws
+    // (10 and 5 of 11) now that the page grid itself is 12 wide, and stops the
+    // heading short of the pattern rail.
+    <section className="bdc-stop-11 bdc-grid gap-y-12 pt-16 pb-20 lg:pt-[120px]">
       <h1 className="t-h01 col-span-full lg:col-span-10">{hero.heading}</h1>
 
       {/* body-medium — 24px/1.5 in the design system, i.e. .t-body-lg. */}

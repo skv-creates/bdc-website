@@ -15,9 +15,9 @@ export function EventOverlayContent({ event }: { event: BdcEvent }) {
       // Same column grid as the rest of the site (.bdc-grid = --grid-cols cols,
       // --grid-gap gutter). The panel starts at --page-gutter, so col 1 lines up
       // with the page's col 1; the rail-width right padding matches the page's
-      // end inset, so all 11 columns coincide with the global grid.
+      // end inset, so all 12 columns coincide with the global grid.
       className="bdc-grid gap-y-10 px-6 pt-16 md:px-0 lg:gap-y-0 lg:pt-20"
-      style={{ paddingInlineEnd: "calc(var(--rail-w) + var(--rail-gap))" }}
+      style={{ paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))" }}
     >
       {/* Text — page grid cols 2–6 on desktop (col 1 is the gutter), cols 2–7
           of the 8-col tablet grid. The md placement matters: px-0 starts at md
@@ -44,7 +44,7 @@ export function EventOverlayContent({ event }: { event: BdcEvent }) {
 
       {/* Cover — page grid cols 8–11 on desktop (col 7 is the gutter). */}
       {event.cover && (
-        <div className="relative aspect-square w-full col-span-full md:col-start-2 md:col-span-6 lg:col-start-8 lg:col-span-4 lg:aspect-auto lg:h-[640px]">
+        <div className="relative aspect-square w-full col-span-full md:col-start-2 md:col-span-6 lg:col-start-8 lg:col-span-5 lg:aspect-auto lg:h-[640px]">
           <Image
             src={event.cover}
             alt={event.name}

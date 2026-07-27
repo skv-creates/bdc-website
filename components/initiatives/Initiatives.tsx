@@ -194,7 +194,7 @@ export function Initiatives({
   };
 
   return (
-    <section id="initiatives" className="py-20 md:py-28">
+    <section id="initiatives" className="bdc-stop-11 py-20 md:py-28">
       {/* Heading left, standfirst in the second column — on the home page the
           lede is simply absent, so the heading sits alone as before. */}
       <div className="grid gap-y-6 lg:grid-cols-2 lg:gap-x-[120px]">
