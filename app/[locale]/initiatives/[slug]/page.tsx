@@ -98,16 +98,18 @@ export default async function InitiativePage({
             The column stays fluid — the design's 1056 is one artboard width, not
             a cap; the proportions (11 columns, 24px gutters, the 50/50 rows)
             are what carry over. */}
-        {/* Long-form reading column: stops at column 11 so the copy never runs
-            up against the pattern, and every nested .bdc-grid inherits the
-            11-column track this sets. */}
-        <main id="main" tabIndex={-1} className="bdc-stop-11">
+        {/* No .bdc-stop-11 here. Each section applies it itself — nesting it
+            inside another one narrows the column twice, which is what was
+            pulling the initiatives carousel short of every other container. It
+            also has to stay off <main> so the tinted band below can reach the
+            page edges. */}
+        <main id="main" tabIndex={-1}>
           <InitiativeOverlayContent initiative={initiative} variant="page" />
 
           {initiative.detail?.team && (
-            <div className="py-12">
-              <InitiativeTeamPanel team={initiative.detail.team} members={teamMembers} />
-            </div>
+            // The band carries its own 80px of vertical padding (329:2122), so
+            // wrapping it in more would double the space around it.
+            <InitiativeTeamPanel team={initiative.detail.team} members={teamMembers} />
           )}
 
           {related.length > 0 && (
@@ -115,6 +117,7 @@ export default async function InitiativePage({
               initiatives={{ ...c.initiatives, items: related }}
               ui={c.ui}
               locale={locale}
+              inside
             />
           )}
         </main>
