@@ -24,6 +24,7 @@
  */
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
+import { ListPointer } from "@/components/ui/icons";
 import type { Initiative } from "@/lib/home-content";
 
 /** 16×8 accent block before the category — matches EventOverlayContent. */
@@ -73,7 +74,10 @@ export function InitiativeOverlayContent({
 
   return (
     <div
-      className={`bdc-grid ${inPage ? "" : "px-6 md:px-0"}`}
+      // The reading column stops at column 11 so the copy never runs up against
+      // the pattern. It lives here rather than on the page's <main> — see the
+      // note there.
+      className={`bdc-grid ${inPage ? "bdc-stop-11" : "px-6 md:px-0"}`}
       style={inPage ? undefined : { paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))" }}
     >
       {/* section-mission — title through the two intro columns. */}
@@ -122,7 +126,11 @@ export function InitiativeOverlayContent({
               alt={d.cover.alt}
               fill
               sizes="(max-width: 1023px) 90vw, 80vw"
-              className="object-cover"
+              // The box is the design's 1092/589; the cover photo is 3:2, so a
+              // centred crop takes ~19% off the height and clips the subject's
+              // head. Anchor to the top — the dead space in these shots is at
+              // the bottom.
+              className="object-cover object-top"
             />
           </div>
         </div>
@@ -130,20 +138,30 @@ export function InitiativeOverlayContent({
 
       {d && (
         <div className={`${cols} pt-12 pb-12 lg:pb-20`}>
-          {/* Body copy and its CTA occupy the left column only; the right
-              stays empty, as in the design. */}
-          <div className={`${twoUp} pb-12 lg:pb-20`}>
-            <div className="flex flex-col items-start gap-12">
-              <div className="flex flex-col gap-5">
-                {d.body.map((p) => (
-                  <p key={p} className="t-body">
-                    {p}
-                  </p>
-                ))}
-              </div>
-              {d.bodyCta && <Button href={d.bodyCta.href}>{d.bodyCta.label}</Button>}
+          {/* Body copy occupies the left column only; the right stays empty, as
+              in the design. */}
+          <div className={twoUp}>
+            <div className="flex flex-col gap-5">
+              {d.body.map((p) => (
+                <p key={p} className="t-body">
+                  {p}
+                </p>
+              ))}
             </div>
           </div>
+
+          {/* Both CTAs sit here, straight under the body copy (Figma 351:1077)
+              — they used to be split, one here and one in a closing row at the
+              foot of the page. The page now ends on the checklist. */}
+          {d.actions && (
+            <div className="flex flex-wrap gap-6 py-12">
+              {d.actions.map((a) => (
+                <Button key={a.href + a.label} href={a.href} variant={a.variant ?? "primary"}>
+                  {a.label}
+                </Button>
+              ))}
+            </div>
+          )}
 
           {/* Feature — label + statement on the left, body-medium column on the
               right. body-medium is 24px/1.5 in the design system, i.e. t-body-lg.
@@ -174,33 +192,45 @@ export function InitiativeOverlayContent({
             <h2 className="t-h02">{d.checklistHeading}</h2>
           </div>
 
-          {/* Checklist — one bordered row per line. The indent is padding, not
-              margin, so the rule spans the full column while only the bullet is
-              inset (in Figma the border sits on the row, the 36px offset on the
-              list item inside it). */}
-          <ul className="flex flex-col pb-12">
-            {d.checklist.map((row) => (
-              <li
-                key={row}
-                // list-inside keeps the marker within the padded box, so the
-                // bullet sits 36px inside the rule rather than hanging left of
-                // it (the default list-outside puts it before the padding).
-                className="t-body-lg list-inside list-disc border-t border-border py-3 ps-9 font-bold leading-[1.1] tracking-[-1px]"
-              >
-                {row}
-              </li>
-            ))}
-          </ul>
+          {/* Checklist (Figma 327:1174, "list-wrapper"). One ruled row per line,
+              indented to column 2 like the events list so the two read as the
+              same component.
 
-          {d.actions && (
-            <div className="flex flex-wrap gap-6 py-12">
-              {d.actions.map((a) => (
-                <Button key={a.href + a.label} href={a.href} variant={a.variant ?? "primary"}>
-                  {a.label}
-                </Button>
+              Hover fills the row with the brand rose — which is also the colour
+              of the marker, so the marker would vanish into it. That is why the
+              design swaps it for a ✲ on hover rather than just tinting the row.
+              Both markers occupy the same fixed 16px slot, so nothing shifts. */}
+          <div className="bdc-grid pb-12">
+            <ul className="col-span-full flex flex-col lg:col-start-2 lg:col-span-10">
+              {d.checklist.map((row) => (
+                <li
+                  key={row}
+                  // A hovered row loses its own rule and the one under it — the
+                  // rose fill is the separator at that point, and leaving the
+                  // rules in cuts the block in two. The sibling selector is why
+                  // this can't be a plain hover: utility on the row, effect on
+                  // the next one.
+                  className="group border-t border-border transition-colors duration-[120ms] ease-out hover:border-t-transparent hover:bg-brand [&:hover+li]:border-t-transparent"
+                >
+                  {/* items-start, not items-center: the marker aligns to the
+                      first line, so a row that wraps — which is most of them
+                      once the column narrows — keeps its marker at the top
+                      rather than floating to the middle. The 14px/3px offsets
+                      are the design's, and land both markers on that line. */}
+                  <div className="flex items-start gap-3 py-3">
+                    <span className="relative w-4 shrink-0" aria-hidden>
+                      <span
+                        className="mt-[14px] block h-2 w-4 transition-opacity duration-[120ms] group-hover:opacity-0"
+                        style={{ background: "var(--tri-accent)" }}
+                      />
+                      <ListPointer className="absolute left-1/2 top-[3px] -translate-x-1/2 opacity-0 transition-opacity duration-[120ms] group-hover:opacity-100" />
+                    </span>
+                    <p className="t-body-lg font-bold leading-[1.3] tracking-[-0.7px]">{row}</p>
+                  </div>
+                </li>
               ))}
-            </div>
-          )}
+            </ul>
+          </div>
         </div>
       )}
 

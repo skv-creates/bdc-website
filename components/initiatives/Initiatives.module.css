@@ -29,3 +29,15 @@
 @media (max-width: 767px) {
   .card { width: 86%; }
 }
+
+/* Inside pages (Figma 327:1543): the card is 5 of the 11 columns rather than 6,
+   so two sit fully in the column with the third peeking. */
+.cardInside {
+  width: calc((100% - 10 * var(--grid-gap, 24px)) / 11 * 5 + 4 * var(--grid-gap, 24px));
+}
+@media (max-width: 1023px) {
+  .cardInside { width: 66%; }
+}
+@media (max-width: 767px) {
+  .cardInside { width: 86%; }
+}
