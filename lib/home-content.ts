@@ -28,6 +28,8 @@ export type InitiativeDetail = {
   cover?: { src: string; alt: string };
   /** Paragraphs under the cover image. */
   body: string[];
+  /** Call to action directly under the body copy. */
+  bodyCta?: { label: string; href: string };
   feature: {
     label: string;
     heading: string;
@@ -35,8 +37,12 @@ export type InitiativeDetail = {
     intro: string;
     paragraphs: string[];
   };
+  /** Question introducing the checklist. */
+  checklistHeading: string;
   /** Bordered rows — "this is for you when…". */
   checklist: string[];
+  /** Closing button row. */
+  actions?: { label: string; href: string; variant?: "primary" | "secondary" }[];
 };
 
 export type Initiative = {
@@ -149,8 +155,7 @@ const bg = {
           lead: "Място за проблемите, които никоя организация не може да реши сама.",
           columns: [
             [
-              "Разработваме български модел за работа по сложни обществени предизвикателства. Той ще събира институции, общности, експерти и хората, които познават проблема от собствен опит.",
-              "Обществените предизвикателства рядко принадлежат на една институция.",
+              "Разработваме български модел за работа по сложни обществени предизвикателства. Той ще събира институции, общности, експерти и хората, които познават проблема от собствен опит. Обществените предизвикателства рядко принадлежат на една институция.",
             ],
             [
               "Те преминават през дирекции, услуги, общности, регулации, бюджети и политически цикли. Но знанието, необходимо за справянето с тях, често остава разпокъсано, а хората, засегнати от решенията, се включват твърде късно.",
@@ -164,6 +169,10 @@ const bg = {
             "Лабораторията за политики помага на публичните институции да изследват сложни предизвикателства, преди да се обвържат с един предварително избран отговор.",
             "Свързваме институционално знание, доказателства, житейски опит, дизайн и системно мислене, за да разработим по-силни възможности, да проверим допусканията и да създадем по-ясен път към прилагане.",
           ],
+          bodyCta: {
+            label: "Да поговорим за партньорство ↗",
+            href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab",
+          },
           feature: {
             label: "Какво и защо",
             heading: "От сложен проблем към споделена посока.",
@@ -174,6 +183,7 @@ const bg = {
               "Работата започва с по-ясно разбиране на предизвикателството. Събираме данни, професионален опит и знанието на хората, които живеят с последствията. После развиваме възможности, правим ги видими и ги проверяваме преди голяма инвестиция.",
             ],
           },
+          checklistHeading: "Кога този модел има най-голяма стойност?",
           checklist: [
             "Отговорността е разпределена между няколко организации или сектора.",
             "Проблемът остава въпреки предишни опити за промяна.",
@@ -181,6 +191,10 @@ const bg = {
             "Предстои важна политика, програма, технология или инвестиция.",
             "Има натиск за действие, но липсва достатъчно яснота откъде да се започне.",
             "Решението има дългосрочни обществени, икономически или екологични последствия.",
+          ],
+          actions: [
+            { label: "Да поговорим за партньорство ↗", href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab" },
+            { label: "Предложете казус", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
           ],
         },
       },
@@ -714,8 +728,7 @@ const en: typeof bg = {
           lead: "A place for the problems no single organisation can solve alone.",
           columns: [
             [
-              "We are developing a Bulgarian model for working on complex societal challenges. It brings together institutions, communities, experts and the people who know the problem from their own experience.",
-              "Societal challenges rarely belong to a single institution.",
+              "We are developing a Bulgarian model for working on complex societal challenges. It brings together institutions, communities, experts and the people who know the problem from their own experience. Societal challenges rarely belong to a single institution.",
             ],
             [
               "They cut across departments, services, communities, regulations, budgets and political cycles. Yet the knowledge needed to address them often stays fragmented, and the people affected by the decisions are brought in far too late.",
@@ -729,6 +742,10 @@ const en: typeof bg = {
             "The Policy Lab helps public institutions explore complex challenges before committing to a single, pre-selected answer.",
             "We connect institutional knowledge, evidence, lived experience, design and systems thinking in order to develop stronger options, test assumptions and create a clearer path to implementation.",
           ],
+          bodyCta: {
+            label: "Let’s talk partnership ↗",
+            href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab",
+          },
           feature: {
             label: "What and why",
             heading: "From a complex problem to a shared direction.",
@@ -739,6 +756,7 @@ const en: typeof bg = {
               "The work starts with a clearer understanding of the challenge. We gather data, professional expertise and the knowledge of the people who live with the consequences. Then we develop options, make them visible and test them before any large investment.",
             ],
           },
+          checklistHeading: "When is this model most valuable?",
           checklist: [
             "Responsibility is spread across several organisations or sectors.",
             "The problem persists despite previous attempts at change.",
@@ -746,6 +764,10 @@ const en: typeof bg = {
             "A significant policy, programme, technology or investment is coming up.",
             "There is pressure to act, but not enough clarity about where to begin.",
             "The decision carries long-term social, economic or environmental consequences.",
+          ],
+          actions: [
+            { label: "Let’s talk partnership ↗", href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab" },
+            { label: "Propose a case", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
           ],
         },
       },

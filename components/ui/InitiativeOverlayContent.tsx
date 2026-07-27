@@ -11,6 +11,7 @@
  * requires writing long-form content first.
  */
 import Image from "next/image";
+import { Button } from "@/components/ui/Button";
 import type { Initiative } from "@/lib/home-content";
 
 /** 16×8 accent block before the category — matches EventOverlayContent. */
@@ -50,10 +51,11 @@ export function InitiativeOverlayContent({ initiative }: { initiative: Initiativ
           <>
             <p className="t-body-lg max-w-[540px] font-bold leading-[1.1]">{d.lead}</p>
 
-            {/* Two text columns on desktop, stacked below lg. */}
-            <div className="grid gap-x-12 gap-y-6 lg:grid-cols-2">
+            {/* Two equal text columns on desktop with a 120px gutter, stacked
+                below lg. */}
+            <div className="grid gap-y-6 lg:grid-cols-2 lg:gap-x-[120px]">
               {d.columns.map((column, i) => (
-                <div key={i} className="flex max-w-[540px] flex-col gap-5">
+                <div key={i} className="flex flex-col gap-5">
                   {column.map((p) => (
                     <p key={p} className="t-body">
                       {p}
@@ -69,7 +71,7 @@ export function InitiativeOverlayContent({ initiative }: { initiative: Initiativ
       </div>
 
       {d?.cover && (
-        <div className="relative col-span-full aspect-[1191/524] w-full overflow-hidden md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10">
+        <div className="relative col-span-full aspect-[1233/542] w-full overflow-hidden md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10">
           <Image
             src={d.cover.src}
             alt={d.cover.alt}
@@ -82,23 +84,30 @@ export function InitiativeOverlayContent({ initiative }: { initiative: Initiativ
 
       {d && (
         <div className="col-span-full flex flex-col gap-12 md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10">
-          <div className="flex max-w-[540px] flex-col gap-5">
-            {d.body.map((p) => (
-              <p key={p} className="t-body">
-                {p}
-              </p>
-            ))}
+          {/* Body copy and its CTA occupy the left column only; the right
+              stays empty, as in the design. */}
+          <div className="grid gap-y-8 lg:grid-cols-2 lg:gap-x-[120px]">
+            <div className="flex flex-col items-start gap-12">
+              <div className="flex flex-col gap-5">
+                {d.body.map((p) => (
+                  <p key={p} className="t-body">
+                    {p}
+                  </p>
+                ))}
+              </div>
+              {d.bodyCta && <Button href={d.bodyCta.href}>{d.bodyCta.label}</Button>}
+            </div>
           </div>
 
           {/* Feature — label + statement on the left, body-medium column on the
               right. body-medium is 24px/1.5 in the design system, i.e. t-body-lg. */}
-          <div className="grid gap-x-12 gap-y-8 pt-12 lg:grid-cols-2">
+          <div className="grid gap-y-8 py-12 lg:grid-cols-2 lg:gap-x-[120px]">
             <div className="flex flex-col gap-8">
               <p className="t-body font-bold tracking-[0.05px]">{d.feature.label}</p>
               <h2 className="t-h02">{d.feature.heading}</h2>
             </div>
 
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 lg:pt-[72px]">
               <p className="t-body-lg font-bold">{d.feature.intro}</p>
               {d.feature.paragraphs.map((p) => (
                 <p key={p} className="t-body-lg">
@@ -108,8 +117,13 @@ export function InitiativeOverlayContent({ initiative }: { initiative: Initiativ
             </div>
           </div>
 
+          {/* Checklist question — left column only, right intentionally empty. */}
+          <div className="grid gap-y-8 py-12 lg:grid-cols-2 lg:gap-x-[120px]">
+            <h2 className="t-h02">{d.checklistHeading}</h2>
+          </div>
+
           {/* Checklist — one bordered row per line. */}
-          <ul className="flex flex-col">
+          <ul className="flex flex-col pb-20">
             {d.checklist.map((row) => (
               <li
                 key={row}
@@ -119,20 +133,24 @@ export function InitiativeOverlayContent({ initiative }: { initiative: Initiativ
               </li>
             ))}
           </ul>
+
+          {d.actions && (
+            <div className="flex flex-wrap gap-6 pb-16">
+              {d.actions.map((a) => (
+                <Button key={a.href + a.label} href={a.href} variant={a.variant ?? "primary"}>
+                  {a.label}
+                </Button>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
-      {initiative.cta && (
+      {initiative.cta && !d && (
         <div className="col-span-full md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10">
-          <a
-            href={initiative.cta.href}
-            className="t-label inline-flex items-center justify-center rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
-            {...(/^https?:\/\//.test(initiative.cta.href)
-              ? { target: "_blank", rel: "noopener noreferrer" }
-              : {})}
-          >
+          <Button href={initiative.cta.href} variant="secondary">
             {initiative.cta.label}
-          </a>
+          </Button>
         </div>
       )}
     </div>
