@@ -7,6 +7,7 @@ import { Hero } from "@/components/sections/Hero";
 import { Initiatives } from "@/components/initiatives/Initiatives";
 import { Activities } from "@/components/sections/Activities";
 import { Mission } from "@/components/sections/Mission";
+import { DesignImpact } from "@/components/sections/DesignImpact";
 import { Team } from "@/components/sections/Team";
 import { Quote } from "@/components/sections/Quote";
 import { Faq } from "@/components/sections/Faq";
@@ -53,6 +54,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
           {/* Mission reads as the second half of the opening statement, so it
               sits directly under the hero rather than further down the page. */}
           <Mission mission={c.mission} />
+          <DesignImpact designImpact={c.designImpact} />
           <Initiatives initiatives={c.initiatives} ui={c.ui} locale={locale} />
           <Activities locale={locale} heading={c.activities.heading} />
           <Team team={c.team} />

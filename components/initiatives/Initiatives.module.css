@@ -19,8 +19,10 @@
 .card {
   flex: 0 0 auto;
   scroll-snap-align: start;
-  /* 6-column span of the 11-column grid (incl. 5 inner gaps) */
-  width: calc((100% - 10 * var(--grid-gap, 24px)) / 11 * 6 + 5 * var(--grid-gap, 24px));
+  /* 5-column span of the 11-column grid (incl. 4 inner gaps), per Figma
+     391:4821 — two cards sit fully in the column with the third peeking. It
+     used to be 6, which showed one card and a sliver. */
+  width: calc((100% - 10 * var(--grid-gap, 24px)) / 11 * 5 + 4 * var(--grid-gap, 24px));
 }
 
 @media (max-width: 1023px) {

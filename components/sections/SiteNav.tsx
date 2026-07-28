@@ -291,7 +291,6 @@ export function SiteNav({
           >
             <MegaMenu
               initiatives={initiatives}
-              ui={ui}
               locale={locale}
               onNavigate={() => setMega(false)}
             />
