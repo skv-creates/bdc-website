@@ -1,0 +1,9 @@
+# Immutable caching for the build's content-hashed assets.
+#   https://developers.cloudflare.com/workers/static-assets/headers
+#   https://opennext.js.org/cloudflare/caching#static-assets-caching
+#
+# Everything under /_next/static carries a content hash in its filename, so a
+# changed file is a changed URL and a year-long cache can never go stale. This
+# is the one bit of Cloudflare's autoconfig PR (#2) that main never picked up.
+/_next/static/*
+  Cache-Control: public,max-age=31536000,immutable
