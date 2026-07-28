@@ -127,21 +127,22 @@ export function InitiativeOverlayContent({
         )}
       </div>
 
-      {d?.cover && (
+      {initiative.cover && (
         <div className={`${cols} py-12`}>
-          {/* Square on phones, the design's 1092/589 letterbox from md up. A
-              landscape crop at a phone's width is barely 200px tall and the
-              subject reads as a strip; square uses the full column. */}
-          <div className="relative aspect-square w-full overflow-hidden md:aspect-[1092/589]">
+          {/* "initiatives-hero-image" (Figma 391:4769): one 1092×640 frame for
+              every initiative page, so the pages line up however tall or wide
+              the photograph dropped into it happens to be. Square on phones —
+              a 1092/640 crop at a phone's width is barely 220px tall and the
+              subject reads as a strip.
+
+              object-top rather than centred: these are all wide shots of people
+              at a table, and the dead space is at the bottom. */}
+          <div className="relative aspect-square w-full overflow-hidden md:aspect-[1092/640]">
             <Image
-              src={d.cover.src}
-              alt={d.cover.alt}
+              src={initiative.cover.src}
+              alt={initiative.cover.alt}
               fill
               sizes="(max-width: 1023px) 90vw, 80vw"
-              // The box is the design's 1092/589; the cover photo is 3:2, so a
-              // centred crop takes ~19% off the height and clips the subject's
-              // head. Anchor to the top — the dead space in these shots is at
-              // the bottom.
               className="object-cover object-top"
             />
           </div>
