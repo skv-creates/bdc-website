@@ -32,7 +32,6 @@ export type InitiativeDetail = {
   /** Button between the intro columns and the cover (Figma 355:3586). Where an
       initiative has a home of its own, this is the way out to it. */
   leadAction?: { label: string; href: string };
-  cover?: { src: string; alt: string };
   /** Paragraphs under the cover image. */
   body: string[];
   feature: {
@@ -82,6 +81,19 @@ export type InitiativeDetail = {
 };
 
 export type Initiative = {
+  /**
+   * Mirrors the "На сайта" checkbox in the Notion CMS. Set false to take an
+   * initiative off the site — the carousel, the mega menu and its own page all
+   * disappear together, because every one of them reads the same filtered list.
+   * The content stays here so republishing is one word, not a rewrite.
+   */
+  published?: boolean;
+  /**
+   * The initiative's photograph. Lives here rather than on `detail` because the
+   * cards and the mega menu show it too, and an initiative can have a picture
+   * long before it has a long-form page — Дизайн зрялост does.
+   */
+  cover?: { src: string; alt: string };
   /** URL segment — locale-neutral, identical in bg and en, since the language
       toggle swaps only the locale prefix. Permanent once shipped: renaming one
       breaks any link already sent out. */
@@ -199,6 +211,28 @@ const bg = {
     ],
   },
 
+  /**
+   * Two sourced statistics between the mission and the initiatives
+   * (Figma 355:3200). The footnote markers are positional — the first stat is
+   * starred once, the second twice — so they are generated rather than typed
+   * into the copy, and stay right if a third is added.
+   */
+  designImpact: {
+    heading: "Защо дизайна е важен?",
+    stats: [
+      {
+        value: "45%",
+        text: "от климатичните решения идват от интелигентен продуктов и системен дизайн.",
+        source: "Ellen MacArthur",
+      },
+      {
+        value: "80%",
+        text: "от въздействието на един продукт върху хората и планетата се определя на етап дизайн.",
+        source: "Европейската комисия",
+      },
+    ],
+  },
+
   initiatives: {
     heading: "Инициативи",
     /** Standfirst beside the heading in the related-initiatives section. */
@@ -206,6 +240,7 @@ const bg = {
     items: [
       {
         slug: "policy-lab",
+        cover: { src: "/figma/initiatives/policy-lab-hero.jpg", alt: "Жена, която чете книгата „How to Public Sector?“ пред остъклена офис врата" },
         label: "Общество",
         title: "Лаборатория за политики",
         text: "Място за проблемите, които никоя организация не може да реши сама.",
@@ -220,10 +255,6 @@ const bg = {
               "Те преминават през дирекции, услуги, общности, регулации, бюджети и политически цикли. Но знанието, необходимо за справянето с тях, често остава разпокъсано, а хората, засегнати от решенията, се включват твърде късно.",
             ],
           ],
-          cover: {
-            src: "/figma/initiatives/policy-lab-hero.jpg",
-            alt: "Жена, която чете книгата „How to Public Sector?“ пред остъклена офис врата",
-          },
           body: [
             "Лабораторията за политики помага на публичните институции да изследват сложни предизвикателства, преди да се обвържат с един предварително избран отговор.",
             "Свързваме институционално знание, доказателства, житейски опит, дизайн и системно мислене, за да разработим по-силни възможности, да проверим допусканията и да създадем по-ясен път към прилагане.",
@@ -270,6 +301,7 @@ const bg = {
       },
       {
         slug: "bulgaria-by-design",
+        cover: { src: "/figma/initiatives/bulgaria-by-design-hero.jpg", alt: "Двама души разглеждат заедно проект на лаптоп" },
         label: "Възраждане",
         title: "България чрез Дизайн",
         text: "Визуална идентичност на българските институции, която засилва вярата в институциите и националната гордост.",
@@ -288,10 +320,6 @@ const bg = {
             ],
           ],
           leadAction: { label: "Виж България чрез Дизайн ↗", href: "https://bulgariabydesign.com" },
-          cover: {
-            src: "/figma/initiatives/bulgaria-by-design-hero.jpg",
-            alt: "Двама души разглеждат заедно проект на лаптоп",
-          },
           body: [
             "Представете си България, в която всички държавни услуги те карат да се чувстваш горд. България е която езикът е ясен, услугите следват човешката логика, а визуалната среда излъчва хармония.",
             "България, която показва с всяка допирна точка: тук мислим за теб — нашия гражданин.",
@@ -339,6 +367,7 @@ const bg = {
       },
       {
         slug: "future-makers-lab",
+        cover: { src: "/figma/initiatives/future-makers-lab-hero.jpg", alt: "Участници в работилница подреждат материали върху маса" },
         label: "Образование",
         title: "Създатели на бъдещето",
         text: "Лаборатория за юноши, която развива системно мислене, проблемно рамкиране, изследователска култура, включващ дизайн и отговорна работа с AI.",
@@ -355,10 +384,6 @@ const bg = {
               "Мисията ние е да поставим силата на дизайна в ръцете на поколението, което създава нашето утре. Лабораторията е създадена така, че да може да се адаптира за училища, университети и младежки програми в цялата страна.",
             ],
           ],
-          cover: {
-            src: "/figma/initiatives/future-makers-lab-hero.jpg",
-            alt: "Участници в работилница подреждат материали върху маса",
-          },
           body: [
             "Разработваме всяка тема за различни етапи на учене — от училищна възраст, университет до професионално развитие. След това анализираме нуждите на конкретната аудитория и свързваме най-подходящите модули в цялостна лаборатория с ясна цел и измерим ефект.",
             "Първия пилот проведохме с Нов Български Университет. Следващата ни стъпка е да развием програмата с повече университети, училища, институции, практици и партньори.",
@@ -424,12 +449,14 @@ const bg = {
       },
       {
         slug: "design-maturity-assessment",
+        cover: { src: "/figma/initiatives/design-maturity-assessment-hero.jpg", alt: "Две жени обсъждат документи пред стена със стикери" },
         label: "Иновации",
         title: "Дизайн зрялост",
         text: "Инструмент за самооценка на дизайн зрелостта на бизнес организации и насоки за повишаването ѝ.",
         pattern: 3,
       },
       {
+        published: false,
         slug: "design-beyond-the-screen",
         label: "Образование",
         title: "Дизайн и проучване отвъд екрана",
@@ -437,6 +464,7 @@ const bg = {
         pattern: 2,
       },
       {
+        published: false,
         slug: "design-for-good",
         label: "Награда",
         title: "Дизайн за Добро",
@@ -936,12 +964,29 @@ const en: typeof bg = {
     ],
   },
 
+  designImpact: {
+    heading: "Why does design matter?",
+    stats: [
+      {
+        value: "45%",
+        text: "of climate solutions come from intelligent product and systems design.",
+        source: "Ellen MacArthur",
+      },
+      {
+        value: "80%",
+        text: "of a product's impact on people and the planet is decided at the design stage.",
+        source: "the European Commission",
+      },
+    ],
+  },
+
   initiatives: {
     heading: "Initiatives",
     lede: "Ideas take root when people gather around them.",
     items: [
       {
         slug: "policy-lab",
+        cover: { src: "/figma/initiatives/policy-lab-hero.jpg", alt: "A woman reading the book “How to Public Sector?” in a glass-walled office doorway" },
         label: "Society",
         title: "Policy Lab",
         text: "A place for the problems no single organisation can solve alone.",
@@ -956,10 +1001,6 @@ const en: typeof bg = {
               "They cut across departments, services, communities, regulations, budgets and political cycles. Yet the knowledge needed to address them often stays fragmented, and the people affected by the decisions are brought in far too late.",
             ],
           ],
-          cover: {
-            src: "/figma/initiatives/policy-lab-hero.jpg",
-            alt: "A woman reading the book “How to Public Sector?” in a glass-walled office doorway",
-          },
           body: [
             "The Policy Lab helps public institutions explore complex challenges before committing to a single, pre-selected answer.",
             "We connect institutional knowledge, evidence, lived experience, design and systems thinking in order to develop stronger options, test assumptions and create a clearer path to implementation.",
@@ -1004,6 +1045,7 @@ const en: typeof bg = {
       },
       {
         slug: "bulgaria-by-design",
+        cover: { src: "/figma/initiatives/bulgaria-by-design-hero.jpg", alt: "Two people looking over a project together on a laptop" },
         label: "Revival",
         title: "Bulgaria by Design",
         text: "A visual identity for Bulgaria's institutions that strengthens public trust and national pride.",
@@ -1020,10 +1062,6 @@ const en: typeof bg = {
             ],
           ],
           leadAction: { label: "See Bulgaria by Design ↗", href: "https://bulgariabydesign.com" },
-          cover: {
-            src: "/figma/initiatives/bulgaria-by-design-hero.jpg",
-            alt: "Two people looking over a project together on a laptop",
-          },
           body: [
             "Imagine a Bulgaria where every public service leaves you feeling proud. A Bulgaria where the language is clear, services follow human logic, and the visual environment feels coherent.",
             "A Bulgaria that shows at every touchpoint: we are thinking of you — our citizen.",
@@ -1071,6 +1109,7 @@ const en: typeof bg = {
       },
       {
         slug: "future-makers-lab",
+        cover: { src: "/figma/initiatives/future-makers-lab-hero.jpg", alt: "Workshop participants arranging materials on a table" },
         label: "Education",
         title: "Future Makers Lab",
         text: "A lab for teenagers that builds systems thinking, problem framing, a research culture, inclusive design and responsible work with AI.",
@@ -1085,10 +1124,6 @@ const en: typeof bg = {
               "Our mission is to put the power of design in the hands of the generation building our tomorrow. The lab is designed to adapt to schools, universities and youth programmes across the country.",
             ],
           ],
-          cover: {
-            src: "/figma/initiatives/future-makers-lab-hero.jpg",
-            alt: "Workshop participants arranging materials on a table",
-          },
           body: [
             "We develop every topic for different stages of learning — from school age through university to professional development. We then analyse what a particular audience needs and connect the most suitable modules into a complete lab with a clear goal and a measurable effect.",
             "We ran our first pilot with New Bulgarian University. Our next step is to grow the programme with more universities, schools, institutions, practitioners and partners.",
@@ -1154,12 +1189,14 @@ const en: typeof bg = {
       },
       {
         slug: "design-maturity-assessment",
+        cover: { src: "/figma/initiatives/design-maturity-assessment-hero.jpg", alt: "Two women discussing documents in front of a wall of sticky notes" },
         label: "Innovation",
         title: "Design Maturity",
         text: "A self-assessment tool for the design maturity of business organizations, with guidance on how to raise it.",
         pattern: 3,
       },
       {
+        published: false,
         slug: "design-beyond-the-screen",
         label: "Education",
         title: "Design and research beyond the screen",
@@ -1167,6 +1204,7 @@ const en: typeof bg = {
         pattern: 2,
       },
       {
+        published: false,
         slug: "design-for-good",
         label: "Award",
         title: "Design for Good",
@@ -1653,6 +1691,12 @@ function applyCms(locale: Locale, dict: typeof bg): typeof bg {
   const faqGroups = cmsFaqGroups(locale);
   return {
     ...dict,
+    // Unpublished initiatives are dropped here rather than at each call site,
+    // so nothing can render one by reaching past the filter.
+    initiatives: {
+      ...dict.initiatives,
+      items: dict.initiatives.items.filter((i) => i.published !== false),
+    },
     faq: faqGroups ? { ...dict.faq, groups: faqGroups } : dict.faq,
     team: {
       ...team,
@@ -1692,5 +1736,5 @@ export function getInitiative(locale: Locale, slug: string): Initiative | null {
  * exactly as getEventSlugs() does.
  */
 export function getInitiativeSlugs(): { slug: string }[] {
-  return content[defaultLocale].initiatives.items.map((i) => ({ slug: i.slug }));
+  return getContent(defaultLocale).initiatives.items.map((i) => ({ slug: i.slug }));
 }

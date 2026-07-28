@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import styles from "./Initiatives.module.css";
 import { PatternTile, slotStyle } from "./patterns";
@@ -19,11 +20,15 @@ function LabelMark() {
   );
 }
 
+/** The peeking card's ground (354:2325). */
+const DIMMED = "#f3f3f3";
+
 function Card({
   item,
   index,
   locale,
   inside = false,
+  dimmed = false,
   seeMore,
 }: {
   item: Initiative;
@@ -31,9 +36,22 @@ function Card({
   locale: Locale;
   /** The inside-pages form (Figma 327:1543) — see the note on <Initiatives/>. */
   inside?: boolean;
+  /** Scrolled only partly into the track — see the note on <Initiatives/>. */
+  dimmed?: boolean;
   seeMore: string;
 }) {
-  const style = slotStyle(index);
+  /**
+   * The landing carousel is rose throughout (354:2325) and greys the card that
+   * is only peeking in. Inside pages keep the three-colour rotation.
+   *
+   * slotStyle still runs in both cases: it carries --p1/--p2/--p3, which the
+   * pattern tile needs when an initiative has no cover photograph. Only the
+   * ground and ink are overridden after it.
+   */
+  const slot = slotStyle(index);
+  const style = inside
+    ? slot
+    : { ...slot, background: dimmed ? DIMMED : "var(--color-brand)", color: "var(--color-text)" };
   const href = `/${locale}/initiatives/${item.slug}`;
 
   return (
@@ -41,15 +59,30 @@ function Card({
       // .card carries the flex/scroll-snap behaviour for both forms; .cardInside
       // only overrides the width, and is declared after it so it wins.
       className={`${styles.card} ${
-        inside ? `${styles.cardInside} p-8` : "p-6"
-      } relative flex cursor-pointer flex-col gap-12`}
+        inside ? `${styles.cardInside} p-8` : "p-6 md:p-10"
+      } relative flex cursor-pointer flex-col gap-12 transition-colors duration-200`}
       style={style}
     >
-      {/* The inside-pages card drops the pattern tile — those pages already
-          carry a cover image and a team panel, so the tiles read as noise. */}
+      {/* The inside-pages card drops the image — those pages already carry a
+          cover and a team panel, so a second one reads as noise. */}
       {!inside && (
         <div className="relative hidden h-[240px] w-full overflow-hidden md:block">
-          <PatternTile n={item.pattern} />
+          {/* The initiative's own cover, so the card previews the page it opens.
+              Initiatives without a long-form page have no cover yet and fall
+              back to their pattern tile, which is what the whole carousel used
+              to show. alt="" because the title beside it is the accessible name
+              — a description here would be read out twice. */}
+          {item.cover ? (
+            <Image
+              src={item.cover.src}
+              alt=""
+              fill
+              sizes="(max-width: 1023px) 90vw, 516px"
+              className="object-cover"
+            />
+          ) : (
+            <PatternTile n={item.pattern} />
+          )}
         </div>
       )}
 
@@ -58,46 +91,51 @@ function Card({
         <span className="text-[1.2rem] font-bold leading-[1.5] md:text-[24px]">{item.label}</span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-8">
-        {/* Inside pages reserve two lines for the title and exactly three for
-            the blurb (the design's 88px + 84px boxes). That is what makes every
-            card the same height and lands all the buttons on one line. */}
-        <h3 className={`t-h03 ${inside ? "min-h-[2.2em]" : ""}`}>
-          {/* Stretched link: the ::after covers the whole card, so a click
-              anywhere navigates, while in the DOM this stays a sibling of the
-              CTA anchor below — never an <a> inside an <a>. The title is the
-              accessible name, and Enter works natively, so the old
-              role="button" + keydown handler is gone.
-              NB: anything interactive added to this card later needs
-              `relative z-10` to sit above the ::after. */}
-          <Link href={href} className="after:absolute after:inset-0 after:content-['']">
-            {item.title}
-          </Link>
-        </h3>
-        <p className={`t-body ${inside ? "line-clamp-3 min-h-[4.2em]" : ""}`}>{item.text}</p>
-
-        {/* Only the inside-pages card carries a button. The landing carousel
-            card is entirely clickable through the title's stretched link, so a
-            button inside it was a second control for the same destination —
-            and only some cards had one, which made the row look ragged.
-            `item.cta` is still used by initiatives without long-form detail,
-            where the overlay needs a way out to the project. */}
-        {inside && (
-          // aria-hidden + tabIndex -1: the title link above already exposes this
-          // destination, and without it every card is announced and tabbed
-          // through twice. mt-auto pins it to the card's foot; the pt-4 turns
-          // the column's 32px gap into the design's 48.
-          <span className="mt-auto pt-4">
-            <Link
-              href={href}
-              aria-hidden
-              tabIndex={-1}
-              className="t-label relative z-10 inline-flex items-center justify-center rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
-            >
-              {seeMore}
+      {/* info-wrapper (391:4836): the title block, then 48px to the button.
+          flex-1 + mt-auto keeps the buttons on one line across a row of cards
+          that the flex track has stretched to a common height; the gap-12 is
+          what guarantees the frame's 48px when a card is the tallest one. */}
+      <div className="flex flex-1 flex-col gap-12">
+        {/* title-wrapper: 24px between title and blurb, and the blurb held to
+            the frame's three-line box so the buttons don't wander. */}
+        <div className="flex flex-col gap-6">
+          {/* Natural height, so the 24px under it is the 24px in the redline.
+              Reserving two lines here padded that gap out to 68 on every card
+              whose title fits one line. The inside-pages card keeps its
+              reservation — see the note on <Initiatives inside/>. */}
+          <h3 className={`t-h03 ${inside ? "min-h-[2.2em]" : ""}`}>
+            {/* Stretched link: the ::after covers the whole card, so a click
+                anywhere navigates, while in the DOM this stays a sibling of the
+                CTA anchor below — never an <a> inside an <a>. The title is the
+                accessible name, and Enter works natively, so the old
+                role="button" + keydown handler is gone.
+                NB: anything interactive added to this card later needs
+                `relative z-10` to sit above the ::after. */}
+            <Link href={href} className="after:absolute after:inset-0 after:content-['']">
+              {item.title}
             </Link>
-          </span>
-        )}
+          </h3>
+          <p className="t-body line-clamp-3 min-h-[4.2em]">{item.text}</p>
+        </div>
+
+        {/* One button on every card, in both forms (391:4836 and 327:1543).
+            The per-initiative "Към проекта" CTA it replaced appeared on only
+            some cards, which left the row ragged; `item.cta` still serves the
+            overlay for initiatives with no long-form page.
+
+            aria-hidden + tabIndex -1: the title link above already exposes this
+            destination, and without it every card is announced and tabbed
+            through twice. */}
+        <span className="mt-auto">
+          <Link
+            href={href}
+            aria-hidden
+            tabIndex={-1}
+            className="t-label relative z-10 inline-flex items-center justify-center rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
+          >
+            {seeMore}
+          </Link>
+        </span>
       </div>
     </article>
   );
@@ -140,6 +178,16 @@ export function Initiatives({
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef(0);
+  /**
+   * Track positions that are only partly scrolled into view. The landing
+   * carousel greys those and keeps the rest rose (354:2325), so the card
+   * peeking past the right edge reads as "there is more this way" rather than
+   * as a card you failed to click.
+   *
+   * Held as the dimmed set rather than the visible one so the server render and
+   * first paint are all-rose, before any measurement has happened.
+   */
+  const [dimmed, setDimmed] = useState<ReadonlySet<number>>(new Set());
 
   const items = initiatives.items;
   const N = items.length;
@@ -170,6 +218,48 @@ export function Initiatives({
       window.removeEventListener("resize", start);
     };
   }, [N]);
+
+  /**
+   * Which track positions are only partly scrolled in.
+   *
+   * Measured from the rects on scroll rather than with an IntersectionObserver:
+   * the observer is the obvious tool, but it reports against a root asynchronously
+   * and there is no way to ask it for the current state, so the first paint and
+   * any resize depend on it having fired. Comparing rects is synchronous, gives
+   * the same answer, and can be re-run whenever we like.
+   *
+   * The 1px slack matters: a card flush with the track edge measures a hair
+   * narrower than its own width, and without it would never count as fully in.
+   */
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || inside) return;
+
+    const measure = () => {
+      const tr = track.getBoundingClientRect();
+      const next = new Set<number>();
+      [...track.children].forEach((card, i) => {
+        const r = card.getBoundingClientRect();
+        const shown = Math.max(0, Math.min(r.right, tr.right) - Math.max(r.left, tr.left));
+        if (shown < r.width - 1) next.add(i);
+      });
+      setDimmed((prev) =>
+        prev.size === next.size && [...next].every((i) => prev.has(i)) ? prev : next,
+      );
+    };
+
+    measure();
+    track.addEventListener("scroll", measure, { passive: true });
+    // The mount-time reading can be taken before the layout has settled — the
+    // cover images have not loaded and the recentre has not run — so re-measure
+    // whenever the track's box changes rather than waiting for a first scroll.
+    const ro = new ResizeObserver(measure);
+    ro.observe(track);
+    return () => {
+      track.removeEventListener("scroll", measure);
+      ro.disconnect();
+    };
+  }, [inside, LOOP.length]);
 
   const scrollByCard = (dir: 1 | -1) => {
     const track = trackRef.current;
@@ -204,32 +294,20 @@ export function Initiatives({
 
   return (
     <section id="initiatives" className="bdc-stop-11 py-20 md:py-28">
-      {/* Heading left, standfirst in the second column — on the home page the
-          lede is simply absent, so the heading sits alone as before. Inside
-          pages drop the standfirst entirely and let the heading run wide. */}
-      {inside ? (
-        // Inside pages carry both: the section name as a small accented label
-        // (Figma 354:2459) and the standfirst as the 732×186 heading below it.
-        // The heading is the sentence, not the one-word title — three lines at
-        // 56px is not "Инициативи".
-        <div className="flex flex-col gap-8">
-          <div className="flex items-center gap-3">
-            {/* Same 16×8 mark as the mission label, recoloured with the rail. */}
-            <span
-              className="h-2 w-4 shrink-0"
-              style={{ background: "var(--tri-band)" }}
-              aria-hidden
-            />
-            <span className="t-caption">{initiatives.heading}</span>
-          </div>
-          <h2 className="t-h02 max-w-[732px]">{initiatives.lede ?? initiatives.heading}</h2>
+      {/* One header for both placements (332:3339 on the landing page, 354:2459
+          inside): the section name as a small accented label, the standfirst as
+          the heading under it. The heading is the sentence, not the one-word
+          title — three lines at 56px is not "Инициативи". The landing page used
+          to run these the other way round, with "Инициативи" set large and the
+          sentence beside it as a standfirst. */}
+      <div className="flex flex-col gap-8">
+        <div className="flex items-center gap-3">
+          {/* Same 16×8 mark as the mission label, recoloured with the rail. */}
+          <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
+          <span className="t-caption">{initiatives.heading}</span>
         </div>
-      ) : (
-        <div className="grid gap-y-6 lg:grid-cols-2 lg:gap-x-[120px]">
-          <h2 className="t-h02">{initiatives.heading}</h2>
-          {initiatives.lede && <p className="t-body-lg font-bold">{initiatives.lede}</p>}
-        </div>
-      )}
+        <h2 className="t-h02 max-w-[800px]">{initiatives.lede ?? initiatives.heading}</h2>
+      </div>
 
       <div className={`${styles.track} ${inside ? "mt-12 lg:mt-20" : "mt-12"}`} ref={trackRef}>
         {LOOP.map((item, i) => (
@@ -239,6 +317,7 @@ export function Initiatives({
             index={i % N}
             locale={locale}
             inside={inside}
+            dimmed={dimmed.has(i)}
             seeMore={ui.seeMore}
           />
         ))}
