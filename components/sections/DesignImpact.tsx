@@ -1,18 +1,29 @@
 /**
- * "Защо дизайна е важен?" — two sourced statistics between the mission and the
+ * "Защо дизайна е важен:" — two sourced statistics between the mission and the
  * initiatives (Figma 355:3200).
  *
- * The frame places the stats in columns 1–3 and 5–7 of the eleven: a full
- * column of air between them, so the two figures read as separate claims rather
- * than a table. Below md they stack, since three of eleven columns on a phone
- * is about forty characters a line.
+ * The stats sit in columns 2–4 and 6–8: a full column of air between them, so
+ * the two figures read as separate claims rather than a table. Below md they
+ * stack, since three columns on a phone is about forty characters a line.
+ *
+ * The whole section starts on column 2, indented to match the mission band
+ * above it. The two grids are siblings rather than one nested inside the other
+ * — nesting would re-divide a single cell into eleven of its own, and the stats
+ * would stop lining up with the heading.
  */
 import type { SiteContent } from "@/lib/home-content";
 
 export function DesignImpact({ designImpact }: { designImpact: SiteContent["designImpact"] }) {
   return (
     <section className="bdc-stop-11 py-20">
-      <p className="t-label font-bold">{designImpact.heading}</p>
+      {/* span-7 rather than running to the end: it has to hold at both the
+          8-column and the 11-column grid, and starting on 2 leaves only 7
+          tracks at md. Spanning further would spill into implicit columns. */}
+      <div className="bdc-grid">
+        <h3 className="t-h03 col-span-full md:col-start-2 md:col-span-7">
+          {designImpact.heading}
+        </h3>
+      </div>
 
       <div className="bdc-grid mt-12 gap-y-16">
         {designImpact.stats.map((stat, i) => {
@@ -24,7 +35,7 @@ export function DesignImpact({ designImpact }: { designImpact: SiteContent["desi
             <div
               key={stat.value}
               className={`col-span-full flex flex-col gap-6 md:col-span-3 ${
-                i > 0 ? "md:col-start-5" : ""
+                i > 0 ? "md:col-start-6" : "md:col-start-2"
               }`}
             >
               {/* aria-hidden on the marker: it is a typographic pointer to the
