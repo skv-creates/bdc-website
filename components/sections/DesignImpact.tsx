@@ -1,5 +1,5 @@
 /**
- * "Защо дизайна е важен:" — two sourced statistics between the mission and the
+ * "Защо дизайнът е важен" — two sourced statistics between the mission and the
  * initiatives (Figma 355:3200).
  *
  * The stats sit in columns 2–4 and 6–8: a full column of air between them, so
