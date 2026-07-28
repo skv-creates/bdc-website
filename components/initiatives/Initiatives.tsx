@@ -76,7 +76,13 @@ function Card({
         </h3>
         <p className={`t-body ${inside ? "line-clamp-3 min-h-[4.2em]" : ""}`}>{item.text}</p>
 
-        {inside ? (
+        {/* Only the inside-pages card carries a button. The landing carousel
+            card is entirely clickable through the title's stretched link, so a
+            button inside it was a second control for the same destination —
+            and only some cards had one, which made the row look ragged.
+            `item.cta` is still used by initiatives without long-form detail,
+            where the overlay needs a way out to the project. */}
+        {inside && (
           // aria-hidden + tabIndex -1: the title link above already exposes this
           // destination, and without it every card is announced and tabbed
           // through twice. mt-auto pins it to the card's foot; the pt-4 turns
@@ -91,22 +97,6 @@ function Card({
               {seeMore}
             </Link>
           </span>
-        ) : (
-          item.cta && (
-            <a
-              href={item.cta.href}
-              // relative z-10 lifts this above the title link's stretched ::after,
-              // so a click here follows the CTA rather than opening the
-              // initiative. No stopPropagation needed — there is no ancestor
-              // handler any more, just stacking order.
-              className="t-label relative z-10 mt-auto inline-flex items-center justify-center self-start rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
-              {...(/^https?:\/\//.test(item.cta.href)
-                ? { target: "_blank", rel: "noopener noreferrer" }
-                : {})}
-            >
-              {item.cta.label}
-            </a>
-          )
         )}
       </div>
     </article>

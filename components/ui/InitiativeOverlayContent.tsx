@@ -196,6 +196,11 @@ export function InitiativeOverlayContent({
                   {p}
                 </p>
               ))}
+
+              {/* Nested placement (373:4473): the rows continue the sentence
+                  above them, so they stay inside this column instead of
+                  breaking out to full width. */}
+              {d.checklistInFeature && <ChecklistRows rows={d.checklist} className="pt-2" />}
             </div>
           </div>
 
@@ -207,45 +212,15 @@ export function InitiativeOverlayContent({
             </div>
           )}
 
-          {/* Checklist (Figma 327:1174, "list-wrapper"). One ruled row per line,
-              indented to column 2 like the events list so the two read as the
-              same component.
-
-              Hover fills the row with the brand rose — which is also the colour
-              of the marker, so the marker would vanish into it. That is why the
-              design swaps it for a ✲ on hover rather than just tinting the row.
-              Both markers occupy the same fixed 16px slot, so nothing shifts. */}
-          <div className="bdc-grid pb-12">
-            <ul className="col-span-full flex flex-col lg:col-start-2 lg:col-span-10">
-              {d.checklist.map((row) => (
-                <li
-                  key={row}
-                  // A hovered row loses its own rule and the one under it — the
-                  // rose fill is the separator at that point, and leaving the
-                  // rules in cuts the block in two. The sibling selector is why
-                  // this can't be a plain hover: utility on the row, effect on
-                  // the next one.
-                  className="group border-t border-border transition-colors duration-[120ms] ease-out hover:border-t-transparent hover:bg-brand [&:hover+li]:border-t-transparent"
-                >
-                  {/* items-start, not items-center: the marker aligns to the
-                      first line, so a row that wraps — which is most of them
-                      once the column narrows — keeps its marker at the top
-                      rather than floating to the middle. The 14px/3px offsets
-                      are the design's, and land both markers on that line. */}
-                  <div className="flex items-start gap-3 py-3">
-                    <span className="relative w-4 shrink-0" aria-hidden>
-                      <span
-                        className="mt-[14px] block h-2 w-4 transition-opacity duration-[120ms] group-hover:opacity-0"
-                        style={{ background: "var(--tri-accent)" }}
-                      />
-                      <ListPointer className="absolute left-1/2 top-[3px] -translate-x-1/2 opacity-0 transition-opacity duration-[120ms] group-hover:opacity-100" />
-                    </span>
-                    <p className="t-body-lg font-bold leading-[1.3] tracking-[-0.7px]">{row}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Full-width placement — the default. See ChecklistRows. */}
+          {!d.checklistInFeature && (
+            <div className="bdc-grid pb-12">
+              <ChecklistRows
+                rows={d.checklist}
+                className="col-span-full lg:col-start-2 lg:col-span-10"
+              />
+            </div>
+          )}
 
           {/* Second feature block, closing the argument (355:3316). Same two-up
               as the first; no bold opening line in the frame. */}
@@ -256,12 +231,19 @@ export function InitiativeOverlayContent({
                 <h2 className="t-h02">{d.featureClosing.heading}</h2>
               </div>
 
-              <div className="flex flex-col gap-6 lg:pt-[72px]">
+              <div className="flex flex-col items-start gap-6 lg:pt-[72px]">
                 {d.featureClosing.paragraphs.map((p) => (
                   <p key={p} className="t-body-lg">
                     {p}
                   </p>
                 ))}
+                {d.featureClosing.action && (
+                  <div className="pt-6">
+                    <Button href={d.featureClosing.action.href} variant="primary">
+                      {d.featureClosing.action.label}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -276,5 +258,49 @@ export function InitiativeOverlayContent({
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * The ruled "list-wrapper" rows (Figma 327:1174).
+ *
+ * Hover fills the row with the brand rose — which is also the colour of the
+ * marker, so the marker would vanish into it. That is why the design swaps it
+ * for a ✲ on hover rather than just tinting the row. Both markers occupy the
+ * same fixed 16px slot, so nothing shifts.
+ *
+ * Shared because two frames place it differently: full width under the feature
+ * block, or nested inside the feature's right column. Only the wrapper class
+ * differs.
+ */
+function ChecklistRows({ rows, className = "" }: { rows: string[]; className?: string }) {
+  return (
+    <ul className={`flex flex-col ${className}`}>
+      {rows.map((row) => (
+        <li
+          key={row}
+          // A hovered row loses its own rule and the one under it — the rose
+          // fill is the separator at that point, and leaving the rules in cuts
+          // the block in two. The sibling selector is why this can't be a plain
+          // hover: utility on the row, effect on the next one.
+          className="group border-t border-border transition-colors duration-[120ms] ease-out hover:border-t-transparent hover:bg-brand [&:hover+li]:border-t-transparent"
+        >
+          {/* items-start, not items-center: the marker aligns to the first
+              line, so a row that wraps — which is most of them once the column
+              narrows — keeps its marker at the top rather than floating to the
+              middle. The 14px/3px offsets are the design's. */}
+          <div className="flex items-start gap-3 py-3">
+            <span className="relative w-4 shrink-0" aria-hidden>
+              <span
+                className="mt-[14px] block h-2 w-4 transition-opacity duration-[120ms] group-hover:opacity-0"
+                style={{ background: "var(--tri-accent)" }}
+              />
+              <ListPointer className="absolute left-1/2 top-[3px] -translate-x-1/2 opacity-0 transition-opacity duration-[120ms] group-hover:opacity-100" />
+            </span>
+            <p className="t-body-lg font-bold leading-[1.3] tracking-[-0.7px]">{row}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }
