@@ -220,7 +220,7 @@ const bg = {
    * into the copy, and stay right if a third is added.
    */
   designImpact: {
-    heading: "Защо дизайна е важен?",
+    heading: "Защо дизайна е важен:",
     stats: [
       {
         value: "45%",
@@ -968,7 +968,7 @@ const en: typeof bg = {
   },
 
   designImpact: {
-    heading: "Why does design matter?",
+    heading: "Why design matters:",
     stats: [
       {
         value: "45%",
