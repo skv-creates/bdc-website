@@ -26,7 +26,7 @@ export function SiteFooter({
         {/* top row — logo | contacts */}
         <div className="bdc-grid gap-y-20">
           <div className="col-span-4 md:col-span-4 lg:col-span-7">
-            <Logo variant="white" className="h-10 w-auto" />
+            <Logo variant="white" locale={locale} className="h-10 w-auto" />
           </div>
 
           <div className="col-span-4 flex flex-col gap-4 md:col-span-4 lg:col-start-9 lg:col-span-4 lg:items-start">
