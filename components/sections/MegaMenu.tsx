@@ -1,14 +1,20 @@
 "use client";
 
 /**
- * Initiatives mega menu — Figma "home-desktop-mega-menu-initiatives" (354:2834).
+ * Initiatives mega menu — Figma "navigation-initiatives-hover" (398:3417).
  *
- * A white panel under the nav, over a 30%-dark scrim. Left: a preview card for
- * whichever row the pointer is on. Right: the standfirst, then one row per
- * initiative — name, category, ↗ — each linking to its page.
+ * A white panel under the nav, over a 30%-dark scrim. Left: a preview of
+ * whichever row the pointer is on — the cover in its rose frame, with the blurb
+ * under it. Right: one row per initiative — name, category, → — each linking to
+ * its page.
  *
- * The preview is the point of the component: hovering a row swaps the card, so
+ * The preview is the point of the component: hovering a row swaps the cover, so
  * the first row is previewed by default and the panel is never empty.
+ *
+ * The frame pares this back from 354:2834: the standfirst above the list, the
+ * label plate on the preview card and the pointer mark on each row are all
+ * gone, and the arrow now belongs to the active row alone rather than sitting
+ * on all five at once.
  *
  * Desktop only. Below lg the nav collapses to its own drawer, which already
  * lists the same links, and a 504px panel has nowhere to go on a phone.
@@ -20,7 +26,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import { PatternTile, slotStyle } from "@/components/initiatives/patterns";
-import { ArrowUpRight, HighlightDetail, ListPointer } from "@/components/ui/icons";
 import type { Locale, SiteContent } from "@/lib/home-content";
 
 export function MegaMenu({
@@ -50,8 +55,11 @@ export function MegaMenu({
             menu into a flicker. slotStyle still supplies --p1/--p2/--p3 so the
             pattern fallback below keeps its own palette; the background and
             ink are overridden after it. */}
+        {/* initiative-cover-wrapper (398:3477) — the rose is a frame around the
+            cover rather than a card behind it, so the padding is deliberately
+            uneven: 12px on the sides and top, 32px at the foot. */}
         <div
-          className="flex flex-col gap-6 bg-brand p-6 text-text"
+          className="bg-brand px-3 pb-8 pt-3 text-text"
           style={{ ...slotStyle(activeIndex), background: undefined, color: undefined }}
         >
           {/* card-hero-image, 240px (391:4835) — the same frame the carousel
@@ -59,7 +67,9 @@ export function MegaMenu({
           <div className="relative h-[240px] w-full overflow-hidden">
             {/* The initiative's own cover, matching the carousel card, so the
                 preview shows the page the row opens. Initiatives without a
-                long-form page have no cover and keep their pattern tile.
+                long-form page have no cover and keep their pattern tile — none
+                of the published ones are in that state today, so this is a
+                floor rather than something the menu actually shows.
                 alt="" — the row being previewed already names it. */}
             {active.cover ? (
               <Image
@@ -73,57 +83,59 @@ export function MegaMenu({
               <PatternTile n={active.pattern} />
             )}
           </div>
-
-          <div className="flex items-center gap-5">
-            <HighlightDetail className="shrink-0" />
-            <span className="t-label font-bold">{active.label}</span>
-          </div>
         </div>
 
-        {/* No button: the card is a preview of whichever row the pointer is on,
+        {/* No button: the preview belongs to whichever row the pointer is on,
             and that row is already the link. A second control for the same
             destination, one the pointer has to leave the list to reach, is
             just something else to aim at. Clamped to the frame's 88px box so a
             long blurb can't stretch the panel. */}
-        <p className="t-body line-clamp-3">{active.text}</p>
+        <p className="t-body line-clamp-3 text-[18px]">{active.text}</p>
       </div>
 
-      <div className="col-span-full flex flex-col lg:col-start-5 lg:col-span-6">
-        <h2 className="t-h03 pb-12">{initiatives.lede ?? initiatives.heading}</h2>
-
+      {/* Columns 5–11 of the panel. Seven tracks rather than six so the rows can
+          reach column 11, where the arrow sits. */}
+      <div className="col-span-full flex flex-col lg:col-start-5 lg:col-span-7">
         <ul>
           {items.map((item, i) => (
             <li
               key={item.slug}
               // Driven by activeIndex rather than :hover, so the row the preview
               // belongs to is marked even before the pointer arrives — on open
-              // that is the first row, which is what the card is showing.
-              // Same rule behaviour as the checklist: the active row and the one
-              // after it drop their border so the rose reads as one band.
-              className={`border-t transition-colors duration-[120ms] ${
+              // that is the first row, which is what the preview is showing.
+              // Every row keeps its rule now, the active one included: the rose
+              // is a band behind the row, not a shape the rules make way for.
+              className={`border-t border-border transition-colors duration-[120ms] ${
                 i === activeIndex ? "bg-brand" : ""
-              } ${i === activeIndex || i === activeIndex + 1 ? "border-t-transparent" : "border-border"}`}
+              }`}
               onMouseEnter={() => setActiveIndex(i)}
               onFocus={() => setActiveIndex(i)}
             >
+              {/* Seven tracks over the region's seven columns, so they land on
+                  page columns 5–11 and the row reads against the same grid as
+                  everything else on the page: name 5–8, type 9–10, arrow 11.
+                  A subgrid of its own (the old 8) put the type and the arrow on
+                  lines that existed nowhere else. */}
               <a
                 href={`/${locale}/initiatives/${item.slug}`}
                 onClick={onNavigate}
                 className="bdc-grid items-center py-3"
-                style={{ ["--grid-cols" as string]: 8 }}
+                style={{ ["--grid-cols" as string]: 7 }}
               >
-                <span className="col-span-5 flex items-center gap-3">
-                  <ListPointer
-                    className={`w-3 shrink-0 transition-opacity ${
-                      i === activeIndex ? "opacity-100" : "opacity-0"
-                    }`}
-                    aria-hidden
-                  />
-                  <span className="t-body">{item.title}</span>
-                </span>
-                <span className="t-body col-span-2">{item.label}</span>
-                <span className="col-span-1 justify-self-end" aria-hidden>
-                  <ArrowUpRight className="h-5 w-5" />
+                <span className="t-body col-span-4 font-bold">{item.title}</span>
+                <span className="t-body col-span-2 col-start-5">{item.label}</span>
+                {/* The arrow belongs to the row being previewed, so it reads as
+                    "this is the one you are about to open" rather than as five
+                    identical marks. Held in the layout at zero opacity so the
+                    columns don't shift as it moves down the list. Left-aligned
+                    on column 11 rather than pushed to the row's end. */}
+                <span
+                  className={`t-caption col-start-7 transition-opacity duration-[120ms] ${
+                    i === activeIndex ? "opacity-100" : "opacity-0"
+                  }`}
+                  aria-hidden
+                >
+                  →
                 </span>
               </a>
             </li>
