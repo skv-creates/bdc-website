@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/ui/Logo";
 import { MegaMenu } from "@/components/sections/MegaMenu";
 import { Button } from "@/components/ui/Button";
-import { ListPointer } from "@/components/ui/icons";
 import type { Locale, SiteContent } from "@/lib/home-content";
 
 /* Match the page content column: gutter on the left, and on the right only
@@ -143,7 +142,7 @@ export function SiteNav({
       >
         <div className="flex items-center justify-between gap-6 lg:grid lg:grid-cols-12 lg:gap-x-[var(--grid-gap)]">
           <a href={homeHref} aria-label={ui.home} className="shrink-0 lg:col-start-1 lg:col-span-3 lg:justify-self-start">
-            <Logo variant="dark" className="h-8 w-auto md:h-10" />
+            <Logo variant="dark" locale={locale} className="h-8 w-auto md:h-10" />
           </a>
 
           {/* desktop nav — one row starting at page-grid column 4, links spaced
@@ -218,13 +217,15 @@ export function SiteNav({
                   </a>
 
                   {/* The initiatives item carries the archive inline — the
-                      phone equivalent of the desktop mega menu. Indented and
-                      ruled, name left, category right. Plain <a> for the same
-                      reason as the mega menu: next/link here would be caught by
-                      the @modal/(.)initiatives interceptor and open the overlay
+                      phone equivalent of the desktop mega menu. Ruled titles,
+                      flush with the drawer's own start so they sit on column 1
+                      with the nav links above them rather than indented under
+                      them. Plain <a> for the same reason as the mega menu:
+                      next/link here would be caught by the
+                      @modal/(.)initiatives interceptor and open the overlay
                       instead of the page. */}
                   {initiatives && l.href === megaHref && (
-                    <ul className="flex flex-col pb-4 ps-4">
+                    <ul className="flex flex-col pb-4">
                       {initiatives.items.map((item) => (
                         <li
                           key={item.slug}
@@ -235,25 +236,18 @@ export function SiteNav({
                           // hover only after the first touch.
                           className="group border-t border-border transition-colors duration-[120ms] ease-out hover:border-t-transparent hover:bg-brand active:border-t-transparent active:bg-brand [&:active+li]:border-t-transparent [&:hover+li]:border-t-transparent"
                         >
+                          {/* Just the title now — no column grid left to hold,
+                              since the category it used to sit beside is gone.
+                              The rose band on tap is the affordance the pointer
+                              mark used to be; on a phone that mark only ever
+                              appeared mid-tap anyway, while costing the title
+                              its start position the rest of the time. */}
                           <a
                             href={`/${locale}/initiatives/${item.slug}`}
                             onClick={() => setOpen(false)}
-                            className="bdc-grid items-start py-3"
-                            style={{ ["--grid-cols" as string]: 8 }}
+                            className="t-body block py-3"
                           >
-                            {/* 4/4 rather than the frame's 5/3: at a phone's
-                                width three columns is narrower than the word
-                                "Образование", which then spills past the rule. */}
-                            <span className="col-span-4 flex items-start gap-3">
-                              {/* Occupies its width at rest so the title
-                                  doesn't shift sideways when the mark fades in. */}
-                              <ListPointer
-                                className="mt-1 w-3.5 shrink-0 opacity-0 transition-opacity duration-[120ms] group-hover:opacity-100 group-active:opacity-100"
-                                aria-hidden
-                              />
-                              <span className="t-body">{item.title}</span>
-                            </span>
-                            <span className="t-body col-span-4">{item.label}</span>
+                            {item.title}
                           </a>
                         </li>
                       ))}

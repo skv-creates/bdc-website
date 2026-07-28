@@ -1,3 +1,116 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   LANDING SHOWCASE (Figma 398:3175)
+
+   One initiative at a time — a 6-column 4:3 cover with its blurb beside it —
+   and the carousel moved onto the strip of titles underneath, which doubles as
+   the navigation. The strip advances itself every 4s and wraps, so it is
+   rendered three times over and translated; see Initiatives.tsx.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* The strip is clipped by the section's own right edge, so the next few titles
+   peek in exactly as they do in the frame. */
+.nav {
+  --nav-item: 300px;
+  overflow: hidden;
+}
+
+.navTrack {
+  display: flex;
+  gap: var(--grid-gap, 24px);
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The frame's fixed 300px title card. */
+.navItem {
+  flex: 0 0 var(--nav-item);
+  width: var(--nav-item);
+}
+
+@media (max-width: 767px) {
+  .nav { --nav-item: 220px; }
+}
+
+.navButton {
+  display: block;
+  width: 100%;
+  text-align: start;
+  cursor: pointer;
+}
+
+/* Drawn inside the button. The strip clips its own overflow — that is what
+   makes the coming titles peek — so a ring sitting outside the box loses its
+   leading edge on the title at the head of the strip, which is exactly the one
+   that has focus. */
+.navButton:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: -2px;
+}
+
+/* The rule reserves its thickest state (4px) so growing it on hover cannot
+   nudge the label underneath — in the frame the two share one grid cell and the
+   line overlaps rather than pushes. */
+.navRule {
+  position: relative;
+  display: block;
+  height: 4px;
+  width: 100%;
+}
+
+.navRule::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--color-border);
+  /* Kept short deliberately. The rule that is losing selection crosses through
+     thick-and-black on its way back to thin — the hover look — so a slow ease
+     leaves what reads as a second highlighted title. */
+  transition: height 120ms ease-out, background-color 120ms ease-out;
+}
+
+/* Hover thickens the rule; selection also turns it brand rose. Thickness is the
+   affordance, colour is the state, so the two never read as the same thing. */
+.navButton:hover .navRule::before {
+  height: 4px;
+}
+
+.navButtonActive .navRule::before {
+  height: 4px;
+  background: var(--color-brand);
+}
+
+/* The cover's bottom layer, so an initiative still awaiting a photograph shows
+   a neutral plate rather than the page, and so cross-fading between covers
+   never flashes white. */
+.coverPlate {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-text) 8%, var(--color-page));
+}
+
+.fadeIn {
+  animation: initiativeFade 300ms ease-out both;
+}
+
+@keyframes initiativeFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fadeIn { animation: none; }
+  .navRule::before { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INSIDE-PAGES TRACK (Figma 327:1543) — the "more initiatives" card carousel at
+   the foot of each initiative page.
+   ═════════════════════════════════════════════════════════════════════════ */
+
 /* Horizontal, scroll-snapping carousel.
    Desktop: each card spans 6 of the 11 content columns, so one full card plus a
    peek of the next is visible. Tablet/mobile: wider cards, still horizontal. */
