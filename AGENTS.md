@@ -93,3 +93,21 @@ Three things worth knowing before you touch it:
 The FAQ (`npm run sync:faq`) is still hand-run: its `--publish` flag writes back
 to Notion and so needs a write-capable integration, which is not something to
 hand to a scheduled job.
+
+# Deploys run from GitHub Actions, not from Cloudflare
+
+`.github/workflows/deploy.yml` builds and ships the OpenNext Worker to
+`staging.bulgariandesigncouncil.org` on every push to `main`. Locally the same
+thing is `npm run deploy`.
+
+Cloudflare's own **Workers Builds** Git integration is deliberately *not*
+connected. It targets the same `bdc-website` Worker, so leaving it on means two
+systems deploying one Worker from the same push and racing each other — and its
+default build never worked here anyway, because `wrangler.jsonc` points `main`
+at `.open-next/worker.js`, which `next build` does not produce. It sat red on
+every commit for months and opened a config PR (#2) that would have reverted the
+site.
+
+If you connect a repo to a Worker in the Cloudflare dashboard, it turns that
+integration back on. Don't — or if you do, delete `deploy.yml` in the same
+change so only one of them ships.
