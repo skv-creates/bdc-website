@@ -48,12 +48,22 @@ export type InitiativeDetail = {
   checklistHeading?: string;
   /** Bordered rows — "this is for you when…". */
   checklist: string[];
+  /**
+   * Where the rows sit. Default is full width below the feature block, as
+   * Policy Lab and Bulgaria by Design have it. Future Makers Lab (373:4473)
+   * nests them in the feature's right column instead, so its eleven topics
+   * read as a continuation of the sentence above them rather than a new
+   * section.
+   */
+  checklistInFeature?: boolean;
   /** A second feature block below the checklist (Figma 355:3316). Same shape as
       `feature`, closing the argument rather than opening it. */
   featureClosing?: {
     label: string;
     heading: string;
     paragraphs: string[];
+    /** Button under the closing paragraph (373:4711). */
+    action?: { label: string; href: string };
   };
   /** Closing button row. */
   actions?: { label: string; href: string; variant?: "primary" | "secondary" }[];
@@ -333,6 +343,84 @@ const bg = {
         title: "Създатели на бъдещето",
         text: "Лаборатория за юноши, която развива системно мислене, проблемно рамкиране, изследователска култура, включващ дизайн и отговорна работа с AI.",
         pattern: 2,
+        // Figma 373:4086. The eleven topics sit inside the feature column here,
+        // continuing the sentence above them rather than starting a section.
+        detail: {
+          lead: "Най-ранните искри почти винаги пламват в класната стая.",
+          columns: [
+            [
+              "Лабораторията Създатели на бъдещето е жива модулна образователна система. Тя превръща библиотека от дизайн знания и практики в лаборатории, създадени за конкретна аудитория, контекст, среда и цел.",
+            ],
+            [
+              "Мисията ние е да поставим силата на дизайна в ръцете на поколението, което създава нашето утре. Лабораторията е създадена така, че да може да се адаптира за училища, университети и младежки програми в цялата страна.",
+            ],
+          ],
+          cover: {
+            src: "/figma/initiatives/future-makers-lab-hero.jpg",
+            alt: "Участници в работилница подреждат материали върху маса",
+          },
+          body: [
+            "Разработваме всяка тема за различни етапи на учене — от училищна възраст, университет до професионално развитие. След това анализираме нуждите на конкретната аудитория и свързваме най-подходящите модули в цялостна лаборатория с ясна цел и измерим ефект.",
+            "Първия пилот проведохме с Нов Български Университет. Следващата ни стъпка е да развием програмата с повече университети, училища, институции, практици и партньори.",
+          ],
+          actions: [
+            {
+              label: "Партнирай с нас",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Future%20Makers%20Lab",
+              variant: "primary",
+            },
+            {
+              label: "Поканете ни",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Invitation%20%2F%20Future%20Makers%20Lab",
+              variant: "secondary",
+            },
+          ],
+          feature: {
+            label: "Какво",
+            heading: "Модулна лаборатория за създатели на бъдещето.",
+            paragraphs: [
+              "Умения за свят, който не идва с инструкции. Една лаборатория. Много възможни конфигурации.",
+              "Модулната библиотека включва теми от сътрудничество и увереност, до дизайн на AI агенти.",
+            ],
+          },
+          checklistInFeature: true,
+          checklist: [
+            "Критично и системно мислене",
+            "Дизайн проучвания",
+            "Достъпност и приобщаващ дизайн",
+            "Когнитивен и поведенчески дизайн",
+            "Дизайн на услуги (Service design)",
+            "Продуктов дизайн",
+            "Етика и отговорна работа с AI",
+            "Дизайн на и за AI",
+            "Бизнес дизайн",
+            "Кръгова икономика",
+            "Сътрудничество, увереност и представяне на идеи",
+          ],
+          featureClosing: {
+            label: "Какво променяме",
+            heading: "Каква лаборатория е нужна на вашата общност?",
+            paragraphs: [
+              "Независимо дали работите с ученици, студенти или професионалисти, ще създадем подходяща конфигурация от теми, практики и предизвикателства за вашия контекст.",
+            ],
+            action: {
+              label: "Да създадем лаборатория",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=New%20lab%20%2F%20Future%20Makers%20Lab",
+            },
+          },
+          team: {
+            heading: "Да създадем заедно с(ъ)вета",
+            text: "Инициативи като тази, съществуват благодарение на хора, които даряват време, знания и енергия.",
+            cta: { label: "Включи се в проект", href: "/bg/volunteer" },
+            creditLabel: "Екипа зад\n„Създатели на бъдещето“",
+            members: [
+              "dobra-slavkova",
+              "stefi-peykova-krishnan",
+              "radina-doneva",
+              "zinaida-iler",
+            ],
+          },
+        },
       },
       {
         slug: "design-maturity-assessment",
@@ -987,6 +1075,82 @@ const en: typeof bg = {
         title: "Future Makers Lab",
         text: "A lab for teenagers that builds systems thinking, problem framing, a research culture, inclusive design and responsible work with AI.",
         pattern: 2,
+        detail: {
+          lead: "The earliest sparks almost always catch in the classroom.",
+          columns: [
+            [
+              "Future Makers Lab is a living, modular educational system. It turns a library of design knowledge and practice into labs built for a particular audience, context, setting and purpose.",
+            ],
+            [
+              "Our mission is to put the power of design in the hands of the generation building our tomorrow. The lab is designed to adapt to schools, universities and youth programmes across the country.",
+            ],
+          ],
+          cover: {
+            src: "/figma/initiatives/future-makers-lab-hero.jpg",
+            alt: "Workshop participants arranging materials on a table",
+          },
+          body: [
+            "We develop every topic for different stages of learning — from school age through university to professional development. We then analyse what a particular audience needs and connect the most suitable modules into a complete lab with a clear goal and a measurable effect.",
+            "We ran our first pilot with New Bulgarian University. Our next step is to grow the programme with more universities, schools, institutions, practitioners and partners.",
+          ],
+          actions: [
+            {
+              label: "Build a partnership",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Future%20Makers%20Lab",
+              variant: "primary",
+            },
+            {
+              label: "Invite us",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Invitation%20%2F%20Future%20Makers%20Lab",
+              variant: "secondary",
+            },
+          ],
+          feature: {
+            label: "What",
+            heading: "A modular lab for the makers of the future.",
+            paragraphs: [
+              "Skills for a world that doesn't come with instructions. One lab. Many possible configurations.",
+              "The modular library covers everything from collaboration and confidence to designing AI agents.",
+            ],
+          },
+          checklistInFeature: true,
+          checklist: [
+            "Critical and systems thinking",
+            "Design research",
+            "Accessibility and inclusive design",
+            "Cognitive and behavioural design",
+            "Service design",
+            "Product design",
+            "Ethics and responsible work with AI",
+            "Designing with and for AI",
+            "Business design",
+            "Circular economy",
+            "Collaboration, confidence and presenting ideas",
+          ],
+          featureClosing: {
+            label: "What we are changing",
+            heading: "What kind of lab does your community need?",
+            paragraphs: [
+              "Whether you work with school pupils, students or professionals, we'll put together the right configuration of topics, practices and challenges for your context.",
+            ],
+            action: {
+              label: "Let's build a lab",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=New%20lab%20%2F%20Future%20Makers%20Lab",
+            },
+          },
+          team: {
+            heading: "Let's build the council together",
+            text: "Initiatives like this one exist thanks to people who give their time, knowledge and energy.",
+            cta: { label: "Join a project", href: "/en/volunteer" },
+            creditLabel: "The team behind\n“Future Makers Lab”",
+            members: [
+              "dobra-slavkova",
+              "stefi-peykova-krishnan",
+              "radina-doneva",
+              "zinaida-iler",
+            ],
+          },
+        },
       },
       {
         slug: "design-maturity-assessment",
