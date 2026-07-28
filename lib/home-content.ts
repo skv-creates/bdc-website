@@ -220,7 +220,7 @@ const bg = {
    * into the copy, and stay right if a third is added.
    */
   designImpact: {
-    heading: "Защо дизайна е важен:",
+    heading: "Защо дизайнът е важен",
     stats: [
       {
         value: "45%",
