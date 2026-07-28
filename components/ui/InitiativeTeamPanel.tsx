@@ -60,7 +60,12 @@ export function InitiativeTeamPanel({
                 rather than 9px short of it inside a 277px box. The credit still
                 sets its own line break, so it can't over-wrap. */}
             {members.length > 0 && (
-              <div className="flex shrink-0 flex-col items-start gap-8 border-t border-border pt-[60px] md:border-0 md:pt-0">
+              // items-end from md so the faces align right with the credit
+              // above them; the credit's own text-right only ever moved the
+              // text inside its full-width box, which left the avatar list —
+              // a shrink-to-fit block — sitting at the start. Below md the
+              // column stacks under the copy and both go left.
+              <div className="flex shrink-0 flex-col items-start gap-8 border-t border-border pt-[60px] md:items-end md:border-0 md:pt-0">
                 {/* whitespace-pre, not pre-line: the credit already carries its
                     own break (see creditLabel), and pre-line let the second
                     line wrap again inside the 268px column, splitting it over
