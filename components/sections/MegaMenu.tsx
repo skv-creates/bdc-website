@@ -18,18 +18,17 @@
  * destination is the page itself, so it has to be a document navigation.
  */
 import { useState } from "react";
+import Image from "next/image";
 import { PatternTile, slotStyle } from "@/components/initiatives/patterns";
 import { ArrowUpRight, HighlightDetail, ListPointer } from "@/components/ui/icons";
 import type { Locale, SiteContent } from "@/lib/home-content";
 
 export function MegaMenu({
   initiatives,
-  ui,
   locale,
   onNavigate,
 }: {
   initiatives: SiteContent["initiatives"];
-  ui: SiteContent["ui"];
   locale: Locale;
   /** Close the menu once a row is followed. */
   onNavigate: () => void;
@@ -45,13 +44,34 @@ export function MegaMenu({
     <div className="bdc-stop-11 bdc-grid gap-y-12 py-12">
       {/* Preview: columns 1–4 of the panel's 10, per the frame. */}
       <div className="col-span-full flex flex-col gap-6 lg:col-span-4">
-        {/* The card takes the ground, ink and text colour the same initiative
-            gets in the carousel — slotStyle by list position — so the two never
-            disagree about what colour an initiative "is". Pattern only: covers
-            are deliberately not used here. */}
-        <div className="flex flex-col gap-6 p-6" style={slotStyle(activeIndex)}>
-          <div className="relative h-[200px] w-full overflow-hidden">
-            <PatternTile n={active.pattern} />
+        {/* Always the brand rose (354:2912), unlike the carousel card, which
+            takes a different ground per list position. The panel swaps this
+            card on every hover, so cycling it through three colours turns the
+            menu into a flicker. slotStyle still supplies --p1/--p2/--p3 so the
+            pattern fallback below keeps its own palette; the background and
+            ink are overridden after it. */}
+        <div
+          className="flex flex-col gap-6 bg-brand p-6 text-text"
+          style={{ ...slotStyle(activeIndex), background: undefined, color: undefined }}
+        >
+          {/* card-hero-image, 240px (391:4835) — the same frame the carousel
+              card uses, so a photograph crops identically in both. */}
+          <div className="relative h-[240px] w-full overflow-hidden">
+            {/* The initiative's own cover, matching the carousel card, so the
+                preview shows the page the row opens. Initiatives without a
+                long-form page have no cover and keep their pattern tile.
+                alt="" — the row being previewed already names it. */}
+            {active.cover ? (
+              <Image
+                src={active.cover.src}
+                alt=""
+                fill
+                sizes="504px"
+                className="object-cover"
+              />
+            ) : (
+              <PatternTile n={active.pattern} />
+            )}
           </div>
 
           <div className="flex items-center gap-5">
@@ -60,21 +80,15 @@ export function MegaMenu({
           </div>
         </div>
 
-        <div className="flex flex-col items-start gap-8">
-          {/* Clamped to the frame's 88px box so a long blurb can't push the
-              button out of the panel. */}
-          <p className="t-body line-clamp-3">{active.text}</p>
-          <a
-            href={`/${locale}/initiatives/${active.slug}`}
-            onClick={onNavigate}
-            className="t-label inline-flex items-center justify-center rounded-full border-2 border-border px-8 py-4 transition-colors hover:bg-brand-hover hover:text-text-invert hover:border-brand-hover"
-          >
-            {ui.seeMore}
-          </a>
-        </div>
+        {/* No button: the card is a preview of whichever row the pointer is on,
+            and that row is already the link. A second control for the same
+            destination, one the pointer has to leave the list to reach, is
+            just something else to aim at. Clamped to the frame's 88px box so a
+            long blurb can't stretch the panel. */}
+        <p className="t-body line-clamp-3">{active.text}</p>
       </div>
 
-      <div className="col-span-full flex flex-col lg:col-start-6 lg:col-span-7">
+      <div className="col-span-full flex flex-col lg:col-start-5 lg:col-span-6">
         <h2 className="t-h03 pb-12">{initiatives.lede ?? initiatives.heading}</h2>
 
         <ul>
