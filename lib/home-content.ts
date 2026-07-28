@@ -150,6 +150,8 @@ const bg = {
     switchLanguage: "English",
     /** Initiative card button on inside pages (Figma 351:1097). */
     seeMore: "Виж повече",
+    /** Tertiary button under the landing showcase blurb (Figma 398:3188). */
+    readMore: "Прочети повече",
   },
 
   nav: {
@@ -909,6 +911,7 @@ const en: typeof bg = {
     next: "Next",
     switchLanguage: "Български",
     seeMore: "See more",
+    readMore: "Read more",
   },
 
   nav: {

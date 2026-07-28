@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./Initiatives.module.css";
-import { PatternTile, slotStyle } from "./patterns";
+import { slotStyle } from "./patterns";
 import type { Initiative, Locale, SiteContent } from "@/lib/home-content";
 
 /** Arrow-scroll animation: 120ms ease-out. */
@@ -20,72 +20,341 @@ function LabelMark() {
   );
 }
 
-/** The peeking card's ground (354:2325). */
-const DIMMED = "#f3f3f3";
+/**
+ * The section header, shared by both placements (332:3339 on the landing page,
+ * 354:2459 inside): the section name as a small accented label, the standfirst
+ * as the heading under it. The heading is the sentence, not the one-word title
+ * — three lines at 56px is not "Инициативи".
+ */
+function Header({ initiatives }: { initiatives: SiteContent["initiatives"] }) {
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="flex items-center gap-3">
+        {/* Same 16×8 mark as the mission label, recoloured with the rail. */}
+        <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
+        <span className="t-caption">{initiatives.heading}</span>
+      </div>
+      <h2 className="t-h02 max-w-[800px]">{initiatives.lede ?? initiatives.heading}</h2>
+    </div>
+  );
+}
+
+export function Initiatives({
+  initiatives,
+  ui,
+  locale,
+  inside = false,
+}: {
+  initiatives: SiteContent["initiatives"];
+  ui: SiteContent["ui"];
+  locale: Locale;
+  /**
+   * "section-initiatives-inside-pages" (Figma 327:1543) rather than the landing
+   * page's — the card carousel at the foot of an initiative page. The landing
+   * page runs the showcase below instead.
+   */
+  inside?: boolean;
+}) {
+  return inside ? (
+    <InitiativesTrack initiatives={initiatives} ui={ui} locale={locale} />
+  ) : (
+    <InitiativesShowcase initiatives={initiatives} ui={ui} locale={locale} />
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   LANDING SHOWCASE (Figma 398:3175)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/** Annotation on 398:3178 — dwell before advancing to the next initiative. */
+const AUTOPLAY_MS = 4000;
+/** How long the strip takes to slide one title along. */
+const SLIDE_MS = 500;
+
+/**
+ * Copies of the list laid end to end. `pos` indexes into the whole run, and at
+ * rest sits in copy 1 — the band [N, 2N) — so there is a copy either side to
+ * travel into. Sliding one step off the end of the band lands on the identical
+ * title in the neighbouring copy, and only then is `pos` snapped back into the
+ * band with the transition switched off; that is what makes the wrap invisible.
+ * Stepping the index straight from last to first would rewind the whole strip
+ * across the screen.
+ *
+ * Five rather than three because a click can throw `pos` up to N−1 past the top
+ * of the band before the snap catches it, and the titles to the right of that
+ * still have to exist.
+ */
+const COPIES = 5;
+
+/**
+ * One initiative shown large, with the strip of titles underneath acting as the
+ * carousel (398:3178). It advances on its own every 4s and loops, and stops the
+ * moment the visitor picks a title for themselves (398:3180).
+ */
+function InitiativesShowcase({
+  initiatives,
+  ui,
+  locale,
+}: {
+  initiatives: SiteContent["initiatives"];
+  ui: SiteContent["ui"];
+  locale: Locale;
+}) {
+  const items = initiatives.items;
+  const N = items.length;
+  const LOOP = useMemo(
+    () => Array.from({ length: COPIES }, () => items).flat(),
+    [items],
+  );
+
+  /** The real, keyboard-reachable titles — one copy of the list, at rest. */
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const [pos, setPos] = useState(N);
+  /** Set once the visitor picks a title; the strip never auto-advances again. */
+  const [picked, setPicked] = useState(false);
+  const [animate, setAnimate] = useState(true);
+  const [reduced, setReduced] = useState(false);
+
+  const active = pos % N;
+  const item = items[active];
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduced(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  /**
+   * Mount a cover only once it has been shown. All six are full-width
+   * photographs, and the strip walks through the whole set inside half a
+   * minute, so mounting them up front would spend megabytes on images the
+   * visitor may never scroll far enough to see. Once mounted they stay, which
+   * is what lets the cross-fade have something to fade from.
+   */
+  const [seen, setSeen] = useState<ReadonlySet<number>>(() => new Set([0]));
+  const reveal = (k: number) =>
+    setSeen((prev) => (prev.has(k) ? prev : new Set(prev).add(k)));
+
+  // Autoplay. Keyed on `pos`, so every advance — including one the visitor
+  // triggers — restarts the dwell rather than firing partway through it.
+  useEffect(() => {
+    if (picked || reduced) return;
+    const t = setTimeout(() => {
+      const next = pos + 1;
+      setSeen((prev) => (prev.has(next % N) ? prev : new Set(prev).add(next % N)));
+      setPos(next);
+    }, AUTOPLAY_MS);
+    return () => clearTimeout(t);
+  }, [pos, picked, reduced, N]);
+
+  // Once a slide out of the resting band has finished, drop back to the
+  // matching title inside it — whichever side it left by. Same picture, so the
+  // jump cannot be seen.
+  useEffect(() => {
+    if (pos >= N && pos < 2 * N) return;
+    const t = setTimeout(
+      () => {
+        setAnimate(false);
+        setPos((p) => N + ((((p - N) % N) + N) % N));
+      },
+      reduced ? 0 : SLIDE_MS,
+    );
+    return () => clearTimeout(t);
+  }, [pos, N, reduced]);
+
+  // Re-arm the transition only after the un-animated jump has actually painted
+  // — one frame is not enough, the style change and the paint land together.
+  useEffect(() => {
+    if (animate) return;
+    const r = requestAnimationFrame(() => requestAnimationFrame(() => setAnimate(true)));
+    return () => cancelAnimationFrame(r);
+  }, [animate]);
+
+  /**
+   * Show initiative `k`, always by moving forwards. A clicked title is always
+   * at or ahead of the current one — the selected title sits at the head of the
+   * strip — so picking the third along steps forward three, never back N−3.
+   */
+  const pick = (k: number) => {
+    setPicked(true);
+    reveal(k);
+    setPos((p) => p + ((((k - (p % N)) % N) + N) % N));
+  };
+
+  /** Move one title in `dir`, which is what the arrow keys want: left really
+      does travel left, rather than the long way round to the same place. */
+  const step = (dir: 1 | -1) => {
+    setPicked(true);
+    reveal((((active + dir) % N) + N) % N);
+    setPos((p) => p + dir);
+  };
+
+  /**
+   * Arrow keys walk the strip; Home and End jump to its ends. Focus follows, so
+   * the title being read out is the one on screen. The strip is a single tab
+   * stop — tabbing in lands on the selected title and tabbing again leaves —
+   * which is the roving-tabindex convention for a set of choices like this.
+   */
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    let target: number;
+    if (e.key === "ArrowRight") {
+      step(1);
+      target = (active + 1) % N;
+    } else if (e.key === "ArrowLeft") {
+      step(-1);
+      target = (active - 1 + N) % N;
+    } else if (e.key === "Home") {
+      pick(0);
+      target = 0;
+    } else if (e.key === "End") {
+      pick(N - 1);
+      target = N - 1;
+    } else {
+      return;
+    }
+    e.preventDefault();
+    tabs.current[target]?.focus();
+  };
+
+  const href = (it: Initiative) => `/${locale}/initiatives/${it.slug}`;
+
+  return (
+    <section id="initiatives" className="bdc-stop-11 py-20 md:py-28">
+      <Header initiatives={initiatives} />
+
+      <div className="mt-12 grid gap-x-6 gap-y-12 lg:mt-20 lg:grid-cols-11">
+        {/* initiative-info (398:3185) — columns 1–5. */}
+        <div key={active} className={`${styles.fadeIn} flex flex-col gap-8 lg:col-span-5`}>
+          <h3 className="t-h03">
+            <Link href={href(item)} className="hover:underline">
+              {item.title}
+            </Link>
+          </h3>
+          <p className="t-body">{item.text}</p>
+          {/* button-terciary (398:3188). The arrow is part of the label rather
+              than an icon, exactly as in the frame. */}
+          <Link
+            href={href(item)}
+            className="t-caption group inline-flex items-center gap-3 font-medium"
+          >
+            {ui.readMore}
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
+          </Link>
+        </div>
+
+        {/* initiative-cover (398:3184) — six columns at 4:3, per the annotation.
+            The covers are stacked and cross-faded rather than swapped so the
+            box never empties between two initiatives. alt="" throughout: the
+            title beside it is the accessible name, and describing the picture
+            here would have it read out twice. */}
+        <div className="relative aspect-[4/3] overflow-hidden lg:col-span-6 lg:col-start-6">
+          <div className={styles.coverPlate} aria-hidden />
+          {items.map((it, i) =>
+            it.cover && seen.has(i) ? (
+              <Image
+                key={it.slug}
+                src={it.cover.src}
+                alt=""
+                fill
+                sizes="(max-width: 1023px) 100vw, 624px"
+                priority={i === 0}
+                className="object-cover transition-opacity duration-300"
+                style={{ opacity: i === active ? 1 : 0 }}
+              />
+            ) : null,
+          )}
+        </div>
+
+        {/* initiatives-carousel-nav (398:3178) — the full width of the section,
+            clipped at its right edge so the coming titles peek in. */}
+        <div
+          className={`${styles.nav} lg:col-span-11`}
+          role="group"
+          aria-label={initiatives.heading}
+          onKeyDown={onKeyDown}
+        >
+          <ul
+            className={styles.navTrack}
+            style={{
+              // Inline rather than an arbitrary Tailwind class: Safari drops
+              // `translate-x-[var(--x)]`-style utilities silently.
+              transform: `translate3d(calc(${-pos} * (var(--nav-item) + var(--grid-gap, 24px))), 0, 0)`,
+              transition: animate && !reduced ? `transform ${SLIDE_MS}ms cubic-bezier(0.4, 0, 0.2, 1)` : "none",
+            }}
+          >
+            {LOOP.map((it, i) => {
+              const k = i % N;
+              const isActive = k === active;
+              // Only the resting copy is real. The others exist so the strip
+              // has somewhere to slide, and stay clickable — they are the ones
+              // on screen for part of the cycle — but out of the accessibility
+              // tree and out of the tab order, so each initiative is announced
+              // once rather than five times.
+              const real = i >= N && i < 2 * N;
+              return (
+                <li key={i} className={styles.navItem}>
+                  <button
+                    type="button"
+                    ref={real ? (el) => void (tabs.current[k] = el) : undefined}
+                    onClick={() => pick(k)}
+                    // A duplicate must not take focus: it is aria-hidden, and
+                    // focus inside a hidden subtree is what traps screen
+                    // readers. Clicks still work, they just don't focus.
+                    onMouseDown={real ? undefined : (e) => e.preventDefault()}
+                    aria-hidden={real ? undefined : true}
+                    // Roving tabindex — one stop for the whole strip.
+                    tabIndex={real && isActive ? 0 : -1}
+                    aria-current={real && isActive ? "true" : undefined}
+                    className={`${styles.navButton} ${isActive ? styles.navButtonActive : ""}`}
+                  >
+                    <span className={styles.navRule} />
+                    <span className="t-caption mt-[3px] block font-bold">{it.label}</span>
+                    <span className="t-body mt-[6px] block font-bold">{it.title}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   INSIDE-PAGES TRACK (Figma 327:1543)
+   ══════════════════════════════════════════════════════════════════════════ */
 
 function Card({
   item,
   index,
   locale,
-  inside = false,
-  dimmed = false,
   seeMore,
 }: {
   item: Initiative;
   index: number;
   locale: Locale;
-  /** The inside-pages form (Figma 327:1543) — see the note on <Initiatives/>. */
-  inside?: boolean;
-  /** Scrolled only partly into the track — see the note on <Initiatives/>. */
-  dimmed?: boolean;
   seeMore: string;
 }) {
   /**
-   * The landing carousel is rose throughout (354:2325) and greys the card that
-   * is only peeking in. Inside pages keep the three-colour rotation.
-   *
-   * slotStyle still runs in both cases: it carries --p1/--p2/--p3, which the
-   * pattern tile needs when an initiative has no cover photograph. Only the
-   * ground and ink are overridden after it.
+   * Inside pages keep the three-colour rotation. slotStyle also carries
+   * --p1/--p2/--p3, which the pattern tile needs.
    */
-  const slot = slotStyle(index);
-  const style = inside
-    ? slot
-    : { ...slot, background: dimmed ? DIMMED : "var(--color-brand)", color: "var(--color-text)" };
+  const style = slotStyle(index);
   const href = `/${locale}/initiatives/${item.slug}`;
 
   return (
     <article
-      // .card carries the flex/scroll-snap behaviour for both forms; .cardInside
-      // only overrides the width, and is declared after it so it wins.
-      className={`${styles.card} ${
-        inside ? `${styles.cardInside} p-8` : "p-6 md:p-10"
-      } relative flex cursor-pointer flex-col gap-12 transition-colors duration-200`}
+      // .card carries the flex/scroll-snap behaviour; .cardInside only overrides
+      // the width, and is declared after it so it wins.
+      className={`${styles.card} ${styles.cardInside} relative flex cursor-pointer flex-col gap-12 p-8`}
       style={style}
     >
-      {/* The inside-pages card drops the image — those pages already carry a
-          cover and a team panel, so a second one reads as noise. */}
-      {!inside && (
-        <div className="relative hidden h-[240px] w-full overflow-hidden md:block">
-          {/* The initiative's own cover, so the card previews the page it opens.
-              Initiatives without a long-form page have no cover yet and fall
-              back to their pattern tile, which is what the whole carousel used
-              to show. alt="" because the title beside it is the accessible name
-              — a description here would be read out twice. */}
-          {item.cover ? (
-            <Image
-              src={item.cover.src}
-              alt=""
-              fill
-              sizes="(max-width: 1023px) 90vw, 516px"
-              className="object-cover"
-            />
-          ) : (
-            <PatternTile n={item.pattern} />
-          )}
-        </div>
-      )}
-
       <div className="flex items-center gap-5">
         <LabelMark />
         <span className="text-[1.2rem] font-bold leading-[1.5] md:text-[24px]">{item.label}</span>
@@ -97,13 +366,10 @@ function Card({
           what guarantees the frame's 48px when a card is the tallest one. */}
       <div className="flex flex-1 flex-col gap-12">
         {/* title-wrapper: 24px between title and blurb, and the blurb held to
-            the frame's three-line box so the buttons don't wander. */}
+            the frame's three-line box so the buttons don't wander. The title
+            keeps its two-line reservation so every card is the same height. */}
         <div className="flex flex-col gap-6">
-          {/* Natural height, so the 24px under it is the 24px in the redline.
-              Reserving two lines here padded that gap out to 68 on every card
-              whose title fits one line. The inside-pages card keeps its
-              reservation — see the note on <Initiatives inside/>. */}
-          <h3 className={`t-h03 ${inside ? "min-h-[2.2em]" : ""}`}>
+          <h3 className="t-h03 min-h-[2.2em]">
             {/* Stretched link: the ::after covers the whole card, so a click
                 anywhere navigates, while in the DOM this stays a sibling of the
                 CTA anchor below — never an <a> inside an <a>. The title is the
@@ -118,12 +384,7 @@ function Card({
           <p className="t-body line-clamp-3 min-h-[4.2em]">{item.text}</p>
         </div>
 
-        {/* One button on every card, in both forms (391:4836 and 327:1543).
-            The per-initiative "Към проекта" CTA it replaced appeared on only
-            some cards, which left the row ragged; `item.cta` still serves the
-            overlay for initiatives with no long-form page.
-
-            aria-hidden + tabIndex -1: the title link above already exposes this
+        {/* aria-hidden + tabIndex -1: the title link above already exposes this
             destination, and without it every card is announced and tabbed
             through twice. */}
         <span className="mt-auto">
@@ -159,35 +420,17 @@ const recenter = (track: HTMLDivElement, n: number) => {
   if (target !== track.scrollLeft) track.scrollLeft = target;
 };
 
-export function Initiatives({
+function InitiativesTrack({
   initiatives,
   ui,
   locale,
-  inside = false,
 }: {
   initiatives: SiteContent["initiatives"];
   ui: SiteContent["ui"];
   locale: Locale;
-  /**
-   * "section-initiatives-inside-pages" (Figma 327:1543) rather than the landing
-   * page's. Heading only — no standfirst — and the card loses its pattern tile,
-   * gains a "Виж повече" button, and fixes its title and blurb at two and three
-   * lines so every card is the same height and the buttons line up.
-   */
-  inside?: boolean;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef(0);
-  /**
-   * Track positions that are only partly scrolled into view. The landing
-   * carousel greys those and keeps the rest rose (354:2325), so the card
-   * peeking past the right edge reads as "there is more this way" rather than
-   * as a card you failed to click.
-   *
-   * Held as the dimmed set rather than the visible one so the server render and
-   * first paint are all-rose, before any measurement has happened.
-   */
-  const [dimmed, setDimmed] = useState<ReadonlySet<number>>(new Set());
 
   const items = initiatives.items;
   const N = items.length;
@@ -218,48 +461,6 @@ export function Initiatives({
       window.removeEventListener("resize", start);
     };
   }, [N]);
-
-  /**
-   * Which track positions are only partly scrolled in.
-   *
-   * Measured from the rects on scroll rather than with an IntersectionObserver:
-   * the observer is the obvious tool, but it reports against a root asynchronously
-   * and there is no way to ask it for the current state, so the first paint and
-   * any resize depend on it having fired. Comparing rects is synchronous, gives
-   * the same answer, and can be re-run whenever we like.
-   *
-   * The 1px slack matters: a card flush with the track edge measures a hair
-   * narrower than its own width, and without it would never count as fully in.
-   */
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track || inside) return;
-
-    const measure = () => {
-      const tr = track.getBoundingClientRect();
-      const next = new Set<number>();
-      [...track.children].forEach((card, i) => {
-        const r = card.getBoundingClientRect();
-        const shown = Math.max(0, Math.min(r.right, tr.right) - Math.max(r.left, tr.left));
-        if (shown < r.width - 1) next.add(i);
-      });
-      setDimmed((prev) =>
-        prev.size === next.size && [...next].every((i) => prev.has(i)) ? prev : next,
-      );
-    };
-
-    measure();
-    track.addEventListener("scroll", measure, { passive: true });
-    // The mount-time reading can be taken before the layout has settled — the
-    // cover images have not loaded and the recentre has not run — so re-measure
-    // whenever the track's box changes rather than waiting for a first scroll.
-    const ro = new ResizeObserver(measure);
-    ro.observe(track);
-    return () => {
-      track.removeEventListener("scroll", measure);
-      ro.disconnect();
-    };
-  }, [inside, LOOP.length]);
 
   const scrollByCard = (dir: 1 | -1) => {
     const track = trackRef.current;
@@ -294,38 +495,15 @@ export function Initiatives({
 
   return (
     <section id="initiatives" className="bdc-stop-11 py-20 md:py-28">
-      {/* One header for both placements (332:3339 on the landing page, 354:2459
-          inside): the section name as a small accented label, the standfirst as
-          the heading under it. The heading is the sentence, not the one-word
-          title — three lines at 56px is not "Инициативи". The landing page used
-          to run these the other way round, with "Инициативи" set large and the
-          sentence beside it as a standfirst. */}
-      <div className="flex flex-col gap-8">
-        <div className="flex items-center gap-3">
-          {/* Same 16×8 mark as the mission label, recoloured with the rail. */}
-          <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
-          <span className="t-caption">{initiatives.heading}</span>
-        </div>
-        <h2 className="t-h02 max-w-[800px]">{initiatives.lede ?? initiatives.heading}</h2>
-      </div>
+      <Header initiatives={initiatives} />
 
-      <div className={`${styles.track} ${inside ? "mt-12 lg:mt-20" : "mt-12"}`} ref={trackRef}>
+      <div className={`${styles.track} mt-12 lg:mt-20`} ref={trackRef}>
         {LOOP.map((item, i) => (
-          <Card
-            key={i}
-            item={item}
-            index={i % N}
-            locale={locale}
-            inside={inside}
-            dimmed={dimmed.has(i)}
-            seeMore={ui.seeMore}
-          />
+          <Card key={i} item={item} index={i % N} locale={locale} seeMore={ui.seeMore} />
         ))}
       </div>
 
-      <div
-        className={`flex justify-end gap-4 ${inside ? "mt-12 lg:mt-20" : "mt-12"}`}
-      >
+      <div className="mt-12 flex justify-end gap-4 lg:mt-20">
         <Arrow dir={-1} onClick={() => scrollByCard(-1)} label={ui.prev} glyph="←" />
         <Arrow dir={1} onClick={() => scrollByCard(1)} label={ui.next} glyph="→" />
       </div>
