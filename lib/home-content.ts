@@ -29,20 +29,32 @@ export type InitiativeDetail = {
   lead: string;
   /** Two text columns under the lead: [left paragraphs, right paragraphs]. */
   columns: [string[], string[]];
+  /** Button between the intro columns and the cover (Figma 355:3586). Where an
+      initiative has a home of its own, this is the way out to it. */
+  leadAction?: { label: string; href: string };
   cover?: { src: string; alt: string };
   /** Paragraphs under the cover image. */
   body: string[];
   feature: {
     label: string;
     heading: string;
-    /** Bold opening line of the feature column. */
-    intro: string;
+    /** Bold opening line of the feature column. Omit where the frame has none —
+        Bulgaria by Design runs the column as one block of body copy. */
+    intro?: string;
     paragraphs: string[];
   };
-  /** Question introducing the checklist. */
-  checklistHeading: string;
+  /** Question introducing the checklist. Omit where the list follows straight
+      on from the feature text instead of from a question of its own. */
+  checklistHeading?: string;
   /** Bordered rows — "this is for you when…". */
   checklist: string[];
+  /** A second feature block below the checklist (Figma 355:3316). Same shape as
+      `feature`, closing the argument rather than opening it. */
+  featureClosing?: {
+    label: string;
+    heading: string;
+    paragraphs: string[];
+  };
   /** Closing button row. */
   actions?: { label: string; href: string; variant?: "primary" | "secondary" }[];
   /**
@@ -253,6 +265,67 @@ const bg = {
         text: "Визуална идентичност на българските институции, която засилва вярата в институциите и националната гордост.",
         pattern: 1,
         cta: { label: "Към проекта →", href: "https://bulgariabydesign.com" },
+        // Figma 355:3283. Two feature blocks rather than Policy Lab's one, and
+        // the list follows straight on from the first, so no checklistHeading.
+        detail: {
+          lead: "Държавата говори чрез всичко, което създава. Красивият и достоен облик на институциите, които работят за нас, променя и начина, по който се възприемаме като нация.",
+          columns: [
+            [
+              "Представете си държава, която работи като една система. България чрез дизайн (Bulgaria by design) е национална инициатива за ново позициониране на родината ни.",
+            ],
+            [
+              "Мисията ни е България да разкаже себе си като страна с дълбока културна памет, съвременна креативност и бъдещ потенциал.",
+            ],
+          ],
+          leadAction: { label: "Виж България чрез Дизайн ↗", href: "https://bulgariabydesign.com" },
+          cover: {
+            src: "/figma/initiatives/bulgaria-by-design-hero.jpg",
+            alt: "Двама души разглеждат заедно проект на лаптоп",
+          },
+          body: [
+            "Представете си България, в която всички държавни услуги те карат да се чувстваш горд. България е която езикът е ясен, услугите следват човешката логика, а визуалната среда излъчва хармония.",
+            "България, която показва с всяка допирна точка: тук мислим за теб — нашия гражданин.",
+          ],
+          actions: [
+            {
+              label: "Партнирай с нас",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Bulgaria%20by%20Design",
+              variant: "primary",
+            },
+            {
+              label: "Започни пилот",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Pilot%20%2F%20Bulgaria%20by%20Design",
+              variant: "secondary",
+            },
+          ],
+          feature: {
+            label: "Какво променяме",
+            heading: "Единна посока. Не еднаквост.",
+            paragraphs: [
+              "Целта ни не е еднакъв шаблон за всички институции. Екипа на България чрез дизайн създава общи принципи, които носят яснота, последователност, достойнство и доверие, без да заличават ролята и характера на отделните организации.",
+              "Работата ни за общ национален стандарт за качество е насочена в три свързани области:",
+            ],
+          },
+          checklist: [
+            "Публични услуги и интерфейси",
+            "Визуална и информационна среда",
+            "Дизайн способност в институциите",
+          ],
+          featureClosing: {
+            label: "Какво избираме да градим?",
+            heading: "Държавата е най-важната услуга, която създаваме.",
+            paragraphs: [
+              "Каним министерства, общини, публични организации, университети и граждански организации да развием България чрез дизайн заедно с нас.",
+            ],
+          },
+          team: {
+            heading: "Да изградим България заедно",
+            text: "Инициативи като тази, съществуват благодарение на хора, които даряват време, знания и енергия.",
+            cta: { label: "Включи се в проект", href: "/bg/volunteer" },
+            creditLabel: "Екипа зад\n„България чрез дизайн“",
+            members: ["kaya-sodeva", "stefan-vladimirov"],
+          },
+        },
       },
       {
         slug: "future-makers-lab",
@@ -367,7 +440,7 @@ const bg = {
       eyebrow: "— Доброволци",
       intro:
         "Съществуваме благодарение на хора, които даряват време, знания и енергия. Доброволците ни не помагат „отстрани“, а участват пряко в изграждането на нова дизайн култура за България.",
-      cta: { label: "Стани доброволец", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
+      cta: { label: "Стани доброволец", href: "/bg/volunteer" },
       members: [
         { name: "Йоанна Тодорова", role: "Съмишленик", photo: "/figma/team/yoanna-todorova.png" },
         { name: "Кая Содева", role: "Съмишленик", photo: "/figma/team/kaya-sodeva.png" },
@@ -383,7 +456,8 @@ const bg = {
 
   quote: {
     text: "Когато една държава открие дизайнерската си сила, тя открива и своето бъдеще.",
-    author: "Стефи Пейкова",
+    // Always the full name, matching the team list and the Notion CMS.
+    author: "Стефи Пейкова Кришнан",
   },
 
   faq: {
@@ -847,6 +921,65 @@ const en: typeof bg = {
         text: "A visual identity for Bulgaria's institutions that strengthens public trust and national pride.",
         pattern: 1,
         cta: { label: "View the project →", href: "https://bulgariabydesign.com" },
+        detail: {
+          lead: "The state speaks through everything it makes. A dignified, well-made face for the institutions that work for us changes how we see ourselves as a nation.",
+          columns: [
+            [
+              "Imagine a state that works as one system. Bulgaria by Design is a national initiative to reposition our country.",
+            ],
+            [
+              "Our mission is for Bulgaria to tell its own story as a country with deep cultural memory, contemporary creativity and future potential.",
+            ],
+          ],
+          leadAction: { label: "See Bulgaria by Design ↗", href: "https://bulgariabydesign.com" },
+          cover: {
+            src: "/figma/initiatives/bulgaria-by-design-hero.jpg",
+            alt: "Two people looking over a project together on a laptop",
+          },
+          body: [
+            "Imagine a Bulgaria where every public service leaves you feeling proud. A Bulgaria where the language is clear, services follow human logic, and the visual environment feels coherent.",
+            "A Bulgaria that shows at every touchpoint: we are thinking of you — our citizen.",
+          ],
+          actions: [
+            {
+              label: "Build a partnership",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Bulgaria%20by%20Design",
+              variant: "primary",
+            },
+            {
+              label: "Start a pilot",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Pilot%20%2F%20Bulgaria%20by%20Design",
+              variant: "secondary",
+            },
+          ],
+          feature: {
+            label: "What we are changing",
+            heading: "One direction. Not uniformity.",
+            paragraphs: [
+              "We are not after a single template for every institution. The Bulgaria by Design team develops shared principles that carry clarity, consistency, dignity and trust, without erasing the role and character of individual organisations.",
+              "Our work towards a common national standard of quality runs across three connected areas:",
+            ],
+          },
+          checklist: [
+            "Public services and interfaces",
+            "The visual and information environment",
+            "Design capability inside institutions",
+          ],
+          featureClosing: {
+            label: "What are we choosing to build?",
+            heading: "The state is the most important service we make.",
+            paragraphs: [
+              "We invite ministries, municipalities, public organisations, universities and civic organisations to develop Bulgaria by Design together with us.",
+            ],
+          },
+          team: {
+            heading: "Let's build Bulgaria together",
+            text: "Initiatives like this one exist thanks to people who give their time, knowledge and energy.",
+            cta: { label: "Join a project", href: "/en/volunteer" },
+            creditLabel: "The team behind\n“Bulgaria by Design”",
+            members: ["kaya-sodeva", "stefan-vladimirov"],
+          },
+        },
       },
       {
         slug: "future-makers-lab",
@@ -956,7 +1089,7 @@ const en: typeof bg = {
       eyebrow: "— Volunteers",
       intro:
         "We exist thanks to people who give their time, knowledge and energy. Our volunteers don't help „from the sidelines“ — they take direct part in building a new design culture for Bulgaria.",
-      cta: { label: "Become a volunteer", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
+      cta: { label: "Become a volunteer", href: "/en/volunteer" },
       members: [
         { name: "Kaya Sodeva", role: "Supporter", photo: "/figma/team/kaya-sodeva.png" },
         { name: "Kiril Velchev", role: "Supporter", photo: "/figma/team/kiril-velchev.png" },
@@ -972,7 +1105,7 @@ const en: typeof bg = {
 
   quote: {
     text: "When a nation discovers its design power, it discovers its future.",
-    author: "Stefi Peykova",
+    author: "Stefi Peykova Krishnan",
   },
 
   faq: {
