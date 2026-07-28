@@ -112,6 +112,15 @@ export function InitiativeOverlayContent({
                 </div>
               ))}
             </div>
+            {/* Wrapped so the flex column's default stretch doesn't pull the
+                pill across the full width. */}
+            {d.leadAction && (
+              <div>
+                <Button href={d.leadAction.href} variant="secondary">
+                  {d.leadAction.label}
+                </Button>
+              </div>
+            )}
           </>
         ) : (
           <p className="t-body max-w-[540px]">{initiative.text}</p>
@@ -181,7 +190,7 @@ export function InitiativeOverlayContent({
                   one text block separated by a blank line, so the gap there
                   reads as a full 36px line rather than the 24px between the
                   paragraphs that follow. */}
-              <p className="t-body-lg pb-3 font-bold">{d.feature.intro}</p>
+              {d.feature.intro && <p className="t-body-lg pb-3 font-bold">{d.feature.intro}</p>}
               {d.feature.paragraphs.map((p) => (
                 <p key={p} className="t-body-lg">
                   {p}
@@ -190,10 +199,13 @@ export function InitiativeOverlayContent({
             </div>
           </div>
 
-          {/* Checklist question — left column only, right intentionally empty. */}
-          <div className={`${twoUp} py-12 lg:py-20`}>
-            <h2 className="t-h02">{d.checklistHeading}</h2>
-          </div>
+          {/* Checklist question — left column only, right intentionally empty.
+              Absent on initiatives whose list follows on from the feature text. */}
+          {d.checklistHeading && (
+            <div className={`${twoUp} py-12 lg:py-20`}>
+              <h2 className="t-h02">{d.checklistHeading}</h2>
+            </div>
+          )}
 
           {/* Checklist (Figma 327:1174, "list-wrapper"). One ruled row per line,
               indented to column 2 like the events list so the two read as the
@@ -234,6 +246,25 @@ export function InitiativeOverlayContent({
               ))}
             </ul>
           </div>
+
+          {/* Second feature block, closing the argument (355:3316). Same two-up
+              as the first; no bold opening line in the frame. */}
+          {d.featureClosing && (
+            <div className={`${twoUp} py-12 lg:py-20`}>
+              <div className="flex flex-col gap-8">
+                <p className="t-body font-bold tracking-[0.05px]">{d.featureClosing.label}</p>
+                <h2 className="t-h02">{d.featureClosing.heading}</h2>
+              </div>
+
+              <div className="flex flex-col gap-6 lg:pt-[72px]">
+                {d.featureClosing.paragraphs.map((p) => (
+                  <p key={p} className="t-body-lg">
+                    {p}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
