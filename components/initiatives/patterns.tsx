@@ -14,7 +14,7 @@
  */
 "use client";
 
-import { useId, type JSX } from "react";
+import { useId, type CSSProperties, type JSX } from "react";
 
 const P1 = "var(--p1)";
 const P2 = "var(--p2)";
@@ -144,3 +144,33 @@ export function PatternTile({ n }: { n: 1 | 2 | 3 | 4 }) {
     </svg>
   );
 }
+
+/* Colours are driven by the pattern rail: it writes the active triad to
+   --tri-accent / --tri-band / --tri-ground on :root (and on click). An
+   initiative takes one slot by its position in the list (accent → band →
+   ground, i.e. rose → tomato → burgundy) and inks its pattern in a triad colour
+   that isn't its background. */
+const SLOTS = [
+  { bg: "var(--tri-accent)", ink: "var(--tri-ground)", alt: "var(--tri-band)", invert: false },
+  { bg: "var(--tri-band)", ink: "var(--tri-ground)", alt: "var(--tri-accent)", invert: false },
+  { bg: "var(--tri-ground)", ink: "var(--tri-accent)", alt: "var(--tri-band)", invert: true },
+] as const;
+
+/**
+ * Ground, ink and text colour for an initiative at a given position.
+ *
+ * It lives here rather than in the carousel because the mega menu's preview
+ * card has to land on the SAME colours for the same initiative — two copies of
+ * this table would drift the moment either is edited.
+ */
+export const slotStyle = (index: number) => {
+  const slot = SLOTS[index % SLOTS.length];
+  return {
+    background: slot.bg,
+    color: slot.invert ? "var(--bdc-white)" : "var(--bdc-dark)",
+    "--p1": slot.ink,
+    "--p2": slot.bg,
+    // The remaining triad colour — the accent inside pattern 01's diamonds.
+    "--p3": slot.alt,
+  } as CSSProperties;
+};

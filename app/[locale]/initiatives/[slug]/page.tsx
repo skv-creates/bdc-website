@@ -90,7 +90,13 @@ export default async function InitiativePage({
         {/* `path` keeps the nav's "#..." links pointing back at the home route
             and holds the language toggle on this initiative — which only works
             because slugs are locale-neutral. */}
-        <SiteNav nav={c.nav} ui={c.ui} locale={locale} path={`/initiatives/${slug}`} />
+        <SiteNav
+          nav={c.nav}
+          ui={c.ui}
+          locale={locale}
+          path={`/initiatives/${slug}`}
+          initiatives={c.initiatives}
+        />
 
         {/* No padding of its own: each section below carries the vertical
             rhythm from Figma 327:1137, so adding some here shifts all of it.

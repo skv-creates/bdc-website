@@ -47,7 +47,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
           paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))",
         }}
       >
-        <SiteNav nav={c.nav} ui={c.ui} locale={locale} />
+        <SiteNav nav={c.nav} ui={c.ui} locale={locale} initiatives={c.initiatives} />
         <main id="main" tabIndex={-1}>
           <Hero hero={c.hero} />
           {/* Mission reads as the second half of the opening statement, so it
