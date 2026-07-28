@@ -1,24 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import styles from "./Initiatives.module.css";
-import { PatternTile } from "./patterns";
+import { PatternTile, slotStyle } from "./patterns";
 import type { Initiative, Locale, SiteContent } from "@/lib/home-content";
 
 /** Arrow-scroll animation: 120ms ease-out. */
 const SCROLL_MS = 120;
 const easeOut = (t: number) => 1 - (1 - t) * (1 - t);
-
-/* Colors are driven by the pattern rail: it writes the active triad to
-   --tri-accent / --tri-band / --tri-ground on :root (and on click). Each card
-   takes one slot by position (accent → band → ground, i.e. rose → tomato →
-   burgundy) and inks its pattern in a triad color that isn't its background. */
-const SLOTS = [
-  { bg: "var(--tri-accent)", ink: "var(--tri-ground)", invert: false },
-  { bg: "var(--tri-band)", ink: "var(--tri-ground)", invert: false },
-  { bg: "var(--tri-ground)", ink: "var(--tri-accent)", invert: true },
-] as const;
 
 /** Small corner triangle that prefixes each card label (Figma "highlight-detail"). */
 function LabelMark() {
@@ -28,17 +18,6 @@ function LabelMark() {
     </svg>
   );
 }
-
-/** Pattern ink/ground for a card position — shared by the card and its overlay. */
-const slotStyle = (index: number) => {
-  const slot = SLOTS[index % SLOTS.length];
-  return {
-    background: slot.bg,
-    color: slot.invert ? "var(--bdc-white)" : "var(--bdc-dark)",
-    "--p1": slot.ink,
-    "--p2": slot.bg,
-  } as CSSProperties;
-};
 
 function Card({
   item,
@@ -239,10 +218,22 @@ export function Initiatives({
           lede is simply absent, so the heading sits alone as before. Inside
           pages drop the standfirst entirely and let the heading run wide. */}
       {inside ? (
-        // Inside pages lead with the standfirst, not the word "Инициативи" —
-        // in the frame this is the 732×186 heading, three lines at 56px, which
-        // is the sentence rather than the one-word title.
-        <h2 className="t-h02 max-w-[732px]">{initiatives.lede ?? initiatives.heading}</h2>
+        // Inside pages carry both: the section name as a small accented label
+        // (Figma 354:2459) and the standfirst as the 732×186 heading below it.
+        // The heading is the sentence, not the one-word title — three lines at
+        // 56px is not "Инициативи".
+        <div className="flex flex-col gap-8">
+          <div className="flex items-center gap-3">
+            {/* Same 16×8 mark as the mission label, recoloured with the rail. */}
+            <span
+              className="h-2 w-4 shrink-0"
+              style={{ background: "var(--tri-band)" }}
+              aria-hidden
+            />
+            <span className="t-caption">{initiatives.heading}</span>
+          </div>
+          <h2 className="t-h02 max-w-[732px]">{initiatives.lede ?? initiatives.heading}</h2>
+        </div>
       ) : (
         <div className="grid gap-y-6 lg:grid-cols-2 lg:gap-x-[120px]">
           <h2 className="t-h02">{initiatives.heading}</h2>

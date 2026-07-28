@@ -49,7 +49,7 @@ export default async function PrivacyPage({
           paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))",
         }}
       >
-        <SiteNav nav={c.nav} ui={c.ui} locale={locale} path="/privacy" />
+        <SiteNav nav={c.nav} ui={c.ui} locale={locale} path="/privacy" initiatives={c.initiatives} />
 
         <main id="main" tabIndex={-1} className="py-20 md:py-28">
           <header className="max-w-[632px]">
