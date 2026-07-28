@@ -120,7 +120,10 @@ export function InitiativeOverlayContent({
 
       {d?.cover && (
         <div className={`${cols} py-12`}>
-          <div className="relative aspect-[1092/589] w-full overflow-hidden">
+          {/* Square on phones, the design's 1092/589 letterbox from md up. A
+              landscape crop at a phone's width is barely 200px tall and the
+              subject reads as a strip; square uses the full column. */}
+          <div className="relative aspect-square w-full overflow-hidden md:aspect-[1092/589]">
             <Image
               src={d.cover.src}
               alt={d.cover.alt}
