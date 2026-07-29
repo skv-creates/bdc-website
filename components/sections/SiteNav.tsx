@@ -136,7 +136,10 @@ export function SiteNav({
         ref={headerRef}
         // The bar stays light while the menu is open (354:2903) — the only cue
         // is the underline on the trigger.
-        className="fixed left-0 top-0 z-40 bg-page pb-6 pt-[calc(env(safe-area-inset-top)+1.5rem)]"
+        // pb-10 below lg, pb-6 from there: on a phone and a tablet the bar is
+        // the only thing between the logo and whatever is scrolling under it,
+        // and 24px left the copy looking stuck to the wordmark.
+        className="fixed left-0 top-0 z-40 bg-page pb-10 pt-[calc(env(safe-area-inset-top)+1.5rem)] lg:pb-6"
         style={headerStyle}
         onMouseLeave={() => setMega(false)}
       >
@@ -181,7 +184,13 @@ export function SiteNav({
               the right edge of column 11, clear of the rail. */}
           <div className="hidden items-center gap-4 lg:col-start-8 lg:col-span-4 lg:flex lg:justify-end">
             <Button variant="small" href={nav.cta.href}>{nav.cta.label}</Button>
-            <a href={switchHref} aria-label={ui.switchLanguage} className="t-caption border-b-2 border-transparent transition-colors hover:border-current">
+            {/* inline-grid + min-h-6/min-w-6 so the two-letter toggle still
+                meets the 24×24 of WCAG 2.2 2.5.8; it measured 22×26. */}
+            <a
+              href={switchHref}
+              aria-label={ui.switchLanguage}
+              className="t-caption inline-grid min-h-6 min-w-6 place-items-center border-b-2 border-transparent transition-colors hover:border-current"
+            >
               {switchLabel}
             </a>
           </div>
@@ -206,10 +215,14 @@ export function SiteNav({
             initiatives list makes it taller than the screen. */}
         {open && (
           <div
-            className="absolute inset-x-0 top-full z-30 flex flex-col justify-between gap-12 overflow-y-auto overscroll-contain bg-page pb-6 lg:hidden"
+            // Only the link list scrolls. The actions used to sit at the foot
+            // of one long scrolling column, so on a short screen — or once the
+            // initiatives archive is expanded — "Членувай" and the language
+            // toggle fell off the bottom and had to be hunted for.
+            className="absolute inset-x-0 top-full z-30 flex flex-col bg-page lg:hidden"
             style={{ ...padStyle, height: `calc(100dvh - ${navH}px)` }}
           >
-            <nav className="flex flex-col gap-6">
+            <nav className="flex flex-1 flex-col gap-6 overflow-y-auto overscroll-contain pb-8 pt-4">
               {nav.links.map((l) => (
                 <div key={l.label} className="flex flex-col gap-8">
                   <a href={linkHref(l.href)} className="t-h05" onClick={() => setOpen(false)}>
@@ -257,7 +270,8 @@ export function SiteNav({
               ))}
             </nav>
 
-            <div className="flex items-center gap-8 pb-8 pe-8">
+            {/* Pinned. The rule marks it off from the list that scrolls past. */}
+            <div className="flex shrink-0 items-center gap-8 border-t border-border/20 pb-8 pe-8 pt-6">
               <div className="flex-1">
                 <Button variant="secondary" href={nav.cta.href} fullWidth>
                   {nav.cta.label}

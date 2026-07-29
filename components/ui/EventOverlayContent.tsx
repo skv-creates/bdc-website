@@ -9,6 +9,39 @@
 import Image from "next/image";
 import type { BdcEvent } from "@/lib/events";
 
+/**
+ * Turn the `[label](href)` runs the sync writes into real anchors.
+ *
+ * The descriptions come out of Notion as plain text, and the links in them —
+ * festivals, partner organisations, the recordings of the talks — are the whole
+ * reason several of these paragraphs exist. Only this one pattern is
+ * recognised; the bodies are prose, not documents, and anything richer belongs
+ * in Notion rather than in a parser here.
+ */
+const LINK = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+
+function withLinks(text: string) {
+  const out: React.ReactNode[] = [];
+  let last = 0;
+  for (const m of text.matchAll(LINK)) {
+    if (m.index > last) out.push(text.slice(last, m.index));
+    out.push(
+      <a
+        key={`${m.index}-${m[2]}`}
+        href={m[2]}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-2 transition-opacity hover:opacity-70"
+      >
+        {m[1]}
+      </a>,
+    );
+    last = m.index + m[0].length;
+  }
+  out.push(text.slice(last));
+  return out;
+}
+
 export function EventOverlayContent({ event }: { event: BdcEvent }) {
   return (
     <div
@@ -39,7 +72,21 @@ export function EventOverlayContent({ event }: { event: BdcEvent }) {
 
         <div className="h-px w-full bg-border" />
 
-        <p className="t-body">{event.description}</p>
+        {/* The Notion body is several paragraphs separated by blank lines, and
+            a single <p> would run them together into one wall of text. Split
+            here rather than storing HTML — the JSON stays plain text, which is
+            what the sync can regenerate losslessly. */}
+        <div className="flex flex-col gap-5">
+          {event.description
+            .split(/\n{2,}/)
+            .map((p) => p.trim())
+            .filter(Boolean)
+            .map((p) => (
+              <p key={p} className="t-body">
+                {withLinks(p)}
+              </p>
+            ))}
+        </div>
       </div>
 
       {/* Cover — page grid cols 8–11 on desktop (col 7 is the gutter). */}
@@ -50,6 +97,7 @@ export function EventOverlayContent({ event }: { event: BdcEvent }) {
             alt={event.name}
             fill
             sizes="(max-width: 1023px) 90vw, 45vw"
+            quality={90}
             className="object-cover"
           />
         </div>

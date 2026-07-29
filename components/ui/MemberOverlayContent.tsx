@@ -9,7 +9,7 @@
  * Server-renderable (no interactivity).
  */
 import Image from "next/image";
-import { LinkedInFilled } from "@/components/ui/icons";
+import { LinkedIn } from "@/components/ui/icons";
 import type { Member } from "@/lib/home-content";
 
 export function MemberOverlayContent({
@@ -63,7 +63,7 @@ export function MemberOverlayContent({
               // without the padding adding height to this row.
               className="-m-2.5 shrink-0 p-2.5 transition-opacity hover:opacity-70"
             >
-              <LinkedInFilled className="h-6 w-6" />
+              <LinkedIn className="h-6 w-6" />
             </a>
           )}
         </div>

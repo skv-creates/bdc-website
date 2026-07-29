@@ -72,7 +72,7 @@ To set it up once:
 
     gh secret set NOTION_TOKEN                          # your read-only secret
     gh variable set NOTION_EVENTS_DATA_SOURCE_ID --body b51c7693-aa03-8324-9099-87dd784391f9
-    gh variable set NOTION_EVENTS_STATUS --body 'Чернова / Да се преработи'
+    gh variable set NOTION_EVENTS_STATUS --body 'Готово за публикуване'
 
 The data source id and the status are **variables**, not secrets — neither is
 sensitive, and keeping the status out of the workflow file means moving the site

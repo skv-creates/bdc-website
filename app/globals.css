@@ -196,6 +196,29 @@ summary {
    full-width focus ring around it. */
 main:focus { outline: none; }
 
+/* ---- Focus (WCAG 2.4.7 Focus Visible, 1.4.11 Non-text Contrast) ----------
+   The site had no focus style of its own and inherited the browser default,
+   which is a thin ring in a colour the UA picks — on the rose cards and the
+   burgundy grounds it is close to invisible, and its contrast is nobody's
+   guarantee. Burgundy is 10.9:1 on the page white and reads against every
+   brand ground; the white ring underneath it keeps it visible where the
+   element itself is burgundy.
+
+   :focus-visible, not :focus, so a mouse click doesn't paint a ring. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--bdc-burgundy);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--bdc-white, #fff);
+  border-radius: 2px;
+}
+
+/* WCAG 2.2 2.4.11 Focus Not Obscured (Minimum): the header is position:fixed,
+   so tabbing to something just above the fold would otherwise scroll it under
+   the bar. Keep a header's worth of room above anything focused. */
+:where(a, button, input, select, textarea, summary, [tabindex]) {
+  scroll-margin-top: 7rem;
+}
+
 /* The page column grid (the "stripes" in the mock = this grid guide). */
 .bdc-grid {
   display: grid;
@@ -254,7 +277,12 @@ main:focus { outline: none; }
    The rail no longer steps per breakpoint — it tracks --page-gutter, which is
    already fluid (≈112px at 1512 down to 20px), so both margins stay equal at
    every width. Only the column count and gap change here. */
-@media (max-width: 1023px) { :root { --grid-cols: 8; } }
+/* 768–1023 is the band where neither safety net is in place: .bdc-stop-11 only
+   applies from 1024 up, so nothing gives back a column, and --rail-clear was
+   still 0 — which left every full-width section ending exactly on the rail's
+   left edge, with the credit line and the avatar stack apparently sliced off.
+   One grid gap of clearance, matching what the phone layout already does. */
+@media (max-width: 1023px) { :root { --grid-cols: 8; --rail-clear: 24px; } }
 @media (max-width: 767px)  { :root { --grid-cols: 4; --grid-gap: 12px; --overlay-panel-left: 3rem; --rail-clear: 12px; } }
 
 /* ---- Responsive: mobile type scale (≤767px) -----------------------------

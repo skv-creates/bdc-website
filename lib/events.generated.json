@@ -8,12 +8,13 @@
       "location": "БДС Офис",
       "name": {
         "bg": "Първо общо събрание на БДС",
-        "en": "Първо общо събрание на БДС"
+        "en": "First General Assembly of the BDC"
       },
       "description": {
-        "bg": "",
-        "en": ""
-      }
+        "bg": "На 16 юни 2026 г. от Български дизайн съвет проведохме своето първо Общо събрание. Членовете на съвета имаха възможност да се запознаят помежду си, представиха професионалния си опит и обмениха идеи за развитието на дизайн общността в България.\n\nЕкипът представи настоящите и планираните инициативи на Съвета и очерта приоритетите за периода 2026–2027 г.\nОбщото събрание гласува Зинаида Илер за член на Управителния съвет и прие промени в Устава ни. С тези промени, бяха създаде два нови помощни органа: Консултативен съвет и Регионални представители. Новите структури разширяват експертизата на Съвета и укрепват присъствието му в различните региони на страната.",
+        "en": "On 16 June 2026 we held our first General Assembly. Our members met one another, shared their professional experience and swapped ideas about how to grow the design community in Bulgaria.\n\nWe presented the Council's current and planned initiatives and set out our priorities for 2026–2027. The Assembly voted Zinaida Iller onto our Board and adopted changes to our Statute. Those changes create two new supporting bodies: an Advisory Council, and Regional Representatives. Together they widen our expertise and strengthen our presence across the country."
+      },
+      "cover": "/figma/events/parvo-obshto-sabranie-na-bds.jpg"
     },
     {
       "slug": "pechakucha-night-sofia-42",
@@ -25,9 +26,10 @@
         "en": "PechaKucha Night Sofia #42"
       },
       "description": {
-        "bg": "2 Презентации → описание\nbrought together a beautiful mix of voices around one theme: BELONGING BY DESIGN",
-        "en": "2 Презентации → описание\nbrought together a beautiful mix of voices around one theme: BELONGING BY DESIGN"
-      }
+        "bg": "На 12 юни 2026 г. Българският дизайн съвет представи две лекции в специалното издание PechaKucha Night Sofia #42: Belonging by Design. Те разкриха дизайна като сила, която изгражда принадлежност, оформя идентичност и променя обществото.\n\nРазглеждайки “Дизайн интелигентността: от корените към бъдещето”, Стефи Пейкова Кришнан постави въпроса „Кой определя какво е дизайн?“. Тя представи визията зад създаването на Български дизайн съвет: дизайнът да бъде разпознат като стратегически национален капацитет, който обединява хора, институции и организации в създаването на по-добро бъдеще.\n\nВ [България чрез дизайн](https://bulgariabydesign.com), Стефан Владимиров показа как визуалната идентичност влияе върху начина, по който една държава възприема себе си и заявява мястото си пред света. Представяйки международни примери и предлагайки идея за съвременна визуална система на България, той позволи на публиката да усети силата на дизайна. Добрият дизайн не просто оформя публичния сектор, а изразява ценностите, достойнството и националното самочувствие на България.\n\nДвете лекции защитиха една обща позиция: принадлежността не възниква случайно. Създаваме я чрез дизайн.\n\nГледайте пълните 6-минутни представяния:\n\n[Stefan Vladimirov, “Bulgaria by Design”](https://youtu.be/smUgooeD5gc)",
+        "en": "On 12 June 2026, from Bulgarian Design Council presented two talks at the special edition of PechaKucha Night Sofia #42: Belonging by Design. Together, they revealed design as a force that builds belonging, shapes identity and transforms society.\n\nIn “Design Intelligence: From Roots to Futures,” Stefi Peykova Krishnan asked: “Who decides what design is?” She shared the vision behind the Bulgarian Design Council: for design to be recognised as a strategic national capability that brings people, institutions and organisations together to create a better future.\n\nIn [“Bulgaria Through Design,”](https://bulgariabydesign.com) Stefan Vladimirov explored how visual identity shapes the way a country sees itself and presents its place in the world. Through international examples and a proposal for a contemporary visual system for Bulgaria, he enabled the audience to experience the power of design. Good design does more than shape the public realm—it expresses Bulgaria’s values, dignity and national confidence.\n\nThe two talks advanced one shared position: belonging does not happen by chance. We create it through design.\n\nWatch the full six-minute talks:\n\n[Stefan Vladimirov, “Bulgaria by Design”](https://youtu.be/smUgooeD5gc)"
+      },
+      "cover": "/figma/events/pechakucha-night-sofia-42.png"
     },
     {
       "slug": "european-design-festival-2026",
@@ -39,22 +41,23 @@
         "en": "European Design Festival 2026"
       },
       "description": {
-        "bg": "Our co-founders, Dobra, Stefi and Radina, took to the stage as part of the ED Conference talks during the European Design Festival 2026 and presented the Bulgarian Design Council. .",
-        "en": "Our co-founders, Dobra, Stefi and Radina, took to the stage as part of the ED Conference talks during the European Design Festival 2026 and presented the Bulgarian Design Council. ."
-      }
+        "bg": "За първи път представихме Българския дизайн съвет пред международната дизайн общност на ED-Conference TALKS - част от [European Design Awards Festival 2026](https://europeandesign.org/festivals/sofia-2026/), който страхотния екип на [Studio Komplekt](https://studiokomplekt.com/bg) доведе за първи път в София.\n\nСъоснователките ни Добрa Славкова, Стефи Пейкова Кришнан и Радина Донева застанаха на сцената на Топлоцентрала, за да споделят общата ни визия: България да развива дизайна като стратегически национален капацитет, който укрепва институциите, движи бизнеса и образованието напред, обогатява културата и оформя бъдещето на страната.\n\nУчастието беше възможност да споделим убеждението, че България вече има дизайн интелигентност, която заслужава да бъде видима. Време е да я разпознаем, свържем и поставим в центъра на решенията, които определят посоката на страната.",
+        "en": "For the first time, we announced the Bulgarian Design Council to the international design community at ED-Conference TALKS, part of the [European Design Awards Festival 2026](https://europeandesign.org/festivals/sofia-2026/), brought for to Sofia by the fantastic team at [Studio Komplekt](https://studiokomplekt.com/bg).\n\nOur co-founders Dobra Slavkova, Stefi Peykova Krishnan and Radina Doneva took the stage at Toplocentrala to share our vision: for Bulgaria to evolve design into a strategic national capability. One that strengthens institutions, moves business and education forward, enriches culture and shapes the country's future.\n\nBeing there, gave us the opportunity to share our stance, that Bulgaria already has design intelligence, that deserves to be heard. Now we need to recognise it, connect it, and put it at the centre of the decisions that set the country's direction."
+      },
+      "cover": "/figma/events/european-design-festival-2026.jpg"
     },
     {
       "slug": "regional-meeting-of-the-international-council-of-design-icod",
       "date": "2026-06-11",
       "type": "live",
-      "location": "National Palace of Culture (NKD), Sofia, Bulgaria",
+      "location": "SOHO, Sofia, Bulgaria",
       "name": {
         "bg": "Regional Meeting of the International Council of Design (ICoD)",
         "en": "Regional Meeting of the International Council of Design (ICoD)"
       },
       "description": {
-        "bg": "Confessions of a Designer — Design, Decisions and Impact\nPart of: European Design Festival 2026",
-        "en": "Confessions of a Designer — Design, Decisions and Impact\nPart of: European Design Festival 2026"
+        "bg": "Включихме се в ICoD Regional Meeting Balkans & Europe 2026, организирана от Международния съвет по дизайн ([ICoD](https://www.theicod.org/en)) в рамките на European Design Festival в София.\n\nПод темата „Confessions of a Designer: Design, Decisions and Impact“ срещата събра дизайнери, лидери на професионални организации и творци от цяла Европа в откровен разговор за предизвикателствата пред професията, отговорността на дизайнерите и влиянието на дизайна върху обществото. Чрез лекции, дискусии и обмен на различни гледни точки събитието насърчи международното сътрудничество и създаде пространство за споделяне на опит, идеи и визии за развитието на дизайна в Европа.\n\nЗа Българския дизайн съвет участието беше възможност да обменим опит с европейската дизайн общност, да създадем нови професионални връзки и да включим България по-активно в международния разговор за бъдещето на дизайна.",
+        "en": "We joined the ICoD Regional Meeting Balkans & Europe 2026, organised by the [International Council of Design (ICoD)](https://www.theicod.org/en) as part of the European Design Festival in Sofia.\n\nUnder the theme “Confessions of a Designer: Design, Decisions and Impact,” the meeting brought together designers, leaders of professional organisations and creatives from across Europe for an open conversation about the challenges facing the profession, designers’ responsibilities and design’s impact on society. Through talks, discussions and the exchange of diverse perspectives, the event fostered international collaboration and created space to share experiences, ideas and visions for the future of design in Europe.\n\nFor the Bulgarian Design Council, taking part was an opportunity to exchange knowledge with the European design community, build new professional connections and bring Bulgaria more actively into the international conversation about the future of design."
       }
     },
     {
@@ -67,22 +70,50 @@
         "en": "Open Destinations"
       },
       "description": {
-        "bg": "Open Destinations | Tourism for All 2026 is an international conference exploring the role of inclusive design* in shaping the future of tourism and cultural experiences.\nLink: https://luma.com/w008tda8\nOrganized by: Design for all Bulgaria Foundation",
-        "en": "Open Destinations | Tourism for All 2026 is an international conference exploring the role of inclusive design* in shaping the future of tourism and cultural experiences.\nLink: https://luma.com/w008tda8\nOrganized by: Design for all Bulgaria Foundation"
+        "bg": "Имахме удоволствието да участваме в Open Destinations - вдъхновяваща международна конференция, организирана от [Design for all Bulgaria Foundation](https://www.linkedin.com/company/design-for-all-bulgaria-foundation/) и Ивелина Гаджева, която събра водещи експерти, практици и застъпници на приобщаващия дизайн.\n\nТова беше първото по рода си събитие в България. То показа как приобщаващият дизайн създава стойност не само за отделни групи, а за обществото като цяло. Когато още от самото начало проектираме с разбиране за различните човешки потребности, създаваме по-достъпни, удобни и пълноценни продукти, услуги, пространства и преживявания за всички.\n\nБългария има възможност да повиши стандартите си и да се доближи до водещите международни практики в областта на достъпността. Съответствието със стандартите е само началото. Истинската цел е да създаваме среда, в която всеки човек може да участва пълноценно и равнопоставено.\n\nДостъпността не е ограничение. Тя е двигател за по-добър дизайн.",
+        "en": "We had the pleasure of taking part in Open Destinations, an inspiring international conference organised by the [Design for All Bulgaria Foundation](https://www.linkedin.com/company/design-for-all-bulgaria-foundation/) and Ivelina Gadzheva, which brought together leading experts, practitioners and advocates of inclusive design.\n\nIt was the first event of its kind in Bulgaria. It demonstrated how inclusive design creates value not only for specific groups, but for society as a whole. When we design with an understanding of diverse human needs from the outset, we create more accessible, usable and fulfilling products, services, spaces and experiences for everyone.\n\nBulgaria has an opportunity to raise its standards and move closer to leading international accessibility practices. Compliance with standards is only the beginning. The real goal is to create an environment in which everyone can participate fully and equally.\n\nAccessibility is not a constraint. It is a catalyst for better design."
       }
     },
     {
-      "slug": "laboratoriya-sazdateli-na-badeshteto",
-      "date": "2026-05-16",
+      "slug": "dizayn-za-dobro-nagradi-za-mladezhi",
+      "date": "2026-05-09",
+      "type": "live",
+      "location": "НБУ, София",
+      "name": {
+        "bg": "Дизайн за добро награди за младежи",
+        "en": "Design for Good youth awards"
+      },
+      "description": {
+        "bg": "За Български дизайн съвет беше чест да връчим три специални отличия „Дизайн за добро“ в рамките на първия [“Дизайн маратон”](https://designmarathon-nbu.online/) за студенти от Нов български университет, който се проведе на 9. и 10. май 2026 г.\n\n42-часовото интензивно творческо предизвикателство събра млади дизайнери около задачата да разработят цялостна бранд идентичност и концепция за дигитално присъствие на реален физически продукт.\n\nОт всички девет отбора избрахме трите, чиито проекти демонстрират най-силен потенциал за положително обществено, социално и/или екологично въздействие чрез силата на дизайна.\n\nС тази награда отличаваме идеи, които надхвърлят функционалното и естетическото, и показват как дизайнът може да бъде инструмент за смислена промяна - за хората, общностите и средата, в която живеем.",
+        "en": "We were honoured to present three special “Design for Good” awards during the first [Design Marathon](https://designmarathon-nbu.online/) for students at New Bulgarian University, held on 9 - 10 May 2026.\n\nThe intensive 42-hour creative challenge brought together emerging designers to develop a complete brand identity and digital presence concept for a real-world physical product.\n\nFrom the nine participating teams, we selected the three whose projects demonstrated the strongest potential to create positive societal, social and/or environmental impact through the power of design.\n\nThrough this award, we recognise ideas that go beyond function and aesthetics to show how design can drive meaningful change for people, communities and the environments we inhabit."
+      }
+    },
+    {
+      "slug": "lektsiya-dizayn-i-prouchvane-otvad-ekrana",
+      "date": "2026-05-09",
       "type": "online",
       "location": "",
       "name": {
-        "bg": "Лаборатория Създатели на бъдещето",
-        "en": "Лаборатория Създатели на бъдещето"
+        "bg": "Лекция “Дизайн и проучване отвъд екрана”",
+        "en": "Lecture: Design and research beyond the screen"
       },
       "description": {
-        "bg": "двудневна лаборатория за ИИ, Research, Достъпност и Service Design",
-        "en": "двудневна лаборатория за ИИ, Research, Достъпност и Service Design"
+        "bg": "Дигиталният свят често свежда дизайна до интерфейси и потребителско преживяване. Предизвикателства като реформите в здравеопазването, модернизацията на публичните услуги и интеграцията на изкуствения интелект обаче изискват много повече от традиционен линеен процес.\n\nДве от съоснователките ни, Стефи Пейкова Кришнан и Радина Донева, откриха [Дизайн маратон](https://www.linkedin.com/company/%D0%B4%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD-%D0%BC%D0%B0%D1%80%D0%B0%D1%82%D0%BE%D0%BD/) 2026 в [New Bulgarian University](https://www.linkedin.com/company/new-bulgarian-university/) (Нов български университет) с лекцията „Дизайн отвъд екрана: силата на ко-дизайна в сложни системи“. Споделяйки реални проекти и истории от практиката си те показаха на студентите как дизайнът помага да разбираме хората, да свързваме различни гледни точки и да работим със системи, последствия и бъдещи сценарии.\n\nЛекцията разгледа ко-дизайна като подход за съвместна работа със заинтересованите страни, приложението му в здравеопазването и публичните услуги и пресечната точка между хората, изкуствения интелект, виртуалната реалност, системното мислене и хуманитарните методи за проучване.\n\nДизайнът не свършва на екрана. Именно отвъд него започва работата по промените, които засягат цели системи и общества.",
+        "en": "The digital world often narrows design down to interfaces and user experience. Yet challenges such as healthcare reform, the modernisation of public services and the integration of artificial intelligence demand far more than a linear process.\n\nTwo of our co-founders, Stefi Peykova Krishnan and Radina Doneva, opened [Design Marathon](https://www.linkedin.com/company/%D0%B4%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD-%D0%BC%D0%B0%D1%80%D0%B0%D1%82%D0%BE%D0%BD/) 2026 at [New Bulgarian University](https://www.linkedin.com/company/new-bulgarian-university/) with the lecture “Design beyond the screen: the power of co-design in complex systems”. Drawing on real projects and stories from their practice, they showed students how design helps us understand people, connect different points of view, and work with systems, consequences and future scenarios.\n\nThe lecture explored co-design as an approach to working collaboratively with stakeholders, its application in healthcare and public services, and the intersection of people, artificial intelligence, virtual reality, systems thinking and human-centred research methods.\n\nDesign does not end at the screen. Beyond it begins the work of shaping change across entire systems and societies."
+      }
+    },
+    {
+      "slug": "ot-haos-kam-reshenie",
+      "date": "2026-04-25",
+      "type": "live",
+      "location": "НБУ, София",
+      "name": {
+        "bg": "От хаос към решение",
+        "en": "From chaos to solution"
+      },
+      "description": {
+        "bg": "Зинаида Илер, член на Управителния ни съвет, беше поканена като специален гост в практическата работилница „От хаос към решение“ в Нов български университет.\n\nТя помогна на студентите да превърнат сложната и често противоречива информация в ясни потребителски нужди, идеи и конкретни решения. В практическия процес те изследваха проблеми, задаваха критични въпроси, свързваха различни гледни точки и проверяваха предположенията си, преди да преминат към решение.\n\nПътят от хаоса към доброто решение започва не с готовия отговор, а с правилното разбиране на проблема.\n\nДобрият дизайн не прикрива хаоса. Той ни помага да го разберем и да намерим път през него.",
+        "en": "Zinaida Iller, a member of our Board, was invited as a special guest at the workshop “From Chaos to Solution” at New Bulgarian University.\n\nShe helped students transform complex and often conflicting information into clear user needs, ideas and tangible solutions. Throughout the practical process, they explored problems, asked critical questions, connected different perspectives and tested their assumptions before moving towards a solution.\n\nThe road from chaos to a good solution begins not with a ready-made answer, but with a true understanding of the problem.\n\nGood design does not conceal chaos. It helps us understand it and find a way through."
       }
     }
   ]

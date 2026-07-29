@@ -42,7 +42,10 @@ export function Team({ team }: { team: SiteContent["team"] }) {
   ];
 
   return (
-    <section id="team" className="bdc-stop-11 py-20 md:py-28">
+    // Bottom padding is the quote's business as much as this section's — see
+    // the note in Quote.tsx: the two together make the 120px the design marks
+    // between the volunteer button and the quote mark.
+    <section id="team" className="bdc-stop-11 pb-10 pt-20 md:pb-[60px] md:pt-28">
       <div className="bdc-grid gap-y-10">
         <h2 className="t-h02 col-span-full lg:col-span-2">{team.heading}</h2>
         <p className="t-h05 leading-tight col-span-full lg:col-start-4 lg:col-span-6">
