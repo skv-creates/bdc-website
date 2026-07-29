@@ -2,6 +2,9 @@ name: Deploy to Cloudflare (staging)
 
 # Deploys the OpenNext Worker to staging.bulgariandesigncouncil.org.
 # Runs on every push to main, and can be triggered manually from the Actions tab.
+#
+# Staging is the gate: main lands here and nowhere else. The live apex is a
+# separate Worker shipped only by deploy-production.yml, by hand.
 on:
   push:
     branches: [main]

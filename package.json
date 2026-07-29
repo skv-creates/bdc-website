@@ -10,7 +10,8 @@
     "sync:bios": "node scripts/sync-team-bios.mjs",
     "prepare": "git config core.hooksPath .githooks || true",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy": "opennextjs-cloudflare build --env=\"\" && opennextjs-cloudflare deploy --env=\"\"",
+    "deploy:production": "opennextjs-cloudflare build --env production && opennextjs-cloudflare deploy --env production",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "sync:faq": "node scripts/sync-notion-faq.mjs",
     "sync:events": "node scripts/sync-notion-events.mjs"
