@@ -1,17 +1,15 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
+	// The top-level config IS staging, deliberately: the existing `bdc-website`
+	// Worker already owns the staging custom domain, so keeping it as the default
+	// means this split costs staging no downtime. Production is a separate Worker
+	// below — two custom domains on ONE Worker would make staging an alias for
+	// production rather than a gate in front of it.
 	"name": "bdc-website",
 	"compatibility_date": "2026-07-08",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-	// The apex is the canonical hostname; www is a redirect rule in the Cloudflare
-	// dashboard, not a route here. Staging stays as the review surface.
-	// Mail lives at SuperHosting — a custom domain rewrites only the apex address
-	// record, so MX and mail.* must stay untouched and grey-clouded.
-	"routes": [
-		{ "pattern": "staging.bulgariandesigncouncil.org", "custom_domain": true },
-		{ "pattern": "bulgariandesigncouncil.org", "custom_domain": true }
-	],
+	"routes": [{ "pattern": "staging.bulgariandesigncouncil.org", "custom_domain": true }],
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
@@ -19,5 +17,26 @@
 	// Backs next/image optimization.
 	"images": {
 		"binding": "IMAGES"
+	},
+	"env": {
+		// Production. Shipped only by the manual "Deploy to production" workflow,
+		// never by a push. Every key is repeated rather than inherited: bindings
+		// are non-inheritable in Wrangler, and being explicit means a future edit
+		// up top cannot silently half-apply down here.
+		"production": {
+			"name": "bdc-website-production",
+			// Apex only. www is a 301 redirect rule in the Cloudflare dashboard, so
+			// there is one canonical hostname. Mail stays at SuperHosting: a custom
+			// domain rewrites the apex address record only, leaving MX and mail.*
+			// alone.
+			"routes": [{ "pattern": "bulgariandesigncouncil.org", "custom_domain": true }],
+			"assets": {
+				"directory": ".open-next/assets",
+				"binding": "ASSETS"
+			},
+			"images": {
+				"binding": "IMAGES"
+			}
+		}
 	}
 }

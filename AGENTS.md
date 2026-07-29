@@ -100,6 +100,28 @@ hand to a scheduled job.
 `staging.bulgariandesigncouncil.org` on every push to `main`. Locally the same
 thing is `npm run deploy`.
 
+**Staging is the gate — `main` never reaches the live site by itself.** The apex
+`bulgariandesigncouncil.org` is a *separate Worker*, `bdc-website-production`,
+defined as the `production` environment in `wrangler.jsonc` and shipped only by
+`.github/workflows/deploy-production.yml`, which is `workflow_dispatch` only and
+asks you to type `publish` to confirm. Locally that is
+`npm run deploy:production`.
+
+Two Workers, not two custom domains on one, and that distinction is the whole
+point: routing both hostnames at a single Worker would make staging an alias for
+production, publishing to the apex on every merge. If you ever collapse them,
+you have silently deleted the review step.
+
+Because named environments exist, an unqualified `wrangler deploy` is ambiguous
+and warns. Both npm scripts therefore pass `--env` explicitly — staging as
+`--env=""` (the top-level config), production as `--env production`. Keep them
+explicit.
+
+One consequence worth remembering: the scheduled events sync deploys *staging*
+when it commits new events. Fresh events sit on staging until someone runs the
+production workflow, which is the intended trade — nothing reaches the apex
+unlooked-at.
+
 Cloudflare's own **Workers Builds** Git integration is deliberately *not*
 connected. It targets the same `bdc-website` Worker, so leaving it on means two
 systems deploying one Worker from the same push and racing each other — and its
