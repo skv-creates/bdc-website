@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /**
+   * Image optimisation runs through Cloudflare's IMAGES binding (see the
+   * `images` block in wrangler.jsonc), not on a build server — every distinct
+   * width/quality/format combination is a transform done in the request path.
+   * So the settings here are a cost decision as much as a quality one.
+   */
   images: {
     /**
      * Next 16 changed the default to `[75]` and — importantly — *coerces* any
@@ -15,12 +21,22 @@ const nextConfig: NextConfig = {
      */
     qualities: [75, 90],
     /**
-     * AVIF ahead of WebP: at matching visual quality it lands roughly a quarter
-     * smaller, which buys back most of what raising the quality costs. Next
-     * negotiates per request and falls back to WebP and then to the original,
-     * so a browser that cannot take AVIF is unaffected.
+     * The default list ends at 3840, and with `sizes="…80vw"` on the heroes
+     * that is the width a wide desktop asks for. Every source photograph on
+     * this site is 2400px or narrower, so those requests were asking the
+     * binding to *upscale* — roughly 8.6 megapixels of transform to invent
+     * detail that is not in the file. Capping at 2560 covers the widest frame
+     * on the site (~1400 CSS px) at better than 1.8x, and never asks for more
+     * pixels than the original actually has.
      */
-    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2560],
+    /**
+     * WebP only, which is Next's default. AVIF encodes smaller but costs
+     * materially more per transform, and this is a shared image binding in the
+     * request path — the bytes it saves are not worth spending the ceiling on.
+     * Revisit if the heroes ever need it, and watch the transform count.
+     */
+    formats: ["image/webp"],
   },
 };
 
