@@ -4,9 +4,14 @@
 	"name": "bdc-website",
 	"compatibility_date": "2026-07-08",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-	// Apex + www still serve SuperHosting's parking page; staging is the review
-	// surface until we cut them over.
-	"routes": [{ "pattern": "staging.bulgariandesigncouncil.org", "custom_domain": true }],
+	// The apex is the canonical hostname; www is a redirect rule in the Cloudflare
+	// dashboard, not a route here. Staging stays as the review surface.
+	// Mail lives at SuperHosting — a custom domain rewrites only the apex address
+	// record, so MX and mail.* must stay untouched and grey-clouded.
+	"routes": [
+		{ "pattern": "staging.bulgariandesigncouncil.org", "custom_domain": true },
+		{ "pattern": "bulgariandesigncouncil.org", "custom_domain": true }
+	],
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
