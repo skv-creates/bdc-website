@@ -81,6 +81,11 @@ const GENERATED: RawEvent[] = (generatedEvents.events ?? []).map((e) => ({
   type: e.type as EventType,
   name: e.name as Record<Locale, string>,
   description: e.description as Record<Locale, string>,
+  // Downloaded from the row's "Hero-image" by the sync and committed under
+  // public/figma/events — a Notion file URL is signed and expires in an hour,
+  // so it cannot be baked into a static build. Rows without one are the norm;
+  // the overlay simply opens on its title.
+  cover: (e as { cover?: string }).cover,
 }));
 
 /* =============================================================================

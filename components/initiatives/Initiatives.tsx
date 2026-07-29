@@ -219,6 +219,13 @@ function InitiativesShowcase({
     tabs.current[target]?.focus();
   };
 
+  /**
+   * Plain <a>, not next/link, throughout the showcase — the same rule the mega
+   * menu follows. A soft navigation from here would be caught by the
+   * @modal/(.)initiatives interceptor and open the overlay on top of the home
+   * page; from the landing section the destination is the initiative's own
+   * page, so it has to be a document navigation.
+   */
   const href = (it: Initiative) => `/${locale}/initiatives/${it.slug}`;
 
   return (
@@ -229,14 +236,14 @@ function InitiativesShowcase({
         {/* initiative-info (398:3185) — columns 1–5. */}
         <div key={active} className={`${styles.fadeIn} flex flex-col gap-8 lg:col-span-5`}>
           <h3 className="t-h03">
-            <Link href={href(item)} className="hover:underline">
+            <a href={href(item)} className="hover:underline">
               {item.title}
-            </Link>
+            </a>
           </h3>
           <p className="t-body">{item.text}</p>
           {/* button-terciary (398:3188). The arrow is part of the label rather
               than an icon, exactly as in the frame. */}
-          <Link
+          <a
             href={href(item)}
             className="t-caption group inline-flex items-center gap-3 font-medium"
           >
@@ -244,7 +251,7 @@ function InitiativesShowcase({
             <span aria-hidden className="transition-transform group-hover:translate-x-1">
               →
             </span>
-          </Link>
+          </a>
         </div>
 
         {/* initiative-cover (398:3184) — six columns at 4:3, per the annotation.
@@ -252,23 +259,35 @@ function InitiativesShowcase({
             box never empties between two initiatives. alt="" throughout: the
             title beside it is the accessible name, and describing the picture
             here would have it read out twice. */}
-        <div className="relative aspect-[4/3] overflow-hidden lg:col-span-6 lg:col-start-6">
+        {/* The whole cover opens the initiative. aria-hidden + tabIndex -1
+            because the title above is already a link to the same place: without
+            it every initiative is announced and tabbed through twice. */}
+        <a
+          href={href(item)}
+          aria-hidden
+          tabIndex={-1}
+          className="relative block aspect-[4/3] overflow-hidden lg:col-span-6 lg:col-start-6"
+        >
           <div className={styles.coverPlate} aria-hidden />
-          {items.map((it, i) =>
-            it.cover && seen.has(i) ? (
+          {items.map((it, i) => {
+            // cardCover where an initiative has one — a photograph that works
+            // small is not always the one that works as a page-wide hero.
+            const shown = it.cardCover ?? it.cover;
+            return shown && seen.has(i) ? (
               <Image
                 key={it.slug}
-                src={it.cover.src}
+                src={shown.src}
                 alt=""
                 fill
                 sizes="(max-width: 1023px) 100vw, 624px"
+                quality={90}
                 priority={i === 0}
                 className="object-cover transition-opacity duration-300"
                 style={{ opacity: i === active ? 1 : 0 }}
               />
-            ) : null,
-          )}
-        </div>
+            ) : null;
+          })}
+        </a>
 
         {/* initiatives-carousel-nav (398:3178) — the full width of the section,
             clipped at its right edge so the coming titles peek in. */}

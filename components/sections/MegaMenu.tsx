@@ -71,12 +71,13 @@ export function MegaMenu({
                 of the published ones are in that state today, so this is a
                 floor rather than something the menu actually shows.
                 alt="" — the row being previewed already names it. */}
-            {active.cover ? (
+            {(active.cardCover ?? active.cover) ? (
               <Image
-                src={active.cover.src}
+                src={(active.cardCover ?? active.cover)!.src}
                 alt=""
                 fill
                 sizes="504px"
+                quality={90}
                 className="object-cover"
               />
             ) : (

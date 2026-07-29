@@ -41,6 +41,13 @@ export type InitiativeDetail = {
         Bulgaria by Design runs the column as one block of body copy. */
     intro?: string;
     paragraphs: string[];
+    /**
+     * A bulleted list closing the feature column (Figma 418:2276). Distinct
+     * from `checklist`, which is the ruled full-width block: these are the
+     * items of the sentence the last paragraph ends on — the two McKinsey
+     * figures on Дизайн зрялост — so they are a plain <ul> inside the column.
+     */
+    bullets?: string[];
   };
   /** Question introducing the checklist. Omit where the list follows straight
       on from the feature text instead of from a question of its own. */
@@ -93,7 +100,20 @@ export type Initiative = {
    * cards and the mega menu show it too, and an initiative can have a picture
    * long before it has a long-form page — Дизайн зрялост does.
    */
-  cover?: { src: string; alt: string };
+  /**
+   * `focal` is the CSS object-position the page hero crops around, and it
+   * defaults to centre. The 1092×640 frame is far wider than most of these
+   * photographs, so something always gets cut; naming the part that has to
+   * survive is the only way a photograph whose subject sits low in the frame
+   * (Future Makers Lab) and one shot from above (Policy Lab) can share it.
+   */
+  cover?: { src: string; alt: string; focal?: string };
+  /**
+   * Optional override for the carousel card and the mega-menu preview. Where a
+   * photograph works at 240px but not as a page-wide hero — or the other way
+   * round — this is the small one. Falls back to `cover`.
+   */
+  cardCover?: { src: string; alt: string };
   /** URL segment — locale-neutral, identical in bg and en, since the language
       toggle swaps only the locale prefix. Permanent once shipped: renaming one
       breaks any link already sent out. */
@@ -303,6 +323,7 @@ const bg = {
       },
       {
         slug: "bulgaria-by-design",
+        cardCover: { src: "/figma/initiatives/bulgaria-by-design-card.jpg", alt: "Гербът на Република България върху тъмносин фон" },
         cover: { src: "/figma/initiatives/bulgaria-by-design-hero.jpg", alt: "Двама души разглеждат заедно проект на лаптоп" },
         label: "Възраждане",
         title: "България чрез Дизайн",
@@ -369,7 +390,12 @@ const bg = {
       },
       {
         slug: "future-makers-lab",
-        cover: { src: "/figma/initiatives/future-makers-lab-hero.jpg", alt: "Участници в работилница подреждат материали върху маса" },
+        // The only portrait photograph in the set, so it is the only one the
+        // 1092×640 frame crops hard — the band it shows is only 39% of the
+        // picture's height. 46% is as low as it goes while both heads stay
+        // whole, and it is low enough to include the hands and the materials
+        // on the table, which is what the photograph is actually about.
+        cover: { src: "/figma/initiatives/future-makers-lab-hero.jpg", alt: "Участници в работилница подреждат материали върху маса", focal: "center 46%" },
         label: "Образование",
         title: "Създатели на бъдещето",
         text: "Лаборатория за юноши, която развива системно мислене, проблемно рамкиране, изследователска култура, включващ дизайн и отговорна работа с AI.",
@@ -451,11 +477,86 @@ const bg = {
       },
       {
         slug: "design-maturity-assessment",
+        // Already cropped to the frame the design places it in (418:2261 — a
+        // 1.265× zoom panned left and up off a 4096×2731 original), so the
+        // shared hero needs no focal point of its own here.
         cover: { src: "/figma/initiatives/design-maturity-assessment-hero.jpg", alt: "Две жени обсъждат документи пред стена със стикери" },
         label: "Иновации",
         title: "Дизайн зрялост",
         text: "Инструмент за самооценка на дизайн зрелостта на бизнес организации и насоки за повишаването ѝ.",
         pattern: 3,
+        // Figma 418:2237.
+        detail: {
+          lead: "Национална инициатива за оценка, развитие и повишаване на дизайн зрелостта на българския бизнес.",
+          columns: [
+            [
+              "Може ли организацията ви да разпознава правилния проблем, да избира правилната посока и да създава решения, които хората разбират, използват и предпочитат? Инвестицията в повишаване на дизайн зрялостта в компания носи доказани бизнес, продуктови и оперативни ползи.",
+            ],
+            [
+              "Именно затова, разработваме национална рамка за самооценка, експертна диагностика и практически насоки за системното интегриране на дизайна в стратегията, процесите и културата на организацията.",
+            ],
+          ],
+          body: [
+            "Дизайн зрелостта не показва колко дизайн произвежда една компания. Тя показва колко добре компанията използва дизайна, за да взема решения.",
+          ],
+          actions: [
+            {
+              label: "Искам да участвам ↗",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=%D0%98%D1%81%D0%BA%D0%B0%D0%BC%20%D0%B4%D0%B0%20%D1%83%D1%87%D0%B0%D1%81%D1%82%D0%B2%D0%B0%D0%BC%20%2F%20%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD%20%D0%B7%D1%80%D1%8F%D0%BB%D0%BE%D1%81%D1%82",
+              variant: "primary",
+            },
+            {
+              label: "Партнирай с нас",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Design%20Maturity",
+              variant: "secondary",
+            },
+          ],
+          feature: {
+            label: "Добрият дизайн се отплаща.",
+            heading: "Скоростта не намалява риска, когато посоката е грешна.",
+            paragraphs: [
+              "Много компании инвестират в разработване, технологии и растеж, преди да са разбрали дали създават правилното решение - за правилните хора и по начин, който може да бъде разбран, използван, приет и устойчиво развит.",
+              "Най-скъпите продуктови грешки се допускат, преди да започне разработването.",
+              "McKinsey проследява 300 публични компании в продължение на пет години и установява, че компаниите с най-висока дизайн зрялост растат почти два пъти по-бързо от конкурентите си, постигайки:",
+            ],
+            bullets: [
+              "32 процентни пункта по-висок ръст на приходите и",
+              "56 процентни пункта по-висок ръст на възвръщаемостта за акционерите.",
+            ],
+          },
+          checklistHeading: "Кога дизайн зрялостта е решаваща?",
+          checklist: [
+            "Предстои значителна инвестиция в продукт, услуга, технология или трансформация.",
+            "Компанията разработва бързо, но решенията не постигат очакваното въздействие.",
+            "Продуктови, дизайн, технологични и бизнес екипи работят с различни приоритети.",
+            "Има дизайн функция, но тя се включва след вземането на стратегическите решения.",
+            "Проблемите се откриват късно и водят до преработка и нарастващи разходи.",
+            "Бизнеса иска да измери как дизайнът влияе върху риска, качеството, приходите и устойчивото развитие.",
+          ],
+          featureClosing: {
+            label: "Какво следва?",
+            heading: "Предстояща пилотна програма.",
+            paragraphs: [
+              "Пилотната програма ще бъде разработена с участието на български компании, бизнес лидери, дизайн специалисти и международни експерти. Всяка организация ще получи собствена отправна точка, а анонимизираните резултати ще помогнат да изградим първата последователна картина на дизайн зрелостта на българския бизнес.",
+            ],
+            action: {
+              label: "Включи се в пилота",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=%D0%9F%D0%B8%D0%BB%D0%BE%D1%82%20%2F%20%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD%20%D0%B7%D1%80%D1%8F%D0%BB%D0%BE%D1%81%D1%82",
+            },
+          },
+          team: {
+            heading: "Да създадем заедно с(ъ)вета",
+            text: "Инициативи като тази, съществуват благодарение на хора, които даряват време, знания и енергия.",
+            cta: { label: "Включи се в проект", href: "/bg/volunteer" },
+            creditLabel: "Екипа зад\n„Дизайн зрялост“",
+            members: [
+              "dobra-slavkova",
+              "stefi-peykova-krishnan",
+              "radina-doneva",
+              "zinaida-iler",
+            ],
+          },
+        },
       },
       {
         published: false,
@@ -503,7 +604,7 @@ const bg = {
   team: {
     heading: "Екип",
     vision:
-      "Oтстояваме силата на дизайна да развива икономиката, да укрепва общностите и да оформя едно устойчиво, проспериращо и културно уверено бъдеще за нацията ни.",
+      "Събра ни убеждението, че дизайнът може да промени посоката на една държава.",
     // Shown in the member overlay until a bio is published for that person in Notion.
     bioPlaceholder:
       "Кратко представяне на този член от екипа — професионален опит, ключови проекти и роля в развитието на Българския дизайн съвет. Пълната биография предстои да бъде добавена съвсем скоро.",
@@ -557,7 +658,7 @@ const bg = {
     volunteers: {
       eyebrow: "— Доброволци",
       intro:
-        "Съществуваме благодарение на хора, които даряват време, знания и енергия. Доброволците ни не помагат „отстрани“, а участват пряко в изграждането на нова дизайн култура за България.",
+        "Промяната не се случва сама. Създават я хората, които влагат в нея знания, време и смелост. Нашите доброволци превръщат идеите в действие.",
       cta: { label: "Стани доброволец", href: "/bg/volunteer" },
       members: [
         { name: "Йоанна Тодорова", role: "Съмишленик", photo: "/figma/team/yoanna-todorova.png" },
@@ -1048,6 +1149,7 @@ const en: typeof bg = {
       },
       {
         slug: "bulgaria-by-design",
+        cardCover: { src: "/figma/initiatives/bulgaria-by-design-card.jpg", alt: "The coat of arms of the Republic of Bulgaria on a dark navy ground" },
         cover: { src: "/figma/initiatives/bulgaria-by-design-hero.jpg", alt: "Two people looking over a project together on a laptop" },
         label: "Revival",
         title: "Bulgaria by Design",
@@ -1112,7 +1214,8 @@ const en: typeof bg = {
       },
       {
         slug: "future-makers-lab",
-        cover: { src: "/figma/initiatives/future-makers-lab-hero.jpg", alt: "Workshop participants arranging materials on a table" },
+        // See the bg entry — portrait source, so it needs its own focal point.
+        cover: { src: "/figma/initiatives/future-makers-lab-hero.jpg", alt: "Workshop participants arranging materials on a table", focal: "center 46%" },
         label: "Education",
         title: "Future Makers Lab",
         text: "A lab for teenagers that builds systems thinking, problem framing, a research culture, inclusive design and responsible work with AI.",
@@ -1192,11 +1295,84 @@ const en: typeof bg = {
       },
       {
         slug: "design-maturity-assessment",
+        // See the bg entry — the file is pre-cropped to the design's frame.
         cover: { src: "/figma/initiatives/design-maturity-assessment-hero.jpg", alt: "Two women discussing documents in front of a wall of sticky notes" },
         label: "Innovation",
         title: "Design Maturity",
         text: "A self-assessment tool for the design maturity of business organizations, with guidance on how to raise it.",
         pattern: 3,
+        // Figma 418:2237.
+        detail: {
+          lead: "A national initiative to assess, develop and raise the design maturity of Bulgarian business.",
+          columns: [
+            [
+              "Can your organisation recognise the right problem, choose the right direction and create solutions people understand, use and prefer? Raising a company's design maturity brings proven business, product and operational returns.",
+            ],
+            [
+              "So we are building a national framework for self-assessment, expert diagnosis and practical guidance on integrating design into an organisation's strategy, processes and culture.",
+            ],
+          ],
+          body: [
+            "Design maturity does not show how much design a company produces. It shows how well the company uses design to make decisions.",
+          ],
+          actions: [
+            {
+              label: "I want to take part ↗",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Take%20part%20%2F%20Design%20Maturity",
+              variant: "primary",
+            },
+            {
+              label: "Partner with us",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Design%20Maturity",
+              variant: "secondary",
+            },
+          ],
+          feature: {
+            label: "Good design pays off.",
+            heading: "Speed does not reduce risk when the direction is wrong.",
+            paragraphs: [
+              "Many companies invest in development, technology and growth before they know whether they are building the right solution — for the right people, and in a way people can understand, use, adopt and sustain.",
+              "The most expensive product mistakes happen before development begins.",
+              "McKinsey tracked 300 public companies over five years and found that the companies with the highest design maturity grow almost twice as fast as their competitors, achieving:",
+            ],
+            bullets: [
+              "32 percentage points higher revenue growth, and",
+              "56 percentage points higher total returns to shareholders.",
+            ],
+          },
+          checklistHeading: "When does design maturity decide the outcome?",
+          checklist: [
+            "You face a significant investment in a product, service, technology or transformation.",
+            "You build quickly, but your solutions fall short of the impact you expected.",
+            "Your product, design, technology and business teams work to different priorities.",
+            "You have a design function, but it joins after the strategic decisions are made.",
+            "You find problems late, and they lead to rework and rising costs.",
+            "You want to measure how design affects risk, quality, revenue and sustainable growth.",
+          ],
+          featureClosing: {
+            label: "What comes next?",
+            heading: "A pilot programme is on the way.",
+            paragraphs: [
+              "We will build the pilot together with Bulgarian companies, business leaders, design specialists and international experts. Every organisation gets its own starting point, and the anonymised results will help us draw the first consistent picture of design maturity across Bulgarian business.",
+            ],
+            action: {
+              label: "Join the pilot",
+              href: "mailto:info@bulgariandesigncouncil.org?subject=Pilot%20%2F%20Design%20Maturity",
+            },
+          },
+          team: {
+            heading: "Let's build the council together",
+            text: "Initiatives like this one exist thanks to people who give their time, knowledge and energy.",
+            cta: { label: "Join a project", href: "/en/volunteer" },
+            creditLabel: "The team behind\n“Design Maturity”",
+            members: [
+              "dobra-slavkova",
+              "stefi-peykova-krishnan",
+              "radina-doneva",
+              "zinaida-iler",
+            ],
+          },
+        },
       },
       {
         published: false,
@@ -1242,7 +1418,7 @@ const en: typeof bg = {
   team: {
     heading: "Team",
     vision:
-      "We champion the power of design to grow the economy, strengthen communities and shape a sustainable, prosperous and culturally confident future for our nation.",
+      "What brought us together is a conviction: design can change the direction of a country.",
     bioPlaceholder:
       "A short introduction to this team member — professional background, key projects and role in the development of the Bulgarian Design Council. The full biography is coming soon.",
     board: {
@@ -1293,7 +1469,7 @@ const en: typeof bg = {
     volunteers: {
       eyebrow: "— Volunteers",
       intro:
-        "We exist thanks to people who give their time, knowledge and energy. Our volunteers don't help „from the sidelines“ — they take direct part in building a new design culture for Bulgaria.",
+        "Change doesn't happen on its own. It is made by people who put knowledge, time and courage into it. Our volunteers turn ideas into action.",
       cta: { label: "Become a volunteer", href: "/en/volunteer" },
       members: [
         { name: "Kaya Sodeva", role: "Supporter", photo: "/figma/team/kaya-sodeva.png" },

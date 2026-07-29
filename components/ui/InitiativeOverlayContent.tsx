@@ -135,15 +135,22 @@ export function InitiativeOverlayContent({
               a 1092/640 crop at a phone's width is barely 220px tall and the
               subject reads as a strip.
 
-              object-top rather than centred: these are all wide shots of people
-              at a table, and the dead space is at the bottom. */}
+              Centred crop unless the initiative names a focal point: the frame
+              is much wider than the photographs dropped into it, and anchoring
+              every one to the top cut the people out of the shots where they
+              stand low in the picture. */}
           <div className="relative aspect-square w-full overflow-hidden md:aspect-[1092/640]">
             <Image
               src={initiative.cover.src}
               alt={initiative.cover.alt}
               fill
               sizes="(max-width: 1023px) 90vw, 80vw"
-              className="object-cover object-top"
+              // Full-bleed photography — see the note on images.qualities in
+              // next.config.ts. The site default of 75 is fine for a 60px
+              // avatar and visibly soft at 1092px wide.
+              quality={90}
+              className="object-cover"
+              style={{ objectPosition: initiative.cover.focal ?? "center" }}
             />
           </div>
         </div>
@@ -197,6 +204,18 @@ export function InitiativeOverlayContent({
                   {p}
                 </p>
               ))}
+
+              {/* The list the paragraph above runs into (418:2276). A real
+                  <ul> rather than the ruled ChecklistRows: these continue a
+                  sentence, so they take the same type as the column and sit at
+                  the design's 36px indent. */}
+              {d.feature.bullets && (
+                <ul className="t-body-lg ms-9 list-disc space-y-6">
+                  {d.feature.bullets.map((b) => (
+                    <li key={b}>{b}</li>
+                  ))}
+                </ul>
+              )}
 
               {/* Nested placement (373:4473): the rows continue the sentence
                   above them, so they stay inside this column instead of
