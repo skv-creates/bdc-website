@@ -1,0 +1,46 @@
+name: Deploy to Cloudflare (production)
+
+# Ships the OpenNext Worker to bulgariandesigncouncil.org — the live site.
+#
+# Manual only. There is no `push` trigger here on purpose: staging is where
+# main lands, and promoting to the apex is a decision someone makes after
+# looking at staging, not a side effect of merging.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "publish" to confirm you want this live on the apex'
+        required: true
+        type: string
+
+# Never cancel a production deploy in flight — a half-shipped Worker is worse
+# than a queued one. This is the opposite of the staging group on purpose.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check confirmation
+        if: inputs.confirm != 'publish'
+        run: |
+          echo "::error::Confirmation was '${{ inputs.confirm }}', expected 'publish'. Nothing deployed."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Same build as staging, deployed to the `production` env in wrangler.jsonc
+      # (the bdc-website-production Worker, which owns the apex custom domain).
+      - run: npm run deploy:production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
