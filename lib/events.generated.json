@@ -15,7 +15,11 @@
         "en": "On 16 June 2026 we held our first General Assembly. Our members met one another, shared their professional experience and swapped ideas about how to grow the design community in Bulgaria.\n\nWe presented the Council's current and planned initiatives and set out our priorities for 2026–2027. The Assembly voted Zinaida Iller onto our Board and adopted changes to our Statute. Those changes create two new supporting bodies: an Advisory Council, and Regional Representatives. Together they widen our expertise and strengthen our presence across the country."
       },
       "covers": [
-        "/figma/events/parvo-obshto-sabranie-na-bds.jpg"
+        {
+          "src": "/figma/events/parvo-obshto-sabranie-na-bds.jpg",
+          "width": 2400,
+          "height": 1600
+        }
       ]
     },
     {
@@ -32,8 +36,16 @@
         "en": "On 12 June 2026, from Bulgarian Design Council presented two talks at the special edition of PechaKucha Night Sofia #42: Belonging by Design. Together, they revealed design as a force that builds belonging, shapes identity and transforms society.\n\nIn “Design Intelligence: From Roots to Futures,” Stefi Peykova Krishnan asked: “Who decides what design is?” She shared the vision behind the Bulgarian Design Council: for design to be recognised as a strategic national capability that brings people, institutions and organisations together to create a better future.\n\nIn [“Bulgaria Through Design,”](https://bulgariabydesign.com) Stefan Vladimirov explored how visual identity shapes the way a country sees itself and presents its place in the world. Through international examples and a proposal for a contemporary visual system for Bulgaria, he enabled the audience to experience the power of design. Good design does more than shape the public realm—it expresses Bulgaria’s values, dignity and national confidence.\n\nThe two talks advanced one shared position: belonging does not happen by chance. We create it through design.\n\nWatch the full six-minute talks:\n\n[Stefi Peykova Krishnan, “Design Intelligence: From Roots to Futures”](https://youtu.be/EQ-XG-qDI9I)\n\n[Stefan Vladimirov, “Bulgaria by Design”](https://youtu.be/smUgooeD5gc)"
       },
       "covers": [
-        "/figma/events/pechakucha-night-sofia-42.png",
-        "/figma/events/pechakucha-night-sofia-42-2.jpg"
+        {
+          "src": "/figma/events/pechakucha-night-sofia-42.png",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "src": "/figma/events/pechakucha-night-sofia-42-2.jpg",
+          "width": 2400,
+          "height": 1121
+        }
       ]
     },
     {
@@ -50,7 +62,11 @@
         "en": "For the first time, we announced the Bulgarian Design Council to the international design community at ED-Conference TALKS, part of the [European Design Awards Festival 2026](https://europeandesign.org/festivals/sofia-2026/), brought for to Sofia by the fantastic team at [Studio Komplekt](https://studiokomplekt.com/bg).\n\nOur co-founders Dobra Slavkova, Stefi Peykova Krishnan and Radina Doneva took the stage at Toplocentrala to share our vision: for Bulgaria to evolve design into a strategic national capability. One that strengthens institutions, moves business and education forward, enriches culture and shapes the country's future.\n\nBeing there, gave us the opportunity to share our stance, that Bulgaria already has design intelligence, that deserves to be heard. Now we need to recognise it, connect it, and put it at the centre of the decisions that set the country's direction."
       },
       "covers": [
-        "/figma/events/european-design-festival-2026.jpg"
+        {
+          "src": "/figma/events/european-design-festival-2026.jpg",
+          "width": 2048,
+          "height": 1366
+        }
       ]
     },
     {

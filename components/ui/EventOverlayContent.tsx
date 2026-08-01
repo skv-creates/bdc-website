@@ -107,7 +107,7 @@ export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: Overla
       {event.covers[0] && (
         <div className="relative aspect-square w-full col-span-full md:col-start-2 md:col-span-6 lg:col-start-8 lg:col-span-5 lg:aspect-auto lg:h-[640px]">
           <Image
-            src={event.covers[0]}
+            src={event.covers[0].src}
             alt={event.name}
             fill
             sizes="(max-width: 1023px) 90vw, 45vw"

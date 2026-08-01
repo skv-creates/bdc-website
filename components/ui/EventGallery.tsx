@@ -4,11 +4,16 @@
  * EventGallery — the image carousel in the two-image event overlay
  * (Figma 449:1632, "project-card-carousel").
  *
- * Every slide is the same 540px-tall frame with the grid gutter between them,
- * and the track is clipped by the section's right edge so the next image peeks
- * in exactly as it does in the frame. Slide widths are fixed rather than
- * following each photograph's aspect ratio: the two PechaKucha images are 1.78
- * and 2.14 wide, and letting them size themselves would step the row's height.
+ * Every slide is the same height with the grid gutter between them, and the
+ * track is clipped by the section's right edge so the next image peeks in as
+ * it does in the frame.
+ *
+ * Height is what is held constant; width follows each photograph. A fixed box
+ * with object-cover would look tidier in the markup and is wrong — the two
+ * PechaKucha images are 1.78 and 2.14 wide, so a 732px frame trims about
+ * 115px off each side of the first and far more off the second. Nobody asked
+ * for a crop; they asked for a row that lines up, and equal heights already
+ * give that.
  *
  * It advances on its own, slowly, and stops the moment the pointer arrives —
  * a carousel that keeps moving under the cursor is the thing people complain
@@ -22,6 +27,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./EventGallery.module.css";
+import type { EventImage } from "@/lib/events";
 
 /** Dwell before advancing. Deliberately slow — this is a gallery, not a hero. */
 const AUTOPLAY_MS = 5000;
@@ -32,7 +38,7 @@ export function EventGallery({
   alt,
   labels,
 }: {
-  images: string[];
+  images: EventImage[];
   /** Names the group for screen readers — the event title. */
   label: string;
   alt: string;
@@ -162,18 +168,22 @@ export function EventGallery({
         tabIndex={0}
         onKeyDown={onKeyDown}
       >
-        {images.map((src, i) => (
-          <li key={src} className={styles.slide}>
+        {images.map((img, i) => (
+          <li key={img.src} className={styles.slide}>
+            {/* Real intrinsic dimensions, so the browser reserves the right
+                box before the bytes arrive and the row does not reflow. The
+                height is pinned by CSS and the width follows from these. */}
             <Image
-              src={src}
+              src={img.src}
+              width={img.width}
+              height={img.height}
               // Only the first carries the description. The rest are further
               // pictures of the same thing, and repeating it makes a screen
               // reader announce the event title once per photograph.
               alt={i === 0 ? alt : ""}
-              fill
-              sizes="(max-width: 767px) 90vw, (max-width: 1023px) 70vw, 732px"
+              sizes="(max-width: 767px) 90vw, (max-width: 1023px) 70vw, 1160px"
               quality={90}
-              className="object-cover"
+              className={styles.img}
             />
           </li>
         ))}

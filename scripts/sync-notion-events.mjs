@@ -274,6 +274,43 @@ function splitBody(blocks) {
  * first — extensions change when a photograph is replaced, and a row that drops
  * from two images to one would otherwise leave the orphan behind.
  */
+/**
+ * Pixel dimensions straight out of the file header.
+ *
+ * The gallery gives every slide the same height and lets the width follow the
+ * picture, so it needs the real proportions before the bytes reach the
+ * browser — without them the row reflows as each image lands. Parsed here
+ * rather than pulled from an image library: it is two container formats and
+ * about twenty lines, against a dependency that would then sit in the tree for
+ * this alone.
+ */
+function imageSize(buf) {
+  // PNG: fixed IHDR at byte 16, big-endian width then height.
+  if (buf.length > 24 && buf.readUInt32BE(0) === 0x89504e47) {
+    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+  }
+  // JPEG: walk the segments to the first start-of-frame, which carries the
+  // size. Segment lengths are the only reliable way through — EXIF thumbnails
+  // and colour profiles sit in between and contain misleading markers.
+  if (buf.length > 4 && buf.readUInt16BE(0) === 0xffd8) {
+    let i = 2;
+    while (i + 9 < buf.length) {
+      if (buf[i] !== 0xff) {
+        i += 1;
+        continue;
+      }
+      const marker = buf[i + 1];
+      // SOF0..SOF15, skipping DHT (c4), DNL (c8) and DAC (cc), which share the
+      // range but are not frame headers.
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { height: buf.readUInt16BE(i + 5), width: buf.readUInt16BE(i + 7) };
+      }
+      i += 2 + buf.readUInt16BE(i + 2);
+    }
+  }
+  return null;
+}
+
 async function heroImages(row, slug) {
   const files = prop(row, "Hero-image")?.files ?? [];
   if (files.length === 0) return [];
@@ -306,8 +343,17 @@ async function heroImages(row, slug) {
     }
 
     const name = i === 0 ? `${slug}.${ext}` : `${slug}-${i + 1}.${ext}`;
-    writeFileSync(join(IMG_DIR, name), Buffer.from(await res.arrayBuffer()));
-    out.push(`/figma/events/${name}`);
+    const buf = Buffer.from(await res.arrayBuffer());
+    writeFileSync(join(IMG_DIR, name), buf);
+
+    const size = imageSize(buf);
+    if (!size) {
+      // Without the proportions the gallery cannot size the slide, and a
+      // guess would crop or letterbox someone's photograph silently.
+      console.warn(`[events] could not read dimensions of ${name}; skipping it`);
+      continue;
+    }
+    out.push({ src: `/figma/events/${name}`, ...size });
   }
   return out;
 }

@@ -21,6 +21,9 @@ import generatedEvents from "./events.generated.json";
    Types
 ============================================================================= */
 
+/** One cover image, with the proportions the gallery needs to lay it out. */
+export type EventImage = { src: string; width: number; height: number };
+
 /** A localized event, ready to render. */
 export type BdcEvent = {
   slug: string;
@@ -40,8 +43,13 @@ export type BdcEvent = {
    * Cover images (overlay). Empty for most rows; the list never uses them.
    * An array because a Notion "Hero-image" cell holds several files, and two
    * or more of them switches the overlay to its gallery layout.
+   *
+   * Intrinsic dimensions travel with each one. The gallery gives every slide
+   * the same height and lets its width follow the picture, so it needs the
+   * real proportions up front — sizing them from a fixed box instead would
+   * crop the sides off anything that is not exactly the frame's shape.
    */
-  covers: string[];
+  covers: EventImage[];
 };
 
 /**
@@ -72,7 +80,7 @@ type RawEvent = {
   type: EventType;
   name: Record<Locale, string>;
   description: Record<Locale, string>;
-  covers?: string[];
+  covers?: EventImage[];
 };
 
 /**
@@ -89,7 +97,7 @@ const GENERATED: RawEvent[] = (generatedEvents.events ?? []).map((e) => ({
   // public/figma/events — a Notion file URL is signed and expires in an hour,
   // so it cannot be baked into a static build. Rows without any are the norm;
   // the overlay simply opens on its title.
-  covers: (e as { covers?: string[] }).covers,
+  covers: (e as { covers?: EventImage[] }).covers,
 }));
 
 /* =============================================================================
@@ -108,7 +116,7 @@ const MOCK: RawEvent[] = [
       bg: "Организирана от UX Bulgaria, със специален гост Зинаида Илер, работилницата събра студенти от различни специалности в New Bulgarian University, за да се запознаят с UX процеса.",
       en: "Organized by UX Bulgaria with special guest Zinaida Iller, the workshop brought together students from different disciplines at New Bulgarian University to get acquainted with the UX process.",
     },
-    covers: ["/figma/event-cover.png"],
+    covers: [{ src: "/figma/event-cover.png", width: 1600, height: 1200 }],
   },
   {
     slug: "pechakucha-night-sofia-42",
@@ -119,7 +127,7 @@ const MOCK: RawEvent[] = [
       bg: "Вечер на бързи, вдъхновяващи презентации по формата 20×20 — двадесет кадъра, всеки по двадесет секунди — с говорители от дизайна, архитектурата и технологиите.",
       en: "An evening of fast, inspiring 20×20 talks — twenty slides, twenty seconds each — with speakers from design, architecture and technology.",
     },
-    covers: ["/figma/event-cover.png"],
+    covers: [{ src: "/figma/event-cover.png", width: 1600, height: 1200 }],
   },
   {
     slug: "future-makers-lab-workshop",
@@ -130,7 +138,7 @@ const MOCK: RawEvent[] = [
       bg: "Практическа работилница за юноши, която развива системно мислене, проблемно рамкиране и отговорна работа с AI.",
       en: "A hands-on workshop for teenagers building systems thinking, problem framing and responsible work with AI.",
     },
-    covers: ["/figma/event-cover.png"],
+    covers: [{ src: "/figma/event-cover.png", width: 1600, height: 1200 }],
   },
   {
     slug: "design-for-good-awards",
@@ -141,7 +149,7 @@ const MOCK: RawEvent[] = [
       bg: "БДС връчи три награди „Дизайн за добро“ на първия Студентски дизайн маратон в НБУ, отличавайки идеи, в които дизайнът е инструмент за смислена промяна.",
       en: "The BDC awarded three „Design for Good“ prizes at the first Student Design Marathon at NBU, recognizing ideas in which design is a tool for meaningful change.",
     },
-    covers: ["/figma/event-cover.png"],
+    covers: [{ src: "/figma/event-cover.png", width: 1600, height: 1200 }],
   },
 ];
 
@@ -305,11 +313,15 @@ function mapNotionPage(page: NotionPage): RawEvent | null {
   const filesProp = props[PROP.cover];
   // Every file in the cell, not just the first: two or more is what puts the
   // overlay into its gallery layout.
-  const covers =
+  // The live path has no way to know a remote file's proportions without
+  // fetching it, so these fall back to the frame's own shape. Only the
+  // committed JSON (the path actually used) carries real dimensions.
+  const covers: EventImage[] =
     filesProp?.type === "files"
       ? filesProp.files
           .map((f) => f.file?.url ?? f.external?.url)
           .filter((u): u is string => !!u)
+          .map((src) => ({ src, width: 732, height: 540 }))
       : [];
 
   const slug = plain(props[PROP.slug]) || slugify(nameEn);
