@@ -98,9 +98,21 @@ function richText(rich) {
   return out
     .map(({ text, href }) => {
       if (!href) return text;
-      // Notion writes internal page links as "/<id>"; they resolve only inside
-      // the workspace, so on a public site they are worse than no link at all.
+      // Links into the workspace resolve only for people who are already in it
+      // — a visitor gets a login wall or a 404 — so on a public site they are
+      // worse than no link at all. Both spellings have to go: Notion writes a
+      // link picked from the picker as a relative "/<id>", but the same link
+      // pasted as a URL arrives as https://app.notion.com/... or notion.so/...,
+      // which the protocol check alone lets straight through.
+      //
+      // notion.site is deliberately NOT in here: that is Notion's public
+      // publishing domain, where the volunteer form already lives, and those
+      // pages work for anyone.
       if (!/^https?:\/\//.test(href)) return text;
+      if (/^https?:\/\/([^/]+\.)?(notion\.so|notion\.com)\//.test(href)) {
+        console.warn(`[events] dropping workspace link on "${text.trim()}" → ${href}`);
+        return text;
+      }
       // Trailing spaces inside the label push the underline past the word.
       const label = text.replace(/\s+$/, "");
       return label ? `[${label}](${href})${text.slice(label.length)}` : text;
