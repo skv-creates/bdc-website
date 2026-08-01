@@ -50,6 +50,14 @@
   /* The intrinsic width/height on the element would otherwise win over the
      height above and stretch the picture. */
   max-width: none;
+  /* A safety net, not a layout rule. The width above is derived from the
+     dimensions recorded in events.generated.json, so the box already matches
+     the photograph and this does nothing. If a recorded dimension is ever
+     wrong — hand-edited, or a file replaced without re-running the sync — the
+     default (fill) would quietly stretch faces to fit. `contain` keeps the
+     picture true and shows a sliver of background instead, which is a
+     mistake someone can see rather than one that just looks slightly off. */
+  object-fit: contain;
 }
 
 /* Shorter frames below the desktop layout — a phone should not be handed a
