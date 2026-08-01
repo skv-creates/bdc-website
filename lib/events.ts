@@ -102,7 +102,7 @@ const MOCK: RawEvent[] = [
     },
     description: {
       bg: "Организирана от UX Bulgaria, със специален гост Зинаида Илер, работилницата събра студенти от различни специалности в New Bulgarian University, за да се запознаят с UX процеса.",
-      en: "Organized by UX Bulgaria with special guest Zinaida Iler, the workshop brought together students from different disciplines at New Bulgarian University to get acquainted with the UX process.",
+      en: "Organized by UX Bulgaria with special guest Zinaida Iller, the workshop brought together students from different disciplines at New Bulgarian University to get acquainted with the UX process.",
     },
     cover: "/figma/event-cover.png",
   },

@@ -1444,7 +1444,7 @@ const en: typeof bg = {
           photoHover: "/figma/team/radina-doneva-hover.jpg",
         },
         {
-          name: "Zinaida Iler",
+          name: "Zinaida Iller",
           role: "Board Member",
           photo: "/figma/team/zinaida-iler.png",
           photoHover: "/figma/team/zinaida-iler-hover.jpg",
