@@ -37,14 +37,34 @@
       },
       "covers": [
         {
-          "src": "/figma/events/pechakucha-night-sofia-42.png",
-          "width": 1672,
-          "height": 941
+          "src": "/figma/events/pechakucha-night-sofia-42.jpg",
+          "width": 2400,
+          "height": 1600
         },
         {
           "src": "/figma/events/pechakucha-night-sofia-42-2.jpg",
           "width": 2400,
-          "height": 1121
+          "height": 1600
+        },
+        {
+          "src": "/figma/events/pechakucha-night-sofia-42-3.jpg",
+          "width": 1584,
+          "height": 1274
+        },
+        {
+          "src": "/figma/events/pechakucha-night-sofia-42-4.jpg",
+          "width": 2400,
+          "height": 1600
+        },
+        {
+          "src": "/figma/events/pechakucha-night-sofia-42-5.jpg",
+          "width": 1192,
+          "height": 668
+        },
+        {
+          "src": "/figma/events/pechakucha-night-sofia-42-6.jpg",
+          "width": 1507,
+          "height": 704
         }
       ]
     },

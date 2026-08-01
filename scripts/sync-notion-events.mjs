@@ -18,12 +18,16 @@
  * decide "nothing changed, don't commit".
  */
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+// Already in the tree — next uses it for image optimisation — so this costs no
+// new dependency. Without it the originals would be committed as they arrive:
+// 36-42MB PNGs straight off a camera.
+import sharp from "sharp";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "lib", "events.generated.json");
-/** Hero images are committed next to the JSON they are referenced from. */
+/** Gallery images are committed next to the JSON they are referenced from. */
 const IMG_DIR = join(ROOT, "public", "figma", "events");
 const NOTION_VERSION = "2025-09-03";
 const DRY = process.argv.includes("--dry");
@@ -210,6 +214,21 @@ async function bodyBlocks(pageId) {
     const qs = cursor ? `?start_cursor=${cursor}&page_size=100` : "?page_size=100";
     const res = await api(`blocks/${pageId}/children${qs}`);
     for (const b of res.results) {
+      // Editors lay pictures out side by side, which wraps them in a
+      // column_list. Those carry nothing themselves, so without descending
+      // into them the images in the first row of the gallery are invisible to
+      // this script while the ones below it are not — a confusing half-result.
+      if (b.type === "column_list" || b.type === "column") {
+        out.push(...(await bodyBlocks(b.id)));
+        continue;
+      }
+      // Images: the URL Notion returns here is signed and short-lived, so it
+      // is only useful long enough to download the bytes.
+      if (b.type === "image") {
+        const url = b.image.file?.url ?? b.image.external?.url;
+        if (url) out.push({ type: "image", text: "", url });
+        continue;
+      }
       // Bookmark / embed / video blocks carry no rich_text at all — they are a
       // bare URL — so reading only rich_text dropped the talk recordings at the
       // foot of a body without a trace. Caption first, URL as the fallback
@@ -241,79 +260,57 @@ async function bodyBlocks(pageId) {
  */
 const EN_MARK = /^\s*(##\s*)?(description \(en\)|en)\s*:?\s*$/i;
 const BG_MARK = /^\s*(##\s*)?(описание \(bg\)|bg)\s*:?\s*$/i;
+/**
+ * "Images to be used:" — the heading an editor puts above the pictures meant
+ * for the gallery. Everything after it is images rather than prose, so the
+ * description has to stop here; without it the heading itself lands in the
+ * English copy as a stray final paragraph.
+ */
+const IMG_MARK = /^\s*(##\s*)?(images to be used|снимки)\s*:?\s*$/i;
 
 function splitBody(blocks) {
   const bg = [];
   const en = [];
+  const images = [];
   let target = bg;
   for (const b of blocks) {
+    if (b.type === "image") {
+      // Only the ones under the heading. A picture sitting in the middle of
+      // the prose is illustrating a paragraph, not queueing for the gallery.
+      if (target === images) images.push(b.url);
+      continue;
+    }
     const t = b.text.trim();
     if (!t) continue;
+    if (IMG_MARK.test(t)) { target = images; continue; }
     if (EN_MARK.test(t)) { target = en; continue; }
     if (BG_MARK.test(t)) { target = bg; continue; }
+    if (target === images) continue; // captions and stray notes in that block
     target.push(t);
   }
-  return { bg: bg.join("\n\n"), en: en.join("\n\n") };
+  return { bg: bg.join("\n\n"), en: en.join("\n\n"), images };
 }
 
 /**
- * Download every file in the row's "Hero-image" into public/figma/events and
- * return the paths the site should use, in Notion's order.
+ * Download the gallery pictures into public/figma/events and return the paths
+ * plus their proportions, in the order the editor arranged them.
  *
- * The files have to be copied rather than linked: Notion hands out a signed URL
- * that expires within the hour, so a build that referenced one directly would
- * serve broken images by the time anyone visited.
+ * The URLs come from the "Images to be used:" section of the page body rather
+ * than the Hero-image property: that section is where editors actually curate
+ * what the gallery should show, and Notion hands out a real (if short-lived)
+ * download URL for a block image, which the property never did.
  *
- * All of them, not just the first — two or more is what puts the event overlay
- * into its gallery layout, so dropping the rest would silently change how the
- * page is laid out. The first keeps the bare slug and the rest are numbered,
- * which keeps the existing single-image paths stable.
+ * Everything is re-encoded to JPEG at 2400px. The originals are 36-42MB PNGs
+ * straight off a camera; committed raw they would put well over a hundred
+ * megabytes into a public repository, permanently, for pictures the site
+ * serves at 540px tall.
  *
- * Named after the slug so re-syncing overwrites in place instead of piling up
- * new files each run. Anything previously written for this slug is cleared
- * first — extensions change when a photograph is replaced, and a row that drops
- * from two images to one would otherwise leave the orphan behind.
+ * Named after the slug so re-syncing overwrites in place. Anything previously
+ * written for this slug is cleared first: extensions change, and an event that
+ * drops from six pictures to three would otherwise leave the tail behind.
  */
-/**
- * Pixel dimensions straight out of the file header.
- *
- * The gallery gives every slide the same height and lets the width follow the
- * picture, so it needs the real proportions before the bytes reach the
- * browser — without them the row reflows as each image lands. Parsed here
- * rather than pulled from an image library: it is two container formats and
- * about twenty lines, against a dependency that would then sit in the tree for
- * this alone.
- */
-function imageSize(buf) {
-  // PNG: fixed IHDR at byte 16, big-endian width then height.
-  if (buf.length > 24 && buf.readUInt32BE(0) === 0x89504e47) {
-    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
-  }
-  // JPEG: walk the segments to the first start-of-frame, which carries the
-  // size. Segment lengths are the only reliable way through — EXIF thumbnails
-  // and colour profiles sit in between and contain misleading markers.
-  if (buf.length > 4 && buf.readUInt16BE(0) === 0xffd8) {
-    let i = 2;
-    while (i + 9 < buf.length) {
-      if (buf[i] !== 0xff) {
-        i += 1;
-        continue;
-      }
-      const marker = buf[i + 1];
-      // SOF0..SOF15, skipping DHT (c4), DNL (c8) and DAC (cc), which share the
-      // range but are not frame headers.
-      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
-        return { height: buf.readUInt16BE(i + 5), width: buf.readUInt16BE(i + 7) };
-      }
-      i += 2 + buf.readUInt16BE(i + 2);
-    }
-  }
-  return null;
-}
-
-async function heroImages(row, slug) {
-  const files = prop(row, "Hero-image")?.files ?? [];
-  if (files.length === 0) return [];
+async function galleryImages(urls, slug) {
+  if (urls.length === 0) return [];
 
   mkdirSync(IMG_DIR, { recursive: true });
   // Drop the extension and compare the rest exactly. Stripping a trailing
@@ -329,31 +326,22 @@ async function heroImages(row, slug) {
   }
 
   const out = [];
-  for (const [i, f] of files.entries()) {
-    const url = f.file?.url ?? f.external?.url;
-    if (!url) continue;
-
-    const ext = ((f.name ?? url).match(/\.(jpe?g|png|webp|avif)(?:$|\?)/i)?.[1] ?? "jpg").toLowerCase();
+  for (const [i, url] of urls.entries()) {
     const res = await fetch(url);
     if (!res.ok) {
       // A missing picture is not worth failing the sync over — the overlay
       // reads perfectly well without one, and the text is the point here.
-      console.warn(`[events] could not download Hero-image ${i + 1} for "${slug}" (${res.status})`);
+      console.warn(`[events] could not download image ${i + 1} for "${slug}" (${res.status})`);
       continue;
     }
 
-    const name = i === 0 ? `${slug}.${ext}` : `${slug}-${i + 1}.${ext}`;
-    const buf = Buffer.from(await res.arrayBuffer());
-    writeFileSync(join(IMG_DIR, name), buf);
+    const name = i === 0 ? `${slug}.jpg` : `${slug}-${i + 1}.jpg`;
+    const info = await sharp(Buffer.from(await res.arrayBuffer()))
+      .resize({ width: 2400, withoutEnlargement: true })
+      .jpeg({ quality: 88, progressive: true, mozjpeg: true })
+      .toFile(join(IMG_DIR, name));
 
-    const size = imageSize(buf);
-    if (!size) {
-      // Without the proportions the gallery cannot size the slide, and a
-      // guess would crop or letterbox someone's photograph silently.
-      console.warn(`[events] could not read dimensions of ${name}; skipping it`);
-      continue;
-    }
-    out.push({ src: `/figma/events/${name}`, ...size });
+    out.push({ src: `/figma/events/${name}`, width: info.width, height: info.height });
   }
   return out;
 }
@@ -371,7 +359,7 @@ const events = rows
     const nameEn = text(row, "Title (EN)") || nameBg;
     // Body first, property second: the property is a summary, the body is the
     // description the editors actually write.
-    const body = bodies.get(row.id) ?? { bg: "", en: "" };
+    const body = bodies.get(row.id) ?? { bg: "", en: "", images: [] };
     const descBg = body.bg || text(row, "Описание");
     const descEn = body.en || text(row, "Description (EN)");
     const date = prop(row, "Дата")?.date?.start?.slice(0, 10) ?? "";
@@ -382,9 +370,9 @@ const events = rows
       location: text(row, "Локация"),
       name: { bg: nameBg, en: nameEn },
       description: { bg: descBg, en: descEn || descBg },
-      // Carried alongside so the download pass below can reach the attachment;
-      // stripped again before the JSON is written.
-      row,
+      // Carried alongside so the download pass below can reach them; stripped
+      // again before the JSON is written.
+      imageUrls: body.images,
     };
   })
   // Undated rows would sort unpredictably and render a blank date column.
@@ -407,8 +395,8 @@ if (events.length === 0) {
 // the images on disk. Sequential rather than parallel — three or four downloads
 // of a few megabytes each, and Notion rate-limits bursts.
 for (const e of events) {
-  const covers = DRY ? [] : await heroImages(e.row, e.slug);
-  delete e.row;
+  const covers = DRY ? [] : await galleryImages(e.imageUrls, e.slug);
+  delete e.imageUrls;
   if (covers.length) e.covers = covers;
 }
 
