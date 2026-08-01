@@ -45,13 +45,23 @@ export function EventGallery({
   /** Names the group for screen readers — the event title. */
   label: string;
   alt: string;
-  /** Localized arrow labels — the site is bilingual and these are read out. */
-  labels: { prev: string; next: string };
+  /** Localized control labels — the site is bilingual and these are read out. */
+  labels: { prev: string; next: string; pause: string; play: string };
 }) {
   const track = useRef<HTMLUListElement>(null);
   /** Pointer over the track, or focus inside it: either pauses the glide. */
   const [held, setHeld] = useState(false);
   const [reduced, setReduced] = useState(false);
+  /**
+   * Switched off by the visitor, and it stays off.
+   *
+   * WCAG 2.2.2 (Pause, Stop, Hide, level A) requires a way to stop anything
+   * that moves by itself for more than five seconds. Pausing on hover does not
+   * satisfy it: someone driving the page from the keyboard, or reading it with
+   * a screen magnifier, never hovers anything. This is that mechanism, and it
+   * is a real button in the tab order rather than an inferred gesture.
+   */
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -70,7 +80,7 @@ export function EventGallery({
    */
   useEffect(() => {
     const el = track.current;
-    if (!el || held || reduced || images.length < 2) return;
+    if (!el || held || paused || reduced || images.length < 2) return;
 
     let raf = 0;
     let last = performance.now();
@@ -108,7 +118,7 @@ export function EventGallery({
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [held, reduced, images.length]);
+  }, [held, paused, reduced, images.length]);
 
   /** Nudge one slide along, for the arrows and the arrow keys. */
   const nudge = useCallback(
@@ -181,6 +191,21 @@ export function EventGallery({
 
       {images.length > 1 && (
         <div className={styles.controls}>
+          {/* Left of the arrows because it governs the whole strip rather than
+              a direction. Hidden when the visitor has asked for reduced motion:
+              nothing is moving, so a pause button would be a control for
+              something that is not happening. */}
+          {!reduced && (
+            <button
+              type="button"
+              onClick={() => setPaused((p) => !p)}
+              aria-pressed={paused}
+              aria-label={paused ? labels.play : labels.pause}
+              className={styles.wide}
+            >
+              <span aria-hidden>{paused ? "▶" : "❙❙"}</span>
+            </button>
+          )}
           <button type="button" onClick={() => nudge(-1)} aria-label={labels.prev}>
             <span aria-hidden>←</span>
           </button>

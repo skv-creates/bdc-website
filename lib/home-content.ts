@@ -167,6 +167,8 @@ const bg = {
     menu: "Меню",
     prev: "Назад",
     next: "Напред",
+    pause: "Спри движението",
+    play: "Пусни движението",
     switchLanguage: "English",
     /** Initiative card button on inside pages (Figma 351:1097). */
     seeMore: "Виж повече",
@@ -1010,6 +1012,8 @@ const en: typeof bg = {
     menu: "Menu",
     prev: "Previous",
     next: "Next",
+    pause: "Stop the movement",
+    play: "Start the movement",
     switchLanguage: "Български",
     seeMore: "See more",
     readMore: "Read more",

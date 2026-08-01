@@ -52,6 +52,13 @@
   transition: background-color 120ms ease-out, color 120ms ease-out;
 }
 
+/* The pause glyph is narrower than an arrow but the button carries more
+   meaning, so it gets the same footprint rather than looking like an
+   afterthought wedged in beside them. */
+.wide {
+  min-width: 64px;
+}
+
 .controls button:hover {
   background: var(--color-text);
   color: var(--color-page);

@@ -8,11 +8,13 @@
  */
 import Image from "next/image";
 import { EventGallery } from "@/components/ui/EventGallery";
+import { VideoEmbed } from "@/components/ui/VideoEmbed";
+import { youtubeId } from "@/lib/youtube";
 import type { BdcEvent } from "@/lib/events";
 import type { SiteContent } from "@/lib/home-content";
 
 /** Only the strings this overlay needs, so callers pass `content.ui` as-is. */
-type OverlayUi = Pick<SiteContent["ui"], "prev" | "next">;
+type OverlayUi = Pick<SiteContent["ui"], "prev" | "next" | "pause" | "play">;
 
 /**
  * Turn the `[label](href)` runs the sync writes into real anchors.
@@ -53,6 +55,28 @@ const paragraphs = (s: string) =>
     .split(/\n{2,}/)
     .map((p) => p.trim())
     .filter(Boolean);
+
+/**
+ * A paragraph that is nothing but one YouTube link is a recording the editor
+ * meant people to watch, so it becomes a player rather than a line of text to
+ * click away from. A link sitting inside a sentence stays a link — replacing
+ * that with a video would tear the sentence in half.
+ */
+const ONLY_LINK = /^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/;
+
+function videoIn(paragraph: string): { id: string; title: string } | null {
+  const m = paragraph.match(ONLY_LINK);
+  if (!m) return null;
+  const id = youtubeId(m[2]);
+  return id ? { id, title: m[1] } : null;
+}
+
+/** One paragraph: a player where it is a lone video link, prose otherwise. */
+function Para({ text }: { text: string }) {
+  const video = videoIn(text);
+  if (video) return <VideoEmbed id={video.id} title={video.title} />;
+  return <p className="t-body">{withLinks(text)}</p>;
+}
 
 export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: OverlayUi }) {
   // Two or more pictures switches to the gallery layout (Figma 449:1511):
@@ -96,9 +120,7 @@ export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: Overla
             what the sync can regenerate losslessly. */}
         <div className="flex flex-col gap-5">
           {paragraphs(event.description).map((p) => (
-            <p key={p} className="t-body">
-              {withLinks(p)}
-            </p>
+            <Para key={p} text={p} />
           ))}
         </div>
       </div>
@@ -156,7 +178,7 @@ function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) 
 
         <div className="h-px w-full bg-border" />
 
-        {intro && <p className="t-body">{withLinks(intro)}</p>}
+        {intro && <Para text={intro} />}
       </div>
 
       {/* Column 2 through the last one. It used to stop at 11, which left a
@@ -169,7 +191,7 @@ function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) 
           images={event.covers}
           label={event.name}
           alt={event.name}
-          labels={{ prev: ui.prev, next: ui.next }}
+          labels={{ prev: ui.prev, next: ui.next, pause: ui.pause, play: ui.play }}
         />
       </div>
 
@@ -179,9 +201,7 @@ function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) 
             col.length ? (
               <div key={i} className="flex flex-col gap-5">
                 {col.map((p) => (
-                  <p key={p} className="t-body">
-                    {withLinks(p)}
-                  </p>
+                  <Para key={p} text={p} />
                 ))}
               </div>
             ) : null,
