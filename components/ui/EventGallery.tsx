@@ -27,8 +27,13 @@ import Image from "next/image";
 import styles from "./EventGallery.module.css";
 import type { EventImage } from "@/lib/events";
 
-/** Pixels per second. Slow enough to read as drift rather than as motion. */
-const SPEED = 22;
+/**
+ * Pixels per second — a slow drift rather than a scroll. At this rate a wide
+ * slide takes the better part of a minute to cross, which is the point: it
+ * should be something you notice having happened, not something that moves
+ * while you are trying to look at a photograph.
+ */
+const SPEED = 16;
 
 export function EventGallery({
   images,
@@ -69,17 +74,36 @@ export function EventGallery({
 
     let raf = 0;
     let last = performance.now();
+    /**
+     * The position is kept here, as a float, and only written out.
+     *
+     * Reading scrollLeft back each frame and adding to it does not work: the
+     * browser stores it rounded to the device pixel, so on a 1x display a
+     * 0.67px step is written, read back as 0, and added to again — the strip
+     * never moves at all. On a 2x display it rounds to the nearest half pixel
+     * and creeps along at the wrong speed. Neither is visible in a DOM
+     * measurement; it just looks like the animation is not running.
+     */
+    let pos = el.scrollLeft;
+
     const step = (now: number) => {
       // Clamp the delta: a tab that has been in the background comes back with
       // a huge one, which would fling the strip across in a single frame.
       const dt = Math.min(now - last, 100) / 1000;
       last = now;
+
+      // If the visitor has scrolled, swiped or pressed an arrow, scrollLeft has
+      // moved somewhere this loop did not put it. Take their position as the
+      // new truth rather than yanking the strip back.
+      if (Math.abs(el.scrollLeft - pos) > 2) pos = el.scrollLeft;
+
       // Half the content is the duplicate copy, so wrapping there puts an
       // identical frame under the viewport and the seam cannot be seen.
       const lap = el.scrollWidth / 2;
-      let next = el.scrollLeft + SPEED * dt;
-      if (lap > 0 && next >= lap) next -= lap;
-      el.scrollLeft = next;
+      pos += SPEED * dt;
+      if (lap > 0 && pos >= lap) pos -= lap;
+      el.scrollLeft = pos;
+
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);

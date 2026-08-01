@@ -27,29 +27,17 @@
   outline-offset: -3px;
 }
 
-/* Held in the layout at zero opacity rather than hidden, so the buttons keep
-   their place and stay in the tab order — `display:none` would make them
-   unreachable by keyboard, which is the usual way this pattern goes wrong. */
+/* Always visible.
+   They used to fade in on hover, which cost more than it bought: the reveal
+   depended on a selector matching the wrapper, so when that wrapper stopped
+   being a module class the arrows simply vanished. A control that appears only
+   once you have guessed it is there is a poor bargain regardless — touch has no
+   hover at all, and the initiatives carousel shows its arrows permanently, so
+   this now matches. */
 .controls {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  opacity: 0;
-  transition: opacity 120ms ease-out;
-}
-
-.controls:hover,
-.controls:focus-within,
-div:hover > .controls {
-  opacity: 1;
-}
-
-/* Coarse pointers get no hover, so revealing on hover would hide the arrows
-   permanently. Native swipe still works, but the controls should be visible. */
-@media (hover: none) {
-  .controls {
-    opacity: 1;
-  }
 }
 
 .controls button {

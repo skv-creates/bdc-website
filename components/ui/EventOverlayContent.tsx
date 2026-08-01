@@ -159,13 +159,12 @@ function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) 
         {intro && <p className="t-body">{withLinks(intro)}</p>}
       </div>
 
-      {/* Ten of the twelve columns. The frame insets the carousel area rather
-          than running it to the panel edge (pl-108 / pr-120 on 449:1535, i.e.
-          83.6% of the content width, which is 10/12 to within a pixel), and
-          that inset is what leaves the strip something to travel: at full
-          width two 732px slides very nearly fit and there is nothing to
-          reveal. */}
-      <div className="col-span-full lg:col-start-2 lg:col-span-10">
+      {/* Column 2 through the last one. It used to stop at 11, which left a
+          column of dead space down the right that read as a mistake — and the
+          reason for it (giving a two-slide strip something to travel) went
+          away once the gallery took all six pictures and started gliding
+          rather than paging. */}
+      <div className="col-span-full lg:col-start-2 lg:col-span-11">
         <EventGallery
           images={event.covers}
           label={event.name}
