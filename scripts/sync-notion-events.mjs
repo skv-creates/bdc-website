@@ -257,40 +257,59 @@ function splitBody(blocks) {
 }
 
 /**
- * Download the row's "Hero-image" into public/figma/events and return the path
- * the site should use, or "" when the row has none.
+ * Download every file in the row's "Hero-image" into public/figma/events and
+ * return the paths the site should use, in Notion's order.
  *
- * The file has to be copied rather than linked: Notion hands out a signed URL
- * that expires within the hour, so a build that referenced it directly would
- * serve broken images by the time anyone visited. The first attachment wins —
- * a couple of rows carry two, and the overlay has one slot.
+ * The files have to be copied rather than linked: Notion hands out a signed URL
+ * that expires within the hour, so a build that referenced one directly would
+ * serve broken images by the time anyone visited.
+ *
+ * All of them, not just the first — two or more is what puts the event overlay
+ * into its gallery layout, so dropping the rest would silently change how the
+ * page is laid out. The first keeps the bare slug and the rest are numbered,
+ * which keeps the existing single-image paths stable.
  *
  * Named after the slug so re-syncing overwrites in place instead of piling up
- * a new file each run. The old extension is cleared first, since a replaced
- * photograph often arrives as a different format.
+ * new files each run. Anything previously written for this slug is cleared
+ * first — extensions change when a photograph is replaced, and a row that drops
+ * from two images to one would otherwise leave the orphan behind.
  */
-async function heroImage(row, slug) {
+async function heroImages(row, slug) {
   const files = prop(row, "Hero-image")?.files ?? [];
-  const url = files[0]?.file?.url ?? files[0]?.external?.url;
-  if (!url) return "";
-
-  const source = files[0].name ?? url;
-  const ext = (source.match(/\.(jpe?g|png|webp|avif)(?:$|\?)/i)?.[1] ?? "jpg").toLowerCase();
-
-  const res = await fetch(url);
-  if (!res.ok) {
-    // A missing picture is not worth failing the sync over — the overlay reads
-    // perfectly well without one, and the text is the point of this script.
-    console.warn(`[events] could not download Hero-image for "${slug}" (${res.status})`);
-    return "";
-  }
+  if (files.length === 0) return [];
 
   mkdirSync(IMG_DIR, { recursive: true });
+  // Drop the extension and compare the rest exactly. Stripping a trailing
+  // "-<n>" with a regex looks equivalent and is not: "pechakucha-night-sofia-42"
+  // ends in -42, so that reading eats part of the slug and the file stops
+  // matching its own event.
+  const owned = (file) => {
+    const base = file.replace(/\.[^.]+$/, "");
+    return base === slug || new RegExp(`^${slug}-\\d+$`).test(base);
+  };
   for (const stale of readdirSync(IMG_DIR)) {
-    if (stale.replace(/\.[^.]+$/, "") === slug) rmSync(join(IMG_DIR, stale));
+    if (owned(stale)) rmSync(join(IMG_DIR, stale));
   }
-  writeFileSync(join(IMG_DIR, `${slug}.${ext}`), Buffer.from(await res.arrayBuffer()));
-  return `/figma/events/${slug}.${ext}`;
+
+  const out = [];
+  for (const [i, f] of files.entries()) {
+    const url = f.file?.url ?? f.external?.url;
+    if (!url) continue;
+
+    const ext = ((f.name ?? url).match(/\.(jpe?g|png|webp|avif)(?:$|\?)/i)?.[1] ?? "jpg").toLowerCase();
+    const res = await fetch(url);
+    if (!res.ok) {
+      // A missing picture is not worth failing the sync over — the overlay
+      // reads perfectly well without one, and the text is the point here.
+      console.warn(`[events] could not download Hero-image ${i + 1} for "${slug}" (${res.status})`);
+      continue;
+    }
+
+    const name = i === 0 ? `${slug}.${ext}` : `${slug}-${i + 1}.${ext}`;
+    writeFileSync(join(IMG_DIR, name), Buffer.from(await res.arrayBuffer()));
+    out.push(`/figma/events/${name}`);
+  }
+  return out;
 }
 
 const rows = (await allRows()).filter((r) => select(r, "Статус") === STATUS);
@@ -342,9 +361,9 @@ if (events.length === 0) {
 // the images on disk. Sequential rather than parallel — three or four downloads
 // of a few megabytes each, and Notion rate-limits bursts.
 for (const e of events) {
-  const cover = DRY ? "" : await heroImage(e.row, e.slug);
+  const covers = DRY ? [] : await heroImages(e.row, e.slug);
   delete e.row;
-  if (cover) e.cover = cover;
+  if (covers.length) e.covers = covers;
 }
 
 const payload = {

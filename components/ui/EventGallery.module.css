@@ -1,0 +1,109 @@
+/* Image carousel in the two-image event overlay (Figma 449:1632). */
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* The track is clipped by the panel's own right edge, which is what makes the
+   next image peek in as it does in the frame. */
+.track {
+  display: flex;
+  gap: var(--grid-gap, 24px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Drawn inside: the track clips its own overflow, so a ring sitting outside the
+   box loses its leading edge on the slide at the head of the strip — which is
+   exactly the one that has focus. Same reason as the initiatives strip. */
+.track:focus-visible {
+  outline: 3px solid var(--bdc-burgundy);
+  outline-offset: -3px;
+}
+
+/* 540px is the frame's height and the cap the design sets. Every slide takes
+   it, whatever the photograph's own proportions, so the row never steps. */
+.slide {
+  position: relative;
+  flex: 0 0 auto;
+  width: 732px;
+  height: 540px;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+
+/* Below the desktop frame there is no room for 732px, and no room to let the
+   next one peek either — the slide simply takes the column. The height comes
+   down with it so a phone isn't handed a 540px-tall band. */
+@media (max-width: 1023px) {
+  .slide {
+    width: 70%;
+    height: 420px;
+  }
+}
+
+@media (max-width: 767px) {
+  .slide {
+    width: 88%;
+    height: 320px;
+  }
+}
+
+/* Held in the layout at zero opacity rather than hidden, so the buttons keep
+   their place and stay in the tab order — `display:none` would make them
+   unreachable by keyboard, which is the usual way this pattern goes wrong. */
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+.wrap:hover .controls,
+.wrap:focus-within .controls {
+  opacity: 1;
+}
+
+/* Coarse pointers get no hover, so revealing on hover would hide the arrows
+   permanently. Native swipe still works, but the controls should be visible. */
+@media (hover: none) {
+  .controls {
+    opacity: 1;
+  }
+}
+
+.controls button {
+  display: grid;
+  place-items: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 8px 20px;
+  border: 2px solid var(--color-border);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 120ms ease-out, color 120ms ease-out;
+}
+
+.controls button:hover {
+  background: var(--color-text);
+  color: var(--color-page);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .controls {
+    transition: none;
+  }
+}

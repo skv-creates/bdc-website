@@ -10,7 +10,7 @@ import { notFound } from "next/navigation";
 import { OverlayPanel } from "@/components/ui/OverlayPanel";
 import { EventOverlayContent } from "@/components/ui/EventOverlayContent";
 import { getEvent, getEventSlugs } from "@/lib/events";
-import { hasLocale } from "@/lib/home-content";
+import { getContent, hasLocale } from "@/lib/home-content";
 
 export async function generateStaticParams() {
   return getEventSlugs();
@@ -28,7 +28,7 @@ export default async function InterceptedEventModal({
 
   return (
     <OverlayPanel homeHref={`/${locale}`} intercepted>
-      <EventOverlayContent event={event} />
+      <EventOverlayContent event={event} ui={getContent(locale).ui} />
     </OverlayPanel>
   );
 }
