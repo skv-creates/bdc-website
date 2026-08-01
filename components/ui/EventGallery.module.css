@@ -54,14 +54,17 @@
   /* The intrinsic width/height attributes would otherwise win over the sizing
      above and stretch the picture. */
   max-width: none;
-  /* A safety net, not a layout rule. The width above is derived from the
-     dimensions recorded in events.generated.json, so the box already matches
-     the photograph and this does nothing. If a recorded dimension is ever
-     wrong — hand-edited, or a file replaced without re-running the sync — the
-     default (fill) would quietly stretch faces to fit. `contain` keeps the
-     picture true and shows a sliver of background instead, which is a
-     mistake someone can see rather than one that just looks slightly off. */
-  object-fit: contain;
+  /* cover, not contain.
+     The box is derived from the same dimensions the image has, so the two
+     agree and this makes no difference in the normal case. It decides what
+     happens when they *don't*: contain fits the picture inside the box and
+     letterboxes, which means the painted image ends up SHORTER than its
+     neighbours — visually a row of unequal heights, the one thing this
+     component must never do. cover fills the box instead, so heights stay
+     equal and the cost of a disagreement is a few pixels of crop. Equal
+     heights are the requirement; a hairline crop is not worth breaking them
+     for. (fill would be worse than either: it stretches faces.) */
+  object-fit: cover;
 }
 
 /* Shorter frames below the desktop layout — a phone should not be handed a
