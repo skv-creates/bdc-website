@@ -87,6 +87,30 @@ const plain = (rich) => (rich ?? []).map((r) => r.plain_text).join("").trim();
  * moment part of it is bolded, which would otherwise emit the same URL two or
  * three times in a row mid-sentence.
  */
+/** Drop share/campaign parameters, leaving the rest of the query intact. */
+const TRACKING = /^(si|utm_[a-z_]+|fbclid|gclid|igshid|mc_[ce]id|_hsenc|_hsmi)$/i;
+
+function stripTracking(href) {
+  try {
+    const u = new URL(href);
+    const hits = [...u.searchParams.keys()].filter((k) => TRACKING.test(k));
+    // Return the original string untouched when there was nothing to strip.
+    // Round-tripping through URL normalises as a side effect — it appends a
+    // trailing slash to a bare domain, for one — which would rewrite every
+    // link in the file the next time anyone syncs, for no reason.
+    if (hits.length === 0) return href;
+    for (const k of hits) u.searchParams.delete(k);
+    // Re-serialising drops a now-empty "?" as well, so a link that carried
+    // nothing but tracking comes back clean rather than with a bare question
+    // mark hanging off it.
+    return u.toString();
+  } catch {
+    // Not parseable as a URL — leave it exactly as the editor wrote it rather
+    // than risk mangling something this function does not understand.
+    return href;
+  }
+}
+
 function richText(rich) {
   const out = [];
   for (const r of rich ?? []) {
@@ -113,9 +137,16 @@ function richText(rich) {
         console.warn(`[events] dropping workspace link on "${text.trim()}" → ${href}`);
         return text;
       }
+      // Share-tracking parameters, which arrive on anything copied out of a
+      // "Share" dialog: YouTube's ?si= identifies the person who copied the
+      // link, and utm_* follow the visitor to the destination. Neither belongs
+      // in copy on a public page, and stripping them here keeps the JSON
+      // identical however an editor happened to paste the URL.
+      const clean = stripTracking(href);
+
       // Trailing spaces inside the label push the underline past the word.
       const label = text.replace(/\s+$/, "");
-      return label ? `[${label}](${href})${text.slice(label.length)}` : text;
+      return label ? `[${label}](${clean})${text.slice(label.length)}` : text;
     })
     .join("")
     .trim();
