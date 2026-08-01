@@ -4,33 +4,31 @@
  * EventGallery — the image carousel in the two-image event overlay
  * (Figma 449:1632, "project-card-carousel").
  *
- * Every slide is the same height with the grid gutter between them, and the
- * track is clipped by the section's right edge so the next image peeks in as
- * it does in the frame.
+ * Two things here are deliberate, and both have been got wrong once already:
  *
- * Height is what is held constant; width follows each photograph. A fixed box
- * with object-cover would look tidier in the markup and is wrong — the two
- * PechaKucha images are 1.78 and 2.14 wide, so a 732px frame trims about
- * 115px off each side of the first and far more off the second. Nobody asked
- * for a crop; they asked for a row that lines up, and equal heights already
- * give that.
+ * 1. The geometry lives in the markup — Tailwind for the height, an inline
+ *    aspect-ratio for the width — not in the CSS module. Putting it in the
+ *    module made every slide's box depend on that stylesheet having arrived;
+ *    when it hadn't, each image fell back to its own intrinsic size and the
+ *    row came out ragged. The module now only styles what can fail harmlessly:
+ *    the scrollbar and the arrows.
  *
- * It advances on its own, slowly, and stops the moment the pointer arrives —
- * a carousel that keeps moving under the cursor is the thing people complain
- * about. The arrows only appear on hover, but they are always in the layout and
- * always reachable by keyboard; hiding them with `hidden` would take them out
- * of the tab order, which is why this uses opacity plus focus-within.
+ * 2. The motion is a continuous glide, not a timer that jumps one slide and
+ *    stops. It scrolls at a constant slow speed and pauses under the pointer.
+ *    The list is rendered twice and the scroll position wraps at the end of
+ *    the first copy, which is what makes the loop seamless instead of
+ *    rewinding across the screen.
  *
- * Scrolling is native (scroll-snap), so a trackpad swipe or a drag works
- * without any of this JS, and the component only nudges scrollLeft.
+ * Native horizontal scrolling still works throughout — trackpad, swipe, drag —
+ * because all of this does is move scrollLeft.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./EventGallery.module.css";
 import type { EventImage } from "@/lib/events";
 
-/** Dwell before advancing. Deliberately slow — this is a gallery, not a hero. */
-const AUTOPLAY_MS = 5000;
+/** Pixels per second. Slow enough to read as drift rather than as motion. */
+const SPEED = 22;
 
 export function EventGallery({
   images,
@@ -46,8 +44,7 @@ export function EventGallery({
   labels: { prev: string; next: string };
 }) {
   const track = useRef<HTMLUListElement>(null);
-  const [index, setIndex] = useState(0);
-  /** Pointer over the track, or focus inside it: either pauses the autoplay. */
+  /** Pointer over the track, or focus inside it: either pauses the glide. */
   const [held, setHeld] = useState(false);
   const [reduced, setReduced] = useState(false);
 
@@ -59,155 +56,111 @@ export function EventGallery({
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  /** Scroll slide `i` to the start of the track. */
-  const go = useCallback(
-    (i: number, smooth = true) => {
+  /**
+   * The continuous scroll.
+   *
+   * Driven from the frame clock rather than a CSS animation because the same
+   * scrollLeft has to stay under the visitor's control — a transform would
+   * fight every swipe and every arrow press.
+   */
+  useEffect(() => {
+    const el = track.current;
+    if (!el || held || reduced || images.length < 2) return;
+
+    let raf = 0;
+    let last = performance.now();
+    const step = (now: number) => {
+      // Clamp the delta: a tab that has been in the background comes back with
+      // a huge one, which would fling the strip across in a single frame.
+      const dt = Math.min(now - last, 100) / 1000;
+      last = now;
+      // Half the content is the duplicate copy, so wrapping there puts an
+      // identical frame under the viewport and the seam cannot be seen.
+      const lap = el.scrollWidth / 2;
+      let next = el.scrollLeft + SPEED * dt;
+      if (lap > 0 && next >= lap) next -= lap;
+      el.scrollLeft = next;
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [held, reduced, images.length]);
+
+  /** Nudge one slide along, for the arrows and the arrow keys. */
+  const nudge = useCallback(
+    (dir: 1 | -1) => {
       const el = track.current;
       if (!el) return;
-      const next = ((i % images.length) + images.length) % images.length;
-      const slide = el.children[next] as HTMLElement | undefined;
-      if (slide) {
-        el.scrollTo({
-          left: slide.offsetLeft - el.offsetLeft,
-          behavior: smooth && !reduced ? "smooth" : "auto",
-        });
-      }
-      setIndex(next);
+      const slide = el.children[0] as HTMLElement | undefined;
+      const step = (slide?.offsetWidth ?? 400) + 24;
+      el.scrollBy({ left: dir * step, behavior: reduced ? "auto" : "smooth" });
     },
-    [images.length, reduced],
+    [reduced],
   );
 
-  /**
-   * Whether the strip has enough hidden width to be worth moving.
-   *
-   * At desktop width two 732px slides very nearly fit — the overflow is about
-   * 110px — so advancing would shunt the row a few centimetres and shunt it
-   * back, which reads as a twitch rather than a carousel. Below the desktop
-   * frame, and with three or more pictures, there is real travel and it
-   * behaves as one. Measured rather than assumed from a breakpoint, because it
-   * depends on how many images the event actually has.
-   */
-  const [scrollable, setScrollable] = useState(false);
-  useEffect(() => {
-    const el = track.current;
-    if (!el) return;
-    const measure = () => {
-      // A fixed threshold rather than a fraction of a slide: what matters is
-      // whether the movement is big enough to read as movement, and that is an
-      // absolute distance on screen, not a proportion of the picture.
-      setScrollable(el.scrollWidth - el.clientWidth > 96);
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [images.length]);
-
-  // Autoplay. Keyed on `index` so every advance — including one the visitor
-  // triggers — restarts the dwell rather than firing partway through it.
-  useEffect(() => {
-    if (held || reduced || !scrollable || images.length < 2) return;
-    const t = setTimeout(() => go(index + 1), AUTOPLAY_MS);
-    return () => clearTimeout(t);
-  }, [index, held, reduced, scrollable, images.length, go]);
-
-  // Keep `index` honest when the visitor scrolls or swipes the track directly,
-  // so the next auto-advance continues from where they left it rather than
-  // jumping back to wherever the timer thought it was.
-  useEffect(() => {
-    const el = track.current;
-    if (!el) return;
-    let frame = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const slides = [...el.children] as HTMLElement[];
-        const x = el.scrollLeft + el.offsetLeft;
-        let nearest = 0;
-        let best = Infinity;
-        slides.forEach((s, i) => {
-          const d = Math.abs(s.offsetLeft - x);
-          if (d < best) {
-            best = d;
-            nearest = i;
-          }
-        });
-        setIndex(nearest);
-      });
-    };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      el.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(frame);
-    };
-  }, []);
-
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowRight") go(index + 1);
-    else if (e.key === "ArrowLeft") go(index - 1);
+    if (e.key === "ArrowRight") nudge(1);
+    else if (e.key === "ArrowLeft") nudge(-1);
     else return;
     e.preventDefault();
   };
 
+  // Rendered twice so the glide can wrap without rewinding. The second copy is
+  // hidden from assistive tech — it is the same pictures over again.
+  const loop = images.length > 1 ? [...images, ...images] : images;
+
   return (
     <div
-      className={styles.wrap}
+      className="flex flex-col gap-6"
       onMouseEnter={() => setHeld(true)}
       onMouseLeave={() => setHeld(false)}
       onFocusCapture={() => setHeld(true)}
       onBlurCapture={() => setHeld(false)}
     >
-      {/* group rather than a list role: the images are one gallery, and the
-          arrows below belong to it. aria-roledescription is deliberately not
-          set — "carousel" is jargon, and the label already says what this is. */}
       <ul
         ref={track}
-        className={styles.track}
+        className={`${styles.track} flex gap-[var(--grid-gap,24px)] overflow-x-auto`}
         role="group"
         aria-label={label}
         tabIndex={0}
         onKeyDown={onKeyDown}
       >
-        {images.map((img, i) => (
+        {loop.map((img, i) => (
           <li
-            key={img.src}
-            className={styles.slide}
-            // The slide's own width is computed from this and the height for
-            // the current breakpoint, rather than being left to the <img> to
-            // work out from `width:auto`. Same result when everything loads,
-            // but the box no longer depends on how the replaced element
-            // resolves its intrinsic size — which is what makes the row
-            // dependable rather than mostly-right.
-            style={{ ["--ar" as string]: img.width / img.height }}
+            key={`${img.src}-${i}`}
+            aria-hidden={i >= images.length || undefined}
+            // Height in utilities, width from the ratio: the box is settled by
+            // the markup, so it cannot come out ragged if a stylesheet is slow.
+            // 540 is the cap the design sets; shorter below it, since a phone
+            // should not be handed a 540px band.
+            className="relative h-[260px] shrink-0 md:h-[420px] lg:h-[540px]"
+            style={{ aspectRatio: `${img.width} / ${img.height}` }}
           >
-            {/* Real intrinsic dimensions too, so the browser reserves the
-                right box before the bytes arrive and nothing reflows. */}
             <Image
               src={img.src}
-              width={img.width}
-              height={img.height}
+              fill
+              // The box already matches the picture, so cover crops nothing.
+              // It is here for the case where a recorded dimension is wrong:
+              // cover keeps every slide the same height and loses a few pixels,
+              // where contain would letterbox and break the row.
+              className="object-cover"
               // Only the first carries the description. The rest are further
               // pictures of the same thing, and repeating it makes a screen
               // reader announce the event title once per photograph.
               alt={i === 0 ? alt : ""}
-              sizes="(max-width: 767px) 90vw, (max-width: 1023px) 70vw, 1160px"
+              sizes="(max-width: 767px) 60vw, (max-width: 1023px) 75vw, 1160px"
               quality={90}
-              className={styles.img}
             />
           </li>
         ))}
       </ul>
 
-      {/* Sits under the track, right-aligned, matching the arrows on the
-          initiatives carousel. Dropped entirely when everything already fits:
-          an arrow that cannot move anything is worse than no arrow, and it
-          would sit in the tab order promising something it can't do. */}
-      {scrollable && (
+      {images.length > 1 && (
         <div className={styles.controls}>
-          <button type="button" onClick={() => go(index - 1)} aria-label={labels.prev}>
+          <button type="button" onClick={() => nudge(-1)} aria-label={labels.prev}>
             <span aria-hidden>←</span>
           </button>
-          <button type="button" onClick={() => go(index + 1)} aria-label={labels.next}>
+          <button type="button" onClick={() => nudge(1)} aria-label={labels.next}>
             <span aria-hidden>→</span>
           </button>
         </div>

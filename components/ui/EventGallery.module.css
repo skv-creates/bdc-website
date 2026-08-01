@@ -1,24 +1,18 @@
-/* Image carousel in the two-image event overlay (Figma 449:1632). */
+/* Image carousel in the two-image event overlay (Figma 449:1632).
 
-.wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
+   Only what can fail harmlessly lives here. The slide geometry — height and
+   aspect ratio — is in the component's markup instead, because a stylesheet
+   that arrives late must not be able to leave the row with ragged heights. */
 
-/* The track is clipped by the panel's own right edge, which is what makes the
-   next image peek in as it does in the frame. */
 .track {
-  display: flex;
-  gap: var(--grid-gap, 24px);
   margin: 0;
   padding: 0;
   list-style: none;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* No scroll-snap: it fights a continuous glide, dragging the strip back to
+     the nearest slide every frame. Snapping belongs on a carousel that pages. */
 }
 
 .track::-webkit-scrollbar {
@@ -33,55 +27,6 @@
   outline-offset: -3px;
 }
 
-/* 540px is the cap the design sets, and it is the only fixed dimension: the
-   slide takes its width from the picture inside it, so a wide photograph gets
-   a wide slide instead of being trimmed to fit a box. Equal heights are what
-   make the row line up; equal widths were never the requirement. */
-.slide {
-  flex: 0 0 auto;
-  /* One number per breakpoint, so the width calc below only has to be written
-     once. --ar is the picture's own aspect ratio, set per slide in the TSX. */
-  --slide-h: 540px;
-  height: var(--slide-h);
-  width: calc(var(--slide-h) * var(--ar, 1.5));
-  scroll-snap-align: start;
-}
-
-.img {
-  display: block;
-  height: 100%;
-  width: 100%;
-  /* The intrinsic width/height attributes would otherwise win over the sizing
-     above and stretch the picture. */
-  max-width: none;
-  /* cover, not contain.
-     The box is derived from the same dimensions the image has, so the two
-     agree and this makes no difference in the normal case. It decides what
-     happens when they *don't*: contain fits the picture inside the box and
-     letterboxes, which means the painted image ends up SHORTER than its
-     neighbours — visually a row of unequal heights, the one thing this
-     component must never do. cover fills the box instead, so heights stay
-     equal and the cost of a disagreement is a few pixels of crop. Equal
-     heights are the requirement; a hairline crop is not worth breaking them
-     for. (fill would be worse than either: it stretches faces.) */
-  object-fit: cover;
-}
-
-/* Shorter frames below the desktop layout — a phone should not be handed a
-   540px band, and a wide photograph at that height would need most of a
-   metre of horizontal scrolling to see. */
-@media (max-width: 1023px) {
-  .slide {
-    --slide-h: 420px;
-  }
-}
-
-@media (max-width: 767px) {
-  .slide {
-    --slide-h: 260px;
-  }
-}
-
 /* Held in the layout at zero opacity rather than hidden, so the buttons keep
    their place and stay in the tab order — `display:none` would make them
    unreachable by keyboard, which is the usual way this pattern goes wrong. */
@@ -93,8 +38,9 @@
   transition: opacity 120ms ease-out;
 }
 
-.wrap:hover .controls,
-.wrap:focus-within .controls {
+.controls:hover,
+.controls:focus-within,
+div:hover > .controls {
   opacity: 1;
 }
 
