@@ -169,10 +169,19 @@ export function EventGallery({
         onKeyDown={onKeyDown}
       >
         {images.map((img, i) => (
-          <li key={img.src} className={styles.slide}>
-            {/* Real intrinsic dimensions, so the browser reserves the right
-                box before the bytes arrive and the row does not reflow. The
-                height is pinned by CSS and the width follows from these. */}
+          <li
+            key={img.src}
+            className={styles.slide}
+            // The slide's own width is computed from this and the height for
+            // the current breakpoint, rather than being left to the <img> to
+            // work out from `width:auto`. Same result when everything loads,
+            // but the box no longer depends on how the replaced element
+            // resolves its intrinsic size — which is what makes the row
+            // dependable rather than mostly-right.
+            style={{ ["--ar" as string]: img.width / img.height }}
+          >
+            {/* Real intrinsic dimensions too, so the browser reserves the
+                right box before the bytes arrive and nothing reflows. */}
             <Image
               src={img.src}
               width={img.width}
