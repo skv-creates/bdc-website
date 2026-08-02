@@ -15,7 +15,7 @@ import type { BdcEvent } from "@/lib/events";
 import type { SiteContent } from "@/lib/home-content";
 
 /** Only the strings this overlay needs, so callers pass `content.ui` as-is. */
-type OverlayUi = Pick<SiteContent["ui"], "prev" | "next" | "pause" | "play" | "opensInNewTab">;
+type OverlayUi = Pick<SiteContent["ui"], "prev" | "next" | "pause" | "play" | "opensInNewTab" | "openLink">;
 
 /**
  * Turn the `[label](href)` runs the sync writes into real anchors.
@@ -28,13 +28,18 @@ type OverlayUi = Pick<SiteContent["ui"], "prev" | "next" | "pause" | "play" | "o
  */
 const LINK = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
 
-function withLinks(text: string, newTabLabel: string) {
+function withLinks(text: string, ui: OverlayUi) {
   const out: React.ReactNode[] = [];
   let last = 0;
   for (const m of text.matchAll(LINK)) {
     if (m.index > last) out.push(text.slice(last, m.index));
     out.push(
-      <ExternalLink key={`${m.index}-${m[2]}`} href={m[2]} newTabLabel={newTabLabel}>
+      <ExternalLink
+        key={`${m.index}-${m[2]}`}
+        href={m[2]}
+        newTabLabel={ui.opensInNewTab}
+        openLabel={ui.openLink}
+      >
         {m[1]}
       </ExternalLink>,
     );
@@ -67,10 +72,10 @@ function videoIn(paragraph: string): { id: string; title: string } | null {
 }
 
 /** One paragraph: a player where it is a lone video link, prose otherwise. */
-function Para({ text, newTabLabel }: { text: string; newTabLabel: string }) {
+function Para({ text, ui }: { text: string; ui: OverlayUi }) {
   const video = videoIn(text);
   if (video) return <VideoEmbed id={video.id} title={video.title} />;
-  return <p className="t-body">{withLinks(text, newTabLabel)}</p>;
+  return <p className="t-body">{withLinks(text, ui)}</p>;
 }
 
 export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: OverlayUi }) {
@@ -114,7 +119,7 @@ export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: Overla
             what the sync can regenerate losslessly. */}
         <div className="flex flex-col gap-5">
           {paragraphs(event.description).map((p) => (
-            <Para key={p} text={p} newTabLabel={ui.opensInNewTab} />
+            <Para key={p} text={p} ui={ui} />
           ))}
         </div>
       </div>
@@ -173,7 +178,7 @@ function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) 
 
         <div className="h-px w-full bg-border" />
 
-        {intro && <Para text={intro} newTabLabel={ui.opensInNewTab} />}
+        {intro && <Para text={intro} ui={ui} />}
       </div>
 
       {/* Column 2 through the last one. It used to stop at 11, which left a
@@ -196,7 +201,7 @@ function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) 
             col.length ? (
               <div key={i} className="flex flex-col gap-5">
                 {col.map((p) => (
-                  <Para key={p} text={p} newTabLabel={ui.opensInNewTab} />
+                  <Para key={p} text={p} ui={ui} />
                 ))}
               </div>
             ) : null,

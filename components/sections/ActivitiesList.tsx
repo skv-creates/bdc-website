@@ -67,18 +67,29 @@ export function ActivitiesList({
         ))}
       </ul>
 
-      {/* Disappears once used. There is no "show less": the rows are a short
+      {/* Right-aligned, under the end of the rows, so it reads as belonging to
+          the list rather than starting a new block beneath it.
+
+          Disappears once used. There is no "show less": the rows are a short
           list, not a long article, and a control that folds them back up is
           one more thing to reason about for no gain. */}
       {hidden > 0 && !expanded && (
-        <button
-          type="button"
-          onClick={() => setExpanded(true)}
-          className="t-caption mt-6 inline-flex min-h-11 items-center gap-3 rounded-full border-2 border-border px-6 font-medium transition-colors hover:bg-text hover:text-page"
-        >
-          {showMoreLabel.replace("{count}", String(hidden))}
-          <span aria-hidden>↓</span>
-        </button>
+        <div className="mt-6 flex justify-end">
+          {/* button-terciary (398:3188) — label and mark, no pill. The arrow is
+              part of the label rather than an icon, as in the frame, and it
+              points down because this reveals rows below rather than
+              navigating anywhere. */}
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="t-caption group inline-flex min-h-11 items-center gap-3 font-medium"
+          >
+            {showMoreLabel.replace("{count}", String(hidden))}
+            <span aria-hidden className="transition-transform group-hover:translate-y-1">
+              ↓
+            </span>
+          </button>
+        </div>
       )}
     </div>
   );

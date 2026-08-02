@@ -173,6 +173,8 @@ const bg = {
     opensInNewTab: "Отваря се в нов раздел",
     /** Events list, below the first five. {count} is the number still folded. */
     showMore: "Виж още ({count})",
+    /** The control inside an outbound-link panel that actually leaves the site. */
+    openLink: "Отвори сайта",
     switchLanguage: "English",
     /** Initiative card button on inside pages (Figma 351:1097). */
     seeMore: "Виж повече",
@@ -1022,6 +1024,8 @@ const en: typeof bg = {
     opensInNewTab: "Opens in a new tab",
     /** Events list, below the first five. {count} is the number still folded. */
     showMore: "Show more ({count})",
+    /** The control inside an outbound-link panel that actually leaves the site. */
+    openLink: "Open the site",
     switchLanguage: "Български",
     seeMore: "See more",
     readMore: "Read more",

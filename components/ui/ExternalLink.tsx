@@ -1,39 +1,47 @@
+"use client";
+
 /**
- * ExternalLink — a link out of the site, which says where it goes before you
- * follow it.
+ * ExternalLink — a reference to another site that never takes you off this one
+ * by accident.
  *
- * On hover or focus it shows the destination in the same dark card the team
- * avatars use, so a reader can see they are about to leave and where to,
- * rather than finding out once a tab has already opened.
+ * Clicking the text opens a small panel in place naming the destination. Only
+ * the "open" control inside that panel actually navigates. So a stray click on
+ * a reference mid-sentence leaves you exactly where you were reading, and
+ * leaving is always a second, deliberate act.
  *
- * Two things this deliberately does NOT do, both because they cannot be made
- * to work rather than because they were not considered:
+ * The reason it works this way is a browser rule, not a preference: a page
+ * cannot open a tab and keep focus. `window.open` focuses the new tab, and
+ * calling `blur()` on it and `focus()` on the opener has been blocked in
+ * Chrome, Safari and Firefox for years — that is the anti-popunder rule, and
+ * anything that appears to defeat it is one browser update from stopping. So
+ * the choice is not "new tab with or without focus"; it is "does a click leave
+ * at all". This makes the answer no.
  *
- * - It does not load the page in a lightbox. Several of the sites linked from
- *   the event copy refuse to be framed at all — studiokomplekt.com and
- *   theicod.org both send X-Frame-Options: SAMEORIGIN, and LinkedIn blocks it
- *   in practice — so a modal would open blank for some links and work for
- *   others. One predictable behaviour beats a coin flip.
- * - It does not open the tab in the background. A page cannot ask for that:
- *   browsers focus any tab a script opens, and only the reader's own
- *   ⌘/Ctrl-click opens one behind. Anything claiming otherwise is a popup
- *   blocker away from breaking.
- *
- * What it does give is target="_blank", so this page stays exactly where it is
- * in its own tab, plus fair warning about the destination.
+ * A lightbox was the other candidate and cannot be built for these links:
+ * studiokomplekt.com and theicod.org both send X-Frame-Options: SAMEORIGIN and
+ * LinkedIn blocks framing in practice, so an embedded panel would come up
+ * blank for some references and work for others.
  */
+import { useEffect, useRef, useState } from "react";
+
 export function ExternalLink({
   href,
   children,
   newTabLabel,
+  openLabel,
 }: {
   href: string;
   children: React.ReactNode;
-  /** Localized "opens in a new tab" — the site is bilingual. */
+  /** Localized "opens in a new tab". */
   newTabLabel: string;
+  /** Localized label on the control that actually leaves. */
+  openLabel: string;
 }) {
+  const [open, setOpen] = useState(false);
+  const wrap = useRef<HTMLSpanElement>(null);
+
   // Bare hostname: "www." carries no meaning for a reader and costs width in a
-  // tooltip that has to sit inside the column.
+  // panel that has to sit inside the column.
   let host = href;
   try {
     host = new URL(href).hostname.replace(/^www\./, "");
@@ -41,36 +49,69 @@ export function ExternalLink({
     /* Not parseable — show the raw href rather than nothing. */
   }
 
+  // Close on Escape or on a click elsewhere. Without this the panel is a thing
+  // you can open and not obviously get rid of, which is worse than the link.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    const onDown = (e: MouseEvent) => {
+      if (!wrap.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onDown);
+    };
+  }, [open]);
+
   return (
-    // The wrapper is inline so the link still flows inside its sentence; the
-    // tooltip is positioned against it.
-    <span className="group/ext relative inline">
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="underline underline-offset-2 transition-opacity hover:opacity-70"
+    <span ref={wrap} className="group/ext relative inline">
+      {/* A button, not an anchor: it does not navigate, and dressing a control
+          that opens a panel as a link would promise something it does not do —
+          to a screen reader most of all. It keeps the link's appearance
+          because in the middle of a sentence that is what it is. */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="cursor-pointer underline underline-offset-2 transition-opacity hover:opacity-70"
       >
         {children}
-        {/* Marks the link as leaving the site. aria-hidden because the
-            accessible name below already says so in words — read out, "↗" is
-            either silence or "north east arrow". */}
-        <span aria-hidden className="ms-1 inline-block text-[0.85em] align-baseline">
+        <span aria-hidden className="ms-1 inline-block align-baseline text-[0.85em]">
           ↗
         </span>
-        <span className="sr-only"> ({newTabLabel})</span>
-      </a>
+      </button>
 
-      {/* Same card as the avatar tooltips. pointer-events-none so it can never
-          sit between the cursor and the link it belongs to. Hidden below md:
-          there is no hover on a phone, and it would only ever cover the text. */}
+      {/* Hover shows the destination; a click pins it and adds the way out.
+          Both states are the same card, so it does not appear to change into
+          something else under the cursor. */}
       <span
-        role="tooltip"
-        className="pointer-events-none absolute bottom-full left-0 z-30 hidden w-max max-w-[min(20rem,80vw)] pb-2 opacity-0 transition-opacity duration-[120ms] ease-out group-hover/ext:opacity-100 group-focus-within/ext:opacity-100 md:block"
+        className={`absolute bottom-full left-0 z-30 w-max max-w-[min(22rem,80vw)] pb-2 transition-opacity duration-[120ms] ease-out md:block ${
+          open
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none hidden opacity-0 group-hover/ext:opacity-100 group-focus-within/ext:opacity-100"
+        }`}
       >
-        <span className="flex flex-col rounded-2xl bg-dark px-4 py-3 text-text-invert">
+        <span className="flex flex-col gap-2 rounded-2xl bg-dark px-4 py-3 text-text-invert">
           <span className="t-caption font-bold">{host}</span>
-          <span className="t-caption opacity-80">{newTabLabel}</span>
+          {open ? (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setOpen(false)}
+              className="t-caption inline-flex items-center gap-2 underline underline-offset-2 opacity-90 transition-opacity hover:opacity-100"
+            >
+              {openLabel}
+              <span aria-hidden>↗</span>
+              <span className="sr-only"> ({newTabLabel})</span>
+            </a>
+          ) : (
+            <span className="t-caption opacity-80">{newTabLabel}</span>
+          )}
         </span>
       </span>
     </span>
