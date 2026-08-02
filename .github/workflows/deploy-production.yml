@@ -38,6 +38,14 @@ jobs:
 
       - run: npm ci
 
+      # The canonical origin is baked into every prerendered page at build
+      # time, so a wrong one ships wrong canonicals and a wrong sitemap to the
+      # public site. The npm script sets it; assert it rather than trust it.
+      - name: Check the build will identify as production
+        run: |
+          grep -q 'SITE_ORIGIN=https://bulgariandesigncouncil.org' package.json || {
+            echo "::error::deploy:production must set SITE_ORIGIN to the apex."; exit 1; }
+
       # Same build as staging, deployed to the `production` env in wrangler.jsonc
       # (the bdc-website-production Worker, which owns the apex custom domain).
       - run: npm run deploy:production

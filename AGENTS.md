@@ -122,6 +122,47 @@ The FAQ (`npm run sync:faq`) is still hand-run: its `--publish` flag writes back
 to Notion and so needs a write-capable integration, which is not something to
 hand to a scheduled job.
 
+# Indexing, canonicals and machine-readability
+
+`app/sitemap.ts` and `app/robots.ts` are generated, and both depend on
+**`SITE_ORIGIN`**, which is set on the npm script — `npm run deploy` says
+staging, `npm run deploy:production` says the apex. It is read at **build**
+time on purpose: every page here is prerendered, so by the time a request
+reaches the Worker the canonical tags are already written.
+
+It cannot come from `vars` in `wrangler.jsonc`, which is the obvious place to
+reach for. `opennextjs-cloudflare build` never passes those to `next build` —
+a var there looks right and does nothing.
+
+Unset, it defaults to **staging**, never production. Staging deploys on every
+push and production only by hand, so a forgotten variable on staging would
+publish a second indexable copy of the site, while the same mistake on
+production makes it noindex — loud, and one commit to fix. `deploy-production.yml`
+asserts it before deploying.
+
+Three things that will bite if changed carelessly:
+
+- **`alternates` must never move to `app/[locale]/layout.tsx`.** Metadata is
+  inherited wholesale, so one canonical there points all fifteen pages of a
+  locale at its home page.
+- **The sitemap derives slugs** from `getEventSlugs()` and
+  `getInitiativeSlugs()`. The second reads content *after* `applyCms()` filters
+  `published !== false`, which is what keeps unpublished initiatives — which
+  correctly 404 — out of it. A hardcoded list loses that.
+- **No `lastModified`.** The only date an event carries is when it happens, not
+  when it was edited. Google discounts a whole sitemap's `lastmod` once it
+  catches one lie. `scripts/sync-notion-events.mjs` can supply a real one:
+  Notion's `last_edited_time` is already on every row it fetches.
+
+**AI crawlers are blocked, and no file in this repo can unblock them.**
+Cloudflare injects a managed `robots.txt` with agent-specific groups
+(`User-agent: GPTBot` → `Disallow: /`, and the same for ClaudeBot,
+Google-Extended, CCBot, Amazonbot, Applebot-Extended, Bytespider,
+meta-externalagent). By the robots.txt spec the most specific group wins, so
+`app/robots.ts` cannot override it. That is a Cloudflare dashboard setting
+(AI Crawl Control), as is the `Content-Signal:` line. `app/llms.txt/route.ts`
+is likewise decorative until they are unblocked.
+
 # Deploys run from GitHub Actions, not from Cloudflare
 
 `.github/workflows/deploy.yml` builds and ships the OpenNext Worker to
