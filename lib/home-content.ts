@@ -158,6 +158,8 @@ const bg = {
     title: "Български Дизайн Съвет",
     description:
       "Българският Дизайн Съвет обединява професионалисти, експерти и организации с обща мисия — да развиваме българския дизайн.",
+    /** Wraps every child page's title. "%s" is that page's own title. */
+    titleTemplate: "%s — Български дизайн съвет",
   },
 
   // Non-visible / control-surface strings (aria-labels, carousel arrows).
@@ -1010,6 +1012,8 @@ const en: typeof bg = {
     title: "Bulgarian Design Council",
     description:
       "The Bulgarian Design Council unites professionals, experts and organizations around one shared mission — to grow Bulgarian design.",
+    /** Wraps every child page's title. "%s" is that page's own title. */
+    titleTemplate: "%s — Bulgarian Design Council",
   },
 
   ui: {

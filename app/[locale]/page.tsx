@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { GridOverlay } from "@/components/GridOverlay";
@@ -13,6 +14,7 @@ import { Quote } from "@/components/sections/Quote";
 import { Faq } from "@/components/sections/Faq";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { getContent, hasLocale } from "@/lib/home-content";
+import { localeAlternates } from "@/lib/seo";
 // Temporarily hidden — kept for later reuse:
 // import { Events } from "@/components/sections/Events";
 // import { About } from "@/components/sections/About";
@@ -28,6 +30,19 @@ import { getContent, hasLocale } from "@/lib/home-content";
  * threaded into each section as props — so the client bundle never ships both
  * languages, and server/client sections share one mechanism.
  */
+/**
+ * Only `alternates`. Title and description are inherited from the layout — the
+ * home page is the one page whose title should stay the bare brand name — but
+ * the canonical and hreflang cannot live there, so they are set here.
+ */
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]">): Promise<Metadata> {
+  const { locale } = await params;
+  if (!hasLocale(locale)) return {};
+  return { alternates: localeAlternates(locale, "") };
+}
+
 export default async function Home({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
   if (!hasLocale(locale)) notFound();

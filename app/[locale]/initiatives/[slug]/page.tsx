@@ -12,6 +12,7 @@
  */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { localeAlternates } from "@/lib/seo";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
@@ -39,6 +40,7 @@ export async function generateMetadata({
     // The standfirst reads better as a description than the card blurb, when
     // long-form copy exists.
     description: initiative.detail?.lead ?? initiative.text,
+    alternates: localeAlternates(locale, `/initiatives/${slug}`),
   };
 }
 

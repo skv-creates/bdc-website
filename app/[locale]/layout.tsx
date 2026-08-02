@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { getContent, hasLocale, locales } from "@/lib/home-content";
+import { IS_PRODUCTION_SITE, SITE_ORIGIN } from "@/lib/site";
 
 /** Brand face — "About Beige Standard", self-hosted via next/font/local. */
 const aboutBeige = localFont({
@@ -38,13 +39,39 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+/**
+ * The metadata every page inherits.
+ *
+ * Note what is NOT here: `alternates`. Metadata is inherited wholesale, so a
+ * canonical set on the layout would point all fifteen pages of a locale at its
+ * home page. Canonicals and hreflang are set per page, in each page's own
+ * generateMetadata — see lib/seo.ts.
+ */
 export async function generateMetadata({
   params,
 }: LayoutProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(locale)) return {};
   const { meta } = getContent(locale);
-  return { title: meta.title, description: meta.description };
+
+  return {
+    // Lets every relative URL below — canonicals, hreflang, OG images —
+    // resolve against the right host without any of them knowing which host
+    // this build is for.
+    metadataBase: new URL(SITE_ORIGIN),
+    title: {
+      // `default`, not `absolute`: the home page keeps the plain brand name,
+      // while children get "Page — Bulgarian Design Council" rather than a
+      // bare title that says nothing in a search result.
+      default: meta.title,
+      template: meta.titleTemplate,
+    },
+    description: meta.description,
+    // Staging serves the same content as the public site. Keeping it out of
+    // the index is belt-and-braces with robots.ts, and it is the half that
+    // survives whatever Cloudflare does to robots.txt.
+    ...(IS_PRODUCTION_SITE ? {} : { robots: { index: false, follow: false } }),
+  };
 }
 
 export default async function RootLayout({

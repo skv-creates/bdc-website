@@ -10,6 +10,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { localeAlternates } from "@/lib/seo";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
@@ -25,7 +26,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!hasLocale(locale)) return {};
   const copy = LANDING_COPY[locale];
-  return { title: copy.metaTitle, description: copy.metaDescription };
+  return {
+    title: copy.metaTitle,
+    description: copy.metaDescription,
+    alternates: localeAlternates(locale, "/volunteer"),
+  };
 }
 
 export default async function VolunteerPage({

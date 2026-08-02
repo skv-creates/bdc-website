@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import { OverlayPanel } from "@/components/ui/OverlayPanel";
 import { EventOverlayContent } from "@/components/ui/EventOverlayContent";
 import { getEvent, getEventSlugs } from "@/lib/events";
+import { localeAlternates } from "@/lib/seo";
 import { getContent, hasLocale } from "@/lib/home-content";
 
 export async function generateStaticParams() {
@@ -24,7 +25,14 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   if (!hasLocale(locale)) return {};
   const event = await getEvent(locale, slug);
-  return event ? { title: event.name, description: event.description } : {};
+  // A missing event falls through to notFound(); emitting a canonical for a
+  // page that is about to 404 would invite crawlers to keep asking for it.
+  if (!event) return {};
+  return {
+    title: event.name,
+    description: event.description,
+    alternates: localeAlternates(locale, `/events/${slug}`),
+  };
 }
 
 export default async function EventPage({

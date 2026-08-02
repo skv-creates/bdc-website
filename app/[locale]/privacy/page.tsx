@@ -14,6 +14,7 @@ import { SiteFooter } from "@/components/sections/SiteFooter";
 import { LegalProse } from "@/components/ui/LegalProse";
 import { getContent, hasLocale } from "@/lib/home-content";
 import { getLegalContent } from "@/lib/legal-content";
+import { localeAlternates } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -23,7 +24,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!hasLocale(locale)) return {};
   const { meta } = getLegalContent(locale);
-  return { title: meta.title, description: meta.description };
+  return {
+    title: meta.title,
+    description: meta.description,
+    alternates: localeAlternates(locale, "/privacy"),
+  };
 }
 
 export default async function PrivacyPage({
