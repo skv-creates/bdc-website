@@ -90,6 +90,31 @@ Three things worth knowing before you touch it:
   renaming an event in Notion changes its URL. Add a Slug column and read it in
   `scripts/sync-notion-events.mjs` if that ever matters.
 
+## Event with photo carousel
+
+An event whose Notion page has an **`## Images to be used:`** section with two
+or more pictures under it renders as an *event with photo carousel*: the intro
+in a narrow column, the photographs as a slowly gliding strip across the width,
+and the rest of the body in two columns below. One picture keeps the ordinary
+side-by-side layout; most events have none and are text only.
+
+Снимките се слагат в тялото на страницата под заглавие `## Images to be used:`
+— две или повече превръщат събитието в „събитие с фото карусел".
+
+Worth knowing:
+
+- The pictures come from that section, **not** from the `Hero-image` property.
+  A block image gives the sync a real download URL; the property only ever
+  yielded attachment ids nothing could fetch.
+- Only images *after* the heading count. One sitting up in the prose is
+  illustrating a paragraph, not queueing for the carousel.
+- Side-by-side images are wrapped in a `column_list` by Notion; the sync
+  descends into it, so laying them out in columns is safe.
+- The sync re-encodes everything to 2400px JPEG. Originals are routinely 40MB
+  PNGs off a camera, and this repository is public and permanent.
+- A paragraph that is nothing but a YouTube link becomes a player. A link
+  inside a sentence stays a link.
+
 The FAQ (`npm run sync:faq`) is still hand-run: its `--publish` flag writes back
 to Notion and so needs a write-capable integration, which is not something to
 hand to a scheduled job.

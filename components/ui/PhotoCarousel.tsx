@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * EventGallery — the image carousel in the two-image event overlay
- * (Figma 449:1632, "project-card-carousel").
+ * PhotoCarousel — the strip of photographs inside an "event with photo
+ * carousel" (Figma 449:1632, "project-card-carousel").
  *
  * Two things here are deliberate, and both have been got wrong once already:
  *
@@ -24,7 +24,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import styles from "./EventGallery.module.css";
+import styles from "./PhotoCarousel.module.css";
 import type { EventImage } from "@/lib/events";
 
 /**
@@ -35,7 +35,7 @@ import type { EventImage } from "@/lib/events";
  */
 const SPEED = 16;
 
-export function EventGallery({
+export function PhotoCarousel({
   images,
   label,
   alt,

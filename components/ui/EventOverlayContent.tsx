@@ -7,7 +7,7 @@
  * members (name / role / bio / photo) will slot into <OverlayPanel/> the same way.
  */
 import Image from "next/image";
-import { EventGallery } from "@/components/ui/EventGallery";
+import { PhotoCarousel } from "@/components/ui/PhotoCarousel";
 import { VideoEmbed } from "@/components/ui/VideoEmbed";
 import { youtubeId } from "@/lib/youtube";
 import type { BdcEvent } from "@/lib/events";
@@ -79,10 +79,9 @@ function Para({ text }: { text: string }) {
 }
 
 export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: OverlayUi }) {
-  // Two or more pictures switches to the gallery layout (Figma 449:1511):
-  // a narrow intro column, the carousel full width beneath it, then the rest of
-  // the body in two columns. With one picture the original side-by-side layout
-  // is still the right shape, and most events have none at all.
+  // Two or more pictures makes this an "event with photo carousel". With one
+  // picture the original side-by-side layout is still the right shape, and
+  // most events have no pictures at all.
   if (event.covers.length >= 2) return <EventOverlayGallery event={event} ui={ui} />;
 
   return (
@@ -143,13 +142,14 @@ export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: Overla
 }
 
 /**
- * The two-image layout (Figma 449:1511).
+ * "Event with photo carousel" (Figma 449:1511) — the layout an event gets once
+ * it has pictures worth showing as a set.
  *
- * Unlike the single-cover version, this one runs down the page rather than
- * across it: intro in a narrow column, gallery full width, remaining body in
- * two columns. The first paragraph is the intro and the rest fall below —
- * which is how the frame reads, and it means an event with a single paragraph
- * simply has nothing under the gallery rather than an empty column.
+ * Unlike the single-cover version this runs down the page rather than across
+ * it: intro in a narrow column, the carousel across the width, remaining body
+ * in two columns below. The first paragraph is the intro and the rest fall
+ * underneath, which is how the frame reads and means an event with only one
+ * paragraph has nothing below the carousel rather than an empty column.
  */
 function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) {
   const [intro, ...rest] = paragraphs(event.description);
@@ -187,7 +187,7 @@ function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) 
           away once the gallery took all six pictures and started gliding
           rather than paging. */}
       <div className="col-span-full lg:col-start-2 lg:col-span-11">
-        <EventGallery
+        <PhotoCarousel
           images={event.covers}
           label={event.name}
           alt={event.name}

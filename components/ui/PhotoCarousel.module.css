@@ -1,4 +1,4 @@
-/* Image carousel in the two-image event overlay (Figma 449:1632).
+/* The photo carousel inside an "event with photo carousel" (Figma 449:1632).
 
    Only what can fail harmlessly lives here. The slide geometry — height and
    aspect ratio — is in the component's markup instead, because a stylesheet
