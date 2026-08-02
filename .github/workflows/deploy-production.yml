@@ -52,3 +52,13 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # Tell Bing, Yandex, Seznam and Naver what just changed rather than
+      # waiting for them to notice. Google does not take IndexNow and retired
+      # its sitemap ping, so Google is nudged from Search Console instead.
+      #
+      # continue-on-error: the site is already live at this point. A refused
+      # ping is worth seeing in the log, never worth a red deploy.
+      - name: Submit the sitemap to IndexNow
+        continue-on-error: true
+        run: npm run ping:indexnow

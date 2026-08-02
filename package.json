@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "sync:bios": "node scripts/sync-team-bios.mjs",
+    "ping:indexnow": "node scripts/ping-indexnow.mjs",
     "prepare": "git config core.hooksPath .githooks || true",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "SITE_ORIGIN=https://staging.bulgariandesigncouncil.org opennextjs-cloudflare build --env=\"\" && opennextjs-cloudflare deploy --env=\"\"",

@@ -72,6 +72,17 @@ export async function generateMetadata({
     // No `site`/`creator` until there is a real handle — an empty @ is worse
     // than an absent one.
     twitter: { card: "summary_large_image" },
+    // Search Console and Bing Webmaster both verify by meta tag. Set the env
+    // var and the tag appears; unset, the key is omitted entirely rather than
+    // shipping an empty content="" that fails verification confusingly.
+    verification: {
+      ...(process.env.GOOGLE_SITE_VERIFICATION
+        ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+        : {}),
+      ...(process.env.BING_SITE_VERIFICATION
+        ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
+        : {}),
+    },
     // Staging serves the same content as the public site. Keeping it out of
     // the index is belt-and-braces with robots.ts, and it is the half that
     // survives whatever Cloudflare does to robots.txt.
