@@ -86,9 +86,12 @@ Three things worth knowing before you touch it:
 - A sync that finds no publishable rows **fails instead of writing an empty
   list**. Blanking the section on the live site is a worse outcome than a red
   run, and the committed JSON is left alone.
-- Събития has no Slug column, so slugs are transliterated from the title —
-  renaming an event in Notion changes its URL. Add a Slug column and read it in
-  `scripts/sync-notion-events.mjs` if that ever matters.
+- The URL comes from the **Slug** column, and only from there. Titles are
+  per-language — Bulgarian on `/bg`, English on `/en` — so a URL cannot follow
+  either without moving every time a translation is edited. Two events proved
+  it before the column existed: renaming them to Bulgarian titles moved both
+  pages and 404'd the old addresses. Leave a Slug empty and the sync falls back
+  to transliterating the Bulgarian title, and warns while it does.
 
 ## Event with photo carousel
 

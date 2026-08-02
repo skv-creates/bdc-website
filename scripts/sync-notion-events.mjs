@@ -160,14 +160,19 @@ const text = (page, name) => plain(prop(page, name)?.rich_text) || plain(prop(pa
 const select = (page, name) => prop(page, name)?.select?.name ?? "";
 
 /**
- * Cyrillic → Latin, so a Bulgarian-only title still produces a readable ASCII
- * slug. Slugs are the URL and are meant to be permanent, but Събития has no
- * Slug column — so renaming an event in Notion DOES change its URL. Add a Slug
- * column to that tab and read it here if that ever matters.
+ * Cyrillic → Latin, for the fallback slug only.
  *
- * Derived from the Bulgarian name, never the English one. Заглавията на
- * английски се добавят по-късно, and slugging the English would silently
- * rewrite the URL of every event on the day its translation lands.
+ * The slug is the URL and is meant to be permanent, so it comes from the Slug
+ * column first. That column exists because the titles are per-language — the
+ * Bulgarian page shows the Bulgarian title, the English one the English title —
+ * and a URL cannot follow either without moving whenever a translation is
+ * edited. Two events proved it: renaming them to Bulgarian titles moved both
+ * pages and 404'd every link already sent out.
+ *
+ * This is what a row with an empty Slug falls back to. Derived from the
+ * Bulgarian name, never the English one: заглавията на английски се добавят
+ * по-късно, and slugging the English would rewrite the URL of every event on
+ * the day its translation lands.
  */
 const CYR = {
   а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ж: "zh", з: "z", и: "i", й: "y",
@@ -346,6 +351,16 @@ async function galleryImages(urls, slug) {
   return out;
 }
 
+/** Only reached when the Slug column is empty — see the note on slugify. */
+function fallbackSlug(row, nameBg, nameEn) {
+  const derived = slugify(nameBg) || slugify(nameEn) || row.id.replace(/-/g, "").slice(0, 12);
+  console.warn(
+    `[events] "${nameBg}" has no Slug — falling back to "${derived}". ` +
+      `Fill the Slug column, or renaming this event will move its URL.`,
+  );
+  return derived;
+}
+
 const rows = (await allRows()).filter((r) => select(r, "Статус") === STATUS);
 
 // Bodies are one request per row, so only the published rows are fetched.
@@ -364,7 +379,10 @@ const events = rows
     const descEn = body.en || text(row, "Description (EN)");
     const date = prop(row, "Дата")?.date?.start?.slice(0, 10) ?? "";
     return {
-      slug: slugify(nameBg) || slugify(nameEn) || row.id.replace(/-/g, "").slice(0, 12),
+      // Slug column first: it is the only thing here that is allowed to
+      // decide a URL. The title-derived fallback is for a row nobody has
+      // filled in yet, and it warns rather than doing it quietly.
+      slug: text(row, "Slug") || fallbackSlug(row, nameBg, nameEn),
       date,
       type: FORMAT[select(row, "Формат")] ?? "live",
       location: text(row, "Локация"),

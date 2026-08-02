@@ -109,7 +109,7 @@
       ]
     },
     {
-      "slug": "regionalna-sreshta-na-mezhdunarodniya-dizayn-savet-icod",
+      "slug": "regional-meeting-of-the-international-council-of-design-icod",
       "date": "2026-06-11",
       "type": "live",
       "location": "SOHO, Sofia, Bulgaria",
@@ -123,7 +123,7 @@
       }
     },
     {
-      "slug": "evropeyski-dizayn-festival-2026",
+      "slug": "european-design-festival-2026",
       "date": "2026-06-11",
       "type": "live",
       "location": "Toplocentrala, Sofia",
@@ -137,17 +137,17 @@
       },
       "covers": [
         {
-          "src": "/figma/events/evropeyski-dizayn-festival-2026.jpg",
+          "src": "/figma/events/european-design-festival-2026.jpg",
           "width": 2400,
           "height": 1600
         },
         {
-          "src": "/figma/events/evropeyski-dizayn-festival-2026-2.jpg",
+          "src": "/figma/events/european-design-festival-2026-2.jpg",
           "width": 2048,
           "height": 1366
         },
         {
-          "src": "/figma/events/evropeyski-dizayn-festival-2026-3.jpg",
+          "src": "/figma/events/european-design-festival-2026-3.jpg",
           "width": 2400,
           "height": 1600
         }
@@ -163,8 +163,8 @@
         "en": "Open Destinations"
       },
       "description": {
-        "bg": "Имахме удоволствието да участваме в Open Destinations - вдъхновяваща международна конференция, организирана от [Design for all Bulgaria Foundation](https://www.linkedin.com/company/design-for-all-bulgaria-foundation/) и Ивелина Гаджева, която събра водещи експерти, практици и застъпници на приобщаващия дизайн.\n\nТова беше първото по рода си събитие в България. То показа как приобщаващият дизайн създава стойност не само за отделни групи, а за обществото като цяло. Когато още от самото начало проектираме с разбиране за различните човешки потребности, създаваме по-достъпни, удобни и пълноценни продукти, услуги, пространства и преживявания за всички.\n\nБългария има възможност да повиши стандартите си и да се доближи до водещите международни практики в областта на достъпността. Съответствието със стандартите е само началото. Истинската цел е да създаваме среда, в която всеки човек може да участва пълноценно и равнопоставено.\n\nДостъпността не е ограничение. Тя е двигател за по-добър дизайн.",
-        "en": "We had the pleasure of taking part in Open Destinations, an inspiring international conference organised by the [Design for All Bulgaria Foundation](https://www.linkedin.com/company/design-for-all-bulgaria-foundation/) and Ivelina Gadzheva, which brought together leading experts, practitioners and advocates of inclusive design.\n\nIt was the first event of its kind in Bulgaria. It demonstrated how inclusive design creates value not only for specific groups, but for society as a whole. When we design with an understanding of diverse human needs from the outset, we create more accessible, usable and fulfilling products, services, spaces and experiences for everyone.\n\nBulgaria has an opportunity to raise its standards and move closer to leading international accessibility practices. Compliance with standards is only the beginning. The real goal is to create an environment in which everyone can participate fully and equally.\n\nAccessibility is not a constraint. It is a catalyst for better design."
+        "bg": "Имахме удоволствието да участваме в Open Destinations - първата международна конференция в България, посветена на ролята на приобщаващия дизайн в туризма и културните преживявания. Организирана от [Design for all Bulgaria Foundation](https://www.linkedin.com/company/design-for-all-bulgaria-foundation/) и Ивелина Гаджева, събитието събра водещи експерти, практици и застъпници на приобщаващия дизайн.\n\nOpen Destinations показа как приобщаващият дизайн създава стойност не само за отделни групи, а за обществото като цяло. Когато още от самото начало проектираме с разбиране за различните човешки потребности, създаваме по-достъпни, удобни и пълноценни продукти, услуги, пространства и преживявания за всички.\n\nБългария има възможност да повиши стандартите си и да се доближи до водещите международни практики в областта на достъпността. Съответствието със стандартите е само началото. Истинската цел е да създаваме среда, в която всеки човек може да участва пълноценно и равнопоставено.\n\nДостъпността не е ограничение. Тя е двигател за по-добър дизайн.",
+        "en": "We had the pleasure of taking part in Open Destinations - Bulgaria’s first international conference dedicated to the role of inclusive design in tourism and cultural experiences. Organised by the [Design for All Bulgaria Foundation](https://www.linkedin.com/company/design-for-all-bulgaria-foundation/) and Ivelina Gadzheva, which brought together leading experts, practitioners and advocates of inclusive design.\n\nOpen Destinations showed how inclusive design creates value not only for specific groups, but for society as a whole. When we design with an understanding of diverse human needs from the outset, we create more accessible, usable and fulfilling products, services, spaces and experiences for everyone.\n\nBulgaria has an opportunity to raise its standards and move closer to leading international accessibility practices. Compliance with standards is only the beginning. The real goal is to create an environment in which everyone can participate fully and equally.\n\nAccessibility is not a constraint. It is a catalyst for better design."
       }
     },
     {
