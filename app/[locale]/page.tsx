@@ -56,7 +56,11 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
           <Mission mission={c.mission} />
           <DesignImpact designImpact={c.designImpact} />
           <Initiatives initiatives={c.initiatives} ui={c.ui} locale={locale} />
-          <Activities locale={locale} heading={c.activities.heading} />
+          <Activities
+            locale={locale}
+            heading={c.activities.heading}
+            showMoreLabel={c.ui.showMore}
+          />
           <Team team={c.team} />
           <Quote quote={c.quote} />
           <Faq faq={c.faq} />

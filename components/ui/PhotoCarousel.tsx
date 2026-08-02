@@ -28,12 +28,18 @@ import styles from "./PhotoCarousel.module.css";
 import type { EventImage } from "@/lib/events";
 
 /**
- * Pixels per second — a slow drift rather than a scroll. At this rate a wide
- * slide takes the better part of a minute to cross, which is the point: it
- * should be something you notice having happened, not something that moves
- * while you are trying to look at a photograph.
+ * Pixels per second, at rest and under the pointer.
+ *
+ * Hovering slows the strip rather than freezing it. Stopping dead reads as the
+ * page having broken — the eye is tracking motion and it vanishes — whereas
+ * easing down reads as the carousel noticing you. Coming off the picture it
+ * lifts back to full speed, which is what makes the two states feel like one
+ * behaviour rather than an on/off switch.
  */
 const SPEED = 16;
+const SPEED_HOVER = 4;
+/** How sharply it eases between the two. Higher settles faster. */
+const EASE_PER_SECOND = 3;
 
 export function PhotoCarousel({
   images,
@@ -49,8 +55,15 @@ export function PhotoCarousel({
   labels: { prev: string; next: string; pause: string; play: string };
 }) {
   const track = useRef<HTMLUListElement>(null);
-  /** Pointer over the track, or focus inside it: either pauses the glide. */
-  const [held, setHeld] = useState(false);
+  /**
+   * Pointer over the track, or focus inside it: either slows the glide.
+   *
+   * A ref, not state, and deliberately so. As state it would be a dependency of
+   * the animation effect, so every enter and leave would tear the loop down and
+   * start a new one — which resets the eased speed to its target and produces
+   * exactly the hard switch the easing exists to avoid.
+   */
+  const held = useRef(false);
   const [reduced, setReduced] = useState(false);
   /**
    * Switched off by the visitor, and it stays off.
@@ -80,10 +93,14 @@ export function PhotoCarousel({
    */
   useEffect(() => {
     const el = track.current;
-    if (!el || held || paused || reduced || images.length < 2) return;
+    if (!el || paused || reduced || images.length < 2) return;
 
     let raf = 0;
     let last = performance.now();
+    // Eased rather than switched, so neither entering nor leaving the strip
+    // produces a jump. Starts wherever the target is so the first frame after
+    // a pause does not ramp up from nothing.
+    let speed = held.current ? SPEED_HOVER : SPEED;
     /**
      * The position is kept here, as a float, and only written out.
      *
@@ -107,10 +124,16 @@ export function PhotoCarousel({
       // new truth rather than yanking the strip back.
       if (Math.abs(el.scrollLeft - pos) > 2) pos = el.scrollLeft;
 
+      // Ease the speed towards whichever state we are in. Frame-rate
+      // independent: the same fraction of the remaining gap per second,
+      // however often frames happen to arrive.
+      const target = held.current ? SPEED_HOVER : SPEED;
+      speed += (target - speed) * Math.min(1, EASE_PER_SECOND * dt);
+
       // Half the content is the duplicate copy, so wrapping there puts an
       // identical frame under the viewport and the seam cannot be seen.
       const lap = el.scrollWidth / 2;
-      pos += SPEED * dt;
+      pos += speed * dt;
       if (lap > 0 && pos >= lap) pos -= lap;
       el.scrollLeft = pos;
 
@@ -118,7 +141,7 @@ export function PhotoCarousel({
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [held, paused, reduced, images.length]);
+  }, [paused, reduced, images.length]);
 
   /** Nudge one slide along, for the arrows and the arrow keys. */
   const nudge = useCallback(
@@ -146,10 +169,10 @@ export function PhotoCarousel({
   return (
     <div
       className="flex flex-col gap-6"
-      onMouseEnter={() => setHeld(true)}
-      onMouseLeave={() => setHeld(false)}
-      onFocusCapture={() => setHeld(true)}
-      onBlurCapture={() => setHeld(false)}
+      onMouseEnter={() => (held.current = true)}
+      onMouseLeave={() => (held.current = false)}
+      onFocusCapture={() => (held.current = true)}
+      onBlurCapture={() => (held.current = false)}
     >
       <ul
         ref={track}

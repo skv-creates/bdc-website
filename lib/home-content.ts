@@ -171,6 +171,8 @@ const bg = {
     play: "Пусни движението",
     /** Shown on an outbound link, and read out after its text. */
     opensInNewTab: "Отваря се в нов раздел",
+    /** Events list, below the first five. {count} is the number still folded. */
+    showMore: "Виж още ({count})",
     switchLanguage: "English",
     /** Initiative card button on inside pages (Figma 351:1097). */
     seeMore: "Виж повече",
@@ -1018,6 +1020,8 @@ const en: typeof bg = {
     play: "Start the movement",
     /** Shown on an outbound link, and read out after its text. */
     opensInNewTab: "Opens in a new tab",
+    /** Events list, below the first five. {count} is the number still folded. */
+    showMore: "Show more ({count})",
     switchLanguage: "Български",
     seeMore: "See more",
     readMore: "Read more",
