@@ -9,12 +9,13 @@
 import Image from "next/image";
 import { PhotoCarousel } from "@/components/ui/PhotoCarousel";
 import { VideoEmbed } from "@/components/ui/VideoEmbed";
+import { ExternalLink } from "@/components/ui/ExternalLink";
 import { youtubeId } from "@/lib/youtube";
 import type { BdcEvent } from "@/lib/events";
 import type { SiteContent } from "@/lib/home-content";
 
 /** Only the strings this overlay needs, so callers pass `content.ui` as-is. */
-type OverlayUi = Pick<SiteContent["ui"], "prev" | "next" | "pause" | "play">;
+type OverlayUi = Pick<SiteContent["ui"], "prev" | "next" | "pause" | "play" | "opensInNewTab">;
 
 /**
  * Turn the `[label](href)` runs the sync writes into real anchors.
@@ -27,21 +28,15 @@ type OverlayUi = Pick<SiteContent["ui"], "prev" | "next" | "pause" | "play">;
  */
 const LINK = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
 
-function withLinks(text: string) {
+function withLinks(text: string, newTabLabel: string) {
   const out: React.ReactNode[] = [];
   let last = 0;
   for (const m of text.matchAll(LINK)) {
     if (m.index > last) out.push(text.slice(last, m.index));
     out.push(
-      <a
-        key={`${m.index}-${m[2]}`}
-        href={m[2]}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="underline underline-offset-2 transition-opacity hover:opacity-70"
-      >
+      <ExternalLink key={`${m.index}-${m[2]}`} href={m[2]} newTabLabel={newTabLabel}>
         {m[1]}
-      </a>,
+      </ExternalLink>,
     );
     last = m.index + m[0].length;
   }
@@ -72,10 +67,10 @@ function videoIn(paragraph: string): { id: string; title: string } | null {
 }
 
 /** One paragraph: a player where it is a lone video link, prose otherwise. */
-function Para({ text }: { text: string }) {
+function Para({ text, newTabLabel }: { text: string; newTabLabel: string }) {
   const video = videoIn(text);
   if (video) return <VideoEmbed id={video.id} title={video.title} />;
-  return <p className="t-body">{withLinks(text)}</p>;
+  return <p className="t-body">{withLinks(text, newTabLabel)}</p>;
 }
 
 export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: OverlayUi }) {
@@ -119,7 +114,7 @@ export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: Overla
             what the sync can regenerate losslessly. */}
         <div className="flex flex-col gap-5">
           {paragraphs(event.description).map((p) => (
-            <Para key={p} text={p} />
+            <Para key={p} text={p} newTabLabel={ui.opensInNewTab} />
           ))}
         </div>
       </div>
@@ -178,7 +173,7 @@ function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) 
 
         <div className="h-px w-full bg-border" />
 
-        {intro && <Para text={intro} />}
+        {intro && <Para text={intro} newTabLabel={ui.opensInNewTab} />}
       </div>
 
       {/* Column 2 through the last one. It used to stop at 11, which left a
@@ -201,7 +196,7 @@ function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) 
             col.length ? (
               <div key={i} className="flex flex-col gap-5">
                 {col.map((p) => (
-                  <Para key={p} text={p} />
+                  <Para key={p} text={p} newTabLabel={ui.opensInNewTab} />
                 ))}
               </div>
             ) : null,

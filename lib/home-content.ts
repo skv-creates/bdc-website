@@ -169,6 +169,8 @@ const bg = {
     next: "Напред",
     pause: "Спри движението",
     play: "Пусни движението",
+    /** Shown on an outbound link, and read out after its text. */
+    opensInNewTab: "Отваря се в нов раздел",
     switchLanguage: "English",
     /** Initiative card button on inside pages (Figma 351:1097). */
     seeMore: "Виж повече",
@@ -1014,6 +1016,8 @@ const en: typeof bg = {
     next: "Next",
     pause: "Stop the movement",
     play: "Start the movement",
+    /** Shown on an outbound link, and read out after its text. */
+    opensInNewTab: "Opens in a new tab",
     switchLanguage: "Български",
     seeMore: "See more",
     readMore: "Read more",
