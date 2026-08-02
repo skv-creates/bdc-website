@@ -36,8 +36,8 @@ import type { EventImage } from "@/lib/events";
  * lifts back to full speed, which is what makes the two states feel like one
  * behaviour rather than an on/off switch.
  */
-const SPEED = 16;
-const SPEED_HOVER = 4;
+const SPEED = 18;
+const SPEED_HOVER = 9;
 /** How sharply it eases between the two. Higher settles faster. */
 const EASE_PER_SECOND = 3;
 
