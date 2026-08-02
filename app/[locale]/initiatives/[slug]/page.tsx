@@ -12,7 +12,9 @@
  */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { localeAlternates } from "@/lib/seo";
+import { localeAlternates, openGraphBase } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { initiativeNode } from "@/lib/structured-data";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
@@ -35,12 +37,28 @@ export async function generateMetadata({
   if (!hasLocale(locale)) return {};
   const initiative = getInitiative(locale, slug);
   if (!initiative) return {};
+  const path = `/initiatives/${slug}`;
+  // The standfirst reads better as a description than the card blurb, when
+  // long-form copy exists.
+  const description = initiative.detail?.lead ?? initiative.text;
   return {
     title: initiative.title,
-    // The standfirst reads better as a description than the card blurb, when
-    // long-form copy exists.
-    description: initiative.detail?.lead ?? initiative.text,
-    alternates: localeAlternates(locale, `/initiatives/${slug}`),
+    description,
+    alternates: localeAlternates(locale, path),
+    openGraph: {
+      ...openGraphBase(
+        locale,
+        path,
+        { title: initiative.title, description },
+        getContent(locale).meta.title,
+      ),
+      // Each initiative's own hero, so the four of them do not all share one
+      // card. cover.alt is already written for screen readers; it serves here
+      // too, for anyone whose client shows alt text instead of the image.
+      ...(initiative.cover
+        ? { images: [{ url: initiative.cover.src, alt: initiative.cover.alt }] }
+        : {}),
+    },
   };
 }
 
@@ -73,6 +91,8 @@ export default async function InitiativePage({
   const related = c.initiatives.items.filter((i) => i.slug !== slug);
 
   return (
+    <>
+      <JsonLd data={initiativeNode(initiative, locale)} />
     <>
       <a href="#main" className="skip-link t-caption font-bold">
         {c.ui.skipToContent}
@@ -140,6 +160,7 @@ export default async function InitiativePage({
       </div>
 
       <SiteFooter footer={c.footer} locale={locale} />
+    </>
     </>
   );
 }

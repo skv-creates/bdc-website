@@ -14,7 +14,7 @@ import { SiteFooter } from "@/components/sections/SiteFooter";
 import { LegalProse } from "@/components/ui/LegalProse";
 import { getContent, hasLocale } from "@/lib/home-content";
 import { getLegalContent } from "@/lib/legal-content";
-import { localeAlternates } from "@/lib/seo";
+import { localeAlternates, openGraphBase } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -28,6 +28,12 @@ export async function generateMetadata({
     title: meta.title,
     description: meta.description,
     alternates: localeAlternates(locale, "/privacy"),
+    openGraph: openGraphBase(
+      locale,
+      "/privacy",
+      { title: meta.title, description: meta.description },
+      getContent(locale).meta.title,
+    ),
   };
 }
 

@@ -40,6 +40,12 @@ export type BdcEvent = {
   /** Localized description (overlay body). */
   description: string;
   /**
+   * Where it happened, verbatim from Notion ("Toplocentrala, Sofia"). Nothing
+   * renders it, but schema.org/Event wants a location and inventing one would
+   * be worse than omitting it. Empty string for online events.
+   */
+  location: string;
+  /**
    * Cover images (overlay). Empty for most rows; the list never uses them.
    * An array because a Notion "Hero-image" cell holds several files, and two
    * or more of them switches the overlay to its gallery layout.
@@ -80,19 +86,18 @@ type RawEvent = {
   type: EventType;
   name: Record<Locale, string>;
   description: Record<Locale, string>;
+  location?: string;
   covers?: EventImage[];
 };
 
-/**
- * The synced rows. `location` is carried through from Notion but nothing renders
- * it yet, so it is dropped here rather than widened into RawEvent.
- */
+/** The synced rows. */
 const GENERATED: RawEvent[] = (generatedEvents.events ?? []).map((e) => ({
   slug: e.slug,
   date: e.date,
   type: e.type as EventType,
   name: e.name as Record<Locale, string>,
   description: e.description as Record<Locale, string>,
+  location: e.location ?? "",
   // Downloaded from the row's "Hero-image" by the sync and committed under
   // public/figma/events — a Notion file URL is signed and expires in an hour,
   // so it cannot be baked into a static build. Rows without any are the norm;
@@ -116,6 +121,7 @@ const MOCK: RawEvent[] = [
       bg: "Организирана от UX Bulgaria, със специален гост Зинаида Илер, работилницата събра студенти от различни специалности в New Bulgarian University, за да се запознаят с UX процеса.",
       en: "Organized by UX Bulgaria with special guest Zinaida Iller, the workshop brought together students from different disciplines at New Bulgarian University to get acquainted with the UX process.",
     },
+    location: "",
     covers: [{ src: "/figma/event-cover.png", width: 1600, height: 1200 }],
   },
   {
@@ -127,6 +133,7 @@ const MOCK: RawEvent[] = [
       bg: "Вечер на бързи, вдъхновяващи презентации по формата 20×20 — двадесет кадъра, всеки по двадесет секунди — с говорители от дизайна, архитектурата и технологиите.",
       en: "An evening of fast, inspiring 20×20 talks — twenty slides, twenty seconds each — with speakers from design, architecture and technology.",
     },
+    location: "",
     covers: [{ src: "/figma/event-cover.png", width: 1600, height: 1200 }],
   },
   {
@@ -138,6 +145,7 @@ const MOCK: RawEvent[] = [
       bg: "Практическа работилница за юноши, която развива системно мислене, проблемно рамкиране и отговорна работа с AI.",
       en: "A hands-on workshop for teenagers building systems thinking, problem framing and responsible work with AI.",
     },
+    location: "",
     covers: [{ src: "/figma/event-cover.png", width: 1600, height: 1200 }],
   },
   {
@@ -149,6 +157,7 @@ const MOCK: RawEvent[] = [
       bg: "БДС връчи три награди „Дизайн за добро“ на първия Студентски дизайн маратон в НБУ, отличавайки идеи, в които дизайнът е инструмент за смислена промяна.",
       en: "The BDC awarded three „Design for Good“ prizes at the first Student Design Marathon at NBU, recognizing ideas in which design is a tool for meaningful change.",
     },
+    location: "",
     covers: [{ src: "/figma/event-cover.png", width: 1600, height: 1200 }],
   },
 ];
@@ -174,6 +183,7 @@ function localize(raw: RawEvent, locale: Locale): BdcEvent {
     name: raw.name[locale],
     type: { label: meta.label[locale], accent: meta.accent },
     description: raw.description[locale],
+    location: raw.location ?? "",
     covers: raw.covers ?? [],
   };
 }
@@ -335,6 +345,9 @@ function mapNotionPage(page: NotionPage): RawEvent | null {
       bg: plain(props[PROP.descBg]),
       en: plain(props[PROP.descEn]) || plain(props[PROP.descBg]),
     },
+    // The live path has no Локация mapping; the committed JSON is the path
+    // actually used, and it does.
+    location: "",
     covers,
   };
 }

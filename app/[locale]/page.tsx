@@ -14,7 +14,9 @@ import { Quote } from "@/components/sections/Quote";
 import { Faq } from "@/components/sections/Faq";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { getContent, hasLocale } from "@/lib/home-content";
-import { localeAlternates } from "@/lib/seo";
+import { localeAlternates, openGraphBase } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { homeGraph } from "@/lib/structured-data";
 // Temporarily hidden — kept for later reuse:
 // import { Events } from "@/components/sections/Events";
 // import { About } from "@/components/sections/About";
@@ -40,7 +42,16 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(locale)) return {};
-  return { alternates: localeAlternates(locale, "") };
+  const { meta } = getContent(locale);
+  return {
+    alternates: localeAlternates(locale, ""),
+    openGraph: openGraphBase(
+      locale,
+      "",
+      { title: meta.title, description: meta.description },
+      meta.title,
+    ),
+  };
 }
 
 export default async function Home({ params }: PageProps<"/[locale]">) {
@@ -49,6 +60,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   const c = getContent(locale);
 
   return (
+    <>
+      <JsonLd data={homeGraph(c, locale)} />
     <>
       <a href="#main" className="skip-link t-caption font-bold">
         {c.ui.skipToContent}
@@ -85,6 +98,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       </div>
 
       <SiteFooter footer={c.footer} locale={locale} />
+    </>
     </>
   );
 }

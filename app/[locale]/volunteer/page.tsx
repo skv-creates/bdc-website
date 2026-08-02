@@ -10,7 +10,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { localeAlternates } from "@/lib/seo";
+import { localeAlternates, openGraphBase } from "@/lib/seo";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
@@ -30,6 +30,12 @@ export async function generateMetadata({
     title: copy.metaTitle,
     description: copy.metaDescription,
     alternates: localeAlternates(locale, "/volunteer"),
+    openGraph: openGraphBase(
+      locale,
+      "/volunteer",
+      { title: copy.metaTitle, description: copy.metaDescription },
+      getContent(locale).meta.title,
+    ),
   };
 }
 

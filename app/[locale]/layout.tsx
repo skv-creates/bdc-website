@@ -67,6 +67,11 @@ export async function generateMetadata({
       template: meta.titleTemplate,
     },
     description: meta.description,
+    // summary_large_image everywhere; the card image itself comes from the
+    // opengraph-image file convention, or from a page's own photograph.
+    // No `site`/`creator` until there is a real handle — an empty @ is worse
+    // than an absent one.
+    twitter: { card: "summary_large_image" },
     // Staging serves the same content as the public site. Keeping it out of
     // the index is belt-and-braces with robots.ts, and it is the half that
     // survives whatever Cloudflare does to robots.txt.

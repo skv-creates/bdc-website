@@ -59,3 +59,37 @@ export function localeAlternates(locale: Locale, path = "") {
 export function sitemapAlternates(path = "") {
   return alternateMap(path, (l) => absoluteUrl(localePath(l, path)));
 }
+
+/**
+ * The Open Graph fields every page shares.
+ *
+ * `url` is left relative so it resolves against metadataBase, which keeps
+ * staging cards pointing at staging rather than quietly advertising production
+ * URLs from a noindex host.
+ *
+ * No `images` here — pages that own a photograph pass their own, and everything
+ * else inherits the site card from app/[locale]/opengraph-image. Setting a
+ * default here instead would override that file convention on every page.
+ */
+export function openGraphBase(
+  locale: Locale,
+  path: string,
+  { title, description, type = "website" as "website" | "article" }: {
+    title: string;
+    description: string;
+    type?: "website" | "article";
+  },
+  siteName: string,
+) {
+  const other = locales.find((l) => l !== locale);
+  return {
+    type,
+    url: localePath(locale, path),
+    title,
+    description,
+    siteName,
+    // Facebook's territory-qualified form; anything else is ignored.
+    locale: locale === "bg" ? "bg_BG" : "en_US",
+    ...(other ? { alternateLocale: other === "bg" ? "bg_BG" : "en_US" } : {}),
+  };
+}
