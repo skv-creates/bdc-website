@@ -70,6 +70,11 @@ export function sitemapAlternates(path = "") {
  * No `images` here — pages that own a photograph pass their own, and everything
  * else inherits the site card from app/[locale]/opengraph-image. Setting a
  * default here instead would override that file convention on every page.
+ *
+ * One known gap: because every page sets `openGraph` explicitly, Next does not
+ * merge the sidecar opengraph-image.alt.txt, so the default card ships without
+ * og:image:alt. Pages that pass their own images set alt themselves. No
+ * platform requires it, so this is a note rather than a bug to chase.
  */
 export function openGraphBase(
   locale: Locale,
