@@ -17,9 +17,17 @@ const nextConfig: NextConfig = {
      *
      * 75 stays in the list because it is the right default for the small stuff
      * — avatars, card thumbnails — where nobody looks closely and the bytes
-     * matter more. 90 is for the images that run the width of the page.
+     * matter more. 80 is what the photographs use.
+     *
+     * They used 90 until it was actually compared. Rendered at the widths the
+     * site serves and viewed at 1:1, 90 and 80 are indistinguishable on both
+     * the demanding cases: a carousel slide with type projected in it, and a
+     * portrait with skin tones over a flat ground where banding would show
+     * first. 90 costs roughly double — a slide 378KB against 186KB, a portrait
+     * 67KB against 39KB — for a difference nobody can see. Compare before
+     * raising it again rather than assuming higher is better.
      */
-    qualities: [75, 90],
+    qualities: [75, 80],
     /**
      * The default list ends at 3840, and with `sizes="…80vw"` on the heroes
      * that is the width a wide desktop asks for. Every source photograph on

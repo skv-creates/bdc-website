@@ -141,7 +141,7 @@ export function EventOverlayContent({
             alt={event.name}
             fill
             sizes="(max-width: 1023px) 90vw, 45vw"
-            quality={90}
+            quality={80}
             className="object-cover"
           />
         </div>

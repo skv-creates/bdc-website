@@ -280,7 +280,7 @@ function InitiativesShowcase({
                 alt=""
                 fill
                 sizes="(max-width: 1023px) 100vw, 624px"
-                quality={90}
+                quality={80}
                 priority={i === 0}
                 className="object-cover transition-opacity duration-300"
                 style={{ opacity: i === active ? 1 : 0 }}

@@ -148,7 +148,7 @@ export function InitiativeOverlayContent({
               // Full-bleed photography — see the note on images.qualities in
               // next.config.ts. The site default of 75 is fine for a 60px
               // avatar and visibly soft at 1092px wide.
-              quality={90}
+              quality={80}
               className="object-cover"
               style={{ objectPosition: initiative.cover.focal ?? "center" }}
             />

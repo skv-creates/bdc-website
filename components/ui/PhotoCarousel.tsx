@@ -252,7 +252,7 @@ export function PhotoCarousel({
               // file — 576KB where 210KB is the same picture. Height x aspect
               // is what each one actually occupies.
               sizes={slideSizes(img)}
-              quality={90}
+              quality={80}
             />
           </li>
         ))}

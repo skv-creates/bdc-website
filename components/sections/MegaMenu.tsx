@@ -77,7 +77,7 @@ export function MegaMenu({
                 alt=""
                 fill
                 sizes="504px"
-                quality={90}
+                quality={80}
                 className="object-cover"
               />
             ) : (
