@@ -994,6 +994,11 @@ const bg = {
     copyright: "© 2026 Български дизайн съвет. Всички права запазени.",
     privacy: "Политика за поверителност",
     accessibility: "Политика за достъпност",
+    /* The footer column heads them with "Политики за", so the items read as
+       "Политики за | Поверителност" and repeating the noun would be clumsy. */
+    policiesHeading: "Политики за",
+    privacyShort: "Поверителност",
+    accessibilityShort: "Достъпност",
     contactHeading: "Контакти",
     phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
@@ -1015,9 +1020,7 @@ const bg = {
     ],
     carbon: {
       greenHosting: "Зелен хостинг",
-      greenHostingBy: "Проверено от The Green Web Foundation",
-      perView: "въглероден отпечатък на посещение",
-      measuredOn: "Проверено на",
+      greenHostingBy: "Green Web Foundation",
     },
   },
 };
@@ -1833,6 +1836,11 @@ const en: typeof bg = {
     copyright: "© 2026 Bulgarian Design Council. All rights reserved.",
     privacy: "Privacy Policy",
     accessibility: "Accessibility Statement",
+    /* The footer column heads them with "Policies on", so the items read as
+       "Policies on | Privacy" without repeating the noun. */
+    policiesHeading: "Policies on",
+    privacyShort: "Privacy",
+    accessibilityShort: "Accessibility",
     contactHeading: "Contacts",
     phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
@@ -1854,9 +1862,7 @@ const en: typeof bg = {
     ],
     carbon: {
       greenHosting: "Green hosting",
-      greenHostingBy: "Verified by The Green Web Foundation",
-      perView: "of CO2 per page view",
-      measuredOn: "Checked on",
+      greenHostingBy: "Green Web Foundation",
     },
   },
 };
