@@ -46,6 +46,23 @@ export function WebsiteCarbonBadge() {
     const fix = () => {
       const a = document.querySelector<HTMLAnchorElement>("#wcb #wcb_a");
       if (a && a.href !== carbon.sources.carbon) a.href = carbon.sources.carbon;
+
+      // Hide the badge rather than publish "No Result".
+      //
+      // Their script writes that literal into #wcb_g whenever the API call
+      // fails, and it has been failing for this domain since a test on 3 Aug
+      // stored a record reading 0.00g and "cleaner than 0% of all web pages" —
+      // an internally contradictory row their API then refuses to serve. Their
+      // own note says badge results are cached for seven days and on a
+      // different clock from the website, so re-running the test does not
+      // clear it; it expires on its own.
+      //
+      // A footer that reports "No Result" reads as a broken site, which is a
+      // worse claim than making none. The moment their cache expires and the
+      // call succeeds this shows the figure by itself, with nothing to undo.
+      const g = document.getElementById("wcb_g");
+      const root = document.getElementById("wcb");
+      if (g && root) root.style.visibility = g.textContent === "No Result" ? "hidden" : "";
     };
     const root = document.getElementById("wcb");
     const observer = root ? new MutationObserver(fix) : null;
