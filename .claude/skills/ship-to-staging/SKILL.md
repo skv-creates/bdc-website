@@ -142,6 +142,14 @@ gh pr list --state open
 - **Bios and FAQ sync from a laptop, not CI.** Only events run scheduled.
 - **This repo is public and permanent.** No credential ever goes in a file, a
   commit, or a transcript. If one leaks, rotating it is the fix, not a revert.
+- **`/bdc-storybook` is staging-only, by construction.** `npm run deploy` builds
+  Storybook into `public/bdc-storybook`; that directory is gitignored, and
+  `npm run deploy:production` runs `scripts/assert-no-storybook.mjs` and refuses
+  to build while it exists. If a local production deploy ever fails with
+  "Refusing to build production", that guard is working — `rm -rf
+  public/bdc-storybook` and re-run. Never commit the directory, and never
+  weaken the guard to get a deploy through.
+  The URL needs its trailing slash: `/bdc-storybook/`.
 
 ## Commit style
 
