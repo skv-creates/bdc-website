@@ -11,12 +11,15 @@
     "ping:indexnow": "node scripts/ping-indexnow.mjs",
     "prepare": "git config core.hooksPath .githooks || true",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "SITE_ORIGIN=https://staging.bulgariandesigncouncil.org opennextjs-cloudflare build --env=\"\" && opennextjs-cloudflare deploy --env=\"\"",
-    "deploy:production": "SITE_ORIGIN=https://bulgariandesigncouncil.org opennextjs-cloudflare build --env production && opennextjs-cloudflare deploy --env production",
+    "deploy": "node scripts/build-storybook.mjs && SITE_ORIGIN=https://staging.bulgariandesigncouncil.org opennextjs-cloudflare build --env=\"\" && opennextjs-cloudflare deploy --env=\"\"",
+    "deploy:production": "node scripts/assert-no-storybook.mjs && SITE_ORIGIN=https://bulgariandesigncouncil.org opennextjs-cloudflare build --env production && opennextjs-cloudflare deploy --env production",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "sync:faq": "node scripts/sync-notion-faq.mjs",
     "sync:events": "node scripts/sync-notion-events.mjs",
-    "sync:carbon": "node scripts/sync-carbon.mjs"
+    "sync:carbon": "node scripts/sync-carbon.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "build-storybook:staging": "node scripts/build-storybook.mjs"
   },
   "dependencies": {
     "next": "16.2.9",
@@ -33,6 +36,19 @@
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "wrangler": "^4.110.0"
+    "wrangler": "^4.110.0",
+    "storybook": "^10.5.6",
+    "@storybook/nextjs-vite": "^10.5.6",
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-vitest": "^10.5.6",
+    "@storybook/addon-a11y": "^10.5.6",
+    "@storybook/addon-docs": "^10.5.6",
+    "@storybook/addon-mcp": "^0.7.0",
+    "vite": "^8.2.0",
+    "eslint-plugin-storybook": "^10.5.6",
+    "vitest": "^4.1.10",
+    "playwright": "^1.62.1",
+    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.10"
   }
 }

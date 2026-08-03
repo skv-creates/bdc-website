@@ -53,3 +53,16 @@ next-env.d.ts
 .open-next/
 .wrangler/
 cloudflare-env.d.ts
+
+*storybook.log
+storybook-static
+.storybook-static
+
+# The staging-only Storybook build, served at /bdc-storybook.
+#
+# This line is load-bearing, not housekeeping: it is what keeps the design
+# system off the live site. `npm run deploy` (staging) builds into here, the
+# production deploy asserts it is absent, and production CI builds from a fresh
+# checkout — so committing this directory is the one way Storybook could reach
+# the apex. Don't force-add it.
+public/bdc-storybook/
