@@ -126,13 +126,11 @@ export function PageToc({ label, items }: { label: string; items: TocItem[] }) {
                 href={`#${item.id}`}
                 onClick={(e) => go(e, item.id)}
                 // aria-current is what carries the state to a screen reader;
-                // the weight and the opacity carry it visually, and the rule
-                // is a third signal rather than the only one.
-                //
-                // border-current, not the brand rose. The width was already
-                // 2px, but #f3a3ca on white is so faint that the rule read as
-                // a hairline — "make it thicker" was really the colour. In the
-                // text colour the same 2px reads as the solid marker it is.
+                // the weight and the opacity carry it visually, and the rose
+                // rule is a third signal rather than the only one — which is
+                // why it can be brand colour rather than a contrast-carrying
+                // one. At 3px it reads clearly without competing with the
+                // text, where 2px of the same pale rose read as a hairline.
                 aria-current={isActive ? "true" : undefined}
                 // opacity-70, not 50. Dark text at 50% over the white page is
                 // 3.45:1, under the 4.5:1 AA floor for text this size — the
@@ -140,8 +138,8 @@ export function PageToc({ label, items }: { label: string; items: TocItem[] }) {
                 // measures 6.77:1, and the active entry is still clearly
                 // distinct because it also carries the weight and the rule.
                 // The threshold is 58.3%; anything below that fails.
-                className={`t-caption block border-l-2 pl-3 transition-opacity hover:opacity-100 ${
-                  isActive ? "border-current font-bold opacity-100" : "border-transparent opacity-70"
+                className={`t-caption block border-l-[3px] pl-3 transition-opacity hover:opacity-100 ${
+                  isActive ? "border-brand font-bold opacity-100" : "border-transparent opacity-70"
                 }`}
               >
                 {item.label}
