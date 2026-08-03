@@ -37,15 +37,24 @@ export function Minus(props: SVGProps<SVGSVGElement>) {
 }
 
 /**
- * Facebook. Drawn in the same stroked style as the other two rather than the
- * filled brand mark, so the three sit together in the footer at one weight —
- * the Figma footer reuses the Instagram glyph for this row, which reads as a
- * placeholder rather than an intent to ship two Instagram icons.
+ * Facebook — a rounded frame with a monoline "f", matching LinkedIn and
+ * Instagram beside it.
+ *
+ * The house style for these three is a rect at 3,3 18×18 with the glyph drawn
+ * inside as plain strokes: LinkedIn's "in" is four strokes, Instagram is a
+ * circle and a dot. Neither is an outlined silhouette of the brand mark, so
+ * this is not either — a filled-shape outline sits at a visibly different
+ * weight next to two monoline glyphs, which is how the previous bare "f" read
+ * as the odd one out.
+ *
+ * rx 5 rather than LinkedIn's 3: Facebook's own frame is the rounder of the
+ * two, the same reason Instagram carries 5.
  */
 export function Facebook(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...base} {...props}>
-      <path d="M15 3h-2.5A4.5 4.5 0 0 0 8 7.5V11H5.5v4H8v6h4v-6h3l1-4h-4V7.5a.5.5 0 0 1 .5-.5H15V3Z" />
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <path d="M14.8 7h-1.3a1.5 1.5 0 0 0-1.5 1.5V17M9.5 11h5.3" />
     </svg>
   );
 }

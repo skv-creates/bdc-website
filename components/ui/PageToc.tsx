@@ -126,9 +126,13 @@ export function PageToc({ label, items }: { label: string; items: TocItem[] }) {
                 href={`#${item.id}`}
                 onClick={(e) => go(e, item.id)}
                 // aria-current is what carries the state to a screen reader;
-                // the weight and the opacity carry it visually. The rose bar
-                // is decoration on top of both, never the only signal — it is
-                // a pale pink on white and would fail on contrast alone.
+                // the weight and the opacity carry it visually, and the rule
+                // is a third signal rather than the only one.
+                //
+                // border-current, not the brand rose. The width was already
+                // 2px, but #f3a3ca on white is so faint that the rule read as
+                // a hairline — "make it thicker" was really the colour. In the
+                // text colour the same 2px reads as the solid marker it is.
                 aria-current={isActive ? "true" : undefined}
                 // opacity-70, not 50. Dark text at 50% over the white page is
                 // 3.45:1, under the 4.5:1 AA floor for text this size — the
@@ -137,7 +141,7 @@ export function PageToc({ label, items }: { label: string; items: TocItem[] }) {
                 // distinct because it also carries the weight and the rule.
                 // The threshold is 58.3%; anything below that fails.
                 className={`t-caption block border-l-2 pl-3 transition-opacity hover:opacity-100 ${
-                  isActive ? "border-brand font-bold opacity-100" : "border-transparent opacity-70"
+                  isActive ? "border-current font-bold opacity-100" : "border-transparent opacity-70"
                 }`}
               >
                 {item.label}
