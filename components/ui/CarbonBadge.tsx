@@ -26,12 +26,6 @@ export function CarbonBadge({
   carbon: SiteContent["footer"]["carbon"];
   locale: string;
 }) {
-  // `carbon` is absent from the JSON whenever the sync could not get a
-  // plausible figure — see scripts/sync-carbon.mjs, which refuses to write a
-  // zero. The green-hosting claim is verified and independent of it, so the
-  // badge degrades to that rather than to a number nobody can stand behind.
-  const co2 = "carbon" in carbon ? (carbon.carbon as { gramsPerView: number }) : null;
-
   const measured = new Date(carbon.measuredOn).toLocaleDateString(
     locale === "bg" ? "bg-BG" : "en-GB",
     { day: "numeric", month: "long", year: "numeric" },
@@ -56,21 +50,6 @@ export function CarbonBadge({
       </a>
 
       <p className="t-caption opacity-70">{labels.greenHostingBy}</p>
-
-      {co2 && (
-        <a
-          href={carbon.sources.carbon}
-          target="_blank"
-          rel="noreferrer"
-          className="t-caption border-b-2 border-transparent transition-colors hover:border-current"
-        >
-          {/* Bulgarian puts the unit before the phrase and English after it,
-              so the two are composed rather than concatenated in one order. */}
-          {locale === "bg"
-            ? `${co2.gramsPerView} г ${labels.perView}`
-            : `${co2.gramsPerView} g ${labels.perView}`}
-        </a>
-      )}
 
       {/* Always shown. A static figure that does not say when it was taken is
           the one dishonest version of this — with the date it is strictly more

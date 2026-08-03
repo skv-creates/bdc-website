@@ -1,5 +1,6 @@
 import { Logo } from "@/components/ui/Logo";
 import { CarbonBadge } from "@/components/ui/CarbonBadge";
+import { WebsiteCarbonBadge } from "@/components/ui/WebsiteCarbonBadge";
 import { Facebook, Instagram, LinkedIn } from "@/components/ui/icons";
 import type { Locale, SiteContent } from "@/lib/home-content";
 
@@ -61,7 +62,11 @@ export function SiteFooter({
         <div className="bdc-grid gap-y-16 md:gap-y-20">
           {/* identity — logo, the heritage statement, the registration code */}
           <div className="col-span-4 flex flex-col gap-8 md:col-span-8 lg:col-span-5">
-            <Logo variant="white" locale={locale} className="h-10 w-auto" />
+            {/* self-start is load-bearing: this column is `flex flex-col`, whose
+                default align-items is `stretch`, and that overrides `w-auto` on
+                an <img> — the mark gets pulled to the full column width and the
+                wordmark distorts. */}
+            <Logo variant="white" locale={locale} className="h-10 w-auto self-start" />
 
             <div className="flex flex-col gap-3">
               <p className="t-caption font-bold">{footer.heritage.heading}</p>
@@ -75,8 +80,13 @@ export function SiteFooter({
           </div>
 
           {/* sustainability — the columns the policy links vacated */}
-          <div className="col-span-4 md:col-span-4 lg:col-start-7 lg:col-span-3">
+          <div className="col-span-4 flex flex-col gap-6 md:col-span-4 lg:col-start-7 lg:col-span-3">
             <CarbonBadge carbon={footer.carbon} locale={locale} />
+            {/* The vendor's own mark, in its own colours. self-start so the
+                flex column does not stretch it across the grid track. */}
+            <div className="self-start">
+              <WebsiteCarbonBadge />
+            </div>
           </div>
 
           {/* contacts */}
