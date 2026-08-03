@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import carbon from "@/lib/carbon.generated.json";
-import { ArrowUpRight } from "@/components/ui/icons";
 import type { SiteContent } from "@/lib/home-content";
 
 /**
@@ -58,9 +57,14 @@ export function CarbonBadge({
         {/* items-start on the column and w-fit here: as a stretched flex item
             the underline ran the full width of the grid track rather than the
             width of the words. */}
-        <span className="t-caption inline-flex w-fit items-center gap-1 border-b-2 border-transparent font-bold transition-colors group-hover:border-current">
+        <span className="t-caption w-fit border-b-2 border-transparent font-bold transition-colors group-hover:border-current">
           {labels.greenHosting}
-          <ArrowUpRight aria-hidden className="size-[0.75em] shrink-0" />
+          {/* The ↗ glyph, exactly as ExternalLink and the tertiary Button draw
+              it. It is a character in About Beige, not an icon — a stroked SVG
+              arrow beside it is visibly a different drawing. */}
+          <span aria-hidden className="ms-1 inline-block align-baseline text-[0.85em]">
+            ↗
+          </span>
           <span className="sr-only"> {newWindow} </span>
         </span>
         <span className="t-caption opacity-80">{labels.greenHostingBy}</span>

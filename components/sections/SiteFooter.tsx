@@ -1,7 +1,7 @@
 import { Logo } from "@/components/ui/Logo";
 import { CarbonBadge } from "@/components/ui/CarbonBadge";
 import { WebsiteCarbonBadge } from "@/components/ui/WebsiteCarbonBadge";
-import { ArrowUpRight, Facebook, Instagram, LinkedIn } from "@/components/ui/icons";
+import { Facebook, Instagram, LinkedIn } from "@/components/ui/icons";
 import type { Locale, SiteContent } from "@/lib/home-content";
 
 /* Full-width dark footer (Figma 454:2445). Sits above the fixed pattern rail
@@ -151,9 +151,14 @@ export function SiteFooter({
                             its border does count toward the row height — without
                             this each social row is 26px against the 24px of the
                             policy links opposite. */}
-                        <span className="t-caption -mb-0.5 inline-flex items-center gap-1 border-b-2 border-transparent transition-colors group-hover:border-current">
+                        {/* No ↗ here. The mark beside the name already says
+                            where the link goes, and three arrows in a stack
+                            read as clutter rather than as information. The
+                            hidden wording stays: a screen-reader user has no
+                            logo to look at, so it is the only thing telling
+                            them the link leaves the site. */}
+                        <span className="t-caption -mb-0.5 border-b-2 border-transparent transition-colors group-hover:border-current">
                           {s.label}
-                          <ArrowUpRight aria-hidden className="size-[0.75em] shrink-0" />
                           <span className="sr-only"> {footer.newWindow} </span>
                         </span>
                       </a>
