@@ -1,7 +1,7 @@
 import { Logo } from "@/components/ui/Logo";
 import { CarbonBadge } from "@/components/ui/CarbonBadge";
 import { WebsiteCarbonBadge } from "@/components/ui/WebsiteCarbonBadge";
-import { Facebook, Instagram, LinkedIn } from "@/components/ui/icons";
+import { ArrowUpRight, Facebook, Instagram, LinkedIn } from "@/components/ui/icons";
 import type { Locale, SiteContent } from "@/lib/home-content";
 
 /* Full-width dark footer (Figma 454:2445). Sits above the fixed pattern rail
@@ -52,127 +52,167 @@ export function SiteFooter({
   locale: Locale;
 }) {
   return (
-    <footer
-      id="footer"
-      className="relative z-30 bg-dark text-text-invert"
-      style={{
-        // match the page content grid (gutter left, rail+gap right) so the
-        // footer columns line up with the rest of the page
-        paddingInlineStart: "var(--page-gutter)",
-        paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))",
-      }}
-    >
-      <div className="py-24 md:py-32">
-        <div className="bdc-grid gap-y-16 md:gap-y-20">
-          {/* identity — logo, the heritage statement, the registration code */}
-          <div className="col-span-4 flex flex-col gap-8 md:col-span-8 lg:col-span-5">
-            {/* self-start is load-bearing: this column is `flex flex-col`, whose
-                default align-items is `stretch`, and that overrides `w-auto` on
-                an <img> — the mark gets pulled to the full column width and the
-                wordmark distorts. */}
-            <Logo variant="white" locale={locale} className="h-10 w-auto self-start" />
+    <>
+      {/* Brand strip closing the page, its splits following the page grid — the
+          same rule as the overlay's (see .overlay-strip in globals.css).
 
-            <div className="flex flex-col gap-3">
-              <p className="t-caption font-bold">{footer.heritage.heading}</p>
-              <p className="t-caption max-w-[46ch] opacity-80">{footer.heritage.body}</p>
+          It lives here rather than on each page. The initiative route had its
+          own copy and every other route simply went without, which is how a
+          detail like this goes missing: nothing fails, it is just absent. Part
+          of the footer, it arrives wherever the footer does.
+
+          Outside <footer> so it stays full-bleed — the footer element carries
+          the page's gutter padding, and a child would be inset by it. */}
+      <div className="overlay-strip relative z-30 flex" aria-hidden>
+        <div className="strip-1 h-3" />
+        <div className="strip-2 h-3" />
+        <div className="strip-3 h-3" />
+      </div>
+
+      <footer
+        id="footer"
+        className="relative z-30 bg-dark text-text-invert"
+        style={{
+          // match the page content grid (gutter left, rail+gap right) so the
+          // footer columns line up with the rest of the page
+          paddingInlineStart: "var(--page-gutter)",
+          paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))",
+        }}
+      >
+        <div className="py-24 md:py-32">
+          <div className="bdc-grid gap-y-16 md:gap-y-20">
+            {/* identity — logo, the heritage statement, the registration code */}
+            <div className="col-span-4 flex flex-col gap-8 md:col-span-8 lg:col-span-5">
+              {/* self-start is load-bearing: this column is `flex flex-col`, whose
+                  default align-items is `stretch`, and that overrides `w-auto` on
+                  an <img> — the mark gets pulled to the full column width and the
+                  wordmark distorts. */}
+              <Logo variant="white" locale={locale} className="h-10 w-auto self-start" />
+
+              <div className="flex flex-col gap-3">
+                <p className="t-caption font-bold">{footer.heritage.heading}</p>
+                <p className="t-caption max-w-[46ch] opacity-80">{footer.heritage.body}</p>
+              </div>
+
+              <p className="t-caption opacity-70">
+                <Bar />
+                {footer.uic}
+              </p>
             </div>
 
-            <p className="t-caption opacity-70">
-              <Bar />
-              {footer.uic}
-            </p>
+            {/* Source order follows visual order, left to right. It has to:
+                grid auto-placement advances a cursor, so a col-start-10 item
+                declared first pushes a later col-start-7 onto a new row — which
+                is exactly what happened when these two were swapped by changing
+                only the column numbers. It is also the order a keyboard user
+                tabs through, which should match what they see. */}
+            {/* contacts */}
+            {/* gap-8, matching the policies column beside it and the Figma's
+                32px. The two columns are read across as well as down — the
+                heading, then the first item, then the second — so a different
+                vertical rhythm in each makes the rows visibly fail to line up
+                even though every element is in the right column. */}
+            <div className="col-span-4 flex flex-col gap-8 md:col-span-4 lg:col-start-6 lg:col-span-4 xl:col-start-7 xl:col-span-3">
+              <p className="t-caption font-bold">{footer.contactHeading}</p>
+              {/* The underline lives on an inner inline span, not on the anchor.
+                  On the anchor it is a 2px border on a block box and adds 2px to
+                  the column's height, which walked everything below it out of
+                  line with the policies column beside it. Inline, it draws in the
+                  same place and costs no layout. */}
+              {/* overflow-wrap:anywhere, because an email address has no spaces
+                  to break at. Without it the address simply runs past its column
+                  and prints on top of the policies beside it — which is what it
+                  did at every width below about 1280px. */}
+              <a
+                href={`mailto:${footer.email}`}
+                className="t-caption group [overflow-wrap:anywhere]"
+              >
+                <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
+                  {footer.email}
+                </span>
+              </a>
+
+              <ul className="flex flex-col gap-4">
+                {footer.social.map((s) => {
+                  const Icon = SOCIAL_ICONS[s.label];
+                  return (
+                    <li key={s.label}>
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group flex items-center gap-2"
+                      >
+                        {/* Decorative — the label beside it is the accessible
+                            name, so announcing the mark too would say it twice. */}
+                        {Icon && <Icon aria-hidden className="h-6 w-6 shrink-0" />}
+                        {/* -mb-0.5 gives back the 2px the border adds. Here the
+                            anchor is a flex row, so the span is a flex item and
+                            its border does count toward the row height — without
+                            this each social row is 26px against the 24px of the
+                            policy links opposite. */}
+                        <span className="t-caption -mb-0.5 inline-flex items-center gap-1 border-b-2 border-transparent transition-colors group-hover:border-current">
+                          {s.label}
+                          <ArrowUpRight aria-hidden className="size-[0.75em] shrink-0" />
+                          <span className="sr-only"> {footer.newWindow} </span>
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+            {/* policies (454:2463) */}
+            <div className="col-span-4 flex flex-col gap-8 md:col-span-4 lg:col-start-10 lg:col-span-3">
+              <p className="t-caption font-bold">{footer.policiesHeading}</p>
+              <a href={`/${locale}/privacy`} className="t-caption group self-start">
+                <Bar />
+                <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
+                  {footer.privacyShort}
+                </span>
+              </a>
+              <a href={`/${locale}/accessibility`} className="t-caption group self-start">
+                <Bar />
+                <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
+                  {footer.accessibilityShort}
+                </span>
+              </a>
+            </div>
+
           </div>
 
-          {/* Source order follows visual order, left to right. It has to:
-              grid auto-placement advances a cursor, so a col-start-10 item
-              declared first pushes a later col-start-7 onto a new row — which
-              is exactly what happened when these two were swapped by changing
-              only the column numbers. It is also the order a keyboard user
-              tabs through, which should match what they see. */}
-          {/* contacts */}
-          {/* gap-8, matching the policies column beside it and the Figma's
-              32px. The two columns are read across as well as down — the
-              heading, then the first item, then the second — so a different
-              vertical rhythm in each makes the rows visibly fail to line up
-              even though every element is in the right column. */}
-          <div className="col-span-4 flex flex-col gap-8 md:col-span-4 lg:col-start-7 lg:col-span-3">
-            <p className="t-caption font-bold">{footer.contactHeading}</p>
-            {/* The underline lives on an inner inline span, not on the anchor.
-                On the anchor it is a 2px border on a block box and adds 2px to
-                the column's height, which walked everything below it out of
-                line with the policies column beside it. Inline, it draws in the
-                same place and costs no layout. */}
-            <a href={`mailto:${footer.email}`} className="t-caption group">
-              <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
-                {footer.email}
-              </span>
-            </a>
+          {/* hairline (454:2480) */}
+          <div className="mt-20 h-px w-full bg-current opacity-30" aria-hidden />
 
-            <ul className="flex flex-col gap-4">
-              {footer.social.map((s) => {
-                const Icon = SOCIAL_ICONS[s.label];
-                return (
-                  <li key={s.label}>
-                    <a
-                      href={s.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="group flex items-center gap-2"
-                    >
-                      {/* Decorative — the label beside it is the accessible
-                          name, so announcing the mark too would say it twice. */}
-                      {Icon && <Icon aria-hidden className="h-6 w-6 shrink-0" />}
-                      {/* -mb-0.5 gives back the 2px the border adds. Here the
-                          anchor is a flex row, so the span is a flex item and
-                          its border does count toward the row height — without
-                          this each social row is 26px against the 24px of the
-                          policy links opposite. */}
-                      <span className="t-caption -mb-0.5 border-b-2 border-transparent transition-colors group-hover:border-current">
-                        {s.label}
-                      </span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-          {/* policies (454:2463) */}
-          <div className="col-span-4 flex flex-col gap-8 md:col-span-4 lg:col-start-10 lg:col-span-3">
-            <p className="t-caption font-bold">{footer.policiesHeading}</p>
-            <a href={`/${locale}/privacy`} className="t-caption group self-start">
-              <Bar />
-              <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
-                {footer.privacyShort}
-              </span>
-            </a>
-            <a href={`/${locale}/accessibility`} className="t-caption group self-start">
-              <Bar />
-              <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
-                {footer.accessibilityShort}
-              </span>
-            </a>
-          </div>
+          {/* copyright, then the two sustainability marks (462:1490, 462:1480) */}
+          <div className="bdc-grid mt-10 items-start gap-y-8">
+            <p className="t-caption col-span-4 md:col-span-8 lg:col-span-5">{footer.copyright}</p>
 
+            <div className="col-span-4 md:col-span-4 lg:col-start-6 lg:col-span-4 xl:col-start-7 xl:col-span-3">
+              <CarbonBadge carbon={footer.carbon} newWindow={footer.newWindow} />
+            </div>
+
+            {/* The Figma places a screenshot of the badge here; this renders the
+                real one, which fills in from Website Carbon's own API. */}
+            {/* The badge is a fixed-size widget that wraps into two stacked
+                halves the moment its track is narrower than it is, so its size
+                is stepped to the track rather than left at the vendor default.
+                Measured intrinsic width against measured track width:
+
+                  lg  1024–1279  track 200–254px   11px needs 191px
+                  xl  1280–1535  track 255–309px   14px needs 241px
+                  2xl 1536+      track 310px+      15px needs 257px
+
+                which is also why 15px was wrong everywhere below 1536: their
+                default has never fitted a three-column track on this grid.
+                Below lg the column is half the page or more, so the 15px
+                fallback in the component stands. */}
+            <div className="col-span-4 md:col-span-4 lg:col-start-10 lg:col-span-3 lg:[--wcb-size:11px] xl:[--wcb-size:14px] 2xl:[--wcb-size:15px]">
+              <WebsiteCarbonBadge />
+            </div>
+          </div>
         </div>
-
-        {/* hairline (454:2480) */}
-        <div className="mt-20 h-px w-full bg-current opacity-30" aria-hidden />
-
-        {/* copyright, then the two sustainability marks (462:1490, 462:1480) */}
-        <div className="bdc-grid mt-10 items-start gap-y-8">
-          <p className="t-caption col-span-4 md:col-span-8 lg:col-span-5">{footer.copyright}</p>
-
-          <div className="col-span-4 md:col-span-4 lg:col-start-7 lg:col-span-3">
-            <CarbonBadge carbon={footer.carbon} />
-          </div>
-
-          {/* The Figma places a screenshot of the badge here; this renders the
-              real one, which fills in from Website Carbon's own API. */}
-          <div className="col-span-4 md:col-span-4 lg:col-start-10 lg:col-span-3">
-            <WebsiteCarbonBadge />
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }

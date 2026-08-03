@@ -997,6 +997,9 @@ const bg = {
     /* The footer column heads them with "Политики за", so the items read as
        "Политики за | Поверителност" and repeating the noun would be clumsy. */
     policiesHeading: "Политики за",
+    /* Read only by screen readers, next to the ↗. The arrow tells a sighted
+       reader the link leaves the site and tells everyone else nothing. */
+    newWindow: "(отваря се в нов прозорец)",
     privacyShort: "Поверителност",
     accessibilityShort: "Достъпност",
     contactHeading: "Контакти",
@@ -1839,6 +1842,9 @@ const en: typeof bg = {
     /* The footer column heads them with "Policies on", so the items read as
        "Policies on | Privacy" without repeating the noun. */
     policiesHeading: "Policies on",
+    /* Read only by screen readers, next to the ↗. The arrow tells a sighted
+       reader the link leaves the site and tells everyone else nothing. */
+    newWindow: "(opens in a new window)",
     privacyShort: "Privacy",
     accessibilityShort: "Accessibility",
     contactHeading: "Contacts",

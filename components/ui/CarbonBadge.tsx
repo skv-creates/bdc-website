@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import carbon from "@/lib/carbon.generated.json";
+import { ArrowUpRight } from "@/components/ui/icons";
 import type { SiteContent } from "@/lib/home-content";
 
 /**
@@ -22,7 +23,13 @@ import type { SiteContent } from "@/lib/home-content";
  *
  * Refresh the committed verdict with `npm run sync:carbon`.
  */
-export function CarbonBadge({ carbon: labels }: { carbon: SiteContent["footer"]["carbon"] }) {
+export function CarbonBadge({
+  carbon: labels,
+  newWindow,
+}: {
+  carbon: SiteContent["footer"]["carbon"];
+  newWindow: string;
+}) {
   // The sync refuses to write `green: false` — a verdict that flips is a real
   // change someone must look at, not something to quietly render. So reaching
   // here means the claim holds.
@@ -47,9 +54,14 @@ export function CarbonBadge({ carbon: labels }: { carbon: SiteContent["footer"][
         height={36}
         className="h-9 w-[33px] shrink-0"
       />
-      <span className="flex flex-col">
-        <span className="t-caption font-bold border-b-2 border-transparent transition-colors group-hover:border-current">
+      <span className="flex flex-col items-start">
+        {/* items-start on the column and w-fit here: as a stretched flex item
+            the underline ran the full width of the grid track rather than the
+            width of the words. */}
+        <span className="t-caption inline-flex w-fit items-center gap-1 border-b-2 border-transparent font-bold transition-colors group-hover:border-current">
           {labels.greenHosting}
+          <ArrowUpRight aria-hidden className="size-[0.75em] shrink-0" />
+          <span className="sr-only"> {newWindow} </span>
         </span>
         <span className="t-caption opacity-80">{labels.greenHostingBy}</span>
       </span>

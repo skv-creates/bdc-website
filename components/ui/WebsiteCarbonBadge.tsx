@@ -73,7 +73,15 @@ export function WebsiteCarbonBadge() {
       // Inline, because both properties are set on this exact selector by the
       // stylesheet their script injects at runtime — there is no build-time
       // rule of ours that could win against it.
-      style={{ ["--b2" as string]: "#00FF55", textAlign: "left" }}
+      // font-size joins them because the badge's own stylesheet sets it on
+      // this exact selector too, and everything inside is sized in em — so
+      // scaling it is the only way to make a fixed-width widget fit a narrow
+      // grid track. The var is set by the grid cell; 15px is their default.
+      style={{
+        ["--b2" as string]: "#00FF55",
+        textAlign: "left",
+        fontSize: "var(--wcb-size, 15px)",
+      }}
     />
   );
 }

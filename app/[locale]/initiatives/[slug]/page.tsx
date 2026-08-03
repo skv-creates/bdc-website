@@ -151,14 +151,6 @@ export default async function InitiativePage({
         </main>
       </div>
 
-      {/* Brand strip closing the page above the footer, its splits following the
-          page grid — same rule as the overlay's (see .overlay-strip). */}
-      <div className="overlay-strip relative z-30 flex" aria-hidden>
-        <div className="strip-1 h-3" />
-        <div className="strip-2 h-3" />
-        <div className="strip-3 h-3" />
-      </div>
-
       <SiteFooter footer={c.footer} locale={locale} />
     </>
     </>
