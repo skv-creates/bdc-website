@@ -7,9 +7,9 @@ import type { Locale, SiteContent } from "@/lib/home-content";
 /* Full-width dark footer (Figma 454:2445). Sits above the fixed pattern rail
    (z-30) so the rail visually ends here, matching the Figma frame.
 
-   Three rows on a 12-column grid. Row 1: the identity block at 1–5, the
-   policy links at 7–9, contacts at 10–12. Row 2: a hairline. Row 3: copyright
-   at 1–5, the Website Carbon badge at 7, the green-hosting mark at 10.
+   Three rows on a 12-column grid. Row 1: the identity block at 1–5, contacts
+   at 7–9, the policy links at 10–12. Row 2: a hairline. Row 3: copyright at
+   1–5, the green-hosting mark at 7–9, the Website Carbon badge at 10–12.
 
    The sustainability figures sit on the bottom line with the copyright rather
    than up in the columns: they are provenance about the site itself, the same
@@ -83,25 +83,14 @@ export function SiteFooter({
             </p>
           </div>
 
-          {/* policies (454:2463) */}
-          <div className="col-span-4 flex flex-col gap-8 md:col-span-4 lg:col-start-7 lg:col-span-3">
-            <p className="t-caption font-bold">{footer.policiesHeading}</p>
-            <a href={`/${locale}/privacy`} className="t-caption group self-start">
-              <Bar />
-              <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
-                {footer.privacyShort}
-              </span>
-            </a>
-            <a href={`/${locale}/accessibility`} className="t-caption group self-start">
-              <Bar />
-              <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
-                {footer.accessibilityShort}
-              </span>
-            </a>
-          </div>
-
+          {/* Source order follows visual order, left to right. It has to:
+              grid auto-placement advances a cursor, so a col-start-10 item
+              declared first pushes a later col-start-7 onto a new row — which
+              is exactly what happened when these two were swapped by changing
+              only the column numbers. It is also the order a keyboard user
+              tabs through, which should match what they see. */}
           {/* contacts */}
-          <div className="col-span-4 flex flex-col gap-6 md:col-span-4 lg:col-start-10 lg:col-span-3">
+          <div className="col-span-4 flex flex-col gap-6 md:col-span-4 lg:col-start-7 lg:col-span-3">
             <p className="t-caption font-bold">{footer.contactHeading}</p>
             <a
               href={`mailto:${footer.email}`}
@@ -133,6 +122,23 @@ export function SiteFooter({
               })}
             </ul>
           </div>
+          {/* policies (454:2463) */}
+          <div className="col-span-4 flex flex-col gap-8 md:col-span-4 lg:col-start-10 lg:col-span-3">
+            <p className="t-caption font-bold">{footer.policiesHeading}</p>
+            <a href={`/${locale}/privacy`} className="t-caption group self-start">
+              <Bar />
+              <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
+                {footer.privacyShort}
+              </span>
+            </a>
+            <a href={`/${locale}/accessibility`} className="t-caption group self-start">
+              <Bar />
+              <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
+                {footer.accessibilityShort}
+              </span>
+            </a>
+          </div>
+
         </div>
 
         {/* hairline (454:2480) */}
@@ -142,14 +148,14 @@ export function SiteFooter({
         <div className="bdc-grid mt-10 items-start gap-y-8">
           <p className="t-caption col-span-4 md:col-span-8 lg:col-span-5">{footer.copyright}</p>
 
-          {/* The Figma places a screenshot of the badge here; this renders the
-              real one, which fills in from Website Carbon's own API. */}
           <div className="col-span-4 md:col-span-4 lg:col-start-7 lg:col-span-3">
-            <WebsiteCarbonBadge />
+            <CarbonBadge carbon={footer.carbon} />
           </div>
 
+          {/* The Figma places a screenshot of the badge here; this renders the
+              real one, which fills in from Website Carbon's own API. */}
           <div className="col-span-4 md:col-span-4 lg:col-start-10 lg:col-span-3">
-            <CarbonBadge carbon={footer.carbon} />
+            <WebsiteCarbonBadge />
           </div>
         </div>
       </div>

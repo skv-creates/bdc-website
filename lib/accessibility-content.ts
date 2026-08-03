@@ -6,32 +6,40 @@
  * identically. Section numerals are roman for that reason: the anchors derive
  * from them and are therefore the same in both locales.
  *
- * Shaped after the UK Design Council's statement — a commitment, what has been
- * done, how to change the text size, how to report a problem, and what sits
- * outside the council's control. Deliberately *not* a list of shortcomings:
- * a statement that catalogues its own gaps invites the reader to audit the
- * organisation rather than tell it about a barrier they hit.
+ * The Bulgarian is the council's own copy and is authoritative; the English is
+ * a translation of it. When they diverge, the Bulgarian is right.
  *
- * **Everything here is a factual claim about this site. Do not add one without
- * checking it, and do not leave one in place after changing the thing it
- * describes.** The measures in section III were each verified against the
- * running site on the date in section VIII — contrast by measuring every text
- * node on every page type, the rest by automated checks across sixteen pages
- * and manual review. If a claim stops being true, the honest fix is to make it
- * true again, not to soften the wording.
+ * **Everything here is a factual claim about this site.** Section III in
+ * particular reads as a list of things that are true right now. Two of them
+ * depend on content rather than code — the alt text on informative images and
+ * the gallery descriptions come from captions editors write in Notion, so they
+ * are true to the extent those captions exist. If a claim stops being true,
+ * the honest fix is to make it true again, not to soften the wording.
  */
 import type { Locale } from "./home-content";
 import type { LegalSection } from "./legal-content";
 
 const CONTACT = "info@bulgariandesigncouncil.org";
 
+/**
+ * The closing line, repeated at the foot of the last section in both locales.
+ * It is the one sentence that frames everything above as ongoing rather than
+ * finished, which is the difference between a statement and a certificate.
+ */
+const CLOSING_BG =
+  "Продължаваме да проверяваме сайта при значими промени и да подобряваме " +
+  "процеса си чрез обратна връзка от хората, които го използват.";
+const CLOSING_EN =
+  "We continue to review the site whenever something significant changes, and " +
+  "to improve how we do it through feedback from the people who use it.";
+
 const bg = {
   meta: {
     title: "Политика за достъпност — Български Дизайн Съвет",
     description:
       "Ангажиментът на Български дизайн съвет към достъпността на този сайт, " +
-      "какво сме направили, за да бъде използваем от всички, и как да ни " +
-      "съобщите, ако срещнете пречка.",
+      "стандартът, по който работим, какво сме направили и как да ни " +
+      "съобщите, ако нещо ви спира.",
   },
   title: "Политика за достъпност",
   lead: "на уебсайта на Сдружение „Български дизайн съвет“",
@@ -40,132 +48,224 @@ const bg = {
   onThisPage: "На тази страница",
   sections: [
     {
-      title: "I. Нашият ангажимент",
+      title: "I. Нашето обещание",
       blocks: [
+        { p: "Достъпността е условие за равноправно участие." },
         {
           p:
-            "Сдружение „Български дизайн съвет“ се застъпва за дизайн, който " +
-            "работи за хората. Смятаме, че това задължава първо нас: сайт, " +
-            "който изключва част от читателите си, противоречи на всичко, " +
-            "което защитаваме.",
+            "Сдружение „Български дизайн съвет“ защитава дизайн, който служи на " +
+            "хората. Затова започваме от собствената си дигитална среда. Сайт, " +
+            "който изключва част от хората, противоречи на принципите, които " +
+            "отстояваме.",
         },
         {
           p:
-            "Този сайт е направен така, че да бъде използваем от възможно " +
-            "най-много хора — независимо дали четат с екранен четец, движат се " +
-            "само с клавиатура, увеличават текста, или предпочитат намалено " +
-            "движение на екрана.",
+            "Проектираме и развиваме този сайт така, че възможно най-много хора " +
+            "да могат да намират информация, да разбират съдържанието и да " +
+            "участват пълноценно. Това включва хора, които:",
+        },
+        {
+          ul: [
+            "използват екранен четец или друга помощна технология;",
+            "навигират само с клавиатура;",
+            "увеличават текста или използват малък екран;",
+            "имат различно цветоусещане или чувствителност към контраста;",
+            "предпочитат намалено движение;",
+            "имат временни, ситуационни или трайни затруднения.",
+          ],
+        },
+        {
+          p:
+            "За нас достъпността не е еднократна проверка. Тя е постоянна " +
+            "отговорност да слушаме, да откриваме пречките и да ги премахваме.",
         },
       ],
     },
     {
-      title: "II. Съответствие",
+      title: "II. Стандарт и текущо състояние",
       blocks: [
         {
           p:
-            "Сайтът е изграден по Насоките за достъпност на уеб съдържание " +
-            "(WCAG) 2.2, ниво AA. Проверяваме го при всяка промяна, а не " +
-            "еднократно.",
+            "Проектирахме и разработихме сайта с цел съответствие с Насоките за " +
+            "достъпност на уеб съдържание WCAG 2.2, ниво AA.",
         },
         {
           p:
-            "Достъпността не е изискване по закон за нас — Сдружението не е " +
-            "организация от публичния сектор, така че Директива (ЕС) 2016/2102 " +
-            "не се прилага. Правим го, защото е правилно, а не защото се налага.",
+            "Към датата на последната самооценка не установихме известни " +
+            "несъответствия в проверените страници и компоненти. Това твърдение " +
+            "се основава на вътрешно автоматизирано и ръчно тестване. То не " +
+            "представлява независима сертификация и не заменя проверките с " +
+            "хора, които използват различни помощни технологии.",
+        },
+        {
+          p:
+            "WCAG определя съответствието на ниво цяла страница, включително " +
+            "различните ѝ responsive варианти, а не само на отделни компоненти. " +
+            "Затова преглеждаме достъпността при значими промени по дизайна, " +
+            "съдържанието или функционалността.",
         },
       ],
     },
     {
       title: "III. Какво сме направили",
       blocks: [
+        { h: "Структура и разбираемост" },
         {
           ul: [
-            "Смислен HTML с ориентири (main, nav, header, footer) на всяка страница, за да може навигацията с екранен четец да прескача между тях.",
-            "Връзка „към съдържанието“ на всяка страница с навигация.",
-            "Точен език на страницата (lang=\"bg\" или lang=\"en\"), така че екранните четци да произнасят текста правилно на двата езика.",
-            "Едно заглавие h1 на страница и последователна йерархия на заглавията, без прескачане на нива.",
-            "Контраст на текста над изискването на ниво AA навсякъде: най-ниската измерена стойност на сайта е 5,29:1 при праг 4,5:1, а най-високата — 18,3:1.",
-            "Алтернативен текст на всяко изображение. Снимките в галериите се описват чрез надписите си, на български и на английски; чисто декоративните са изрично празни, за да не бъдат обявявани излишно.",
-            "Пълна работа с клавиатура: панелите се затварят с Esc, фокусът се премества там, където трябва, и видимият фокус никога не се скрива под фиксираната лента.",
-            "Зони за докосване от поне 44 пиксела за бутоните за затваряне.",
-            "Уважаване на настройката за намалено движение: анимациите и автоматичното движение на фото каруселите спират напълно.",
-            "Бутон за спиране на всяка карусел, която се движи сама.",
-            "Видеата не се зареждат и не тръгват сами — показва се статичен кадър, докато не бъде натиснат.",
-            "Без банер за бисквитки и без скриптове за проследяване, които да прихващат фокуса или да пречат на четенето.",
+            "Използваме смислен HTML и ясно обозначени области като header, nav, main и footer.",
+            "Всяка страница има едно основно заглавие и последователна йерархия без прескачане на нива.",
+            "Посочваме правилния език на страницата чрез lang=\"bg\" или lang=\"en\", за да подпомогнем правилното произнасяне от екранните четци.",
+            "Добавяме връзка „Към основното съдържание“, която позволява пропускане на повтарящата се навигация.",
+            "Пишем ясни заглавия, описателни връзки и разбираеми текстове на бутоните.",
           ],
         },
-      ],
-    },
-    {
-      title: "IV. Размер на текста",
-      blocks: [
+        { h: "Изображения и медийно съдържание" },
+        {
+          ul: [
+            "Информативните изображения имат смислен алтернативен текст на български и английски.",
+            "Галериите използват описания, които предават значението и контекста на снимките.",
+            "Декоративните изображения са скрити от помощните технологии, за да не създават излишен шум.",
+            "Видеата не се зареждат и не започват автоматично. Показваме статичен кадър, докато посетителят не избере да ги стартира.",
+          ],
+        },
+        { h: "Клавиатура и фокус" },
+        {
+          ul: [
+            "Основните функции на сайта могат да се използват с клавиатура.",
+            "Интерактивните елементи имат видим фокус.",
+            "Панели и диалогови прозорци могат да се затварят с клавиша Esc.",
+            "При отваряне и затваряне на интерактивни елементи фокусът се премества на логично място.",
+            "Фиксираната навигация не скрива фокусирания елемент.",
+            "Бутоните за затваряне имат зона за активиране от поне 44 на 44 CSS пиксела.",
+          ],
+        },
         {
           p:
-            "Ако текстът е твърде малък, увеличете го от браузъра си — " +
-            "Ctrl и + на Windows, ⌘ и + на Mac. Сайтът се пренарежда според " +
-            "ширината на екрана, от телефон до широк монитор, така че " +
-            "увеличеният текст остава на една колона.",
+            "Размерът 44 на 44 пиксела надхвърля минималното изискване от 24 на " +
+            "24 CSS пиксела за WCAG 2.2 AA и следва по-високия критерий за " +
+            "подобрена използваемост.",
+        },
+        { h: "Контраст, мащабиране и движение" },
+        {
+          ul: [
+            "Всички проверени текстови комбинации покриват изискванията за контраст на ниво AA.",
+            "Най-ниското измерено контрастно съотношение на проверените страници е 5,29:1 при минимален праг 4,5:1 за стандартен текст.",
+            "Сайтът се адаптира към различни размери на екрана и увеличение на текста.",
+            "Уважаваме системната настройка prefers-reduced-motion.",
+            "Когато посетителят е избрал намалено движение, анимациите и автоматичното движение на каруселите спират.",
+            "Всеки автоматично движещ се карусел има видим контрол за спиране.",
+          ],
+        },
+        { h: "Поверителност и непрекъснат достъп" },
+        {
+          p:
+            "Към момента сайтът не използва аналитични или рекламни скриптове за " +
+            "проследяване и не зарежда ненужен банер за съгласие, който да " +
+            "прихваща фокуса или да блокира съдържанието.",
+        },
+        {
+          p:
+            "Ако в бъдеще въведем незадължителни бисквитки или външни " +
+            "инструменти, ще ги оценим и от гледна точка на достъпността, преди " +
+            "да ги активираме.",
         },
       ],
     },
     {
-      title: "V. Обратната връзка е важна",
+      title: "IV. Увеличаване на текста",
+      blocks: [
+        { p: "Можете да увеличите текста чрез настройките на браузъра:" },
+        {
+          ul: [
+            "в Windows и Linux: Ctrl и +;",
+            "в macOS: ⌘ и +;",
+            "за връщане към стандартния размер: Ctrl или ⌘ и 0.",
+          ],
+        },
+        {
+          p:
+            "Сайтът се пренарежда според ширината на екрана, така че " +
+            "съдържанието да остане четимо на телефон, таблет и широк монитор.",
+        },
+      ],
+    },
+    {
+      title: "V. Кажете ни, когато нещо ви спира",
       blocks: [
         {
           p:
-            "Ако срещнете пречка на този сайт, моля, кажете ни — това е " +
-            "най-бързият начин да я поправим. Съобщенията за конкретен проблем " +
-            "помагат най-много: коя страница, какво се опитвахте да направите и " +
-            "какво използвате, за да четете сайта.",
+            "Автоматичните проверки не могат да открият всяка пречка. " +
+            "Най-важната проверка е реалното използване на сайта.",
         },
+        { p: "Ако срещнете затруднение, пишете ни на:" },
         { a: { text: CONTACT, href: `mailto:${CONTACT}` } },
         {
           p:
-            "Ще потвърдим получаването в рамките на 10 работни дни и ще ви " +
-            "кажем какво възнамеряваме да направим и кога.",
+            "Ще ни помогнете да разберем и отстраним проблема по-бързо, ако " +
+            "посочите:",
+        },
+        {
+          ul: [
+            "адреса или името на страницата;",
+            "какво сте се опитали да направите;",
+            "какво се е случило вместо очакваното;",
+            "устройството и браузъра, които използвате;",
+            "помощната технология, ако използвате такава.",
+          ],
         },
         {
           p:
-            "Ако сте се свързали с нас и не сте удовлетворени от отговора ни, " +
-            "можете да подадете сигнал до Комисията за защита от дискриминация.",
+            "Ще потвърдим получаването на сигнала ви до 10 работни дни и ще ви " +
+            "информираме какви действия можем да предприемем и в какъв срок.",
+        },
+        {
+          p:
+            "Можете също да поискате определено съдържание в друг достъпен " +
+            "формат. Ще потърсим разумен начин да ви го предоставим.",
         },
       ],
     },
     {
-      title: "VI. Други бележки",
+      title: "VI. Външно съдържание и известни ограничения",
       blocks: [
         {
           p:
-            "Част от съдържанието идва отвън и не е под наш контрол. Когато " +
-            "пуснете вградено видео, то се управлява от плейъра на съответната " +
-            "платформа, чиято достъпност зависи от нея. Затова видеата не " +
-            "тръгват сами: страницата остава изцяло наша, докато не решите " +
-            "друго.",
+            "Част от съдържанието може да се предоставя чрез външни платформи, " +
+            "които не разработваме и не управляваме, например плейъри за " +
+            "вградени видеа.",
+        },
+        {
+          p:
+            "Докато не стартирате такова съдържание, страницата остава под наш " +
+            "контрол. След стартирането му някои функции зависят от " +
+            "достъпността на съответната платформа.",
+        },
+        {
+          p:
+            "Ако външно съдържание ви попречи да получите нужната информация, " +
+            "свържете се с нас. Ще потърсим достъпна алтернатива, когато това е " +
+            "възможно.",
         },
       ],
     },
     {
-      title: "VII. Технически спецификации",
+      title: "VII. Техническа основа",
       blocks: [
+        { p: "Достъпността на сайта разчита на следните технологии:" },
+        {
+          ul: [
+            "HTML5;",
+            "CSS;",
+            "JavaScript;",
+            "WAI-ARIA, само когато семантиката на стандартния HTML не е достатъчна.",
+          ],
+        },
         {
           p:
-            "Достъпността на този сайт се основава на HTML, CSS, JavaScript и " +
-            "WAI-ARIA. Страниците се изобразяват предварително и основното " +
-            "съдържание е четимо и без JavaScript.",
+            "Страниците се изобразяват предварително, а основното текстово " +
+            "съдържание остава достъпно и без изпълнение на JavaScript.",
         },
-      ],
-    },
-    {
-      title: "VIII. Метод и дата на оценката",
-      blocks: [
-        {
-          p:
-            "Самооценка от екипа, който поддържа сайта: автоматични проверки на " +
-            "изобразения HTML на 16 страници от всички типове в двата езика, " +
-            "измерване на контраста на всеки текстов елемент на всеки тип " +
-            "страница, и ръчен преглед на кода.",
-        },
-        { p: "Дата на оценката: 3 август 2026 г." },
+        { p: CLOSING_BG },
       ],
     },
   ] satisfies LegalSection[],
@@ -176,8 +276,8 @@ const en: typeof bg = {
     title: "Accessibility Statement — Bulgarian Design Council",
     description:
       "The Bulgarian Design Council's commitment to the accessibility of this " +
-      "site, what we have done to make it usable by everyone, and how to tell " +
-      "us if you hit a barrier.",
+      "site, the standard we work to, what we have done, and how to tell us if " +
+      "something stops you.",
   },
   title: "Accessibility Statement",
   lead: "for the website of the Bulgarian Design Council",
@@ -186,130 +286,216 @@ const en: typeof bg = {
   onThisPage: "On this page",
   sections: [
     {
-      title: "I. Our commitment",
+      title: "I. Our promise",
       blocks: [
+        { p: "Accessibility is a condition of equal participation." },
         {
           p:
-            "The Bulgarian Design Council argues for design that works for " +
-            "people. We think that obliges us first: a website that shuts out " +
-            "some of its readers contradicts everything we advocate.",
+            "The Bulgarian Design Council stands for design that serves people. " +
+            "So we start with our own digital environment. A site that shuts " +
+            "some people out contradicts the principles we argue for.",
         },
         {
           p:
-            "This site is built to be usable by as many people as possible — " +
-            "whether they read with a screen reader, navigate by keyboard " +
-            "alone, enlarge the text, or prefer less movement on screen.",
+            "We design and develop this site so that as many people as possible " +
+            "can find information, understand the content and take part fully. " +
+            "That includes people who:",
+        },
+        {
+          ul: [
+            "use a screen reader or other assistive technology;",
+            "navigate by keyboard alone;",
+            "enlarge the text or use a small screen;",
+            "perceive colour differently or are sensitive to contrast;",
+            "prefer reduced motion;",
+            "have temporary, situational or permanent difficulties.",
+          ],
+        },
+        {
+          p:
+            "For us accessibility is not a one-off check. It is a standing " +
+            "responsibility to listen, to find the barriers and to remove them.",
         },
       ],
     },
     {
-      title: "II. Conformance",
+      title: "II. Standard and current state",
       blocks: [
         {
           p:
-            "This site is built to the Web Content Accessibility Guidelines " +
-            "(WCAG) 2.2, Level AA. We check it on every change, not once.",
+            "We designed and built the site to conform with the Web Content " +
+            "Accessibility Guidelines (WCAG) 2.2, Level AA.",
         },
         {
           p:
-            "Accessibility is not a legal requirement for us — the Council is " +
-            "not a public sector body, so Directive (EU) 2016/2102 does not " +
-            "apply. We do it because it is right, not because we have to.",
+            "As at the date of the last self-assessment we found no known " +
+            "non-conformances in the pages and components tested. That statement " +
+            "rests on internal automated and manual testing. It is not an " +
+            "independent certification and it does not replace testing with " +
+            "people who use a range of assistive technologies.",
+        },
+        {
+          p:
+            "WCAG defines conformance at the level of a whole page, including " +
+            "its responsive variants, not of individual components alone. So we " +
+            "review accessibility whenever the design, the content or the " +
+            "functionality changes significantly.",
         },
       ],
     },
     {
       title: "III. What we have done",
       blocks: [
+        { h: "Structure and clarity" },
         {
           ul: [
-            "Semantic HTML with landmarks (main, nav, header, footer) on every page, so screen-reader navigation can jump between them.",
-            "A skip-to-content link on every page that carries navigation.",
-            "An accurate page language (lang=\"bg\" or lang=\"en\") so screen readers pronounce the text correctly in both languages.",
-            "One h1 per page and a consistent heading hierarchy, with no skipped levels.",
-            "Text contrast above the Level AA requirement throughout: the lowest measured value on the site is 5.29:1 against a 4.5:1 threshold, and the highest is 18.3:1.",
-            "Alt text on every image. Gallery photographs are described by their captions, in Bulgarian and English; purely decorative ones are explicitly empty so they are not announced needlessly.",
-            "Full keyboard operation: panels close with Esc, focus moves where it should, and visible focus is never hidden under the fixed header.",
-            "Touch targets of at least 44 pixels for close buttons.",
-            "The reduced-motion setting is respected: animations and automatic photo-carousel movement stop entirely.",
-            "A pause control on every carousel that moves by itself.",
-            "Videos neither load nor start on their own — a still frame is shown until it is activated.",
-            "No cookie banner and no tracking scripts to trap focus or interrupt reading.",
+            "We use semantic HTML with clearly marked regions — header, nav, main and footer.",
+            "Every page has one main heading and a consistent hierarchy with no skipped levels.",
+            "We declare the correct page language with lang=\"bg\" or lang=\"en\", so screen readers pronounce the text properly.",
+            "We provide a \"skip to main content\" link so repeated navigation can be bypassed.",
+            "We write clear headings, descriptive links and understandable button text.",
           ],
         },
-      ],
-    },
-    {
-      title: "IV. Text size",
-      blocks: [
+        { h: "Images and media" },
+        {
+          ul: [
+            "Informative images carry meaningful alt text in Bulgarian and English.",
+            "Galleries use descriptions that convey the meaning and context of the photographs.",
+            "Decorative images are hidden from assistive technology so they do not add noise.",
+            "Videos neither load nor start automatically. We show a still frame until the visitor chooses to play them.",
+          ],
+        },
+        { h: "Keyboard and focus" },
+        {
+          ul: [
+            "The site's main functions can be operated by keyboard.",
+            "Interactive elements have a visible focus indicator.",
+            "Panels and dialogs can be closed with the Esc key.",
+            "Focus moves to a sensible place when interactive elements open and close.",
+            "The fixed navigation never hides the focused element.",
+            "Close buttons have an activation area of at least 44 by 44 CSS pixels.",
+          ],
+        },
         {
           p:
-            "If the text is too small, enlarge it in your browser — Ctrl and + " +
-            "on Windows, ⌘ and + on a Mac. The site reflows to the width of " +
-            "your screen, from a phone to a wide monitor, so enlarged text " +
-            "stays in a single column.",
+            "44 by 44 pixels exceeds the 24 by 24 CSS pixel minimum required for " +
+            "WCAG 2.2 AA and follows the higher criterion for improved usability.",
+        },
+        { h: "Contrast, scaling and motion" },
+        {
+          ul: [
+            "Every text combination tested meets the Level AA contrast requirement.",
+            "The lowest contrast ratio measured across the pages tested is 5.29:1, against a 4.5:1 minimum for standard text.",
+            "The site adapts to different screen sizes and to enlarged text.",
+            "We respect the system prefers-reduced-motion setting.",
+            "Where a visitor has chosen reduced motion, animations and automatic carousel movement stop.",
+            "Every automatically moving carousel has a visible pause control.",
+          ],
+        },
+        { h: "Privacy and uninterrupted access" },
+        {
+          p:
+            "The site currently uses no analytics or advertising tracking " +
+            "scripts, and loads no unnecessary consent banner that could trap " +
+            "focus or block content.",
+        },
+        {
+          p:
+            "If we introduce optional cookies or external tools in future, we " +
+            "will assess them for accessibility before switching them on.",
         },
       ],
     },
     {
-      title: "V. Your feedback is important",
+      title: "IV. Enlarging the text",
+      blocks: [
+        { p: "You can enlarge the text through your browser settings:" },
+        {
+          ul: [
+            "on Windows and Linux: Ctrl and +;",
+            "on macOS: ⌘ and +;",
+            "to return to the default size: Ctrl or ⌘ and 0.",
+          ],
+        },
+        {
+          p:
+            "The site reflows to the width of your screen, so the content stays " +
+            "readable on a phone, a tablet and a wide monitor.",
+        },
+      ],
+    },
+    {
+      title: "V. Tell us when something stops you",
       blocks: [
         {
           p:
-            "If you hit a barrier on this site, please tell us — it is the " +
-            "fastest way for us to fix it. Reports about a specific problem " +
-            "help most: which page, what you were trying to do, and what you " +
-            "use to read the site.",
+            "Automated checks cannot find every barrier. The test that matters " +
+            "most is real use of the site.",
         },
+        { p: "If you run into difficulty, write to us at:" },
         { a: { text: CONTACT, href: `mailto:${CONTACT}` } },
+        { p: "You will help us understand and fix the problem faster if you tell us:" },
         {
-          p:
-            "We will acknowledge your message within 10 working days and tell " +
-            "you what we intend to do and when.",
+          ul: [
+            "the address or name of the page;",
+            "what you were trying to do;",
+            "what happened instead;",
+            "the device and browser you are using;",
+            "the assistive technology, if you use one.",
+          ],
         },
         {
           p:
-            "If you have contacted us and are not satisfied with our response, " +
-            "you may raise the matter with the Commission for Protection " +
-            "against Discrimination (Комисия за защита от дискриминация).",
+            "We will acknowledge your report within 10 working days and tell you " +
+            "what we can do and by when.",
         },
-      ],
-    },
-    {
-      title: "VI. Other points",
-      blocks: [
         {
           p:
-            "Some content comes from elsewhere and is not under our control. " +
-            "Once you play an embedded video it is handled by that platform's " +
-            "own player, whose accessibility is theirs. That is why videos do " +
-            "not start on their own: the page stays entirely ours until you " +
-            "decide otherwise.",
+            "You can also ask for particular content in another accessible " +
+            "format. We will look for a reasonable way to provide it.",
         },
       ],
     },
     {
-      title: "VII. Technical specifications",
+      title: "VI. External content and known limitations",
       blocks: [
         {
           p:
-            "Accessibility of this site relies on HTML, CSS, JavaScript and " +
-            "WAI-ARIA. Pages are prerendered, and the main content is readable " +
-            "without JavaScript.",
+            "Some content may be delivered through external platforms that we " +
+            "neither build nor control — embedded video players, for example.",
+        },
+        {
+          p:
+            "Until you start such content, the page remains under our control. " +
+            "Once it starts, some behaviour depends on that platform's own " +
+            "accessibility.",
+        },
+        {
+          p:
+            "If external content prevents you from getting the information you " +
+            "need, contact us. We will look for an accessible alternative where " +
+            "one is possible.",
         },
       ],
     },
     {
-      title: "VIII. Assessment method and date",
+      title: "VII. Technical basis",
       blocks: [
+        { p: "The accessibility of this site relies on the following technologies:" },
+        {
+          ul: [
+            "HTML5;",
+            "CSS;",
+            "JavaScript;",
+            "WAI-ARIA, only where the semantics of standard HTML are not enough.",
+          ],
+        },
         {
           p:
-            "Self-assessment by the team that maintains the site: automated " +
-            "checks of the rendered HTML across 16 pages covering every page " +
-            "type in both languages, contrast measurement of every text " +
-            "element on every page type, and manual code review.",
+            "Pages are prerendered, and the main text content remains available " +
+            "without JavaScript running.",
         },
-        { p: "Date of assessment: 3 August 2026." },
+        { p: CLOSING_EN },
       ],
     },
   ] satisfies LegalSection[],
