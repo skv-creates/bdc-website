@@ -18,6 +18,15 @@
  */
 import raw from "../app/globals.css?raw";
 
+/**
+ * The stylesheet itself.
+ *
+ * The interactive width preview renders inside an iframe and needs the real
+ * rules — `vw` and `@media` both resolve against a viewport, so the only honest
+ * way to show what a phone gets is to give something a phone-sized viewport.
+ */
+export const globalsCss = raw;
+
 export type Token = {
   /** Custom property name, e.g. `--bdc-rose`. */
   name: string;
@@ -259,12 +268,55 @@ export function fontSizeAt(style: TypeStyle, viewportWidth: number): number | nu
   return lengthToPx(style.fontSize, viewportWidth);
 }
 
-/** The widths the site is actually designed against. */
+/**
+ * The widths worth stating a number at.
+ *
+ * 767 and 768 are adjacent on purpose. They are one pixel apart and they are
+ * where the mobile overrides hand over to the clamps, so any discontinuity in
+ * the scale shows up as two very different numbers in neighbouring columns.
+ * Averaging that boundary away by only sampling 390 and 768 is how a 44% jump
+ * in the hero goes unnoticed.
+ */
 export const REFERENCE_WIDTHS = [
-  { label: 'Mobile', width: 390, note: '4 columns' },
-  { label: 'Tablet', width: 768, note: '8 columns' },
-  { label: 'Desktop', width: 1512, note: '12 columns · Figma width' },
+  { label: 'Phone', width: 390, note: '4 col' },
+  { label: 'Phone max', width: 767, note: 'last fixed px' },
+  { label: 'Tablet', width: 768, note: '8 col · clamp starts' },
+  { label: 'Laptop', width: 1024, note: '12 col' },
+  { label: 'Desktop', width: 1512, note: 'Figma width' },
 ] as const;
+
+/**
+ * The size jump, if any, across the 767 → 768 boundary.
+ *
+ * Positive means the text gets bigger the instant the viewport crosses into
+ * tablet. A few pixels is invisible; a third of the size is a different design.
+ */
+export function boundaryJump(style: TypeStyle): { from: number; to: number; ratio: number } | null {
+  const from = fontSizeAt(style, 767);
+  const to = fontSizeAt(style, 768);
+  if (from === null || to === null || from === 0) return null;
+  return { from, to, ratio: to / from };
+}
+
+/**
+ * Whether a clamp's minimum can ever bind.
+ *
+ * `clamp(min, Nvw, max)` only uses `min` below the width where `Nvw` falls under
+ * it. If a fixed override already owns every width below that point, the minimum
+ * is unreachable — it reads like a floor and enforces nothing.
+ */
+export function deadMinimum(style: TypeStyle): { min: number; bindsBelow: number } | null {
+  const clamp = style.fontSize.match(/^clamp\(([^,]+),\s*([\d.]+)vw\s*,([^)]+)\)$/);
+  if (!clamp || !style.mobile?.fontSize) return null;
+
+  const min = lengthToPx(clamp[1], 0);
+  const vw = parseFloat(clamp[2]);
+  if (min === null || !vw) return null;
+
+  // Width at which the preferred term drops below the minimum.
+  const bindsBelow = (min / vw) * 100;
+  return bindsBelow < 768 ? { min, bindsBelow } : null;
+}
 
 /**
  * What the browser actually resolved a custom property to.

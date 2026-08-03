@@ -1,8 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect } from 'storybook/test';
-import { fontSizeAt, REFERENCE_WIDTHS, typeStyles, type TypeStyle } from './tokens';
+import {
+  boundaryJump,
+  deadMinimum,
+  fontSizeAt,
+  REFERENCE_WIDTHS,
+  typeStyles,
+  type TypeStyle,
+} from './tokens';
 import { Note, Page, Section } from './Page';
+import { ResponsivePreview } from './ResponsivePreview';
 
 const meta = {
   title: 'Foundations/Typography',
@@ -371,5 +379,127 @@ export const Scale: Story = {
     await expect(body?.mobile?.fontSize).toBe('1.2rem');
 
     await expect(canvas.getByText('About Beige Standard')).toBeVisible();
+  },
+};
+
+/** Styles that change size abruptly as the viewport crosses 768px. */
+const JUMPS = typeStyles
+  .map((style) => ({ style, jump: boundaryJump(style) }))
+  .filter((entry): entry is { style: TypeStyle; jump: NonNullable<ReturnType<typeof boundaryJump>> } =>
+    Boolean(entry.jump && entry.jump.ratio > 1.15),
+  )
+  .sort((a, b) => b.jump.ratio - a.jump.ratio);
+
+/** Clamps whose minimum can never bind, because an override owns those widths. */
+const DEAD = typeStyles
+  .map((style) => ({ style, dead: deadMinimum(style) }))
+  .filter((entry): entry is { style: TypeStyle; dead: NonNullable<ReturnType<typeof deadMinimum>> } =>
+    Boolean(entry.dead),
+  );
+
+export const Interactive: Story = {
+  name: 'Interactive width',
+  render: () => (
+    <Page
+      title="Interactive width"
+      lede={
+        <>
+          Drag the handle and watch the scale respond. The frame below is a real
+          viewport running this project&rsquo;s own <code>globals.css</code> — so{' '}
+          <code>vw</code> and <code>@media</code> behave in it exactly as they do
+          on a device, including the mobile block that overrides{' '}
+          <code>@layer base</code>.
+        </>
+      }
+    >
+      <div className="mt-14">
+        <ResponsivePreview />
+      </div>
+
+      <Section
+        title="Two things worth deciding about"
+        intro="Both are computed from the stylesheet, not opinions about it. Both are consequences of the same choice: fixed mobile sizes handing straight over to fluid ones."
+      >
+        <div className="max-w-[68ch]">
+          <h3 className="t-h05">The scale jumps at one pixel of width</h3>
+          <p className="t-body mt-3 opacity-80">
+            At 767px the overrides apply; at 768px the <code>clamp()</code> takes
+            over, and its <code>vw</code> term is already well above where the
+            fixed size left off. Nothing bridges the gap, so the text changes size
+            abruptly as the viewport crosses the boundary:
+          </p>
+          <ul className="mt-4 flex flex-col gap-2">
+            {JUMPS.map(({ style, jump }) => (
+              <li key={style.name} className="t-caption font-mono">
+                <strong>.{style.name}</strong> {Math.round(jump.from * 10) / 10}px →{' '}
+                {Math.round(jump.to * 10) / 10}px
+                <span className="opacity-60">
+                  {' '}
+                  ({Math.round((jump.ratio - 1) * 100)}% larger, in one pixel)
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="t-body mt-4 opacity-80">
+            Whether that matters is a design call. It is invisible on a phone and
+            invisible on a desktop; it only shows on a tablet being rotated, or a
+            window being dragged. The fix, if it is one, is to raise the mobile
+            sizes until they meet the clamp rather than to remove the override.
+          </p>
+
+          {DEAD.length > 0 && (
+            <>
+              <h3 className="t-h05 mt-12">Some clamp minimums can never apply</h3>
+              <p className="t-body mt-3 opacity-80">
+                A <code>clamp()</code> minimum only binds below the width where
+                its <code>vw</code> term falls under it. Where a fixed override
+                already owns every width below that point, the minimum reads like
+                a floor and enforces nothing:
+              </p>
+              <ul className="mt-4 flex flex-col gap-2">
+                {DEAD.map(({ style, dead }) => (
+                  <li key={style.name} className="t-caption font-mono">
+                    <strong>.{style.name}</strong> floor {Math.round(dead.min)}px
+                    <span className="opacity-60">
+                      {' '}
+                      would only bind below {Math.round(dead.bindsBelow)}px, where
+                      the {style.mobile?.fontSize} override already wins
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="t-body mt-4 opacity-80">
+                Harmless, but misleading to read: someone raising the floor to make
+                mobile headings bigger would see no change at all. The size that
+                governs a phone is the override, not the clamp.
+              </p>
+            </>
+          )}
+        </div>
+      </Section>
+    </Page>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    const slider = canvas.getByRole('slider');
+    await expect(slider).toHaveValue('393');
+
+    // The preset buttons are the interaction: pressing one moves the viewport.
+    await userEvent.click(canvas.getByRole('button', { name: 'Figma' }));
+    await expect(slider).toHaveValue('1512');
+    await expect(canvas.getByRole('button', { name: 'Figma' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+
+    // The frame is a real viewport, and its width follows the control.
+    const frame = canvas.getByTitle('Type scale at 1512 pixels');
+    await expect(frame).toBeVisible();
+
+    // The findings are derived, so this asserts the derivation still works
+    // rather than asserting a number someone typed.
+    await expect(JUMPS.length).toBeGreaterThan(0);
+    const h01 = JUMPS.find((entry) => entry.style.name === 't-h01');
+    await expect(h01?.jump.from).toBe(32);
+    await expect(Math.round((h01?.jump.to ?? 0) * 100) / 100).toBe(46.08);
   },
 };
