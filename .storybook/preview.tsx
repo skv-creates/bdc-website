@@ -60,6 +60,50 @@ const preview: Preview = {
     ),
   ],
   parameters: {
+    /**
+     * Foundations before the things built out of them.
+     *
+     * Alphabetical order would put "components" above "Foundations" and teach
+     * the system backwards — you cannot read a Button story properly until you
+     * know what `bg-brand` and `t-label` are.
+     */
+    options: {
+      storySort: { order: ['Foundations', 'components'] },
+    },
+
+    /**
+     * The site's real breakpoints, not a catalogue of phones.
+     *
+     * These are the widths where something in globals.css actually changes, so
+     * stepping through them is how you see the system respond — the grid going
+     * 12 → 8 → 4, the gap dropping to 12px, and the type scale leaving its
+     * clamp() behind for the fixed mobile sizes at 767. Both edges of each band
+     * are here on purpose: most breakpoint bugs live one pixel either side of
+     * the boundary, not in the middle of a band.
+     */
+    viewport: {
+      options: {
+        phone: { name: 'Phone · 4 col', styles: { width: '390px', height: '844px' } },
+        phoneMax: {
+          name: 'Phone, last pixel · 767',
+          styles: { width: '767px', height: '900px' },
+        },
+        tablet: { name: 'Tablet · 8 col · 768', styles: { width: '768px', height: '1024px' } },
+        tabletMax: {
+          name: 'Tablet, last pixel · 1023',
+          styles: { width: '1023px', height: '900px' },
+        },
+        desktop: {
+          name: 'Desktop · 12 col · 1024',
+          styles: { width: '1024px', height: '800px' },
+        },
+        figma: {
+          name: 'Figma design width · 1512',
+          styles: { width: '1512px', height: '950px' },
+        },
+      },
+    },
+
     controls: {
       matchers: {
        color: /(background|color)$/i,

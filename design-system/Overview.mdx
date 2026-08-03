@@ -1,0 +1,95 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundations/Start here" />
+
+# The council's design system
+
+Everything the site is drawn with, and the reasoning that put it there.
+
+This is not a mirror of the site. It is the layer underneath it: the colours,
+the type scale, the spacing, the grid, and the components assembled from them.
+If a decision is worth making once and reusing, it belongs here.
+
+---
+
+## One source of truth, and it is not this Storybook
+
+**`app/globals.css` is the design system.** Every token lives there — the brand
+palette, the semantic colours, the spacing steps, the layout variables, the raw
+type scale in Figma pixels, and the eleven `.t-*` text styles.
+
+These Foundations pages **read that file**. They parse it at build time and
+render what they find: names, values, the notes written beside them, and the
+media-query overrides. Nothing on them is transcribed.
+
+That is deliberate, and it is the answer to *"how do I control sizes from one
+place?"* — you already do. Change a value in `globals.css` and it changes here,
+in the components, and on the site, together. A page that hand-wrote `#f3a3ca`
+beside a swatch would look authoritative and be wrong the day someone edited the
+CSS, silently, because a hardcoded hex cannot fail a test.
+
+So: **never paste a value into a Foundations page.** If something is missing,
+the parser in `design-system/tokens.ts` has lost the shape of the file. Fix the
+parser.
+
+---
+
+## How to read this
+
+**Foundations** — the raw material.
+
+- **Colour** — brand primitives, the semantic names that point at them, and the
+  recolour slots the pattern rail cycles through.
+- **Typography** — the eleven named styles, each shown at the size it is
+  actually painting right now.
+- **Space and radius** — the four spacing steps and the one radius, drawn at
+  true size.
+- **Layout and breakpoints** — the grid, the gutter, the rail, and exactly what
+  changes at each breakpoint.
+
+**components** — what the foundations are assembled into, each story next to the
+component it documents.
+
+---
+
+## Use the viewport control
+
+The toolbar viewports are not a catalogue of phones. They are **the widths where
+this system actually changes**:
+
+| Viewport | Columns | What happens |
+| --- | --- | --- |
+| Phone · 4 col | 4 | gap drops to 12px; the type scale leaves its `clamp()` for fixed sizes |
+| Phone, last pixel · 767 | 4 | the last width before the mobile overrides stop applying |
+| Tablet · 8 col · 768 | 8 | fixed type sizes end; `clamp()` takes over |
+| Tablet, last pixel · 1023 | 8 | the last width before `.bdc-stop-11` exists |
+| Desktop · 12 col · 1024 | 12 | full grid; sections can stop at column 11 |
+| Figma design width · 1512 | 12 | what the design was drawn at |
+
+Both edges of each band are there on purpose. Breakpoint bugs live one pixel
+either side of a boundary, not in the middle of a band.
+
+---
+
+## Two things this system does that are easy to undo
+
+**The type scale is fluid, and then it is not.** Above 768px the sizes are
+`clamp()` — a continuous function of viewport width, with no step at any
+breakpoint. Below 768px a second block replaces them with fixed sizes, and
+because that block sits *outside* `@layer base` it beats the layered rule rather
+than merely following it. A phone never gets the clamp. See **Typography**.
+
+**The column count is a variable, not a number.** `--grid-cols` is what
+`.bdc-grid`, `.bdc-stop-11` and the overlay all read, which is why one change
+moves the whole page together. Hardcoding `grid-cols-12` anywhere breaks that
+link quietly. See **Layout and breakpoints**.
+
+---
+
+## Where this lives
+
+Published at **`/bdc-storybook/`** on staging, and deliberately nowhere else —
+it is not translated, not part of what the council publishes, and full of
+components in states that are half-finished on purpose. The live site cannot
+serve it: the build is gitignored, only the staging deploy creates it, and the
+production deploy refuses to run while it exists.

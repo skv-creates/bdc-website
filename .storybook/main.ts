@@ -1,9 +1,20 @@
 import type { StorybookConfig } from '@storybook/nextjs-vite';
 
 const config: StorybookConfig = {
-  // Stories sit next to the components they document, not in a parallel tree —
-  // a component and its stories move, get renamed and get deleted together.
+  /**
+   * Two trees, for two different things.
+   *
+   * `design-system/` is the foundations — colour, type, space, layout — and it
+   * is listed first so it sorts above the components that are built out of it.
+   * Those pages read their values out of app/globals.css rather than restating
+   * them; see design-system/tokens.ts for why that matters.
+   *
+   * Component stories are colocated instead, because a component and its stories
+   * should move, get renamed and get deleted together.
+   */
   "stories": [
+    "../design-system/**/*.mdx",
+    "../design-system/**/*.stories.@(js|jsx|mjs|ts|tsx)",
     "../components/**/*.mdx",
     "../components/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ],
