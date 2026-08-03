@@ -82,7 +82,11 @@ async function carbon() {
   if (d.error) throw new Error(`website carbon: ${d.error}`);
 
   const grams = Number(d.c);
-  const cleanerThan = Math.round(Number(d.p) * 100);
+  // `p` is already a percentage — 96 means "cleaner than 96%". It was being
+  // multiplied by 100 here on the assumption it was a fraction, so the first
+  // healthy response this ever saw was rejected as implausible at 9600. The
+  // range check below was right; what it was handed was not.
+  const cleanerThan = Math.round(Number(d.p));
   // A real page is somewhere between a fraction of a gram and a few grams.
   // Zero means their pipeline failed; anything above 10 means it misread the
   // page, and either way the honest move is to keep the last good value.

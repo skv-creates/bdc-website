@@ -4,13 +4,13 @@
     "green": true,
     "hostedBy": "Cloudflare"
   },
+  "carbon": {
+    "gramsPerView": 0.04,
+    "cleanerThanPercent": 96,
+    "source": "websitecarbon.com API, 2026-08-03"
+  },
   "sources": {
     "greenHosting": "https://www.thegreenwebfoundation.org/green-web-check/?url=bulgariandesigncouncil.org",
     "carbon": "https://www.websitecarbon.com/website/bulgariandesigncouncil-org-bg/"
-  },
-  "carbon": {
-    "gramsPerView": 0.05,
-    "cleanerThanPercent": 90,
-    "source": "websitecarbon.com test, 2026-08-03"
   }
 }
