@@ -144,7 +144,7 @@ export function SiteFooter({
 
           {/* The Figma places a screenshot of the badge here; this renders the
               real one, which fills in from Website Carbon's own API. */}
-          <div className="col-span-4 self-center md:col-span-4 lg:col-start-7 lg:col-span-3">
+          <div className="col-span-4 md:col-span-4 lg:col-start-7 lg:col-span-3">
             <WebsiteCarbonBadge />
           </div>
 
