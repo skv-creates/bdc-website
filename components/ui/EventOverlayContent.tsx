@@ -12,6 +12,7 @@ import { VideoEmbed } from "@/components/ui/VideoEmbed";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { youtubeId } from "@/lib/youtube";
 import type { BdcEvent } from "@/lib/events";
+import type { Locale } from "@/lib/home-content";
 import type { SiteContent } from "@/lib/home-content";
 
 /** Only the strings this overlay needs, so callers pass `content.ui` as-is. */
@@ -78,11 +79,19 @@ function Para({ text, ui }: { text: string; ui: OverlayUi }) {
   return <p className="t-body">{withLinks(text, ui)}</p>;
 }
 
-export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: OverlayUi }) {
+export function EventOverlayContent({
+  event,
+  ui,
+  locale,
+}: {
+  event: BdcEvent;
+  ui: OverlayUi;
+  locale: Locale;
+}) {
   // Two or more pictures makes this an "event with photo carousel". With one
   // picture the original side-by-side layout is still the right shape, and
   // most events have no pictures at all.
-  if (event.covers.length >= 2) return <EventOverlayGallery event={event} ui={ui} />;
+  if (event.covers.length >= 2) return <EventOverlayGallery event={event} ui={ui} locale={locale} />;
 
   return (
     <div
@@ -151,7 +160,15 @@ export function EventOverlayContent({ event, ui }: { event: BdcEvent; ui: Overla
  * underneath, which is how the frame reads and means an event with only one
  * paragraph has nothing below the carousel rather than an empty column.
  */
-function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) {
+function EventOverlayGallery({
+  event,
+  ui,
+  locale,
+}: {
+  event: BdcEvent;
+  ui: OverlayUi;
+  locale: Locale;
+}) {
   const [intro, ...rest] = paragraphs(event.description);
   // Split what is left down the middle, so the two columns end level rather
   // than one running twice the length of the other.
@@ -192,6 +209,7 @@ function EventOverlayGallery({ event, ui }: { event: BdcEvent; ui: OverlayUi }) 
           label={event.name}
           alt={event.name}
           labels={{ prev: ui.prev, next: ui.next, pause: ui.pause, play: ui.play }}
+          locale={locale}
         />
       </div>
 

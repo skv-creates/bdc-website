@@ -130,8 +130,14 @@ export function PageToc({ label, items }: { label: string; items: TocItem[] }) {
                 // is decoration on top of both, never the only signal — it is
                 // a pale pink on white and would fail on contrast alone.
                 aria-current={isActive ? "true" : undefined}
+                // opacity-70, not 50. Dark text at 50% over the white page is
+                // 3.45:1, under the 4.5:1 AA floor for text this size — the
+                // entries have to stay legible, not just look secondary. 70%
+                // measures 6.77:1, and the active entry is still clearly
+                // distinct because it also carries the weight and the rule.
+                // The threshold is 58.3%; anything below that fails.
                 className={`t-caption block border-l-2 pl-3 transition-opacity hover:opacity-100 ${
-                  isActive ? "border-brand font-bold opacity-100" : "border-transparent opacity-50"
+                  isActive ? "border-brand font-bold opacity-100" : "border-transparent opacity-70"
                 }`}
               >
                 {item.label}

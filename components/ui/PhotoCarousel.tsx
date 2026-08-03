@@ -26,6 +26,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./PhotoCarousel.module.css";
 import type { EventImage } from "@/lib/events";
+import type { Locale } from "@/lib/home-content";
 
 /**
  * Pixels per second, at rest and under the pointer.
@@ -46,6 +47,7 @@ export function PhotoCarousel({
   label,
   alt,
   labels,
+  locale,
 }: {
   images: EventImage[];
   /** Names the group for screen readers — the event title. */
@@ -53,6 +55,8 @@ export function PhotoCarousel({
   alt: string;
   /** Localized control labels — the site is bilingual and these are read out. */
   labels: { prev: string; next: string; pause: string; play: string };
+  /** Picks which half of each picture's bilingual caption to read out. */
+  locale: Locale;
 }) {
   const track = useRef<HTMLUListElement>(null);
   /**
@@ -201,10 +205,18 @@ export function PhotoCarousel({
               // cover keeps every slide the same height and loses a few pixels,
               // where contain would letterbox and break the row.
               className="object-cover"
-              // Only the first carries the description. The rest are further
-              // pictures of the same thing, and repeating it makes a screen
-              // reader announce the event title once per photograph.
-              alt={i === 0 ? alt : ""}
+              // Each picture describes itself when an editor has written a
+              // caption for it in Notion — those are different photographs of
+              // different things, and a gallery where only the first is
+              // described is a gallery a screen-reader user cannot navigate.
+              //
+              // Without a caption it falls back to the old behaviour: the
+              // event title on the first slide, empty on the rest. Repeating
+              // one title on every photograph would have a screen reader
+              // announce the same sentence six times, which is worse than
+              // silence. The duplicated slides of the loop are aria-hidden
+              // above, so nothing here is announced twice.
+              alt={img.alt?.[locale] ?? (i === 0 ? alt : "")}
               sizes="(max-width: 767px) 60vw, (max-width: 1023px) 75vw, 1160px"
               quality={90}
             />

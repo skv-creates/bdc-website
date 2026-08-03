@@ -231,7 +231,10 @@ async function bodyBlocks(pageId) {
       // is only useful long enough to download the bytes.
       if (b.type === "image") {
         const url = b.image.file?.url ?? b.image.external?.url;
-        if (url) out.push({ type: "image", text: "", url });
+        // The caption is the picture's alt text. Notion has no separate alt
+        // field on an image block, and the caption is the one place an editor
+        // can describe a photograph without leaving the page they are editing.
+        if (url) out.push({ type: "image", text: "", url, caption: plain(b.image.caption) });
         continue;
       }
       // Bookmark / embed / video blocks carry no rich_text at all — they are a
@@ -273,6 +276,35 @@ const BG_MARK = /^\s*(##\s*)?(описание \(bg\)|bg)\s*:?\s*$/i;
  */
 const IMG_MARK = /^\s*(##\s*)?(images to be used|снимки)\s*:?\s*$/i;
 
+/**
+ * Read a picture's caption as alt text, in both languages.
+ *
+ * An editor writes one caption per image and marks the two languages inside
+ * it, mirroring how the body is already split:
+ *
+ *     BG: Стефи Пейкова Кришнан на сцената на PechaKucha
+ *     EN: Stefi Peykova Krishnan on stage at PechaKucha
+ *
+ * Either marker may be missing. A caption with no marker at all is used for
+ * both languages, which is the right answer for a caption that is a name or a
+ * place — those do not need translating and forcing an editor to write them
+ * twice would only invite them to drift apart.
+ *
+ * An empty caption returns null rather than "", and that distinction matters:
+ * null means nobody has described this picture yet, so the renderer decides
+ * what to do. "" would claim the picture is decorative, which for a
+ * photograph in a gallery is a statement, not a default.
+ */
+function captionAlt(caption) {
+  const raw = (caption || "").trim();
+  if (!raw) return null;
+
+  const bg = raw.match(/(?:^|\n)\s*BG\s*:\s*(.+?)(?=\n\s*EN\s*:|$)/is)?.[1]?.trim();
+  const en = raw.match(/(?:^|\n)\s*EN\s*:\s*(.+?)(?=\n\s*BG\s*:|$)/is)?.[1]?.trim();
+  if (!bg && !en) return { bg: raw, en: raw };
+  return { bg: bg || en, en: en || bg };
+}
+
 function splitBody(blocks) {
   const bg = [];
   const en = [];
@@ -282,7 +314,7 @@ function splitBody(blocks) {
     if (b.type === "image") {
       // Only the ones under the heading. A picture sitting in the middle of
       // the prose is illustrating a paragraph, not queueing for the gallery.
-      if (target === images) images.push(b.url);
+      if (target === images) images.push({ url: b.url, alt: captionAlt(b.caption) });
       continue;
     }
     const t = b.text.trim();
@@ -331,7 +363,7 @@ async function galleryImages(urls, slug) {
   }
 
   const out = [];
-  for (const [i, url] of urls.entries()) {
+  for (const [i, { url, alt }] of urls.entries()) {
     const res = await fetch(url);
     if (!res.ok) {
       // A missing picture is not worth failing the sync over — the overlay
@@ -346,7 +378,11 @@ async function galleryImages(urls, slug) {
       .jpeg({ quality: 88, progressive: true, mozjpeg: true })
       .toFile(join(IMG_DIR, name));
 
-    out.push({ src: `/figma/events/${name}`, width: info.width, height: info.height });
+    // `alt` is null when the Notion caption is empty. It is carried through as
+    // null rather than dropped so the renderer can tell "nobody has described
+    // this yet" from "this is decorative", and so a future check can list the
+    // pictures still waiting on a caption.
+    out.push({ src: `/figma/events/${name}`, width: info.width, height: info.height, alt });
   }
   return out;
 }

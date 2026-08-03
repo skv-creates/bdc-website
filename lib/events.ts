@@ -22,7 +22,21 @@ import generatedEvents from "./events.generated.json";
 ============================================================================= */
 
 /** One cover image, with the proportions the gallery needs to lay it out. */
-export type EventImage = { src: string; width: number; height: number };
+/**
+ * A picture in an event's gallery.
+ *
+ * `alt` comes from the image's caption in Notion, where an editor writes it in
+ * both languages (see captionAlt in scripts/sync-notion-events.mjs). It is
+ * optional because most events predate the convention, and null-when-absent
+ * rather than "" on purpose: "" asserts a photograph is decorative, which is
+ * a claim, not a sensible default for a picture someone chose to publish.
+ */
+export type EventImage = {
+  src: string;
+  width: number;
+  height: number;
+  alt?: { bg: string; en: string } | null;
+};
 
 /** A localized event, ready to render. */
 export type BdcEvent = {

@@ -73,7 +73,7 @@ export default async function EventPage({
     <>
       <JsonLd data={eventNode(event, locale, getContent(locale).meta.title)} />
     <OverlayPanel homeHref={`/${locale}`}>
-      <EventOverlayContent event={event} ui={getContent(locale).ui} />
+      <EventOverlayContent event={event} ui={getContent(locale).ui} locale={locale} />
     </OverlayPanel>
     </>
   );
