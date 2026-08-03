@@ -81,6 +81,13 @@ export async function generateMetadata({
         ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
         : {}),
     },
+    // Rights reserved for text and data mining, on every page. The council's
+    // position is that the site may be read, indexed and cited but not used to
+    // train a model; see app/.well-known/tdmrep.json for the reasoning and the
+    // machine-readable form a crawler is more likely to look for. This is the
+    // per-document half of the same protocol, and it is the half that survives
+    // being quoted, mirrored or archived away from the origin that served it.
+    other: { "tdm-reservation": "1" },
     // Staging serves the same content as the public site. Keeping it out of
     // the index is belt-and-braces with robots.ts, and it is the half that
     // survives whatever Cloudflare does to robots.txt.

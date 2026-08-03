@@ -154,14 +154,64 @@ Three things that will bite if changed carelessly:
   catches one lie. `scripts/sync-notion-events.mjs` can supply a real one:
   Notion's `last_edited_time` is already on every row it fetches.
 
-**AI crawlers are blocked, and no file in this repo can unblock them.**
-Cloudflare injects a managed `robots.txt` with agent-specific groups
-(`User-agent: GPTBot` → `Disallow: /`, and the same for ClaudeBot,
-Google-Extended, CCBot, Amazonbot, Applebot-Extended, Bytespider,
-meta-externalagent). By the robots.txt spec the most specific group wins, so
-`app/robots.ts` cannot override it. That is a Cloudflare dashboard setting
-(AI Crawl Control), as is the `Content-Signal:` line. `app/llms.txt/route.ts`
-is likewise decorative until they are unblocked.
+# Readable and citable, but not training data
+
+This is a decision of the council's, not a technical default, and it is easy to
+undo by accident because the two halves live in different places.
+
+**The position: an AI system may read the site, index it, and cite it when
+answering a question about who we are and what we argue for. It may not use it
+to train a model.** That covers the writing, the photographs, and the people
+described in them — the team publish their names, faces and career histories
+here because they agreed to appear on the council's website, which is not the
+same as agreeing to be in a training corpus. That is a consent nobody here can
+give on their behalf, and unlike a page it cannot be taken back down.
+
+Do not conflate the two, which is the mistake the previous version of this
+section made. Cloudflare sorts crawlers into categories and they are not
+interchangeable:
+
+- **Search engine** (Googlebot, BingBot, Baidu) and **AI Search**
+  (Claude-SearchBot, OAI-SearchBot, PerplexityBot, Applebot) and
+  **AI Assistant** (ChatGPT-User, Perplexity-User) — **allowed, deliberately.**
+  These are what get the site found and cited, with a link back. Indexing and
+  discoverability do not depend on anything in the paragraph below.
+- **AI Crawler** (GPTBot, ClaudeBot, CCBot, Amazonbot, Meta-ExternalAgent,
+  Bytespider) — **blocked.** These collect training corpora. Blocking them
+  costs no search visibility whatsoever.
+
+Because of that split, `app/llms.txt/route.ts` is **not** decorative: the AI
+Search and Assistant crawlers that read it are the allowed ones.
+
+The reservation is stated in three places, on purpose, because each fails
+differently:
+
+- **Cloudflare AI Crawl Control** (dashboard, zone-level — it is under the
+  *domain*, not the account, and 404s if you look for it under the account).
+  `Block AI Bots` is a single master switch over the whole AI-Crawler category;
+  while it is on the per-crawler toggles are greyed out. It is also what
+  publishes the managed `robots.txt` and the `Content-Signal:` line. **Leave it
+  on.** Turning it off to allow one crawler converts a self-updating block into
+  a hand-maintained list, and every AI crawler invented afterwards defaults to
+  allowed. Nobody will remember to keep it current.
+- **`app/.well-known/tdmrep.json`** — the W3C TDM Reservation Protocol form,
+  which is what makes the reservation effective under Article 4 of the EU DSM
+  Directive. This one is in the repo, so it survives the site moving off
+  Cloudflare, which the dashboard setting would not.
+- **`<meta name="tdm-reservation" content="1">`** from `app/[locale]/layout.tsx`
+  — the per-document half, which survives a page being quoted, mirrored or
+  archived away from the origin that served it.
+
+No file in this repo can *unblock* a crawler: Cloudflare's managed robots.txt
+is injected above ours, and by the spec an agent-specific group beats our
+`User-agent: *`. `app/robots.ts` cannot override it.
+
+**Declaring is not enforcing.** GPTBot, ClaudeBot and Meta-ExternalAgent have
+all been observed requesting paths their own `Disallow: /` forbids, with bytes
+actually transferred — Cloudflare's own Signals → *Robots.txt violations* panel
+counts them. robots.txt is a request; AI Crawl Control is the part that says
+no. If someone reports that the site is being trained on anyway, that panel is
+where to look, not at this file.
 
 # Deploys run from GitHub Actions, not from Cloudflare
 
