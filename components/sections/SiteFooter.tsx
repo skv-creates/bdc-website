@@ -1,9 +1,44 @@
 import { Logo } from "@/components/ui/Logo";
-import { Instagram, LinkedIn } from "@/components/ui/icons";
+import { CarbonBadge } from "@/components/ui/CarbonBadge";
+import { Facebook, Instagram, LinkedIn } from "@/components/ui/icons";
 import type { Locale, SiteContent } from "@/lib/home-content";
 
-/* Full-width dark footer. Sits above the fixed pattern rail (z-30) so the rail
-   visually ends here, matching the Figma frame. */
+/* Full-width dark footer (Figma 454:2445). Sits above the fixed pattern rail
+   (z-30) so the rail visually ends here, matching the Figma frame.
+
+   Three rows on a 12-column grid: the identity block at 1–5, the sustainability
+   figures at 7–9, contacts at 10–12; a hairline; then copyright and the two
+   policy links on one baseline. */
+
+/**
+ * Icons keyed by the label in `footer.social`, not by array position.
+ *
+ * The previous version indexed `social[0]` and `social[1]` and hardcoded an
+ * Instagram and a LinkedIn glyph beside them, so reordering the content array
+ * — or adding a third network, which is exactly what happened — silently put
+ * the wrong mark next to the wrong link. Keying by label means content decides
+ * both the order and the set, and an unrecognised network renders as a plain
+ * text link rather than as somebody else's logo.
+ */
+const SOCIAL_ICONS: Record<string, typeof LinkedIn | undefined> = {
+  LinkedIn,
+  Instagram,
+  Facebook,
+};
+
+/**
+ * The "|" that precedes each legal line is a drawn separator in the Figma, not
+ * punctuation. aria-hidden so a screen reader does not read "vertical line"
+ * before every link. Defined at module scope rather than inside the component:
+ * a function created during render is a new component type on every render,
+ * which remounts its subtree instead of updating it.
+ */
+const Bar = () => (
+  <span aria-hidden className="mr-2 opacity-40">
+    |
+  </span>
+);
+
 export function SiteFooter({
   footer,
   locale,
@@ -23,39 +58,87 @@ export function SiteFooter({
       }}
     >
       <div className="py-24 md:py-32">
-        {/* top row — logo | contacts */}
-        <div className="bdc-grid gap-y-20">
-          <div className="col-span-4 md:col-span-4 lg:col-span-7">
+        <div className="bdc-grid gap-y-16 md:gap-y-20">
+          {/* identity — logo, the heritage statement, the registration code */}
+          <div className="col-span-4 flex flex-col gap-8 md:col-span-8 lg:col-span-5">
             <Logo variant="white" locale={locale} className="h-10 w-auto" />
+
+            <div className="flex flex-col gap-3">
+              <p className="t-caption font-bold">{footer.heritage.heading}</p>
+              <p className="t-caption max-w-[46ch] opacity-80">{footer.heritage.body}</p>
+            </div>
+
+            <p className="t-caption opacity-70">
+              <Bar />
+              {footer.uic}
+            </p>
           </div>
 
-          <div className="col-span-4 flex flex-col gap-4 md:col-span-4 lg:col-start-9 lg:col-span-4 lg:items-start">
+          {/* sustainability — the columns the policy links vacated */}
+          <div className="col-span-4 md:col-span-4 lg:col-start-7 lg:col-span-3">
+            <CarbonBadge carbon={footer.carbon} locale={locale} />
+          </div>
+
+          {/* contacts */}
+          <div className="col-span-4 flex flex-col gap-6 md:col-span-4 lg:col-start-10 lg:col-span-3">
             <p className="t-caption font-bold">{footer.contactHeading}</p>
-            <a href={`mailto:${footer.email}`} className="t-caption hover:opacity-70">
+            <a
+              href={`mailto:${footer.email}`}
+              className="t-caption border-b-2 border-transparent transition-colors hover:border-current"
+            >
               {footer.email}
             </a>
-            <div className="mt-2 flex gap-3">
-              <a href={footer.social[0].href} aria-label="Instagram" className="hover:opacity-70">
-                <Instagram className="h-6 w-6" />
-              </a>
-              <a href={footer.social[1].href} aria-label="LinkedIn" className="hover:opacity-70">
-                <LinkedIn className="h-6 w-6" />
-              </a>
-            </div>
+
+            <ul className="flex flex-col gap-4">
+              {footer.social.map((s) => {
+                const Icon = SOCIAL_ICONS[s.label];
+                return (
+                  <li key={s.label}>
+                    <a
+                      href={s.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group flex items-center gap-2"
+                    >
+                      {/* Decorative — the label beside it is the accessible
+                          name, so announcing the mark too would say it twice. */}
+                      {Icon && <Icon aria-hidden className="h-6 w-6 shrink-0" />}
+                      <span className="t-caption border-b-2 border-transparent transition-colors group-hover:border-current">
+                        {s.label}
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </div>
 
-        {/* bottom row — copyright left, privacy link sharing the contacts column
-            so the two sit on one baseline (Figma 29:257). */}
-        <div className="bdc-grid mt-20 gap-y-4">
-          <p className="t-caption col-span-4 max-w-md md:col-span-4 lg:col-span-7">
-            {footer.copyright}
-          </p>
+        {/* hairline (454:2480) */}
+        <div className="mt-20 h-px w-full bg-current opacity-30" aria-hidden />
+
+        {/* copyright and the policy links on one baseline */}
+        <div className="bdc-grid mt-10 gap-y-4">
+          <p className="t-caption col-span-4 md:col-span-8 lg:col-span-5">{footer.copyright}</p>
+
+          <a
+            href={`/${locale}/accessibility`}
+            className="t-caption col-span-4 justify-self-start md:col-span-4 lg:col-start-7 lg:col-span-3"
+          >
+            <Bar />
+            <span className="border-b-2 border-transparent transition-colors hover:border-current">
+              {footer.accessibility}
+            </span>
+          </a>
+
           <a
             href={`/${locale}/privacy`}
-            className="t-caption col-span-4 justify-self-start border-b-2 border-transparent transition-colors hover:border-current md:col-span-4 lg:col-start-9 lg:col-span-4"
+            className="t-caption col-span-4 justify-self-start md:col-span-4 lg:col-start-10 lg:col-span-3"
           >
-            {footer.privacy}
+            <Bar />
+            <span className="border-b-2 border-transparent transition-colors hover:border-current">
+              {footer.privacy}
+            </span>
           </a>
         </div>
       </div>

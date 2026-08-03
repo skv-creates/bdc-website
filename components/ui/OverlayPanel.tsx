@@ -105,13 +105,37 @@ export function OverlayPanel({
     };
   }, []);
 
+  /**
+   * A dialog only when there is a page behind it.
+   *
+   * `intercepted` already distinguishes the two ways this mounts, and the
+   * semantics have to follow it. Opened over the home page via @modal it is a
+   * genuine modal: `aria-modal="true"` correctly tells a screen reader the
+   * content behind is inert, and Esc/scrim dismiss it.
+   *
+   * Arrived at directly — /bg/events/<slug> from a search result, a shared
+   * link or a refresh — none of that is true. There is nothing behind it to
+   * make inert, so `aria-modal` hides a page that does not exist, `role`
+   * announces a dialog the reader never opened, and because the whole route
+   * renders through here the page ends up with no `main` landmark and no skip
+   * link at all. All eight event pages are in the sitemap and indexed, so this
+   * is the state Google sends people to.
+   *
+   * As a full page it is therefore plain `<main>`: the landmark screen-reader
+   * and keyboard users navigate by, and what the skip link in the layout
+   * targets.
+   */
+  const Root = intercepted ? "div" : "main";
+  const rootRole = intercepted
+    ? ({ role: "dialog", "aria-modal": true as const } as const)
+    : ({ id: "main", tabIndex: -1 } as const);
+
   return (
-    <div
+    <Root
       className={`overlay-root fixed inset-0 z-[60] ${
         exiting ? "opacity-0 transition-opacity duration-[80ms] ease-out" : ""
       }`}
-      role="dialog"
-      aria-modal="true"
+      {...rootRole}
     >
       {/* Phase 1 — full-viewport translucent dark scrim; fades in first, and a
           click on it (anywhere not covered by the panel) dismisses. */}
@@ -168,6 +192,6 @@ export function OverlayPanel({
           <div className="strip-3 h-3" />
         </div>
       </div>
-    </div>
+    </Root>
   );
 }

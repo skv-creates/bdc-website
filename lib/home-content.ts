@@ -991,15 +991,34 @@ const bg = {
   },
 
   footer: {
-    copyright: "© 2026 Bulgarian Design Council. All rights reserved.",
+    copyright: "© 2026 Български дизайн съвет. Всички права запазени.",
     privacy: "Политика за поверителност",
+    accessibility: "Политика за достъпност",
     contactHeading: "Контакти",
     phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
+    /** Регистрация в Търговския регистър — същият код като в Политиката за поверителност. */
+    uic: "ЕИК 208377927",
+    heritage: {
+      heading: "Почит към наследството",
+      body:
+        "Отдаваме почит на поколенията, които са съграждали, опазвали и предавали " +
+        "многопластовото наследство на България с познание, съзидание и майсторство. " +
+        "Стъпваме върху него с достойнство и с общата отговорност да създаваме " +
+        "по-смислено, приобщаващо и устойчиво бъдеще.",
+    },
+    /* Реда определя реда на показване; иконата се избира по label, не по индекс. */
     social: [
-      { label: "Instagram", href: "https://www.instagram.com/bulgarian.design.council/" },
       { label: "LinkedIn", href: "https://www.linkedin.com/company/bulgarian-design-council/posts/?feedView=all" },
+      { label: "Instagram", href: "https://www.instagram.com/bulgarian.design.council/" },
+      { label: "Facebook", href: "https://www.facebook.com/p/Bulgarian-Design-Council-61573414466930" },
     ],
+    carbon: {
+      greenHosting: "Зелен хостинг",
+      greenHostingBy: "Проверено от The Green Web Foundation",
+      perView: "въглероден отпечатък на посещение",
+      measuredOn: "Проверено на",
+    },
   },
 };
 
@@ -1813,13 +1832,32 @@ const en: typeof bg = {
   footer: {
     copyright: "© 2026 Bulgarian Design Council. All rights reserved.",
     privacy: "Privacy Policy",
+    accessibility: "Accessibility Statement",
     contactHeading: "Contacts",
     phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
+    /** Same code as the privacy policy gives; "UIC" is the wording used there. */
+    uic: "UIC 208377927",
+    heritage: {
+      heading: "Honouring our heritage",
+      body:
+        "We pay tribute to the generations who built, preserved and passed on " +
+        "Bulgaria's many-layered heritage with knowledge, invention and craft. " +
+        "We build on it with respect, and with the shared responsibility to make " +
+        "a more meaningful, inclusive and sustainable future.",
+    },
+    /* Order here is display order; the icon is chosen by label, not by index. */
     social: [
-      { label: "Instagram", href: "https://www.instagram.com/bulgarian.design.council/" },
       { label: "LinkedIn", href: "https://www.linkedin.com/company/bulgarian-design-council/posts/?feedView=all" },
+      { label: "Instagram", href: "https://www.instagram.com/bulgarian.design.council/" },
+      { label: "Facebook", href: "https://www.facebook.com/p/Bulgarian-Design-Council-61573414466930" },
     ],
+    carbon: {
+      greenHosting: "Green hosting",
+      greenHostingBy: "Verified by The Green Web Foundation",
+      perView: "of CO2 per page view",
+      measuredOn: "Checked on",
+    },
   },
 };
 

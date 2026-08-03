@@ -93,8 +93,15 @@
   --weight-bold: 700;
 
   /* font stacks — both faces loaded via next/font in layout.tsx */
-  --font-display: var(--font-about-beige), var(--font-fallback), system-ui, sans-serif;
-  --font-body: var(--font-about-beige), var(--font-fallback), system-ui, sans-serif;
+  /* About Beige, then whatever the OS uses for its own UI.
+     Inter used to sit in the middle of this stack, downloaded as a second
+     complete webfont (~65KB, latin + cyrillic, three weights) purely to render
+     the moment before About Beige arrived. system-ui covers that for nothing,
+     and every platform this site is read on ships a Cyrillic-capable UI face.
+     If a swap-period fallback is ever reintroduced, weigh it against the fact
+     that it is downloaded by every visitor to be seen by almost none. */
+  --font-display: var(--font-about-beige), system-ui, sans-serif;
+  --font-body: var(--font-about-beige), system-ui, sans-serif;
 }
 
 /* Expose semantic colors to Tailwind utilities (bg-brand, text-text, …) */

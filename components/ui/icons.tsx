@@ -36,6 +36,20 @@ export function Minus(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+/**
+ * Facebook. Drawn in the same stroked style as the other two rather than the
+ * filled brand mark, so the three sit together in the footer at one weight —
+ * the Figma footer reuses the Instagram glyph for this row, which reads as a
+ * placeholder rather than an intent to ship two Instagram icons.
+ */
+export function Facebook(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M15 3h-2.5A4.5 4.5 0 0 0 8 7.5V11H5.5v4H8v6h4v-6h3l1-4h-4V7.5a.5.5 0 0 1 .5-.5H15V3Z" />
+    </svg>
+  );
+}
+
 export function Instagram(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...base} {...props}>

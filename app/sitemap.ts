@@ -32,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paths = [
     "",
     "/privacy",
+    "/accessibility",
     "/volunteer",
     ...events.map(({ slug }) => `/events/${slug}`),
     ...getInitiativeSlugs().map(({ slug }) => `/initiatives/${slug}`),

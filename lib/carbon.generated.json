@@ -1,0 +1,11 @@
+{
+  "measuredOn": "2026-08-03",
+  "greenHosting": {
+    "green": true,
+    "hostedBy": "Cloudflare"
+  },
+  "sources": {
+    "greenHosting": "https://www.thegreenwebfoundation.org/green-web-check/?url=bulgariandesigncouncil.org",
+    "carbon": "https://www.websitecarbon.com/website/bulgariandesigncouncil-org-bg/"
+  }
+}

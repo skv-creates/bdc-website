@@ -1,29 +1,28 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { getContent, hasLocale, locales } from "@/lib/home-content";
 import { GOOGLE_SITE_VERIFICATION, IS_PRODUCTION_SITE, SITE_ORIGIN } from "@/lib/site";
 
-/** Brand face — "About Beige Standard", self-hosted via next/font/local. */
+/**
+ * Brand face — "About Beige Standard", self-hosted via next/font/local.
+ *
+ * Three weights, matching the three the type scale actually uses:
+ * --weight-regular 400, --weight-medium 500, --weight-bold 700 in globals.css.
+ * Heavy (800) was declared here and shipped on every page while nothing
+ * referenced it — no --weight-heavy token, no font-weight: 800, no
+ * font-extrabold anywhere. Adding a fourth weight costs ~70KB on first load,
+ * so only add one when a type class needs it.
+ */
 const aboutBeige = localFont({
   src: [
     { path: "../fonts/AboutBeigeStandard-Regular.woff2", weight: "400", style: "normal" },
     { path: "../fonts/AboutBeigeStandard-Medium.woff2", weight: "500", style: "normal" },
     { path: "../fonts/AboutBeigeStandard-Bold.woff2", weight: "700", style: "normal" },
-    { path: "../fonts/AboutBeigeStandard-Heavy.woff2", weight: "800", style: "normal" },
   ],
   variable: "--font-about-beige",
-  display: "swap",
-});
-
-/** Cyrillic-capable fallback (loads during swap / covers any missing glyph). */
-const fallback = Inter({
-  variable: "--font-fallback",
-  subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "700"],
   display: "swap",
 });
 
@@ -110,7 +109,7 @@ export default async function RootLayout({
   if (!hasLocale(locale)) notFound();
 
   return (
-    <html lang={locale} className={`${aboutBeige.variable} ${fallback.variable}`}>
+    <html lang={locale} className={aboutBeige.variable}>
       <body>
         {children}
         {modal}
