@@ -90,13 +90,22 @@ export function SiteFooter({
               only the column numbers. It is also the order a keyboard user
               tabs through, which should match what they see. */}
           {/* contacts */}
-          <div className="col-span-4 flex flex-col gap-6 md:col-span-4 lg:col-start-7 lg:col-span-3">
+          {/* gap-8, matching the policies column beside it and the Figma's
+              32px. The two columns are read across as well as down — the
+              heading, then the first item, then the second — so a different
+              vertical rhythm in each makes the rows visibly fail to line up
+              even though every element is in the right column. */}
+          <div className="col-span-4 flex flex-col gap-8 md:col-span-4 lg:col-start-7 lg:col-span-3">
             <p className="t-caption font-bold">{footer.contactHeading}</p>
-            <a
-              href={`mailto:${footer.email}`}
-              className="t-caption border-b-2 border-transparent transition-colors hover:border-current"
-            >
-              {footer.email}
+            {/* The underline lives on an inner inline span, not on the anchor.
+                On the anchor it is a 2px border on a block box and adds 2px to
+                the column's height, which walked everything below it out of
+                line with the policies column beside it. Inline, it draws in the
+                same place and costs no layout. */}
+            <a href={`mailto:${footer.email}`} className="t-caption group">
+              <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
+                {footer.email}
+              </span>
             </a>
 
             <ul className="flex flex-col gap-4">
@@ -113,7 +122,12 @@ export function SiteFooter({
                       {/* Decorative — the label beside it is the accessible
                           name, so announcing the mark too would say it twice. */}
                       {Icon && <Icon aria-hidden className="h-6 w-6 shrink-0" />}
-                      <span className="t-caption border-b-2 border-transparent transition-colors group-hover:border-current">
+                      {/* -mb-0.5 gives back the 2px the border adds. Here the
+                          anchor is a flex row, so the span is a flex item and
+                          its border does count toward the row height — without
+                          this each social row is 26px against the 24px of the
+                          policy links opposite. */}
+                      <span className="t-caption -mb-0.5 border-b-2 border-transparent transition-colors group-hover:border-current">
                         {s.label}
                       </span>
                     </a>
