@@ -37,10 +37,39 @@ import type { Locale } from "@/lib/home-content";
  * lifts back to full speed, which is what makes the two states feel like one
  * behaviour rather than an on/off switch.
  */
+/**
+ * The heights a slide is locked to at each breakpoint, mirroring the
+ * `h-[260px] md:h-[420px] lg:h-[540px]` on the <li> below.
+ *
+ * They live here because `sizes` is derived from them. A slide's width is not
+ * a free variable — the row is height-constrained and the picture keeps its
+ * ratio — so the width it will occupy is exactly height x aspect, and telling
+ * the browser that is the difference between fetching the file it needs and
+ * fetching the largest one on the list. Change one, change the other.
+ */
+const SLIDE_HEIGHTS = { mobile: 260, tablet: 420, desktop: 540 } as const;
+
 const SPEED = 18;
 const SPEED_HOVER = 9;
 /** How sharply it eases between the two. Higher settles faster. */
 const EASE_PER_SECOND = 3;
+
+/**
+ * What width this slide will actually be shown at, per breakpoint.
+ *
+ * Rounded up: `sizes` is a hint the browser matches against `deviceSizes`, and
+ * rounding down could put a slide fractionally under a step and cost it the
+ * next one up — the same off-by-a-few-pixels that made a 624px slot fetch 1920.
+ */
+function slideSizes({ width, height }: EventImage) {
+  const ratio = width / height;
+  const w = (h: number) => Math.ceil(h * ratio);
+  return (
+    `(max-width: 767px) ${w(SLIDE_HEIGHTS.mobile)}px, ` +
+    `(max-width: 1023px) ${w(SLIDE_HEIGHTS.tablet)}px, ` +
+    `${w(SLIDE_HEIGHTS.desktop)}px`
+  );
+}
 
 export function PhotoCarousel({
   images,
@@ -217,7 +246,12 @@ export function PhotoCarousel({
               // silence. The duplicated slides of the loop are aria-hidden
               // above, so nothing here is announced twice.
               alt={img.alt?.[locale] ?? (i === 0 ? alt : "")}
-              sizes="(max-width: 767px) 60vw, (max-width: 1023px) 75vw, 1160px"
+              // Per slide, from its own proportions. One shared `sizes` of
+              // "1160px" described the widest slide and was then applied to
+              // all of them, so a slide shown at 810px asked for a 2560-wide
+              // file — 576KB where 210KB is the same picture. Height x aspect
+              // is what each one actually occupies.
+              sizes={slideSizes(img)}
               quality={90}
             />
           </li>

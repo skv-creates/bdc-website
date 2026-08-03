@@ -28,8 +28,16 @@ const nextConfig: NextConfig = {
      * detail that is not in the file. Capping at 2560 covers the widest frame
      * on the site (~1400 CSS px) at better than 1.8x, and never asks for more
      * pixels than the original actually has.
+     *
+     * 1280 exists because of the gap it closes. Next serves the first size at
+     * or above what a slot needs, and the initiative cover sits in a 624px
+     * slot — 1248 device pixels at dpr 2, six pixels past 1200. So it fell
+     * through to 1920 and every visitor downloaded 317KB where 151KB shows the
+     * same picture at the same quality. A step list is only as good as its
+     * worst gap; check any new fixed-width slot lands just above a step rather
+     * than just below one.
      */
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2560],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1280, 1920, 2560],
     /**
      * WebP only, which is Next's default. AVIF encodes smaller but costs
      * materially more per transform, and this is a shared image binding in the
