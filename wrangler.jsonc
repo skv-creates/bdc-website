@@ -10,6 +10,20 @@
 	"compatibility_date": "2026-07-08",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
 	"routes": [{ "pattern": "staging.bulgariandesigncouncil.org", "custom_domain": true }],
+	// The canonical origin, read by lib/site.ts for canonicals, hreflang, the
+	// sitemap and robots.
+	//
+	// It has to be here, at RUNTIME, not only on the build command. These pages
+	// are rendered on demand inside the Worker — there is not a single .html in
+	// .open-next — so a value that exists only during `next build` is gone by
+	// the time a canonical tag is written, and lib/site.ts falls back to its
+	// default. That is how production briefly shipped noindex with staging
+	// canonicals. @opennextjs/cloudflare copies every var here into process.env
+	// on each request (populateProcessEnv in its init template).
+	//
+	// vars are NOT inherited into a named environment, so production repeats it
+	// below. Leave it out there and production silently becomes staging again.
+	"vars": { "SITE_ORIGIN": "https://staging.bulgariandesigncouncil.org" },
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
@@ -30,6 +44,9 @@
 			// domain rewrites the apex address record only, leaving MX and mail.*
 			// alone.
 			"routes": [{ "pattern": "bulgariandesigncouncil.org", "custom_domain": true }],
+			// See the note on the staging vars above. This one being wrong or
+			// absent is what makes the public site noindex itself.
+			"vars": { "SITE_ORIGIN": "https://bulgariandesigncouncil.org" },
 			"assets": {
 				"directory": ".open-next/assets",
 				"binding": "ASSETS"

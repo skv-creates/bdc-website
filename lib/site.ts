@@ -1,16 +1,25 @@
 /**
- * Which site this build is. Everything canonical hangs off it: the sitemap,
+ * Which site this is. Everything canonical hangs off it: the sitemap,
  * metadataBase, robots, JSON-LD @ids.
  *
- * Read at BUILD time, deliberately. Every page here is prerendered, so by the
- * time a request reaches the Worker the HTML — canonical tags and all — has
- * already been written. `getCloudflareContext().env` would be too late.
+ * Set in BOTH places, and both are needed:
  *
- * It also cannot come from `vars` in wrangler.jsonc, which is the obvious place
- * to look: `opennextjs-cloudflare build` never passes those to `next build`
- * (getEnvFromPlatformProxy is used by deploy/preview/upload, not build). A var
- * there would look correct and silently do nothing — so the value is set on the
- * npm script instead, on the same line as the wrangler env it belongs with.
+ * - `vars` in wrangler.jsonc, per environment. This is the one that actually
+ *   decides what a visitor sees. Despite every page being statically
+ *   prerenderable, OpenNext ships no HTML — there is not one .html file in
+ *   .open-next — so pages are rendered on demand inside the Worker and this is
+ *   read per request. @opennextjs/cloudflare copies Worker vars into
+ *   process.env on each request (populateProcessEnv, in its init template).
+ *   `vars` are not inherited into a named environment, so production repeats
+ *   its own.
+ * - the npm deploy scripts, for `next build`. wrangler vars genuinely do not
+ *   reach the build (getEnvFromPlatformProxy is used by deploy/preview/upload,
+ *   never by build), so anything Next does evaluate at build time needs it
+ *   there.
+ *
+ * Getting this wrong is not subtle in effect but is invisible in review: with
+ * only the build-time half set, production served staging canonicals and a
+ * noindex tag, and looked fine in every local check.
  */
 
 export const PRODUCTION_ORIGIN = "https://bulgariandesigncouncil.org";
