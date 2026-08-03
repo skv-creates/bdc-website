@@ -133,9 +133,27 @@ export function EventOverlayContent({
         </div>
       </div>
 
-      {/* Cover — page grid cols 8–11 on desktop (col 7 is the gutter). */}
+      {/* Cover — page grid cols 8–11 on desktop (col 7 is the gutter).
+
+          The frame takes the photograph's own proportions rather than a fixed
+          640px height. Every event cover is 3:2 landscape and the fixed frame
+          was 613x640, so object-cover threw away 36% of the width — 18% off
+          each side. On the PechaKucha cover that removed a woman in
+          traditional dress from the picture entirely and kept the empty half
+          of the room. A frame that crops a third out of every photograph is
+          not framing them, and the dimensions needed to avoid it are already
+          recorded on EventImage, which is what PhotoCarousel does with them.
+
+          Falls back to square only if a record is missing its dimensions. */}
       {event.covers[0] && (
-        <div className="relative aspect-square w-full col-span-full md:col-start-2 md:col-span-6 lg:col-start-8 lg:col-span-5 lg:aspect-auto lg:h-[640px]">
+        <div
+          className="relative w-full col-span-full md:col-start-2 md:col-span-6 lg:col-start-8 lg:col-span-5"
+          style={{
+            aspectRatio: event.covers[0].width
+              ? `${event.covers[0].width} / ${event.covers[0].height}`
+              : "1 / 1",
+          }}
+        >
           <Image
             src={event.covers[0].src}
             alt={event.name}
