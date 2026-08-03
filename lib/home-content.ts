@@ -1847,12 +1847,13 @@ const en: typeof bg = {
     /** Same code as the privacy policy gives; "UIC" is the wording used there. */
     uic: "UIC 208377927",
     heritage: {
-      heading: "Honouring our heritage",
+      heading: "Honouring Our Heritage",
       body:
-        "We pay tribute to the generations who built, preserved and passed on " +
-        "Bulgaria's many-layered heritage with knowledge, invention and craft. " +
-        "We build on it with respect, and with the shared responsibility to make " +
-        "a more meaningful, inclusive and sustainable future.",
+        "We honour the generations who have shaped, preserved and passed on " +
+        "Bulgaria\u2019s layered heritage through knowledge, creativity and " +
+        "craftsmanship. We build on this legacy with dignity and a shared " +
+        "responsibility to shape a more meaningful, inclusive and sustainable " +
+        "future.",
     },
     /* Order here is display order; the icon is chosen by label, not by index. */
     social: [
