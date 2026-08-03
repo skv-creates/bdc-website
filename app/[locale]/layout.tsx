@@ -5,7 +5,7 @@ import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { getContent, hasLocale, locales } from "@/lib/home-content";
-import { IS_PRODUCTION_SITE, SITE_ORIGIN } from "@/lib/site";
+import { GOOGLE_SITE_VERIFICATION, IS_PRODUCTION_SITE, SITE_ORIGIN } from "@/lib/site";
 
 /** Brand face — "About Beige Standard", self-hosted via next/font/local. */
 const aboutBeige = localFont({
@@ -76,9 +76,7 @@ export async function generateMetadata({
     // var and the tag appears; unset, the key is omitted entirely rather than
     // shipping an empty content="" that fails verification confusingly.
     verification: {
-      ...(process.env.GOOGLE_SITE_VERIFICATION
-        ? { google: process.env.GOOGLE_SITE_VERIFICATION }
-        : {}),
+      google: GOOGLE_SITE_VERIFICATION,
       ...(process.env.BING_SITE_VERIFICATION
         ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
         : {}),

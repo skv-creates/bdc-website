@@ -47,3 +47,13 @@ export const SITE_ORIGIN =
  * a preview, a typo — is treated as not-production and stays out of the index.
  */
 export const IS_PRODUCTION_SITE = SITE_ORIGIN === PRODUCTION_ORIGIN;
+
+/**
+ * Search Console ownership token.
+ *
+ * Hardcoded, not an env var. It is public by design — it ships in the HTML of
+ * every page — so there is nothing to protect, and a constant cannot go
+ * missing the way an unset variable can. That failure mode already cost one
+ * bad production deploy today.
+ */
+export const GOOGLE_SITE_VERIFICATION = "akiWty4tTrXpY220qKC1KFcm4j5OuoHJp71v9U5JUE4";
