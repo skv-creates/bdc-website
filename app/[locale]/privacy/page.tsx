@@ -12,8 +12,9 @@ import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { LegalProse } from "@/components/ui/LegalProse";
+import { PageToc } from "@/components/ui/PageToc";
 import { getContent, hasLocale } from "@/lib/home-content";
-import { getLegalContent } from "@/lib/legal-content";
+import { getLegalContent, legalSectionId } from "@/lib/legal-content";
 import { localeAlternates, openGraphBase } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -69,12 +70,29 @@ export default async function PrivacyPage({
             <p className="t-caption mt-6 opacity-70">{legal.updated}</p>
           </header>
 
-          {/* Body sits in cols 5–10 on desktop, matching the FAQ measure. */}
+          {/* Body sits in cols 5–10 on desktop, matching the FAQ measure. The
+              index takes cols 1–3, which were empty, so nothing moves. */}
           <div className="bdc-grid mt-16 md:mt-20">
+            <div className="hidden lg:col-start-1 lg:col-span-3 lg:block">
+              <PageToc
+                label={legal.onThisPage}
+                items={legal.sections.map((section, i) => ({
+                  id: legalSectionId(section, i),
+                  label: section.title,
+                }))}
+              />
+            </div>
+
             <div className="col-span-4 md:col-span-8 lg:col-start-5 lg:col-span-6">
               {legal.sections.map((section, i) => (
                 <section
                   key={section.title}
+                  id={legalSectionId(section, i)}
+                  // Focusable only as a scroll target, so jumping from the
+                  // index also moves the reading position. Being in `[tabindex]`
+                  // picks up the global scroll-margin-top that keeps a heading
+                  // out from under the fixed header.
+                  tabIndex={-1}
                   className={`border-t-2 border-border pt-8 ${i > 0 ? "mt-14" : ""}`}
                 >
                   <h2 className="t-h05">{section.title}</h2>

@@ -37,6 +37,7 @@ const bg = {
   lead: "на личните данни на Сдружение „Български дизайн съвет“",
   updated: "Последно актуализирана на 17.07.2026 г.",
   backLabel: "← Към началната страница",
+  onThisPage: "На тази страница",
 
   sections: [
     {
@@ -177,6 +178,7 @@ const en: typeof bg = {
   lead: "of the Bulgarian Design Council",
   updated: "Last updated on 17 July 2026.",
   backLabel: "← Back to home",
+  onThisPage: "On this page",
 
   sections: [
     {
@@ -312,6 +314,28 @@ const en: typeof bg = {
 const content = { bg, en } satisfies Record<Locale, typeof bg>;
 
 /** Whole legal-content shape for one locale. */
+/**
+ * The anchor for a section, taken from its roman numeral and not its title.
+ *
+ * The numeral is the one part of a heading that is identical in both locales,
+ * so `/bg/privacy#section-vii` and `/en/privacy#section-vii` address the same
+ * clause. That is what lets the language toggle carry a deep link across
+ * without dropping the reader back at the top of the page.
+ *
+ * Slugifying the title instead would give two different anchors for one
+ * clause, and the Bulgarian one would be percent-encoded Cyrillic that nobody
+ * can read in a pasted URL. Worse, it would change every time the wording was
+ * edited — silently breaking any link already sent to a member or a regulator,
+ * which for a privacy policy is the whole point of being able to link to it.
+ *
+ * Falls back to the position in the list if a section ever arrives without a
+ * numeral, so an editor cannot break the page by omitting one.
+ */
+export function legalSectionId(section: LegalSection, index: number) {
+  const numeral = section.title.match(/^([IVXLCDM]+)\./i)?.[1];
+  return `section-${(numeral ?? index + 1).toString().toLowerCase()}`;
+}
+
 export type LegalContent = typeof bg;
 
 /** Returns the privacy-policy content for a locale. */
