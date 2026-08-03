@@ -10,6 +10,7 @@
   },
   "carbon": {
     "gramsPerView": 0.05,
+    "cleanerThanPercent": 90,
     "source": "websitecarbon.com test, 2026-08-03"
   }
 }

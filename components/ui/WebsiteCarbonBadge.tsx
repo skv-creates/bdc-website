@@ -65,6 +65,17 @@ export function WebsiteCarbonBadge() {
       const g = document.getElementById("wcb_g");
       if (g && g.textContent === "No Result") {
         g.innerHTML = `${carbon.carbon.gramsPerView}g of CO<sub>2</sub>/view`;
+
+        // The percentile line beneath, which their renderResult writes into
+        // #wcb_2 and which therefore stays empty on failure — the badge is
+        // both halves, and the figure alone says nothing about how it
+        // compares. textContent rather than their insertAdjacentHTML: this
+        // runs from a MutationObserver and would otherwise append the
+        // sentence again on every mutation.
+        const p = document.getElementById("wcb_2");
+        if (p) {
+          p.textContent = `Cleaner than ${carbon.carbon.cleanerThanPercent}% of pages tested`;
+        }
       }
     };
     const root = document.getElementById("wcb");
@@ -98,6 +109,12 @@ export function WebsiteCarbonBadge() {
       // scaling it is the only way to make a fixed-width widget fit a narrow
       // grid track. The var is set by the grid cell; 15px is their default.
       style={{
+        // --b1 is the badge's ink, which their stylesheet sets to #0e11a8.
+        // The council's near-black reads better against both halves and is
+        // the colour the rest of the site sets text in: 18.3:1 on the white
+        // box and 13.4:1 on the green pill, both past the 7:1 AAA threshold,
+        // where their blue managed 12.6 and 9.3.
+        ["--b1" as string]: "#151515",
         ["--b2" as string]: "#00FF55",
         textAlign: "left",
         fontSize: "var(--wcb-size, 15px)",
