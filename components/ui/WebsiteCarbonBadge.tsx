@@ -47,22 +47,25 @@ export function WebsiteCarbonBadge() {
       const a = document.querySelector<HTMLAnchorElement>("#wcb #wcb_a");
       if (a && a.href !== carbon.sources.carbon) a.href = carbon.sources.carbon;
 
-      // Hide the badge rather than publish "No Result".
+      // Fall back to the committed figure rather than publish "No Result".
       //
-      // Their script writes that literal into #wcb_g whenever the API call
+      // Their script writes that literal into #wcb_g whenever its API call
       // fails, and it has been failing for this domain since a test on 3 Aug
-      // stored a record reading 0.00g and "cleaner than 0% of all web pages" —
-      // an internally contradictory row their API then refuses to serve. Their
-      // own note says badge results are cached for seven days and on a
-      // different clock from the website, so re-running the test does not
-      // clear it; it expires on its own.
+      // stored a row reading 0.00g and "cleaner than 0% of all web pages" —
+      // self-contradictory, and their API will not serve it. Their own note
+      // says badge results are cached seven days on a different clock from
+      // their website, which is why a fresh test can report 0.05g while the
+      // badge still gets nothing, and why re-running it does not help.
       //
-      // A footer that reports "No Result" reads as a broken site, which is a
-      // worse claim than making none. The moment their cache expires and the
-      // call succeeds this shows the figure by itself, with nothing to undo.
+      // So when the call comes back empty the badge shows the figure from
+      // that measurement instead, in their own markup. It is a real number
+      // with a date and a link behind it, which is better than an error and
+      // better than an empty cell. The moment their cache turns over, the
+      // live value replaces it with nothing to undo.
       const g = document.getElementById("wcb_g");
-      const root = document.getElementById("wcb");
-      if (g && root) root.style.visibility = g.textContent === "No Result" ? "hidden" : "";
+      if (g && g.textContent === "No Result") {
+        g.innerHTML = `${carbon.carbon.gramsPerView}g of CO<sub>2</sub>/view`;
+      }
     };
     const root = document.getElementById("wcb");
     const observer = root ? new MutationObserver(fix) : null;

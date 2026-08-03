@@ -92,7 +92,11 @@ async function carbon() {
   if (!Number.isFinite(cleanerThan) || cleanerThan <= 0 || cleanerThan > 100) {
     throw new Error(`implausible percentile (${d.p}) — not committing it`);
   }
-  return { gramsPerView: +grams.toFixed(2), cleanerThanPercent: cleanerThan };
+  return {
+    gramsPerView: +grams.toFixed(2),
+    cleanerThanPercent: cleanerThan,
+    source: `websitecarbon.com API, ${new Date().toISOString().slice(0, 10)}`,
+  };
 }
 
 const hosting = await greenHosting().catch((e) => {

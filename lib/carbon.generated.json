@@ -7,5 +7,9 @@
   "sources": {
     "greenHosting": "https://www.thegreenwebfoundation.org/green-web-check/?url=bulgariandesigncouncil.org",
     "carbon": "https://www.websitecarbon.com/website/bulgariandesigncouncil-org-bg/"
+  },
+  "carbon": {
+    "gramsPerView": 0.05,
+    "source": "websitecarbon.com test, 2026-08-03"
   }
 }
