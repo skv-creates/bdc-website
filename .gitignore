@@ -42,8 +42,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# claude code local session state
-.claude/
+# claude code local session state — but skills are shared project config,
+# not state, and everyone working here should get the same ones.
+# Note the /* — git cannot re-include anything under a directory that is
+# itself excluded, so the contents are ignored and skills negated back in.
+.claude/*
+!.claude/skills/
 
 # cloudflare / opennext
 .open-next/
