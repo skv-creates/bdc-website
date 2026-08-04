@@ -377,11 +377,33 @@ export function gridColsAt(width: number, css: string = raw): number {
 }
 
 /**
- * Sample widths built from the breakpoints themselves.
+ * The width at which a fluid style stops growing.
  *
- * Each `max-width` boundary contributes two: the last pixel of its band and the
- * first pixel of the next. Breakpoint problems live either side of the edge, not
- * in the middle of a band, so sampling only band centres hides them.
+ * `clamp(min, Nvw, max)` reaches `max` when `Nvw` passes it, and above that the
+ * size is constant. That width is where the style's desktop value — the size the
+ * design was drawn at — actually appears.
+ */
+export function capWidth(style: TypeStyle): number | null {
+  const clamp = style.fontSize.match(/^clamp\(([^,]+),\s*([\d.]+)vw\s*,([^)]+)\)$/);
+  if (!clamp) return null;
+  const max = lengthToPx(clamp[3], 0);
+  const vw = parseFloat(clamp[2]);
+  if (max === null || !vw) return null;
+  return Math.ceil((max / vw) * 100);
+}
+
+/**
+ * Sample widths, from the two kinds of width this stylesheet treats specially.
+ *
+ * **Breakpoints** — each `max-width` boundary contributes the last pixel of its
+ * band and the first pixel of the next, because breakpoint problems live either
+ * side of an edge rather than in the middle of a band.
+ *
+ * **The cap** — the width at which the last `clamp()` reaches its maximum. Every
+ * breakpoint in this stylesheet is at or below 1024px, but `.t-h01` does not
+ * reach its 80px until 1334px, so a table built from breakpoints alone never
+ * shows a single style at its desktop size. That was a real omission: the widest
+ * column read 61.44px for the hero and looked like the answer.
  */
 export function breakpointSamples(css: string = raw): {
   label: string;
@@ -398,16 +420,19 @@ export function breakpointSamples(css: string = raw): {
     }
   }
 
+  const caps = parseTypeStyles(css)
+    .map((style) => capWidth(style))
+    .filter((width): width is number => width !== null);
+  const lastCap = caps.length > 0 ? Math.max(...caps) : null;
+  if (lastCap) widths.add(lastCap);
+
   return [...widths]
     .sort((a, b) => a - b)
-    .map((width) => {
-      const cols = gridColsAt(width, css);
-      return {
-        label: `${width}`,
-        width,
-        note: `${cols} col`,
-      };
-    });
+    .map((width) => ({
+      label: `${width}`,
+      width,
+      note: width === lastCap ? 'all at max' : `${gridColsAt(width, css)} col`,
+    }));
 }
 
 export const REFERENCE_WIDTHS = breakpointSamples();

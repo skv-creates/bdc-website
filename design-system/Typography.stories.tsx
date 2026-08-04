@@ -461,12 +461,19 @@ export const Constraints: Story = {
     await expect(fontSizeAt(label!, PHONE)).toBeGreaterThanOrEqual(18);
     await expect(fontSizeAt(caption!, PHONE)).toBe(16);
 
-    // Desktop is the source of truth and must not drift. Every style reaches
-    // the size its Figma style was drawn at, and none exceeds it.
-    const WIDE = 1920;
+    // The widest sample must be a width where the styles have finished growing.
+    // This is the guard for a regression that already happened: when the sample
+    // widths were derived from breakpoints alone the widest was 1024px, where
+    // .t-h01 paints 61.44px — so the tables showed no style at its desktop size
+    // and the hero's 80px vanished without anything failing.
+    const widest = REFERENCE_WIDTHS[REFERENCE_WIDTHS.length - 1].width;
+    await expect(fontSizeAt(byName('t-h01')!, widest)).toBe(80);
+
+    // Desktop must not drift. Every style reaches the size it declares, and
+    // none exceeds it, at the width where the last one stops growing.
     for (const style of typeStyles) {
       if (!style.figmaPx) continue;
-      await expect(fontSizeAt(style, WIDE)).toBe(Number(style.figmaPx));
+      await expect(fontSizeAt(style, widest)).toBe(Number(style.figmaPx));
     }
 
     // Checked at 1920 rather than at the 1512 design width because of one
