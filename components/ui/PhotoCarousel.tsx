@@ -50,7 +50,7 @@ import type { Locale } from "@/lib/home-content";
 const SLIDE_HEIGHTS = { mobile: 260, tablet: 420, desktop: 540 } as const;
 
 const SPEED = 18;
-const SPEED_HOVER = 9;
+const SPEED_HOVER = 12;
 /** How sharply it eases between the two. Higher settles faster. */
 const EASE_PER_SECOND = 3;
 

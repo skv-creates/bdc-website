@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   fontSizeAt,
+  formatPx,
   REFERENCE_WIDTHS,
   respondsToTextSize,
   ROOT_PX,
@@ -93,7 +94,7 @@ export function TextSizeMatrix() {
                           isDefault ? 'font-bold' : 'ds-muted'
                         }`}
                       >
-                        {px === null ? '—' : `${Math.round(px * 10) / 10}px`}
+                        {formatPx(px)}
                       </td>
                     );
                   })}

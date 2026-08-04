@@ -6,6 +6,7 @@ import {
   boundaryJump,
   deadMinimum,
   fontSizeAt,
+  formatPx,
   REFERENCE_WIDTHS,
   typeStyles,
   type TypeStyle,
@@ -173,7 +174,7 @@ function AcrossBreakpoints() {
                   const overridden = width <= 767 && Boolean(style.mobile?.fontSize);
                   return (
                     <td key={width} className="t-caption py-3 pe-6 font-mono">
-                      {px === null ? '—' : `${Math.round(px * 10) / 10}px`}
+                      {formatPx(px)}
                       {overridden && (
                         <span className="t-caption ms-2 ds-muted">fixed</span>
                       )}

@@ -120,7 +120,72 @@
       "description": {
         "bg": "Включихме се в ICoD Regional Meeting Balkans & Europe 2026, организирана от Международния съвет по дизайн ([ICoD](https://www.theicod.org/en)) в рамките на European Design Festival в София.\n\nПод темата „Confessions of a Designer: Design, Decisions and Impact“ срещата събра дизайнери, лидери на професионални организации и творци от цяла Европа в откровен разговор за предизвикателствата пред професията, отговорността на дизайнерите и влиянието на дизайна върху обществото. Чрез лекции, дискусии и обмен на различни гледни точки събитието насърчи международното сътрудничество и създаде пространство за споделяне на опит, идеи и визии за развитието на дизайна в Европа.\n\nЗа Българския дизайн съвет участието беше възможност да обменим опит с европейската дизайн общност, да създадем нови професионални връзки и да включим България по-активно в международния разговор за бъдещето на дизайна.",
         "en": "We joined the ICoD Regional Meeting Balkans & Europe 2026, organised by the [International Council of Design (ICoD)](https://www.theicod.org/en) as part of the European Design Festival in Sofia.\n\nUnder the theme “Confessions of a Designer: Design, Decisions and Impact,” the meeting brought together designers, leaders of professional organisations and creatives from across Europe for an open conversation about the challenges facing the profession, designers’ responsibilities and design’s impact on society. Through talks, discussions and the exchange of diverse perspectives, the event fostered international collaboration and created space to share experiences, ideas and visions for the future of design in Europe.\n\nFor the Bulgarian Design Council, taking part was an opportunity to exchange knowledge with the European design community, build new professional connections and bring Bulgaria more actively into the international conversation about the future of design."
-      }
+      },
+      "covers": [
+        {
+          "src": "/figma/events/regional-meeting-of-the-international-council-of-design-icod.jpg",
+          "width": 1556,
+          "height": 1356,
+          "alt": {
+            "bg": "credit: Stefan Vladimirov / Our co-founders Stefi and Radina with the International Council of Design’s team at the ICoD Regional Meeting in Sofia, Bulgaria.",
+            "en": "credit: Stefan Vladimirov / Our co-founders Stefi and Radina with the International Council of Design’s team at the ICoD Regional Meeting in Sofia, Bulgaria."
+          }
+        },
+        {
+          "src": "/figma/events/regional-meeting-of-the-international-council-of-design-icod-2.jpg",
+          "width": 2400,
+          "height": 1599,
+          "alt": {
+            "bg": "credit: Studio Komplekt and International Council of Design (ICoD)",
+            "en": "credit: Studio Komplekt and International Council of Design (ICoD)"
+          }
+        },
+        {
+          "src": "/figma/events/regional-meeting-of-the-international-council-of-design-icod-3.jpg",
+          "width": 2400,
+          "height": 1599,
+          "alt": {
+            "bg": "credit: Studio Komplekt and International Council of Design (ICoD)",
+            "en": "credit: Studio Komplekt and International Council of Design (ICoD)"
+          }
+        },
+        {
+          "src": "/figma/events/regional-meeting-of-the-international-council-of-design-icod-4.jpg",
+          "width": 2400,
+          "height": 1599,
+          "alt": {
+            "bg": "credit: Studio Komplekt and International Council of Design (ICoD)",
+            "en": "credit: Studio Komplekt and International Council of Design (ICoD)"
+          }
+        },
+        {
+          "src": "/figma/events/regional-meeting-of-the-international-council-of-design-icod-5.jpg",
+          "width": 2400,
+          "height": 1599,
+          "alt": {
+            "bg": "credit: Studio Komplekt and International Council of Design (ICoD)",
+            "en": "credit: Studio Komplekt and International Council of Design (ICoD)"
+          }
+        },
+        {
+          "src": "/figma/events/regional-meeting-of-the-international-council-of-design-icod-6.jpg",
+          "width": 2400,
+          "height": 1599,
+          "alt": {
+            "bg": "credit: Studio Komplekt and International Council of Design (ICoD)",
+            "en": "credit: Studio Komplekt and International Council of Design (ICoD)"
+          }
+        },
+        {
+          "src": "/figma/events/regional-meeting-of-the-international-council-of-design-icod-7.jpg",
+          "width": 2400,
+          "height": 1600,
+          "alt": {
+            "bg": "credit: Stefan Vladimirov",
+            "en": "credit: Stefan Vladimirov"
+          }
+        }
+      ]
     },
     {
       "slug": "european-design-festival-2026",
@@ -205,9 +270,31 @@
         "en": "From chaos to solution"
       },
       "description": {
-        "bg": "Зинаида Илер, член на Управителния ни съвет, беше поканена като специален гост в практическата работилница „От хаос към решение“ в Нов български университет.\n\nТя помогна на студентите да превърнат сложната и често противоречива информация в ясни потребителски нужди, идеи и конкретни решения. В практическия процес те изследваха проблеми, задаваха критични въпроси, свързваха различни гледни точки и проверяваха предположенията си, преди да преминат към решение.\n\nПътят от хаоса към доброто решение започва не с готовия отговор, а с правилното разбиране на проблема.\n\nДобрият дизайн не прикрива хаоса. Той ни помага да го разберем и да намерим път през него.",
-        "en": "Zinaida Iller, a member of our Board, was invited as a special guest at the workshop “From Chaos to Solution” at New Bulgarian University.\n\nShe helped students transform complex and often conflicting information into clear user needs, ideas and tangible solutions. Throughout the practical process, they explored problems, asked critical questions, connected different perspectives and tested their assumptions before moving towards a solution.\n\nThe road from chaos to a good solution begins not with a ready-made answer, but with a true understanding of the problem.\n\nGood design does not conceal chaos. It helps us understand it and find a way through."
-      }
+        "bg": "Зинаида Илер, член на Управителния ни съвет, беше поканена като специален гост в практическата UX работилница „От хаос към решение“, с лектор Милен Донев, организирана от UX България специално за студентите на Нов български университет.\n\nЗина помогна на студентите да превърнат сложната и често противоречива информация в ясни потребителски нужди, идеи и конкретни решения. В практическия процес те изследваха проблеми, задаваха критични въпроси, свързваха различни гледни точки и проверяваха предположенията си, преди да преминат към решение.\n\nПътят от хаоса към доброто решение започва не с готовия отговор, а с правилното разбиране на проблема.\nДобрият дизайн не прикрива хаоса. Той ни помага да го разберем и да намерим път през него.",
+        "en": "Zinaida Iller, a member of our Board, was invited as a special guest to the hands-on UX workshop “From Chaos to Solution,” led by Milen Donev and organised by UX Bulgaria specifically for students at New Bulgarian University.\n\nZina helped students transform complex and often conflicting information into clear user needs, ideas and tangible solutions. Throughout the practical process, they explored problems, asked critical questions, connected different perspectives and tested their assumptions before moving towards a solution.\n\nThe road from chaos to a good solution begins not with a ready-made answer, but with a true understanding of the problem.\nGood design does not conceal chaos. It helps us understand it and find a way through."
+      },
+      "covers": [
+        {
+          "src": "/figma/events/ot-haos-kam-reshenie.jpg",
+          "width": 2400,
+          "height": 1350
+        },
+        {
+          "src": "/figma/events/ot-haos-kam-reshenie-2.jpg",
+          "width": 1122,
+          "height": 1402
+        },
+        {
+          "src": "/figma/events/ot-haos-kam-reshenie-3.jpg",
+          "width": 2400,
+          "height": 1350
+        },
+        {
+          "src": "/figma/events/ot-haos-kam-reshenie-4.jpg",
+          "width": 2400,
+          "height": 1350
+        }
+      ]
     }
   ]
 }

@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BANDS, DESIGN_WIDTH, globalsCss, REFERENCE_WIDTHS, typeStyles } from './tokens';
+import {
+  BANDS,
+  DESIGN_WIDTH,
+  formatPx,
+  globalsCss,
+  REFERENCE_WIDTHS,
+  typeStyles,
+} from './tokens';
 
 /**
  * A real viewport you can drag.
@@ -99,6 +106,7 @@ export function ResponsivePreview() {
   // is the intended state rather than an arbitrary phone.
   const [width, setWidth] = useState(DESIGN_WIDTH);
   const [painted, setPainted] = useState<Record<string, number>>({});
+  const [frameViewport, setFrameViewport] = useState<number | null>(null);
   const [reference, setReference] = useState<Record<string, number>>({});
   const frame = useRef<HTMLIFrameElement>(null);
   const probe = useRef<HTMLParagraphElement>(null);
@@ -132,6 +140,16 @@ export function ResponsivePreview() {
         if (node) next[style.name] = parseFloat(getComputedStyle(node).fontSize);
       }
       setPainted(next);
+      /*
+       * What the frame's stylesheet actually thinks the viewport is.
+       *
+       * This is the number every media query and vw unit resolves against, and
+       * it silently differed from the requested width once already — a 1px
+       * border made it 2px narrower, which is enough to drop a whole band. It
+       * is reported now, so a mismatch shows as a warning instead of as two
+       * plausible-looking wrong sizes.
+       */
+      setFrameViewport(doc.documentElement.clientWidth);
     };
 
     el.addEventListener('load', measure);
@@ -225,13 +243,26 @@ export function ResponsivePreview() {
           aria-label="Type scale preview frame"
           tabIndex={0}
         >
-          <iframe
-            ref={frame}
-            title={`Type scale at ${width} pixels`}
-            srcDoc={srcDoc}
-            style={{ width: `${width}px` }}
-            className="h-[720px] shrink-0 border border-black/15 bg-white"
-          />
+          {/*
+            The border is on this wrapper, not on the frame.
+
+            Tailwind's preflight sets `box-sizing: border-box` everywhere, so a
+            1px border on the iframe itself made its content box — and therefore
+            its layout viewport — 2px narrower than the width being requested.
+            That is enough to land in the wrong band: at "390" the frame was
+            really 388 and painted the ≤389 floor of 40px, and at "768" it was
+            really 766 and painted 63.9 instead of 64. One pixel of chrome,
+            two wrong numbers, and nothing to suggest either was wrong.
+          */}
+          <div className="inline-block border border-black/15 bg-white">
+            <iframe
+              ref={frame}
+              title={`Type scale at ${width} pixels`}
+              srcDoc={srcDoc}
+              style={{ width: `${width}px`, boxSizing: "content-box" }}
+              className="block h-[720px] border-0"
+            />
+          </div>
         </div>
 
         <table className="h-fit w-full border-collapse text-left">
@@ -261,7 +292,7 @@ export function ResponsivePreview() {
                 <tr key={style.name} className="border-b border-black/10">
                   <td className="t-caption py-2 font-bold">.{style.name}</td>
                   <td className="t-caption py-2 text-right font-mono">
-                    {now ? `${Math.round(now * 10) / 10}px` : '…'}
+                    {now ? formatPx(now) : '…'}
                   </td>
                   <td
                     className={`t-caption py-2 text-right font-mono ${

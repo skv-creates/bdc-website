@@ -268,6 +268,24 @@ export const layoutGroups: TokenGroup[] = tokenGroups.filter((group) =>
 export const ROOT_PX = 16;
 
 /**
+ * A pixel value as a reader should see it.
+ *
+ * Every fluid size here is the solution to two fixed anchors, so it arrives with
+ * floating-point residue: 63.999999 rather than 64, 79.99998 rather than 80.
+ * Rounded to a tenth in one table and a hundredth in another, the pages reported
+ * sizes a tenth of a pixel off the value the council set — and a table that is
+ * nearly right is worse than one that is obviously wrong, because nobody
+ * questions it.
+ *
+ * One rounding, used everywhere: to a hundredth, with trailing zeros dropped.
+ * 64, 46.08, 63.95.
+ */
+export function formatPx(value: number | null | undefined): string {
+  if (value === null || value === undefined || Number.isNaN(value)) return "—";
+  return `${Math.round(value * 100) / 100}px`;
+}
+
+/**
  * The browser's text-size setting, which is this platform's Dynamic Type.
  *
  * Apple varies a style by the reader's content size category — Title 1 is 34pt
