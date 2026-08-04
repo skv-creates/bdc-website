@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect } from 'storybook/test';
 import {
-  BANDS,
   DESIGN_WIDTH,
   boundaryJump,
   deadMinimum,
