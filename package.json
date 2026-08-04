@@ -19,7 +19,8 @@
     "sync:carbon": "node scripts/sync-carbon.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build-storybook:staging": "node scripts/build-storybook.mjs"
+    "build-storybook:staging": "node scripts/build-storybook.mjs",
+    "sync:live-type": "node scripts/sync-live-type.mjs"
   },
   "dependencies": {
     "next": "16.2.9",

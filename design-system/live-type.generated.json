@@ -1,0 +1,177 @@
+{
+  "fetchedFrom": "https://bulgariandesigncouncil.org/bg",
+  "fetchedOn": "2026-08-04",
+  "stylesheets": [
+    "/_next/static/chunks/3tms26lv-7qsd.css",
+    "/_next/static/chunks/1p9mlztuona0y.css"
+  ],
+  "tokens": {
+    "--bdc-amber": "#fed140",
+    "--bdc-burgundy": "#770f42",
+    "--bdc-dark": "#151515",
+    "--bdc-indigo": "#2e0984",
+    "--bdc-lavender": "#927df2",
+    "--bdc-orange": "#f47e38",
+    "--bdc-rose": "#f3a3ca",
+    "--bdc-tomato": "#f25254",
+    "--bdc-white": "#fff",
+    "--color-border": "var(--bdc-dark)",
+    "--color-brand": "var(--bdc-rose)",
+    "--color-brand-hover": "var(--bdc-dark)",
+    "--color-page": "var(--bdc-white)",
+    "--color-text": "var(--bdc-dark)",
+    "--color-text-invert": "var(--bdc-white)",
+    "--font-body": "var(--font-about-beige), system-ui, sans-serif",
+    "--font-display": "var(--font-about-beige), system-ui, sans-serif",
+    "--fs-2xl": "40px",
+    "--fs-3xl": "56px",
+    "--fs-4xl": "64px",
+    "--fs-5xl": "80px",
+    "--fs-digit": "120px",
+    "--fs-lg": "24px",
+    "--fs-md": "20px",
+    "--fs-sm": "16px",
+    "--fs-xl": "32px",
+    "--grid-cols": "12",
+    "--grid-gap": "24px",
+    "--ls-h05": "-.7px",
+    "--ls-normal": "0px",
+    "--ls-tight": "-1px",
+    "--ls-wide": ".05px",
+    "--overlay-panel-left": "var(--page-gutter)",
+    "--page-gutter": "clamp(1.25rem, 7.4vw, 7rem)",
+    "--pattern-c1": "var(--bdc-tomato)",
+    "--pattern-c2": "var(--bdc-rose)",
+    "--pattern-c3": "var(--bdc-burgundy)",
+    "--pattern-c4": "var(--bdc-orange)",
+    "--radius-full": "9999px",
+    "--rail-clear": "0px",
+    "--rail-w": "var(--page-gutter)",
+    "--space-2xl": "48px",
+    "--space-lg": "16px",
+    "--space-sm": "8px",
+    "--space-xl": "32px",
+    "--tri-accent": "var(--bdc-rose)",
+    "--tri-band": "var(--bdc-tomato)",
+    "--tri-ground": "var(--bdc-burgundy)",
+    "--weight-bold": "700",
+    "--weight-medium": "500",
+    "--weight-regular": "400"
+  },
+  "styles": [
+    {
+      "name": "t-body",
+      "fontSize": "1.25rem",
+      "lineHeight": "1.4",
+      "letterSpacing": "var(--ls-normal)",
+      "fontWeight": "var(--weight-regular)",
+      "overrides": [
+        {
+          "query": "(max-width:767px)",
+          "fontSize": "1.2rem"
+        }
+      ]
+    },
+    {
+      "name": "t-body-lg",
+      "fontSize": "clamp(1.125rem,1.6vw,1.5rem)",
+      "lineHeight": "1.5",
+      "letterSpacing": "var(--ls-normal)",
+      "fontWeight": "var(--weight-regular)"
+    },
+    {
+      "name": "t-caption",
+      "fontSize": "1rem",
+      "lineHeight": "1.5",
+      "letterSpacing": "var(--ls-normal)",
+      "fontWeight": "var(--weight-medium)",
+      "overrides": [
+        {
+          "query": "(max-width:767px)",
+          "lineHeight": "1.2"
+        }
+      ]
+    },
+    {
+      "name": "t-digit",
+      "fontSize": "clamp(4rem,12vw,7.5rem)",
+      "lineHeight": "1",
+      "letterSpacing": "var(--ls-tight)",
+      "fontWeight": "var(--weight-regular)"
+    },
+    {
+      "name": "t-h01",
+      "fontSize": "clamp(2.5rem,6vw,5rem)",
+      "lineHeight": "1.1",
+      "letterSpacing": "var(--ls-tight)",
+      "fontWeight": "var(--weight-bold)",
+      "overrides": [
+        {
+          "query": "(max-width:767px)",
+          "fontSize": "2rem"
+        }
+      ]
+    },
+    {
+      "name": "t-h02",
+      "fontSize": "clamp(2rem,4.6vw,3.5rem)",
+      "lineHeight": "1.1",
+      "letterSpacing": "var(--ls-tight)",
+      "fontWeight": "var(--weight-bold)",
+      "overrides": [
+        {
+          "query": "(max-width:767px)",
+          "fontSize": "1.8rem",
+          "lineHeight": "1.1"
+        }
+      ]
+    },
+    {
+      "name": "t-h03",
+      "fontSize": "clamp(1.75rem,3.4vw,2.5rem)",
+      "lineHeight": "1.1",
+      "letterSpacing": "var(--ls-tight)",
+      "fontWeight": "var(--weight-bold)",
+      "overrides": [
+        {
+          "query": "(max-width:767px)",
+          "fontSize": "1.6rem"
+        }
+      ]
+    },
+    {
+      "name": "t-h04",
+      "fontSize": "clamp(1.5rem,3vw,2.5rem)",
+      "lineHeight": "1.1",
+      "letterSpacing": "var(--ls-tight)",
+      "fontWeight": "var(--weight-bold)"
+    },
+    {
+      "name": "t-h05",
+      "fontSize": "clamp(1.375rem,2vw,2rem)",
+      "lineHeight": "1.3",
+      "letterSpacing": "var(--ls-h05)",
+      "fontWeight": "var(--weight-bold)"
+    },
+    {
+      "name": "t-label",
+      "fontSize": "1.25rem",
+      "lineHeight": "1.4",
+      "letterSpacing": "var(--ls-wide)",
+      "fontWeight": "var(--weight-medium)",
+      "overrides": [
+        {
+          "query": "(max-width:767px)",
+          "fontSize": "1.2rem"
+        }
+      ]
+    },
+    {
+      "name": "t-quote",
+      "fontSize": "clamp(2.25rem,5.2vw,4rem)",
+      "lineHeight": "1.2",
+      "letterSpacing": "var(--ls-tight)",
+      "fontWeight": "var(--weight-bold)"
+    }
+  ]
+}
