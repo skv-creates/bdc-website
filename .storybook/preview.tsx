@@ -72,7 +72,17 @@ const preview: Preview = {
      * know what `bg-brand` and `t-label` are.
      */
     options: {
-      storySort: { order: ['Foundations', 'components'] },
+      /**
+       * Foundations first, and "Start here" first within it.
+       *
+       * The nested array orders entries INSIDE a group; `'*'` is everything not
+       * named, in its existing order. Without the inner array, Foundations came
+       * first but "Start here" sorted among Colour, Layout and the rest — so the
+       * one page that says how to read the others sat fifth.
+       */
+      storySort: {
+        order: ['Foundations', ['Start here', '*'], '*'],
+      },
     },
 
     /**

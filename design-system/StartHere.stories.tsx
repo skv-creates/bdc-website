@@ -112,14 +112,19 @@ function PromptCard({ prompt }: { prompt: Prompt }) {
 }
 
 /**
- * Named to match the last segment of the title on purpose.
+ * The export name and the display name do different jobs, and both matter here.
  *
- * Storybook hoists a single-story component into one sidebar entry only when the
- * story's name matches its group's. Called anything else — it was `Overview` —
- * the sidebar shows a "Start here" parent you have to open to reach a child,
- * which buries the first page anyone is meant to read.
+ * `name` is what Storybook compares against the group when deciding whether to
+ * hoist a single-story component into one flat sidebar entry — so it has to be
+ * "Start here" or the page ends up buried under a parent you must open.
+ *
+ * The EXPORT name is what the story's URL id is built from. Renaming this to
+ * `StartHere` changed the id from `foundations-start-here--overview` to
+ * `--start-here` and broke every link anyone already had, including an open tab.
+ * It stays `Overview` for that reason: the id is a permalink, and there was no
+ * reason to spend it.
  */
-export const StartHere: Story = {
+export const Overview: Story = {
   name: 'Start here',
   render: () => (
     <Page
