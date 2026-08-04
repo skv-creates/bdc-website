@@ -23,7 +23,25 @@
 	//
 	// vars are NOT inherited into a named environment, so production repeats it
 	// below. Leave it out there and production silently becomes staging again.
-	"vars": { "SITE_ORIGIN": "https://staging.bulgariandesigncouncil.org" },
+	//
+	// NOTION_EVENTS_DATA_SOURCE_ID is the same value the events sync workflow
+	// holds as a GitHub *variable*, and for the same reason: it identifies a
+	// data source, it is not a credential. The Shift+E editor needs it to find
+	// the row for a slug. The token that goes with it is a secret and is set
+	// with `wrangler secret put`, never here — see AGENTS.md.
+	"vars": {
+		"SITE_ORIGIN": "https://staging.bulgariandesigncouncil.org",
+		"NOTION_EVENTS_DATA_SOURCE_ID": "b51c7693-aa03-8324-9099-87dd784391f9"
+	},
+	// Copy edited on staging with Shift+E, held until the next Notion sync
+	// regenerates lib/events.generated.json. See lib/drafts.ts.
+	//
+	// DELIBERATELY ABSENT FROM THE PRODUCTION ENVIRONMENT BELOW. Bindings are
+	// not inherited, so leaving it out there is not an omission to be tidied up
+	// later — it is the structural guarantee that the apex cannot serve a draft.
+	// The IS_PRODUCTION_SITE checks in the code are the second lock; this is the
+	// first, and it is the one that holds even if the code is wrong.
+	"kv_namespaces": [{ "binding": "DRAFTS", "id": "REPLACE_WITH_KV_NAMESPACE_ID" }],
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"

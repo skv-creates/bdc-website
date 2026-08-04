@@ -252,3 +252,56 @@ site.
 If you connect a repo to a Worker in the Cloudflare dashboard, it turns that
 integration back on. Don't — or if you do, delete `deploy.yml` in the same
 change so only one of them ships.
+
+# Editing copy on staging — Shift+E
+
+`components/dev/EditMode.tsx` turns an event page on staging into something you
+can type into: click a paragraph to edit it, and every photograph shows its alt
+text. Save writes to **Notion first** and only then anywhere else, so the CMS
+stays the source of truth. Staging only, gated exactly like the Shift+R
+redlines and mounted next to them in `app/[locale]/layout.tsx`.
+
+Three things have to be set up once, and none of them live in this repo:
+
+    wrangler kv namespace create DRAFTS     # put the id in wrangler.jsonc
+    wrangler secret put EDIT_PASSPHRASE --env=""
+    wrangler secret put NOTION_WRITE_TOKEN --env=""
+
+`NOTION_WRITE_TOKEN` is the **only write-capable Notion integration anywhere in
+this project**. Everything else — the scheduled events sync, the bios sync on a
+laptop — is deliberately read-only. It is a Worker secret on staging and must
+never be added to the production environment, to CI, or to `.env.example`.
+
+What you edit is Notion's own source, brackets and all: `[label](url)`, because
+that is what the sync writes into `lib/events.generated.json` and what
+`EventOverlayContent` parses back into anchors. `toRichText` in
+`lib/notion-write.ts` turns it back into real Notion links on the way in —
+without it, a save would flatten every link in the paragraph into literal
+square brackets and the next sync would read them back that way.
+
+Four things that will bite:
+
+- **Event pages are prerendered, and they stay that way.** A save shows up on
+  your screen because the editor rewrites the paragraphs in place; it is *not*
+  the server re-rendering. Everyone else sees the change when the events sync
+  next runs and redeploys staging. Making the route read drafts per request was
+  tried and reverted: importing `next/headers` turns the route dynamic in the
+  *production* build too — `/[locale]/events/[slug]` went from ● to ƒ — which
+  costs the public site its prerendering. Not a trade worth making for a tool
+  no visitor uses.
+- **`DRAFTS` is bound on staging and nowhere else.** Bindings are not inherited
+  into a named environment, so its absence under `env.production` is the
+  structural guarantee that the apex cannot serve a draft. The
+  `IS_PRODUCTION_SITE` checks are the second lock, not the only one.
+- **Paragraphs are matched to the page by their text**, not by an attribute.
+  That is what keeps every editing hook out of `EventOverlayContent` and
+  therefore off production's render path. It also means a paragraph the editor
+  cannot find is one it will not offer to edit — which is the safe failure.
+- **Videos, bookmarks and embeds are read as body lines but never written.**
+  They occupy a slot in the description so the indices line up, and
+  `pushEventCopy` reports them as skipped rather than writing a sentence over a
+  player.
+
+Initiatives are **not** editable this way, and cannot be: they are hand-written
+in `lib/home-content.ts` and have no Notion rows to write back to. Only bios,
+FAQ and events come from Notion.

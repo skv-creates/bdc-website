@@ -15,6 +15,11 @@ const Redlines = dynamic(() =>
   import("@/components/dev/Redlines").then((mod) => mod.Redlines),
 );
 
+/** The Shift+E copy editor. Same arrangement, same reason. */
+const EditMode = dynamic(() =>
+  import("@/components/dev/EditMode").then((mod) => mod.EditMode),
+);
+
 /**
  * Brand face — "About Beige Standard", self-hosted via next/font/local.
  *
@@ -127,6 +132,11 @@ export default async function RootLayout({
             dynamic import, so on the apex its chunk is never requested. A design
             tool no visitor asked for should not be in the bytes they download. */}
         {!IS_PRODUCTION_SITE && <Redlines />}
+        {/* Shift+E edits an event's copy and its images' alt text in place,
+            writing to Notion and to the staging draft store. Gated identically
+            — and the endpoint it talks to is itself a 404 on the apex, so the
+            gate failing open would still not give anyone a way in. */}
+        {!IS_PRODUCTION_SITE && <EditMode />}
       </body>
     </html>
   );
