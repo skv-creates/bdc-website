@@ -49,8 +49,9 @@ import type { Locale } from "@/lib/home-content";
  */
 const SLIDE_HEIGHTS = { mobile: 260, tablet: 420, desktop: 540 } as const;
 
-const SPEED = 18;
-const SPEED_HOVER = 12;
+/** Drift in pixels per second: at rest, and while the pointer is over it. */
+const SPEED = 21;
+const SPEED_HOVER = 18;
 /** How sharply it eases between the two. Higher settles faster. */
 const EASE_PER_SECOND = 3;
 
