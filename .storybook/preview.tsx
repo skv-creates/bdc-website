@@ -1,7 +1,11 @@
 import type { Preview } from '@storybook/nextjs-vite'
 import type { CSSProperties } from 'react'
 import localFont from 'next/font/local'
-import '../app/globals.css'
+// Not app/globals.css: that entry excludes the Storybook-only folders from
+// Tailwind's source scanning so their utilities stay out of the site's CSS.
+// This one compiles the same tokens and base rules with the whole project in
+// scope. See .storybook/preview.css.
+import './preview.css'
 
 /**
  * The same face, declared the same way as app/[locale]/layout.tsx.
@@ -111,11 +115,16 @@ const preview: Preview = {
       },
     },
 
+    /**
+     * Violations fail the run, they do not get listed and ignored.
+     *
+     * This was on 'todo', which shows problems in the panel and lets the suite
+     * pass anyway — so the design system accumulated contrast failures while
+     * reporting itself green. The council's target is WCAG AA and better, and a
+     * check that cannot fail is not a check.
+     */
     a11y: {
-      // 'todo' - show a11y violations in the test UI only
-      // 'error' - fail CI on a11y violations
-      // 'off' - skip a11y checks entirely
-      test: 'todo'
+      test: 'error',
     }
   },
 };

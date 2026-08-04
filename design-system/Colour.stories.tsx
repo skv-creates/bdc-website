@@ -31,7 +31,7 @@ function ContrastLine({ swatch }: { swatch: string }) {
   const verdict = judge(best);
 
   return (
-    <p className="t-caption mt-1 opacity-60">
+    <p className="t-caption mt-1 ds-muted">
       {formatRatio(best)} on {against}
       {' · '}
       {verdict.normalText
@@ -59,13 +59,13 @@ function Swatch({ token }: { token: Token }) {
         aria-hidden
       />
       <code className="t-caption mt-3 font-bold">{token.name}</code>
-      <span className="t-caption font-mono uppercase opacity-70">
+      <span className="t-caption font-mono uppercase ds-muted">
         {resolved || token.value}
       </span>
       {pointsAt && (
-        <span className="t-caption font-mono opacity-60">{pointsAt}</span>
+        <span className="t-caption font-mono ds-muted">{pointsAt}</span>
       )}
-      {token.note && <span className="t-caption mt-1 opacity-60">{token.note}</span>}
+      {token.note && <span className="t-caption mt-1 ds-muted">{token.note}</span>}
       <ContrastLine swatch={resolved || token.value} />
     </li>
   );

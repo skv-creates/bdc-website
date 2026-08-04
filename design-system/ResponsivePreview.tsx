@@ -78,6 +78,25 @@ p { margin: 6px 0 0; }
  */
 const CAP = capAllWidth();
 
+/**
+ * One entry per band, plus the design width, plus the cap — but only where the
+ * cap is a different width.
+ *
+ * Every style now reaches its maximum by 1512, so the cap and the design width
+ * are the same number. Offering both put two buttons reading "1512px" side by
+ * side, which said nothing and looked like a bug because it was one.
+ */
+const PRESETS: { width: number; label: string }[] = [
+  ...BANDS.map((band) => ({
+    width: band.sample,
+    label: `${band.range} · ${band.cols} col`,
+  })),
+  { width: DESIGN_WIDTH, label: `${DESIGN_WIDTH}px · design width` },
+  ...(CAP && CAP !== DESIGN_WIDTH ? [{ width: CAP, label: `${CAP}px · all at max` }] : []),
+].filter(
+  (preset, index, all) => all.findIndex((other) => other.width === preset.width) === index,
+);
+
 const BOUNDARY_WIDTHS = BANDS.flatMap((band) =>
   band.to === null ? [] : [band.to, band.to + 1],
 );
@@ -162,55 +181,32 @@ export function ResponsivePreview() {
       </p>
 
       <div className="flex flex-wrap items-center gap-3">
-        <span className="t-caption w-20 uppercase tracking-[0.08em] opacity-60">Band</span>
-        {BANDS.map((band) => {
-          const active = width >= band.from && (band.to === null || width <= band.to);
+        <span className="t-caption w-20 uppercase tracking-[0.08em] ds-label">Band</span>
+        {PRESETS.map((preset) => {
+          // Exactly one preset can be selected, and only on an exact match.
+          // Highlighting every preset whose *range* contained the width lit
+          // three buttons at once and made the control unreadable.
+          const selected = width === preset.width;
           return (
             <button
-              key={band.from}
+              key={preset.width}
               type="button"
-              onClick={() => setWidth(band.sample)}
-              aria-pressed={active}
+              onClick={() => setWidth(preset.width)}
+              aria-pressed={selected}
               className={`t-caption rounded-full border-2 px-4 py-1.5 transition-colors ${
-                active
+                selected
                   ? 'border-brand bg-brand'
                   : 'border-border hover:bg-brand-hover hover:text-text-invert'
               }`}
             >
-              {band.range} · {band.cols} col
+              {preset.label}
             </button>
           );
         })}
-        <button
-          type="button"
-          onClick={() => setWidth(DESIGN_WIDTH)}
-          aria-pressed={width === DESIGN_WIDTH}
-          className={`t-caption rounded-full border-2 px-4 py-1.5 transition-colors ${
-            width === DESIGN_WIDTH
-              ? 'border-brand bg-brand'
-              : 'border-border hover:bg-brand-hover hover:text-text-invert'
-          }`}
-        >
-          {DESIGN_WIDTH}px · design width
-        </button>
-        {CAP && (
-          <button
-            type="button"
-            onClick={() => setWidth(CAP)}
-            aria-pressed={width === CAP}
-            className={`t-caption rounded-full border-2 px-4 py-1.5 transition-colors ${
-              width === CAP
-                ? 'border-brand bg-brand'
-                : 'border-border hover:bg-brand-hover hover:text-text-invert'
-            }`}
-          >
-            {CAP}px · all at max
-          </button>
-        )}
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <span className="t-caption w-20 uppercase tracking-[0.08em] opacity-60">Edges</span>
+        <span className="t-caption w-20 uppercase tracking-[0.08em] ds-muted">Edges</span>
         {BOUNDARY_WIDTHS.map((edge) => (
           <button
             key={edge}
@@ -229,7 +225,7 @@ export function ResponsivePreview() {
       </div>
 
       <label className="mt-6 flex items-center gap-4">
-        <span className="t-caption uppercase tracking-[0.08em] opacity-60">Width</span>
+        <span className="t-caption uppercase tracking-[0.08em] ds-muted">Width</span>
         <input
           type="range"
           min={320}
@@ -242,13 +238,18 @@ export function ResponsivePreview() {
         <output className="t-label w-28 text-right font-mono">{width}px</output>
       </label>
 
-      <p className="t-caption mt-2 opacity-60">
+      <p className="t-caption mt-2 ds-muted">
         {band}
         {width >= 767 && width <= 768 && ' — drag one pixel across this boundary'}
       </p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="overflow-x-auto">
+        <div
+          className="overflow-x-auto"
+          role="region"
+          aria-label="Type scale preview frame"
+          tabIndex={0}
+        >
           <iframe
             ref={frame}
             title={`Type scale at ${width} pixels`}
@@ -261,13 +262,13 @@ export function ResponsivePreview() {
         <table className="h-fit w-full border-collapse text-left">
           <thead>
             <tr className="border-b-2 border-black/20">
-              <th className="t-caption pb-2 uppercase tracking-[0.08em] opacity-60">
+              <th className="t-caption pb-2 uppercase tracking-[0.08em] ds-muted">
                 Style
               </th>
-              <th className="t-caption pb-2 text-right uppercase tracking-[0.08em] opacity-60">
+              <th className="t-caption pb-2 text-right uppercase tracking-[0.08em] ds-muted">
                 Painted
               </th>
-              <th className="t-caption pb-2 text-right uppercase tracking-[0.08em] opacity-60">
+              <th className="t-caption pb-2 text-right uppercase tracking-[0.08em] ds-muted">
                 Of desktop
               </th>
             </tr>
@@ -289,7 +290,7 @@ export function ResponsivePreview() {
                   </td>
                   <td
                     className={`t-caption py-2 text-right font-mono ${
-                      shrunk ? 'font-bold' : 'opacity-60'
+                      shrunk ? 'font-bold' : 'ds-muted'
                     }`}
                   >
                     {share === null ? '…' : `${share}%`}

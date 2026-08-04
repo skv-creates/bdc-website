@@ -32,9 +32,9 @@ export function Page({
   return (
     <article className="min-h-screen px-8 pb-32 pt-16 md:px-16">
       <header className="max-w-[68ch]">
-        <p className="t-caption uppercase tracking-[0.12em] opacity-60">Foundations</p>
+        <p className="t-caption uppercase tracking-[0.12em] ds-muted">Foundations</p>
         <h1 className="t-h02 mt-3">{title}</h1>
-        <div className="t-body-lg mt-6 opacity-80">{lede}</div>
+        <div className="t-body-lg mt-6 ds-muted">{lede}</div>
       </header>
       {children}
     </article>
@@ -54,7 +54,7 @@ export function Section({
     <section className="mt-24">
       <div className="max-w-[68ch]">
         <h2 className="t-h04">{title}</h2>
-        {intro && <div className="t-body mt-4 opacity-80">{intro}</div>}
+        {intro && <div className="t-body mt-4 ds-muted">{intro}</div>}
       </div>
       <div className="mt-10">{children}</div>
     </section>
@@ -70,7 +70,7 @@ export function Note({ title, children }: { title: string; children: ReactNode }
   return (
     <aside className="mt-10 max-w-[68ch] border-s-4 border-brand ps-6">
       <p className="t-label">{title}</p>
-      <div className="t-body mt-2 opacity-80">{children}</div>
+      <div className="t-body mt-2 ds-muted">{children}</div>
     </aside>
   );
 }
@@ -79,7 +79,7 @@ export function Note({ title, children }: { title: string; children: ReactNode }
 export function Spec({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="t-caption uppercase tracking-[0.08em] opacity-60">{label}</dt>
+      <dt className="t-caption uppercase tracking-[0.08em] ds-muted">{label}</dt>
       <dd className="t-caption font-mono">{value}</dd>
     </div>
   );

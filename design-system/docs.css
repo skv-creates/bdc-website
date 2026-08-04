@@ -1,0 +1,35 @@
+/* =============================================================================
+   Foundations pages — presentation only.
+
+   Loaded by .storybook/preview.tsx and by nothing the site ships, so nothing
+   here reaches a visitor or adds a byte to the pages the carbon figure is
+   measured against.
+
+   It exists for one reason: these pages had been using Tailwind's `opacity-*`
+   to quieten secondary text, and opacity is the wrong tool for it. Opacity
+   MULTIPLIES down the tree — `opacity-80` on a section with `opacity-70` on a
+   value inside it lands at 0.56, which is 3.2:1 on white and fails AA outright.
+   Every nested case was a violation, and the failures were invisible because
+   each individual class looked reasonable.
+
+   A colour cannot compound. These two are fixed values with known ratios, and
+   the council's target is AA and better, so the quieter of them still clears
+   AAA for body text.
+============================================================================= */
+
+:root {
+  /* 7.46:1 on the page white — AAA at any size. */
+  --ds-muted: #555555;
+  /* 9.44:1 — for the smallest labels, where headroom is worth having. */
+  --ds-label: #464646;
+}
+
+/* Secondary prose: intros, notes, the sentence under a specimen. */
+.ds-muted {
+  color: var(--ds-muted);
+}
+
+/* Column headings, units, the uppercase micro-labels beside values. */
+.ds-label {
+  color: var(--ds-label);
+}

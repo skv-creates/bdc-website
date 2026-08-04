@@ -21,7 +21,7 @@ function Step({ token }: { token: Token }) {
     <li className="border-t border-black/10 py-6">
       <div className="flex flex-wrap items-baseline gap-x-4">
         <code className="t-caption font-bold">{token.name}</code>
-        <span className="t-caption ms-auto font-mono opacity-60">{token.value}</span>
+        <span className="t-caption ms-auto font-mono ds-muted">{token.value}</span>
       </div>
       <div className="mt-4">
         {isRadius ? (

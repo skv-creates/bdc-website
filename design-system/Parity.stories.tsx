@@ -36,7 +36,7 @@ function Badge({ row }: { row: ParityRow }) {
       </span>
     );
   }
-  return <span className="t-caption px-3 py-1 opacity-60">Matches</span>;
+  return <span className="t-caption px-3 py-1 ds-muted">Matches</span>;
 }
 
 function Row({ row }: { row: ParityRow }) {
@@ -52,21 +52,21 @@ function Row({ row }: { row: ParityRow }) {
   const liveLh = row.live ? lineHeightPct(row.live.lineHeight) : null;
 
   const mismatch = (a: number | null, b: number | undefined) =>
-    a !== null && b !== undefined && a !== b ? 'font-bold' : 'opacity-70';
+    a !== null && b !== undefined && a !== b ? 'font-bold' : 'ds-muted';
 
   return (
     <tr className="border-b border-black/10 align-top">
       <td className="t-caption py-4 pe-6">
         <span className="font-bold">{row.figma?.name ?? '—'}</span>
         {row.figma?.group && (
-          <span className="ms-2 opacity-60">{row.figma.group}</span>
+          <span className="ms-2 ds-muted">{row.figma.group}</span>
         )}
       </td>
-      <td className="t-caption py-4 pe-6 font-mono opacity-70">
+      <td className="t-caption py-4 pe-6 font-mono ds-muted">
         {figmaSize} / {figmaLh}
       </td>
       <td className="t-caption py-4 pe-6 font-bold">
-        {row.branch ? `.${row.branch.name}` : <span className="opacity-60">none</span>}
+        {row.branch ? `.${row.branch.name}` : <span className="ds-muted">none</span>}
       </td>
       <td
         className={`t-caption py-4 pe-6 font-mono ${mismatch(branchSize, row.figma?.sizePx)}`}
@@ -83,7 +83,7 @@ function Row({ row }: { row: ParityRow }) {
       <td className="py-4">
         <Badge row={row} />
         {row.issues.length > 0 && (
-          <ul className="t-caption mt-2 flex flex-col gap-1 opacity-70">
+          <ul className="t-caption mt-2 flex flex-col gap-1 ds-muted">
             {row.issues.map((issue) => (
               <li key={issue.label}>{issue.detail}</li>
             ))}
@@ -111,19 +111,19 @@ export const Audit: Story = {
         <div className="flex flex-wrap gap-10">
           <div>
             <p className="t-digit leading-none">{parityCounts.errors}</p>
-            <p className="t-caption mt-2 uppercase tracking-[0.08em] opacity-60">
+            <p className="t-caption mt-2 uppercase tracking-[0.08em] ds-muted">
               Differ from Figma
             </p>
           </div>
           <div>
             <p className="t-digit leading-none">{parityCounts.warnings}</p>
-            <p className="t-caption mt-2 uppercase tracking-[0.08em] opacity-60">
+            <p className="t-caption mt-2 uppercase tracking-[0.08em] ds-muted">
               Worth checking
             </p>
           </div>
           <div>
             <p className="t-digit leading-none">{parityCounts.clean}</p>
-            <p className="t-caption mt-2 uppercase tracking-[0.08em] opacity-60">
+            <p className="t-caption mt-2 uppercase tracking-[0.08em] ds-muted">
               Match
             </p>
           </div>
@@ -134,7 +134,12 @@ export const Audit: Story = {
         title="Every style"
         intro="Sizes shown are the desktop values — the size each style settles at once its fluid range is exhausted."
       >
-        <div className="overflow-x-auto">
+        <div
+          className="overflow-x-auto"
+          role="region"
+          aria-label="Every text style compared across Figma, this branch and the live site"
+          tabIndex={0}
+        >
           <table className="w-full min-w-[64rem] border-collapse text-left">
             <thead>
               <tr className="border-b-2 border-black/20">
@@ -142,7 +147,7 @@ export const Audit: Story = {
                   (head) => (
                     <th
                       key={head}
-                      className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] opacity-60"
+                      className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] ds-muted"
                     >
                       {head}
                     </th>
@@ -173,7 +178,7 @@ export const Audit: Story = {
                       ? 'bg-[var(--bdc-burgundy)] text-[var(--bdc-white)]'
                       : claim.verdict === 'pending'
                         ? 'border-2 border-border'
-                        : 'opacity-60'
+                        : 'ds-muted'
                   }`}
                 >
                   {claim.verdict === 'wrong'
@@ -184,7 +189,7 @@ export const Audit: Story = {
                 </span>
                 <p className="t-body flex-1">{claim.statement}</p>
               </div>
-              <p className="t-caption mt-2 opacity-70">{claim.evidence}</p>
+              <p className="t-caption mt-2 ds-muted">{claim.evidence}</p>
               {claim.correction && (
                 <p className="t-caption mt-2 font-bold">{claim.correction}</p>
               )}
@@ -192,7 +197,7 @@ export const Audit: Story = {
           ))}
         </ul>
 
-        <p className="t-caption mt-8 opacity-70">
+        <p className="t-caption mt-8 ds-muted">
           {claimCounts.confirmed} confirmed · {claimCounts.wrong} wrong ·{' '}
           {claimCounts.pending} awaiting publication.
         </p>

@@ -1,0 +1,24 @@
+/* =============================================================================
+   Storybook's stylesheet.
+
+   The same tokens and base rules the site uses, compiled with the whole project
+   in scope rather than with the Storybook folders excluded.
+
+   The site's entry point, app/globals.css, carries `@source not` for
+   design-system/, .storybook/ and the component stories, because Tailwind scans
+   the project by default and those utilities would otherwise ship in the CSS
+   every visitor downloads — 70 rules and about 7KB that cannot match anything on
+   any page. Storybook needs exactly those utilities, so it imports the shared
+   rules directly and gets its own source scanning with no exclusions.
+
+   Both files import app/base.css, so there is one copy of the design system and
+   no chance of the two drifting.
+============================================================================= */
+
+@import "tailwindcss";
+
+/* Tokens, type scale, base styles — the design system itself. */
+@import "../app/base.css";
+
+/* Foundations-page presentation. Never shipped with the site. */
+@import "../design-system/docs.css";

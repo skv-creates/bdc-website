@@ -48,7 +48,7 @@ function ColumnGuide() {
     <div className="bdc-grid mt-6 h-24">
       {Array.from({ length: Number(cols) || 0 }, (_, i) => (
         <div key={i} className="grid place-items-center bg-brand/40">
-          <span className="t-caption opacity-70">{i + 1}</span>
+          <span className="t-caption ds-muted">{i + 1}</span>
         </div>
       ))}
     </div>
@@ -104,7 +104,7 @@ function LayoutPage() {
               </dt>
               <dd className="t-caption">
                 <code>{token.value}</code>
-                {token.note && <span className="ms-2 opacity-60">{token.note}</span>}
+                {token.note && <span className="ms-2 ds-muted">{token.note}</span>}
               </dd>
             </Fragment>
           ))}
@@ -123,13 +123,13 @@ function LayoutPage() {
         {responsiveTokens.map(({ query, tokens }) => (
           <div key={query} className="mt-6 first:mt-0">
             <code className="t-caption font-bold">@media {query}</code>
-            <ul className="t-caption mt-2 flex flex-col gap-1 opacity-80">
+            <ul className="t-caption mt-2 flex flex-col gap-1 ds-muted">
               {tokens.map((token) => (
                 <li key={token.name}>
                   <code>
                     {token.name}: {token.value}
                   </code>
-                  {token.note && <span className="ms-2 opacity-70">{token.note}</span>}
+                  {token.note && <span className="ms-2 ds-muted">{token.note}</span>}
                 </li>
               ))}
             </ul>

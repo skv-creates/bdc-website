@@ -71,9 +71,9 @@ function Specimen({ style }: { style: TypeStyle }) {
       <div className="flex flex-wrap items-baseline gap-x-4">
         <code className="t-caption font-bold">.{style.name}</code>
         {style.figmaPx && (
-          <span className="t-caption opacity-60">Figma {style.figmaPx}px</span>
+          <span className="t-caption ds-muted">Figma {style.figmaPx}px</span>
         )}
-        <span className="t-caption ms-auto font-mono opacity-60">
+        <span className="t-caption ms-auto font-mono ds-muted">
           {metrics.size || '…'} / {metrics.leading || '…'} · {metrics.weight}
         </span>
       </div>
@@ -84,23 +84,23 @@ function Specimen({ style }: { style: TypeStyle }) {
 
       <dl className="mt-8 flex flex-wrap gap-x-12 gap-y-3">
         <div className="flex flex-col gap-0.5">
-          <dt className="t-caption uppercase tracking-[0.08em] opacity-60">Size</dt>
+          <dt className="t-caption uppercase tracking-[0.08em] ds-muted">Size</dt>
           <dd className="t-caption font-mono">{style.fontSize}</dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="t-caption uppercase tracking-[0.08em] opacity-60">Leading</dt>
+          <dt className="t-caption uppercase tracking-[0.08em] ds-muted">Leading</dt>
           <dd className="t-caption font-mono">{style.lineHeight}</dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="t-caption uppercase tracking-[0.08em] opacity-60">Weight</dt>
+          <dt className="t-caption uppercase tracking-[0.08em] ds-muted">Weight</dt>
           <dd className="t-caption font-mono">{style.fontWeight}</dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="t-caption uppercase tracking-[0.08em] opacity-60">Tracking</dt>
+          <dt className="t-caption uppercase tracking-[0.08em] ds-muted">Tracking</dt>
           <dd className="t-caption font-mono">{style.letterSpacing}</dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="t-caption uppercase tracking-[0.08em] opacity-60">Behaviour</dt>
+          <dt className="t-caption uppercase tracking-[0.08em] ds-muted">Behaviour</dt>
           <dd className="t-caption font-mono">
             {fluid ? 'fluid' : 'fixed'}
             {style.mobile ? ' · overridden ≤767' : ''}
@@ -120,8 +120,8 @@ function Hero() {
       </p>
       <div className="pb-2">
         <p className="t-h05">About Beige Standard</p>
-        <p className="t-body mt-1 opacity-70">Regular 400 · Medium 500 · Bold 700</p>
-        <p className="t-caption mt-3 font-mono opacity-60">
+        <p className="t-body mt-1 ds-muted">Regular 400 · Medium 500 · Bold 700</p>
+        <p className="t-caption mt-3 font-mono ds-muted">
           .t-digit · painting {metrics.size || '…'}
         </p>
       </div>
@@ -138,22 +138,27 @@ function Hero() {
  */
 function AcrossBreakpoints() {
   return (
-    <div className="overflow-x-auto">
+    <div
+      className="overflow-x-auto"
+      role="region"
+      aria-label="Every style resolved to pixels at each breakpoint"
+      tabIndex={0}
+    >
       <table className="w-full min-w-[44rem] border-collapse text-left">
         <thead>
           <tr className="border-b-2 border-black/20">
-            <th className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] opacity-60">
+            <th className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] ds-muted">
               Style
             </th>
             {REFERENCE_WIDTHS.map(({ width, note }) => (
               <th key={width} className="pb-3 pe-6">
                 <span className="t-caption block font-mono">{width}px</span>
-                <span className="t-caption block uppercase tracking-[0.08em] opacity-60">
+                <span className="t-caption block uppercase tracking-[0.08em] ds-muted">
                   {note}
                 </span>
               </th>
             ))}
-            <th className="t-caption pb-3 uppercase tracking-[0.08em] opacity-60">
+            <th className="t-caption pb-3 uppercase tracking-[0.08em] ds-muted">
               Behaviour
             </th>
           </tr>
@@ -171,12 +176,12 @@ function AcrossBreakpoints() {
                     <td key={width} className="t-caption py-3 pe-6 font-mono">
                       {px === null ? '—' : `${Math.round(px * 10) / 10}px`}
                       {overridden && (
-                        <span className="t-caption ms-2 opacity-60">fixed</span>
+                        <span className="t-caption ms-2 ds-muted">fixed</span>
                       )}
                     </td>
                   );
                 })}
-                <td className="t-caption py-3 font-mono opacity-60">
+                <td className="t-caption py-3 font-mono ds-muted">
                   {fluid ? 'fluid' : 'fixed'}
                 </td>
               </tr>
@@ -191,7 +196,12 @@ function AcrossBreakpoints() {
 /** Every style in one table — the "Specifications" slab at the end of an HIG page. */
 function Specifications() {
   return (
-    <div className="overflow-x-auto">
+    <div
+      className="overflow-x-auto"
+      role="region"
+      aria-label="Full specifications for every text style"
+      tabIndex={0}
+    >
       <table className="w-full min-w-[54rem] border-collapse text-left">
         <thead>
           <tr className="border-b-2 border-black/20">
@@ -199,7 +209,7 @@ function Specifications() {
               (head) => (
                 <th
                   key={head}
-                  className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] opacity-60"
+                  className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] ds-muted"
                 >
                   {head}
                 </th>
@@ -211,7 +221,7 @@ function Specifications() {
           {typeStyles.map((style) => (
             <tr key={style.name} className="border-b border-black/10">
               <td className="t-caption py-3 pe-6 font-bold">.{style.name}</td>
-              <td className="t-caption py-3 pe-6 font-mono opacity-70">
+              <td className="t-caption py-3 pe-6 font-mono ds-muted">
                 {style.figmaPx ? `${style.figmaPx}px` : '—'}
               </td>
               <td className="t-caption py-3 pe-6 font-mono">{style.fontSize}</td>
@@ -222,13 +232,13 @@ function Specifications() {
                       .join(' / ')
                   : '—'}
               </td>
-              <td className="t-caption py-3 pe-6 font-mono opacity-70">
+              <td className="t-caption py-3 pe-6 font-mono ds-muted">
                 {style.lineHeight}
               </td>
-              <td className="t-caption py-3 pe-6 font-mono opacity-70">
+              <td className="t-caption py-3 pe-6 font-mono ds-muted">
                 {style.fontWeight.replace(/var\(--weight-(\w+)\)/, '$1')}
               </td>
-              <td className="t-caption py-3 font-mono opacity-70">
+              <td className="t-caption py-3 font-mono ds-muted">
                 {style.letterSpacing.replace(/var\(--ls-([\w-]+)\)/, '$1')}
               </td>
             </tr>
@@ -316,7 +326,7 @@ export const Scale: Story = {
       >
         <TextSizeMatrix />
 
-        <div className="t-body mt-10 max-w-[68ch] opacity-80">
+        <div className="t-body mt-10 max-w-[68ch] ds-muted">
           <p>
             The <strong>Responds</strong> column is the one to watch. Fluid sizes
             are set in <code>vw</code>, which measures against the viewport rather
@@ -441,7 +451,7 @@ export const Constraints: Story = {
             No heading drops below half its desktop size on a phone.
           </li>
         </ul>
-        <p className="t-body mt-8 max-w-[68ch] opacity-80">
+        <p className="t-body mt-8 max-w-[68ch] ds-muted">
           Sizes are in <code>rem</code> rather than pixels, so a reader who sets
           smaller text in their browser still gets smaller text. The floors above
           apply at the default setting.
@@ -571,7 +581,7 @@ export const Interactive: Story = {
       >
         <div className="max-w-[68ch]">
           <h3 className="t-h05">Size changes at the 768px boundary</h3>
-          <p className="t-body mt-3 opacity-80">
+          <p className="t-body mt-3 ds-muted">
             At 767px a style uses its fixed mobile size; at 768px it switches to
             the fluid one. Where the two don&rsquo;t meet, the size changes
             abruptly across a single pixel of width:
@@ -581,14 +591,14 @@ export const Interactive: Story = {
               <li key={style.name} className="t-caption font-mono">
                 <strong>.{style.name}</strong> {Math.round(jump.from * 10) / 10}px →{' '}
                 {Math.round(jump.to * 10) / 10}px
-                <span className="opacity-60">
+                <span className="ds-muted">
                   {' '}
                   ({Math.round((jump.ratio - 1) * 100)}% larger, in one pixel)
                 </span>
               </li>
             ))}
           </ul>
-          <p className="t-body mt-4 opacity-80">
+          <p className="t-body mt-4 ds-muted">
             It shows when a tablet is rotated or a window dragged across the
             boundary, and not otherwise. Closing it means raising the mobile size
             until it meets the fluid one — the headings were adjusted this way;{' '}
@@ -599,7 +609,7 @@ export const Interactive: Story = {
           {DEAD.length > 0 && (
             <>
               <h3 className="t-h05 mt-12">Some minimum sizes never apply</h3>
-              <p className="t-body mt-3 opacity-80">
+              <p className="t-body mt-3 ds-muted">
                 A <code>clamp()</code> minimum only takes effect below a certain
                 width. Where the mobile block already covers those widths, the
                 minimum never comes into play:
@@ -608,7 +618,7 @@ export const Interactive: Story = {
                 {DEAD.map(({ style, dead }) => (
                   <li key={style.name} className="t-caption font-mono">
                     <strong>.{style.name}</strong> floor {Math.round(dead.min)}px
-                    <span className="opacity-60">
+                    <span className="ds-muted">
                       {' '}
                       would only bind below {Math.round(dead.bindsBelow)}px, where
                       the {style.mobile?.fontSize} override already wins
@@ -616,7 +626,7 @@ export const Interactive: Story = {
                   </li>
                 ))}
               </ul>
-              <p className="t-body mt-4 opacity-80">
+              <p className="t-body mt-4 ds-muted">
                 Nothing renders incorrectly — but to change a heading on phones,
                 edit the mobile block. Raising the minimum here has no effect.
               </p>

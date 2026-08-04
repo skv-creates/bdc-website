@@ -16,7 +16,10 @@
  * rather than the file having lost its tokens. Fix the scanner below; do not
  * paste values in.
  */
-import raw from "../app/globals.css?raw";
+// base.css, not globals.css: globals.css is now only the Tailwind entry point
+// and its source configuration. Every token, type style and media query lives
+// in base.css, which both the site and Storybook import.
+import raw from "../app/base.css?raw";
 
 /**
  * The stylesheet itself.
@@ -610,7 +613,12 @@ export const REFERENCE_WIDTHS: { label: string; width: number; note: string }[] 
   ...(capAllWidth()
     ? [{ label: `${capAllWidth()}px`, width: capAllWidth()!, note: 'all at max' }]
     : []),
-];
+  // Deduped by width. Every style now reaches its maximum by the design width,
+  // so the cap and the design width are the same number — and two identical
+  // 1512 columns in a table say nothing twice.
+].filter(
+  (entry, index, all) => all.findIndex((other) => other.width === entry.width) === index,
+);
 
 /**
  * The size jump, if any, across the 767 → 768 boundary.
