@@ -170,7 +170,7 @@ export function ResponsivePreview() {
       </div>
 
       <label className="mt-6 flex items-center gap-4">
-        <span className="t-caption uppercase tracking-[0.08em] opacity-50">Width</span>
+        <span className="t-caption uppercase tracking-[0.08em] opacity-60">Width</span>
         <input
           type="range"
           min={320}
@@ -202,13 +202,13 @@ export function ResponsivePreview() {
         <table className="h-fit w-full border-collapse text-left">
           <thead>
             <tr className="border-b-2 border-black/20">
-              <th className="t-caption pb-2 uppercase tracking-[0.08em] opacity-50">
+              <th className="t-caption pb-2 uppercase tracking-[0.08em] opacity-60">
                 Style
               </th>
-              <th className="t-caption pb-2 text-right uppercase tracking-[0.08em] opacity-50">
+              <th className="t-caption pb-2 text-right uppercase tracking-[0.08em] opacity-60">
                 Painted
               </th>
-              <th className="t-caption pb-2 text-right uppercase tracking-[0.08em] opacity-50">
+              <th className="t-caption pb-2 text-right uppercase tracking-[0.08em] opacity-60">
                 Of desktop
               </th>
             </tr>

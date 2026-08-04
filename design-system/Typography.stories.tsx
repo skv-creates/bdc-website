@@ -69,7 +69,7 @@ function Specimen({ style }: { style: TypeStyle }) {
       <div className="flex flex-wrap items-baseline gap-x-4">
         <code className="t-caption font-bold">.{style.name}</code>
         {style.figmaPx && (
-          <span className="t-caption opacity-40">Figma {style.figmaPx}px</span>
+          <span className="t-caption opacity-60">Figma {style.figmaPx}px</span>
         )}
         <span className="t-caption ms-auto font-mono opacity-60">
           {metrics.size || '…'} / {metrics.leading || '…'} · {metrics.weight}
@@ -82,23 +82,23 @@ function Specimen({ style }: { style: TypeStyle }) {
 
       <dl className="mt-8 flex flex-wrap gap-x-12 gap-y-3">
         <div className="flex flex-col gap-0.5">
-          <dt className="t-caption uppercase tracking-[0.08em] opacity-40">Size</dt>
+          <dt className="t-caption uppercase tracking-[0.08em] opacity-60">Size</dt>
           <dd className="t-caption font-mono">{style.fontSize}</dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="t-caption uppercase tracking-[0.08em] opacity-40">Leading</dt>
+          <dt className="t-caption uppercase tracking-[0.08em] opacity-60">Leading</dt>
           <dd className="t-caption font-mono">{style.lineHeight}</dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="t-caption uppercase tracking-[0.08em] opacity-40">Weight</dt>
+          <dt className="t-caption uppercase tracking-[0.08em] opacity-60">Weight</dt>
           <dd className="t-caption font-mono">{style.fontWeight}</dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="t-caption uppercase tracking-[0.08em] opacity-40">Tracking</dt>
+          <dt className="t-caption uppercase tracking-[0.08em] opacity-60">Tracking</dt>
           <dd className="t-caption font-mono">{style.letterSpacing}</dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="t-caption uppercase tracking-[0.08em] opacity-40">Behaviour</dt>
+          <dt className="t-caption uppercase tracking-[0.08em] opacity-60">Behaviour</dt>
           <dd className="t-caption font-mono">
             {fluid ? 'fluid' : 'fixed'}
             {style.mobile ? ' · overridden ≤767' : ''}
@@ -113,13 +113,13 @@ function Hero() {
   const { ref, metrics } = usePaintedMetrics<HTMLParagraphElement>();
   return (
     <div className="mt-14 flex flex-wrap items-end gap-x-12 gap-y-6 border-y border-black/10 py-12">
-      <p ref={ref} className="t-digit leading-none text-brand">
+      <p ref={ref} className="t-digit leading-none">
         Аа
       </p>
       <div className="pb-2">
         <p className="t-h05">About Beige Standard</p>
         <p className="t-body mt-1 opacity-70">Regular 400 · Medium 500 · Bold 700</p>
-        <p className="t-caption mt-3 font-mono opacity-50">
+        <p className="t-caption mt-3 font-mono opacity-60">
           .t-digit · painting {metrics.size || '…'}
         </p>
       </div>
@@ -140,20 +140,20 @@ function AcrossBreakpoints() {
       <table className="w-full min-w-[44rem] border-collapse text-left">
         <thead>
           <tr className="border-b-2 border-black/20">
-            <th className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] opacity-50">
+            <th className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] opacity-60">
               Style
             </th>
             {REFERENCE_WIDTHS.map(({ label, width, note }) => (
               <th key={label} className="pb-3 pe-6">
-                <span className="t-caption block uppercase tracking-[0.08em] opacity-50">
+                <span className="t-caption block uppercase tracking-[0.08em] opacity-60">
                   {label}
                 </span>
-                <span className="t-caption block font-mono opacity-40">
+                <span className="t-caption block font-mono opacity-60">
                   {width}px · {note}
                 </span>
               </th>
             ))}
-            <th className="t-caption pb-3 uppercase tracking-[0.08em] opacity-50">
+            <th className="t-caption pb-3 uppercase tracking-[0.08em] opacity-60">
               Behaviour
             </th>
           </tr>
@@ -171,7 +171,7 @@ function AcrossBreakpoints() {
                     <td key={label} className="t-caption py-3 pe-6 font-mono">
                       {px === null ? '—' : `${Math.round(px * 10) / 10}px`}
                       {overridden && (
-                        <span className="ms-2 t-caption opacity-50">fixed</span>
+                        <span className="ms-2 t-caption opacity-60">fixed</span>
                       )}
                     </td>
                   );
@@ -199,7 +199,7 @@ function Specifications() {
               (head) => (
                 <th
                   key={head}
-                  className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] opacity-50"
+                  className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] opacity-60"
                 >
                   {head}
                 </th>
@@ -245,57 +245,54 @@ export const Scale: Story = {
       title="Typography"
       lede={
         <>
-          One face, three weights, eleven named styles that mirror Figma one to
-          one. Every value on this page is parsed from{' '}
-          <code>app/globals.css</code>, and every specimen reports the size it is
-          actually painting at this width.
+          One typeface, three weights, eleven styles matching the Figma library.
+          Values are read from <code>app/globals.css</code>, and each specimen
+          reports the size it&rsquo;s painting at the current width.
         </>
       }
     >
       <Hero />
 
-      <Section
-        title="Best practices"
-        intro="Four things this scale asks of you, and why."
-      >
+      <Section title="Working with the scale">
         <ul className="t-body flex max-w-[68ch] flex-col gap-6">
           <li>
-            <strong>Use a named style, never a raw size.</strong> The eleven{' '}
-            <code>.t-*</code> classes are the whole vocabulary. A one-off{' '}
-            <code>text-[22px]</code> is a size nobody can change from here, and it
-            will not respond at 767px like everything around it.
+            <strong>Use a named style.</strong> The eleven <code>.t-*</code>{' '}
+            classes are the full set. A one-off size like{' '}
+            <code>text-[22px]</code> sits outside the system, so it won&rsquo;t
+            follow the breakpoint behaviour the styles around it have.
           </li>
           <li>
-            <strong>Pick by role, not by how big it looks.</strong>{' '}
-            <code>.t-label</code> and <code>.t-body</code> are the same size and
-            differ in weight and tracking; choosing the wrong one reads as
-            correct on desktop and wrong on a phone, where only one of them grows.
+            <strong>Choose by role, not by size.</strong> <code>.t-label</code>{' '}
+            and <code>.t-body</code> are both 20px and differ in weight and
+            tracking. They also behave differently on phones, so the right one
+            matters even where they look alike.
           </li>
           <li>
-            <strong>Do not add a fourth weight.</strong> Regular, Medium and Bold
-            are loaded. A fourth costs every visitor roughly 70KB on first load —
-            an Extra Bold was shipping for months with nothing referencing it.
+            <strong>Three weights are available.</strong> Regular, Medium and
+            Bold are loaded as real files. Other values are synthesised by the
+            browser, which distorts the letterforms — Cyrillic especially. Adding
+            a fourth weight adds roughly 70KB to first load.
           </li>
           <li>
-            <strong>Judge it in Cyrillic.</strong> The site is Bulgarian first.
-            Latin proofs hide the things that go wrong here — accents crowding the
-            line above, and the height difference between в, б and д.
+            <strong>Proof in Cyrillic.</strong> The site is Bulgarian first, and
+            Latin samples won&rsquo;t show accent clearance or the height
+            relationships between в, б and д.
           </li>
         </ul>
       </Section>
 
-      <Note title="The scale is fluid, and then it is not">
+      <Note title="Sizes work two ways">
         <p>
-          Above 768px, nine of the eleven styles are <code>clamp()</code> — the
-          size is a continuous function of viewport width, with no step at any
-          breakpoint and no single number to quote.
+          Above 768px, nine of the eleven styles scale fluidly with the viewport
+          using <code>clamp()</code>. There&rsquo;s no step at a breakpoint, so
+          there isn&rsquo;t a single number to quote — the tables below resolve it
+          at specific widths.
         </p>
         <p className="mt-3">
-          Below 768px a second block replaces five of them with fixed sizes. That
-          block sits <em>outside</em> <code>@layer base</code>, so it beats the
-          layered rule rather than merely following it: a phone gets the fixed
-          size and never the clamp. The <strong>≤767px</strong> column below is
-          where that happens.
+          Below 768px, a separate block sets fixed sizes for several styles.
+          That&rsquo;s what phones use. To change how a heading looks on mobile,
+          edit that block — adjusting the fluid values won&rsquo;t reach it. The{' '}
+          <strong>≤767px</strong> column shows which styles are affected.
         </p>
       </Note>
 
@@ -307,17 +304,13 @@ export const Scale: Story = {
       </Section>
 
       <Section
-        title="Text size — the reader's axis"
+        title="Reader text size"
         intro={
           <>
-            Apple publishes a table like this one: a style down the side, the
-            reader&rsquo;s content size category across the top, a real size in
-            every cell. The web has the same axis in the browser&rsquo;s default
-            font size, which every <code>rem</code> here is measured against.
-            Nothing in <code>globals.css</code> pins{' '}
-            <code>html &#123; font-size &#125;</code>, which is what makes the
-            setting work at all — pinning it to 16px is the commonest way a site
-            silently overrides an accessibility preference.
+            Readers can set a default text size in their browser. Every size in
+            this scale is in <code>rem</code>, so it follows that setting. Below
+            is each style at Chrome&rsquo;s five presets — switch the viewport to
+            see how width and text size interact.
           </>
         }
       >
@@ -325,71 +318,62 @@ export const Scale: Story = {
 
         <div className="t-body mt-10 max-w-[68ch] opacity-80">
           <p>
-            <strong>
-              One difference from Apple&rsquo;s table that changes how to read
-              this.
-            </strong>{' '}
-            Apple&rsquo;s values are designed — somebody chose 31pt for xSmall and
-            38pt for xxLarge, so the ramp is tuned per style. These are computed:
-            they are whatever the <code>rem</code> maths yields. On the web you
-            cannot hand-pick a cell without writing a query for it.
+            The <strong>Responds</strong> column is the one to watch. Fluid sizes
+            are set in <code>vw</code>, which measures against the viewport rather
+            than the reader&rsquo;s text size — so on wide screens, increasing the
+            setting can stop having an effect partway up the range.
           </p>
           <p className="mt-4">
-            Which is why the last column matters more than any single number. A{' '}
-            <code>vw</code> term is measured against the viewport and not against
-            the root font size, so on a wide screen it can sit between the
-            clamp&rsquo;s floor and ceiling and swallow the reader&rsquo;s
-            preference entirely — turning the setting up produces no change.
-            Switch the viewport to Desktop and most headings read{' '}
-            <strong>flat from Large</strong>. On a phone every style responds
-            fully, because the overrides are plain <code>rem</code>.
+            At Desktop, most headings read <strong>flat from Large</strong>: a
+            reader who chooses Very large sees no further change. On phones every
+            style responds across the full range, since the mobile sizes are plain{' '}
+            <code>rem</code>.
+          </p>
+          <p className="mt-4">
+            Worth noting when comparing with Apple&rsquo;s Dynamic Type tables:
+            those values are chosen per style, so each one can have its own ramp.
+            These are calculated from the declared size, so the declared size is
+            the only place to adjust them.
           </p>
         </div>
       </Section>
 
       <Section
-        title="Naming, and why it is not h1/h2/h3"
+        title="Naming"
         intro={
           <>
-            The scale is named by <em>rank</em> — <code>t-h01</code> through{' '}
-            <code>t-h05</code>, plus <code>t-quote</code> and{' '}
-            <code>t-digit</code> for display, and{' '}
-            <code>t-body-lg</code>/<code>t-body</code>/<code>t-label</code>/
-            <code>t-caption</code> for text. Not Material&rsquo;s role naming
-            (Display / Headline / Title / Body / Label), because these names
-            mirror the named styles in Figma one to one, and a designer and a
-            developer saying &ldquo;h02&rdquo; should mean the same thing.
+            Styles are named by rank — <code>t-h01</code> to <code>t-h05</code>,
+            with <code>t-quote</code> and <code>t-digit</code> for display, and{' '}
+            <code>t-body-lg</code>, <code>t-body</code>, <code>t-label</code>,{' '}
+            <code>t-caption</code> for text. These match the Figma library, so
+            &ldquo;h02&rdquo; means the same thing in a design file and in code.
           </>
         }
       >
         <div className="t-body max-w-[68ch]">
           <p>
-            <strong>
-              The class is the appearance. The tag is the document outline. They
-              are chosen separately, and in this codebase they frequently differ.
-            </strong>
+            <strong>The class sets the appearance; the HTML tag sets the
+            document structure.</strong> They&rsquo;re chosen separately, and
+            they often differ.
           </p>
           <p className="mt-4">
-            An <code>h1</code> carries <code>.t-h02</code> in three places and{' '}
-            <code>.t-h03</code> in two more, because those pages need a first-level
-            heading that is not set at 80px. A <code>p</code> carries{' '}
-            <code>.t-h05</code> where something should look like a heading without
-            claiming a rank in the outline. The <code>„</code> mark in a pull quote
-            is a <code>span</code> at <code>.t-h01</code>, since it is a glyph, not
-            a heading at all.
+            On this site an <code>h1</code> carries <code>.t-h02</code> in three
+            places and <code>.t-h03</code> in two more, where a page needs a
+            top-level heading that isn&rsquo;t set at 80px. A <code>p</code>{' '}
+            carries <code>.t-h05</code> where something should read as a heading
+            without taking a place in the outline. The <code>„</code> in a pull
+            quote is a <code>span</code> at <code>.t-h01</code>.
           </p>
           <p className="mt-4">
-            So: choose the tag for the structure a screen reader will announce —
-            one <code>h1</code> per page, no skipped levels — and then choose the{' '}
-            <code>.t-*</code> class for how it should look. Never reach for a
-            bigger heading tag to get bigger text.
+            Pick the tag for structure — one <code>h1</code> per page, levels in
+            order — then pick the <code>.t-*</code> class for how it should look.
           </p>
         </div>
       </Section>
 
       <Section
         title="Specimens"
-        intro="At real size. Step the viewport control in the toolbar and watch the painted values change."
+        intro="Shown at true size. Change the viewport in the toolbar to see the values update."
       >
         <div>
           {typeStyles.map((style) => (
@@ -413,7 +397,7 @@ export const Scale: Story = {
     // Overrides merged onto their base style rather than dropped or duplicated.
     const h01 = typeStyles.find((s) => s.name === 't-h01');
     await expect(h01?.fontSize).toMatch(/^clamp\(/);
-    await expect(h01?.mobile?.fontSize).toBe('2rem');
+    await expect(h01?.mobile?.fontSize).toBe('2.75rem');
 
     // t-body is one of the two that is not fluid — fixed rem at both ends.
     const body = typeStyles.find((s) => s.name === 't-body');
@@ -421,6 +405,91 @@ export const Scale: Story = {
     await expect(body?.mobile?.fontSize).toBe('1.2rem');
 
     await expect(canvas.getByText('About Beige Standard')).toBeVisible();
+  },
+};
+
+/**
+ * The rules the scale is not allowed to break.
+ *
+ * These are not observations about the current values — they are constraints
+ * the council has set, and the reason they live in a test rather than in a
+ * comment is that a comment cannot stop the next edit. Lower the mobile body
+ * text and this fails by name.
+ */
+export const Constraints: Story = {
+  tags: ['ai-generated', '!dev'],
+  render: () => (
+    <Page
+      title="Constraints"
+      lede="Rules the type scale has to meet. These run as tests, so a change that breaks one will fail the build rather than ship."
+    >
+      <Section title="What&rsquo;s checked">
+        <ul className="t-body flex max-w-[68ch] flex-col gap-4">
+          <li>
+            Body and label text stay at or above <strong>18px</strong> on mobile,
+            at the default browser text size. Currently 19.2px.
+          </li>
+          <li>
+            Caption stays at <strong>16px</strong> on mobile. Its leading tightens;
+            its size doesn&rsquo;t change.
+          </li>
+          <li>
+            Every style reaches its Figma size on desktop, and none exceeds it.
+          </li>
+          <li>
+            No heading drops below half its desktop size on a phone.
+          </li>
+        </ul>
+        <p className="t-body mt-8 max-w-[68ch] opacity-80">
+          Sizes are in <code>rem</code> rather than pixels, so a reader who sets
+          smaller text in their browser still gets smaller text. The floors above
+          apply at the default setting.
+        </p>
+      </Section>
+    </Page>
+  ),
+  play: async () => {
+    const byName = (name: string) => typeStyles.find((style) => style.name === name);
+    const PHONE = 390;
+
+    // The council's floors, at the default root size. Deliberately not clamped
+    // in CSS: a reader who sets smaller text in their browser should get smaller
+    // text, and a px floor would override that preference rather than protect it.
+    const body = byName('t-body');
+    const label = byName('t-label');
+    const caption = byName('t-caption');
+
+    await expect(fontSizeAt(body!, PHONE)).toBeGreaterThanOrEqual(18);
+    await expect(fontSizeAt(label!, PHONE)).toBeGreaterThanOrEqual(18);
+    await expect(fontSizeAt(caption!, PHONE)).toBe(16);
+
+    // Desktop is the source of truth and must not drift. Every style reaches
+    // the size its Figma style was drawn at, and none exceeds it.
+    const WIDE = 1920;
+    for (const style of typeStyles) {
+      if (!style.figmaPx) continue;
+      await expect(fontSizeAt(style, WIDE)).toBe(Number(style.figmaPx));
+    }
+
+    // Checked at 1920 rather than at the 1512 design width because of one
+    // genuine, pre-existing discrepancy: .t-h05 is drawn at 32px in Figma but
+    // its 2vw term only reaches 32px at 1600px, so at the design width it
+    // paints 30.24px. Every other style reaches its Figma size by 1500px.
+    //
+    // Pinned here so it stays visible and cannot be "fixed" by accident. If the
+    // decision is to honour Figma at 1512, the change is 2vw → 2.12vw, and this
+    // assertion is what will tell you it worked.
+    const h05 = byName('t-h05')!;
+    await expect(fontSizeAt(h05, 1512)).toBeCloseTo(30.24, 2);
+    await expect(fontSizeAt(h05, 1600)).toBe(32);
+
+    // The hero is no longer the outlier it was: every heading now sits in the
+    // same band as the rest of the scale rather than collapsing on a phone.
+    for (const name of ['t-h01', 't-h02', 't-h03', 't-quote', 't-digit']) {
+      const style = byName(name)!;
+      const ratio = fontSizeAt(style, PHONE)! / Number(style.figmaPx);
+      await expect(ratio).toBeGreaterThanOrEqual(0.5);
+    }
   },
 };
 
@@ -446,11 +515,9 @@ export const Interactive: Story = {
       title="Interactive width"
       lede={
         <>
-          Drag the handle and watch the scale respond. The frame below is a real
-          viewport running this project&rsquo;s own <code>globals.css</code> — so{' '}
-          <code>vw</code> and <code>@media</code> behave in it exactly as they do
-          on a device, including the mobile block that overrides{' '}
-          <code>@layer base</code>.
+          Drag the handle to resize the frame. It&rsquo;s a real viewport running
+          the site&rsquo;s own <code>globals.css</code>, so sizes respond exactly
+          as they do on a device — mobile overrides included.
         </>
       }
     >
@@ -459,16 +526,15 @@ export const Interactive: Story = {
       </div>
 
       <Section
-        title="Two things worth deciding about"
-        intro="Both are computed from the stylesheet, not opinions about it. Both are consequences of the same choice: fixed mobile sizes handing straight over to fluid ones."
+        title="Open questions"
+        intro="Calculated from the stylesheet. Both come from mobile sizes handing over to fluid ones at 768px."
       >
         <div className="max-w-[68ch]">
-          <h3 className="t-h05">The scale jumps at one pixel of width</h3>
+          <h3 className="t-h05">Size changes at the 768px boundary</h3>
           <p className="t-body mt-3 opacity-80">
-            At 767px the overrides apply; at 768px the <code>clamp()</code> takes
-            over, and its <code>vw</code> term is already well above where the
-            fixed size left off. Nothing bridges the gap, so the text changes size
-            abruptly as the viewport crosses the boundary:
+            At 767px a style uses its fixed mobile size; at 768px it switches to
+            the fluid one. Where the two don&rsquo;t meet, the size changes
+            abruptly across a single pixel of width:
           </p>
           <ul className="mt-4 flex flex-col gap-2">
             {JUMPS.map(({ style, jump }) => (
@@ -483,20 +549,20 @@ export const Interactive: Story = {
             ))}
           </ul>
           <p className="t-body mt-4 opacity-80">
-            Whether that matters is a design call. It is invisible on a phone and
-            invisible on a desktop; it only shows on a tablet being rotated, or a
-            window being dragged. The fix, if it is one, is to raise the mobile
-            sizes until they meet the clamp rather than to remove the override.
+            It shows when a tablet is rotated or a window dragged across the
+            boundary, and not otherwise. Closing it means raising the mobile size
+            until it meets the fluid one — the headings were adjusted this way;{' '}
+            <code>.t-digit</code> is still open, since matching it would mean a
+            92px number on a phone.
           </p>
 
           {DEAD.length > 0 && (
             <>
-              <h3 className="t-h05 mt-12">Some clamp minimums can never apply</h3>
+              <h3 className="t-h05 mt-12">Some minimum sizes never apply</h3>
               <p className="t-body mt-3 opacity-80">
-                A <code>clamp()</code> minimum only binds below the width where
-                its <code>vw</code> term falls under it. Where a fixed override
-                already owns every width below that point, the minimum reads like
-                a floor and enforces nothing:
+                A <code>clamp()</code> minimum only takes effect below a certain
+                width. Where the mobile block already covers those widths, the
+                minimum never comes into play:
               </p>
               <ul className="mt-4 flex flex-col gap-2">
                 {DEAD.map(({ style, dead }) => (
@@ -511,9 +577,8 @@ export const Interactive: Story = {
                 ))}
               </ul>
               <p className="t-body mt-4 opacity-80">
-                Harmless, but misleading to read: someone raising the floor to make
-                mobile headings bigger would see no change at all. The size that
-                governs a phone is the override, not the clamp.
+                Nothing renders incorrectly — but to change a heading on phones,
+                edit the mobile block. Raising the minimum here has no effect.
               </p>
             </>
           )}
@@ -537,11 +602,16 @@ export const Interactive: Story = {
     const frame = canvas.getByTitle('Type scale at 1512 pixels');
     await expect(frame).toBeVisible();
 
-    // The findings are derived, so this asserts the derivation still works
-    // rather than asserting a number someone typed.
-    await expect(JUMPS.length).toBeGreaterThan(0);
-    const h01 = JUMPS.find((entry) => entry.style.name === 't-h01');
-    await expect(h01?.jump.from).toBe(32);
-    await expect(Math.round((h01?.jump.to ?? 0) * 100) / 100).toBe(46.08);
+    // The hero used to be the worst offender here, at +44% across one pixel.
+    // Raising the mobile size to 44px brought it to about +5%, under the 15%
+    // threshold, so it should no longer appear in this list at all. This is the
+    // assertion that would notice the fix being reverted.
+    await expect(JUMPS.some((entry) => entry.style.name === 't-h01')).toBe(false);
+    await expect(boundaryJump(typeStyles.find((s) => s.name === 't-h01')!)?.from).toBe(44);
+
+    // .t-digit is the one that remains: 72px to 92.16px. Closing it entirely
+    // would mean a ~92px stat number on a 390px phone, which is worse than the
+    // jump, so it stays listed rather than silently accepted.
+    await expect(JUMPS.map((entry) => entry.style.name)).toEqual(['t-digit']);
   },
 };

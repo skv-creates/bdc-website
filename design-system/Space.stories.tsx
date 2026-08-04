@@ -48,9 +48,8 @@ export const Scale: Story = {
       title="Space and radius"
       lede={
         <>
-          A deliberately short scale: four spacing steps and one radius. Each is
-          drawn at true size from the token itself, so a bar cannot disagree with
-          the value beside it.
+          Four spacing steps and one radius, drawn at true size from the tokens
+          in <code>app/globals.css</code>.
         </>
       }
     >
@@ -62,18 +61,16 @@ export const Scale: Story = {
         </ul>
       </Section>
 
-      <Note title="What is deliberately not here">
+      <Note title="Section spacing isn&rsquo;t tokenised">
         <p>
-          There is no token for section rhythm. The vertical space between
-          sections is set per component with Tailwind utilities —{' '}
-          <code>py-20</code>, <code>md:py-28</code> — rather than from here, so it
-          is the one part of the system you cannot change from one place.
+          Vertical space between page sections is set per component with Tailwind
+          utilities — <code>py-20</code>, <code>md:py-28</code> — rather than from
+          a token here. It&rsquo;s the one part of the system that can&rsquo;t be
+          adjusted from a single place.
         </p>
         <p className="mt-3">
-          That is a real gap rather than an oversight, and the moment to close it
-          is before the next section is written, not after. If it gets closed, it
-          gets closed by adding tokens to <code>globals.css</code> and this page
-          picks them up on its own.
+          Adding tokens to <code>globals.css</code> would bring it in line, and
+          this page would pick them up automatically.
         </p>
       </Note>
     </Page>

@@ -30,7 +30,7 @@ export function TextSizeMatrix() {
   return (
     <div>
       <div className="flex flex-wrap items-center gap-3">
-        <span className="t-caption uppercase tracking-[0.08em] opacity-50">
+        <span className="t-caption uppercase tracking-[0.08em] opacity-60">
           At viewport
         </span>
         {REFERENCE_WIDTHS.map((reference) => (
@@ -54,20 +54,20 @@ export function TextSizeMatrix() {
         <table className="w-full min-w-[52rem] border-collapse text-left">
           <thead>
             <tr className="border-b-2 border-black/20">
-              <th className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] opacity-50">
+              <th className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] opacity-60">
                 Style
               </th>
               {TEXT_SIZE_STEPS.map((step) => (
                 <th key={step.label} className="pb-3 pe-6 text-right">
-                  <span className="t-caption block uppercase tracking-[0.08em] opacity-50">
+                  <span className="t-caption block uppercase tracking-[0.08em] opacity-60">
                     {step.label.replace(' (default)', '')}
                   </span>
-                  <span className="t-caption block font-mono opacity-40">
+                  <span className="t-caption block font-mono opacity-60">
                     {step.rootPx}px root
                   </span>
                 </th>
               ))}
-              <th className="t-caption pb-3 uppercase tracking-[0.08em] opacity-50">
+              <th className="t-caption pb-3 uppercase tracking-[0.08em] opacity-60">
                 Responds
               </th>
             </tr>

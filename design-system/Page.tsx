@@ -32,7 +32,7 @@ export function Page({
   return (
     <article className="min-h-screen px-8 pb-32 pt-16 md:px-16">
       <header className="max-w-[68ch]">
-        <p className="t-caption uppercase tracking-[0.12em] opacity-50">Foundations</p>
+        <p className="t-caption uppercase tracking-[0.12em] opacity-60">Foundations</p>
         <h1 className="t-h02 mt-3">{title}</h1>
         <div className="t-body-lg mt-6 opacity-80">{lede}</div>
       </header>
@@ -79,7 +79,7 @@ export function Note({ title, children }: { title: string; children: ReactNode }
 export function Spec({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="t-caption uppercase tracking-[0.08em] opacity-40">{label}</dt>
+      <dt className="t-caption uppercase tracking-[0.08em] opacity-60">{label}</dt>
       <dd className="t-caption font-mono">{value}</dd>
     </div>
   );

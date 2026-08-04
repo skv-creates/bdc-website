@@ -293,13 +293,43 @@ main:focus { outline: none; }
 @media (max-width: 767px)  { :root { --grid-cols: 4; --grid-gap: 12px; --overlay-panel-left: 3rem; --rail-clear: 12px; } }
 
 /* ---- Responsive: mobile type scale (≤767px) -----------------------------
-   Tighter headings + slightly larger body/label/button text on phones.
-   Unlayered so they override the @layer base .t-* styles on mobile only. */
+   Headings step down from the desktop scale; reading text does not move.
+   Unlayered so they beat the @layer base .t-* styles — that is what makes them
+   win, not their position in the file. Desktop is untouched by everything here.
+
+   SIZES are set as a fraction of the desktop size (noted per line) so the scale
+   keeps its shape on a phone rather than flattening. h01 sat at 0.40 of desktop
+   while every other style was between 0.5 and 0.7: at 32px against an 80px
+   desktop, the hero read as a subhead, and it changed by 44% across the single
+   pixel between 767 and 768 because the fixed size handed straight over to the
+   6vw term with nothing bridging them.
+
+   TRACKING is restated here because letter-spacing does not scale with font
+   size. --ls-tight is -1px, which is -1.25% of an 80px h01 but -3.1% of a 32px
+   one — the identical declaration is two and a half times tighter on a phone,
+   so the headings were not merely small, they were cramped. Each value below is
+   the style's own desktop percentage applied to its mobile size, so the letter
+   fit a reader sees is the same on both.
+
+   FLOORS, deliberately not touched: body and label stay at 1.2rem (19.2px,
+   above the 18px floor) and caption keeps 1rem (16px). Both are asserted in
+   design-system/Typography.stories.tsx so they cannot be lowered by accident.
+   They are in rem on purpose — a reader who chooses smaller text in their
+   browser gets smaller text, and pinning a px floor here would override an
+   accessibility preference rather than protect one.
+
+   The previous version of this comment claimed it made "slightly larger
+   body/label text on phones". It never did: 1.2rem is 19.2px against a 1.25rem
+   desktop of 20px, which is smaller. */
 @media (max-width: 767px) {
-  .t-h01    { font-size: 2rem; }
-  .t-h02    { font-size: 1.8rem; line-height: 1.1; }
-  .t-h03    { font-size: 1.6rem; }
-  .t-body   { font-size: 1.2rem; }
-  .t-label  { font-size: 1.2rem; }   /* buttons (primary/secondary, CTA, arrows) */
-  .t-caption{ line-height: 1.2; }
+  .t-h01    { font-size: 2.75rem;  letter-spacing: -0.55px; }  /* 44px · 0.55 of 80 */
+  .t-h02    { font-size: 2rem;     letter-spacing: -0.57px; line-height: 1.1; }  /* 32px · 0.57 of 56 */
+  .t-h03    { font-size: 1.6rem;   letter-spacing: -0.64px; }  /* 25.6px · 0.64 — size unchanged */
+  .t-h04    { letter-spacing: -0.6px; }                        /* 24px · 0.60 — size unchanged */
+  .t-h05    { letter-spacing: -0.48px; }                       /* 22px · 0.69 — size unchanged */
+  .t-quote  { letter-spacing: -0.56px; }                       /* 36px · 0.56 — size unchanged */
+  .t-digit  { font-size: 4.5rem;   letter-spacing: -0.6px; }   /* 72px · 0.60 of 120 */
+  .t-body   { font-size: 1.2rem; }   /* 19.2px — floor is 18px */
+  .t-label  { font-size: 1.2rem; }   /* 19.2px — buttons (primary/secondary, CTA, arrows) */
+  .t-caption{ line-height: 1.2; }    /* 16px kept; only the leading tightens */
 }

@@ -63,7 +63,7 @@ function Swatch({ token }: { token: Token }) {
         {resolved || token.value}
       </span>
       {pointsAt && (
-        <span className="t-caption font-mono opacity-40">{pointsAt}</span>
+        <span className="t-caption font-mono opacity-60">{pointsAt}</span>
       )}
       {token.note && <span className="t-caption mt-1 opacity-60">{token.note}</span>}
       <ContrastLine swatch={resolved || token.value} />
@@ -77,10 +77,8 @@ export const Palette: Story = {
       title="Colour"
       lede={
         <>
-          Nine brand primitives, and a small set of semantic names that point at
-          them. Nothing on this page is written down here — it is parsed from{' '}
-          <code>app/globals.css</code>, so a swatch cannot disagree with the
-          token it claims to show.
+          Nine brand colours and the semantic names that point at them. Values
+          are read from <code>app/globals.css</code>.
         </>
       }
     >
@@ -94,17 +92,17 @@ export const Palette: Story = {
         </Section>
       ))}
 
-      <Note title="Contrast is stated, not assumed">
+      <Note title="Reading the contrast figures">
         <p>
-          Each swatch carries its best ratio against the page white or the ink,
-          and what that ratio permits: <strong>text</strong> at 4.5:1,{' '}
-          <strong>large text</strong> and non-text at 3:1. Rose is a background
-          colour — it fails as text on white and always will. That is not a
-          defect, it is what the semantic split is for.
+          Each swatch shows its best ratio against the page white or the dark
+          ink, and what that ratio allows: <strong>4.5:1</strong> for body text,{' '}
+          <strong>3:1</strong> for large text and non-text elements like borders
+          and icons.
         </p>
         <p className="mt-3">
-          Burgundy is the focus ring for the same reason, at better than 10:1 on
-          white: it reads against every brand ground on the site.
+          Rose sits below the text threshold on white, so it works as a ground
+          rather than as type. Burgundy reaches 10.9:1 on white, which is why it
+          carries the focus ring — it stays visible on every brand colour.
         </p>
       </Note>
     </Page>

@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect } from 'storybook/test';
 import { layoutGroups, responsiveTokens, resolvedValue, usedLength } from './tokens';
+import { Note, Page, Section } from './Page';
 
 const meta = {
   title: 'Foundations/Layout and breakpoints',
@@ -58,17 +59,18 @@ function LayoutPage() {
   const values = useLayoutReadout(WATCHED);
 
   return (
-    <div className="p-10">
-      <h1 className="t-h03">Layout and breakpoints</h1>
-      <p className="t-body mt-4 max-w-[62ch]">
-        The page is symmetric: a gutter on the left and a pattern rail of exactly
-        the same width on the right, with the content grid centred between them.
-        Resize the canvas — every number below is read live from the stylesheet.
-      </p>
-
-      <section className="mt-10">
-        <h2 className="t-h05">Right now, at this width</h2>
-        <dl className="mt-4 grid max-w-[36rem] grid-cols-[auto_1fr] gap-x-6 gap-y-2">
+    <Page
+      title="Layout and breakpoints"
+      lede={
+        <>
+          The page is symmetric: a gutter on the left and a pattern rail of the
+          same width on the right, with the content grid centred between them.
+          Resize the canvas — the values below update live.
+        </>
+      }
+    >
+      <Section title="At the current width">
+        <dl className="grid max-w-[36rem] grid-cols-[auto_1fr] gap-x-6 gap-y-2">
           {WATCHED.map((name) => (
             <Fragment key={name}>
               <dt>
@@ -81,23 +83,20 @@ function LayoutPage() {
           ))}
         </dl>
         <ColumnGuide />
-      </section>
 
-      <aside className="mt-10 max-w-[68ch] border-s-4 border-brand ps-6">
-        <p className="t-label">Declared is not the same as used</p>
-        <p className="t-body mt-2 opacity-80">
-          <code>--page-gutter</code> holds <code>clamp(1.25rem, 7.4vw, 7rem)</code>,
-          and asking the browser for its value returns exactly that — a custom
-          property is only <em>substituted</em>, never evaluated. <code>clamp()</code>,{' '}
-          <code>calc()</code> and <code>vw</code> resolve when a real property
-          uses them. The numbers above are read back from a probe element that
-          uses each token as a width, which is why they are pixels.
-        </p>
-      </aside>
+        <Note title="Declared vs. used values">
+          <p>
+            <code>--page-gutter</code> is declared as{' '}
+            <code>clamp(1.25rem, 7.4vw, 7rem)</code>. Custom properties hold that
+            expression as written — it resolves to a pixel value only when a
+            property uses it. The figures above are measured from an element using
+            each token, which is why they show pixels rather than the formula.
+          </p>
+        </Note>
+      </Section>
 
-      <section className="mt-12">
-        <h2 className="t-h05">Declared</h2>
-        <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
+      <Section title="Declared values">
+        <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
           {layout?.tokens.map((token) => (
             <Fragment key={token.name}>
               <dt>
@@ -110,16 +109,19 @@ function LayoutPage() {
             </Fragment>
           ))}
         </dl>
-      </section>
+      </Section>
 
-      <section className="mt-12">
-        <h2 className="t-h05">What changes, and where</h2>
-        <p className="t-body mt-3 max-w-[62ch]">
-          The rail does not step per breakpoint — it tracks{' '}
-          <code>--page-gutter</code>, which is already fluid. Only these change:
-        </p>
+      <Section
+        title="What changes at each breakpoint"
+        intro={
+          <>
+            The rail doesn&rsquo;t step — it tracks <code>--page-gutter</code>,
+            which is already fluid. These are the values that change:
+          </>
+        }
+      >
         {responsiveTokens.map(({ query, tokens }) => (
-          <div key={query} className="mt-6">
+          <div key={query} className="mt-6 first:mt-0">
             <code className="t-caption font-bold">@media {query}</code>
             <ul className="t-caption mt-2 flex flex-col gap-1 opacity-80">
               {tokens.map((token) => (
@@ -133,8 +135,8 @@ function LayoutPage() {
             </ul>
           </div>
         ))}
-      </section>
-    </div>
+      </Section>
+    </Page>
   );
 }
 
