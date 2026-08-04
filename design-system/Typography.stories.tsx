@@ -394,15 +394,15 @@ export const Scale: Story = {
     await expect(typeStyles).toHaveLength(11);
     await expect(new Set(typeStyles.map((s) => s.name)).size).toBe(11);
 
-    // Overrides merged onto their base style rather than dropped or duplicated.
+    // Sizes are declared as tokens on :root and overridden per band, so the
+    // rule holds a var() and the phone value comes from the narrowest band.
     const h01 = typeStyles.find((s) => s.name === 't-h01');
-    await expect(h01?.fontSize).toMatch(/^clamp\(/);
+    await expect(h01?.fontSize).toBe('var(--fs-h01)');
     await expect(h01?.mobile?.fontSize).toBe('2.75rem');
 
-    // t-body is fixed at 1.25rem — 20px — and is no longer overridden on
-    // phones, so body-default is 20px at every width.
+    // body-default is 20px at every width, with no band declaring otherwise.
     const body = typeStyles.find((s) => s.name === 't-body');
-    await expect(body?.fontSize).toBe('1.25rem');
+    await expect(body?.fontSize).toBe('var(--fs-body)');
     await expect(body?.mobile?.fontSize).toBeUndefined();
 
     await expect(canvas.getByText('About Beige Standard')).toBeVisible();
@@ -481,32 +481,47 @@ export const Constraints: Story = {
       await expect(large).toBeGreaterThan(normal);
     }
 
-    // The widest sample must be a width where the styles have finished growing.
-    // This is the guard for a regression that already happened: when the sample
-    // widths were derived from breakpoints alone the widest was 1024px, where
-    // .t-h01 paints 61.44px — so the tables showed no style at its desktop size
-    // and the hero's 80px vanished without anything failing.
-    const widest = REFERENCE_WIDTHS[REFERENCE_WIDTHS.length - 1].width;
-    await expect(fontSizeAt(byName('t-h01')!, widest)).toBe(80);
-
-    // Desktop must not drift. Every style reaches the size it declares, and
-    // none exceeds it, at the width where the last one stops growing.
+    // At the design width every style is at the size its Figma style is drawn
+    // at. Asserted to 0.01px rather than exactly: each fluid size is the
+    // solution to two fixed points, so its coefficients are irrational and the
+    // residue is around a hundred-thousandth of a pixel.
     for (const style of typeStyles) {
       if (!style.figmaPx) continue;
-      await expect(fontSizeAt(style, widest)).toBe(Number(style.figmaPx));
+      await expect(fontSizeAt(style, DESIGN_WIDTH)).toBeCloseTo(Number(style.figmaPx), 2);
     }
 
-    // Checked at 1920 rather than at the 1512 design width because of one
-    // genuine, pre-existing discrepancy: .t-h05 is drawn at 32px in Figma but
-    // its 2vw term only reaches 32px at 1600px, so at the design width it
-    // paints 30.24px. Every other style reaches its Figma size by 1500px.
-    //
-    // Pinned here so it stays visible and cannot be "fixed" by accident. If the
-    // decision is to honour Figma at 1512, the change is 2vw → 2.12vw, and this
-    // assertion is what will tell you it worked.
+    // The council's percentages at the 1024 edge.
+    const AT_1024: Record<string, number> = {
+      't-h01': 0.8,
+      't-h02': 0.85,
+      't-h03': 0.9,
+      't-h04': 0.9,
+      't-h05': 0.9,
+      't-body-lg': 1,
+      't-body': 1,
+      't-label': 1,
+      't-caption': 1,
+    };
+    for (const [name, share] of Object.entries(AT_1024)) {
+      const style = byName(name)!;
+      await expect(fontSizeAt(style, 1024)).toBeCloseTo(Number(style.figmaPx) * share, 2);
+    }
+
+    // The widest sample must still be a width where the styles have finished
+    // growing. Guard for a regression that already happened: derived from
+    // breakpoints alone the widest was 1024px, where .t-h01 paints 64px — so
+    // the tables showed no style at its desktop size and the 80px vanished.
+    const widest = REFERENCE_WIDTHS[REFERENCE_WIDTHS.length - 1].width;
+    await expect(fontSizeAt(byName('t-h01')!, widest)).toBeCloseTo(80, 2);
+
+    // h05 reaches its Figma size at the design width. It used not to: it was
+    // declared at 32px against Figma's 24, and its 2vw term only arrived at
+    // 32px by 1600px, so 1512 painted 30.24 — short of a size that was itself
+    // wrong. Both halves are fixed, and this is what would notice either
+    // returning.
     const h05 = byName('t-h05')!;
-    await expect(fontSizeAt(h05, 1512)).toBeCloseTo(30.24, 2);
-    await expect(fontSizeAt(h05, 1600)).toBe(32);
+    await expect(fontSizeAt(h05, DESIGN_WIDTH)).toBeCloseTo(24, 2);
+    await expect(fontSizeAt(h05, 1024)).toBeCloseTo(21.6, 2);
 
     // The hero is no longer the outlier it was: every heading now sits in the
     // same band as the rest of the scale rather than collapsing on a phone.
@@ -639,16 +654,15 @@ export const Interactive: Story = {
     const frame = canvas.getByTitle(`Type scale at ${widest.width} pixels`);
     await expect(frame).toBeVisible();
 
-    // The hero used to be the worst offender here, at +44% across one pixel.
-    // Raising the mobile size to 44px brought it to about +5%, under the 15%
-    // threshold, so it should no longer appear in this list at all. This is the
-    // assertion that would notice the fix being reverted.
-    await expect(JUMPS.some((entry) => entry.style.name === 't-h01')).toBe(false);
-    await expect(boundaryJump(typeStyles.find((s) => s.name === 't-h01')!)?.from).toBe(44);
-
-    // .t-digit is the one that remains: 72px to 92.16px. Closing it entirely
-    // would mean a ~92px stat number on a 390px phone, which is worse than the
-    // jump, so it stays listed rather than silently accepted.
-    await expect(JUMPS.map((entry) => entry.style.name)).toEqual(['t-digit']);
+    // No style changes size across the 768px boundary any more. The 768–1023
+    // band starts at each style's phone size and ramps to its 1024 value, so
+    // the three bands join continuously — where the hero once changed by 44%
+    // across a single pixel, and .t-digit by 44% after that.
+    await expect(JUMPS).toEqual([]);
+    for (const style of typeStyles) {
+      const jump = boundaryJump(style);
+      if (!jump) continue;
+      await expect(jump.ratio).toBeCloseTo(1, 2);
+    }
   },
 };

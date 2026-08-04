@@ -171,7 +171,10 @@ export function parseResponsiveTokens(css: string = raw): ResponsiveTokens[] {
  * otherwise the overrides parse as a second, sizeless copy of every style.
  */
 export function parseTypeStyles(css: string = raw): TypeStyle[] {
-  const rule = /\.(t-[\w-]+)\s*\{([^}]*)\}(?:[^\S\n]*\/\*\s*(\d+)\s*\*\/)?/g;
+  // The trailing comment states the Figma style as `size/leadingPercent`, and
+  // sometimes names it too — `/* 24/150 · Figma body-medium */`. Only the size
+  // is captured; the rest is for a reader.
+  const rule = /\.(t-[\w-]+)\s*\{([^}]*)\}(?:[^\S\n]*\/\*\s*(\d+)(?:\/\d+)?[^*]*\*\/)?/g;
   const decl = (body: string, prop: string) =>
     body.match(new RegExp(`${prop}\\s*:\\s*([^;]+);`))?.[1].trim() ?? "";
 
@@ -204,6 +207,27 @@ export function parseTypeStyles(css: string = raw): TypeStyle[] {
         ...(fontSize ? { fontSize } : {}),
         ...(lineHeight ? { lineHeight } : {}),
       };
+    }
+  }
+
+  /*
+   * Sizes are declared as `var(--fs-*)` on `:root` and overridden per band, so
+   * a style's phone size is not written on the `.t-*` rule any more. Pick it up
+   * from the token instead, and only record it where the narrowest band really
+   * declares something different — otherwise every style would claim an
+   * override it does not have.
+   */
+  for (const style of styles) {
+    const variable = style.fontSize.match(/^var\(\s*(--[\w-]+)\s*\)$/);
+    if (!variable) continue;
+
+    const narrowest = mediaBlocks(css)
+      .filter(({ query }) => /max-width:\s*767px/.test(query))
+      .flatMap(({ body }) => declarations(body.match(/:root\s*\{([^}]*)\}/)?.[1] ?? ""))
+      .find((token) => token.name === variable[1]);
+
+    if (narrowest) {
+      style.mobile = { ...(style.mobile ?? {}), fontSize: narrowest.value };
     }
   }
 
@@ -248,16 +272,117 @@ export const TEXT_SIZE_STEPS = [
   { label: 'Very large', rootPx: 24 },
 ] as const;
 
-/** A CSS length in pixels, resolved against a viewport width and root size. */
+/** A bare CSS length in pixels. Negative values occur inside calc(). */
 function lengthToPx(value: string, viewportWidth: number, rootPx = ROOT_PX): number | null {
   const raw = value.trim();
-  const rem = raw.match(/^([\d.]+)rem$/);
+  const rem = raw.match(/^(-?[\d.]+)rem$/);
   if (rem) return parseFloat(rem[1]) * rootPx;
-  const px = raw.match(/^([\d.]+)px$/);
+  const px = raw.match(/^(-?[\d.]+)px$/);
   if (px) return parseFloat(px[1]);
-  const vw = raw.match(/^([\d.]+)vw$/);
+  const vw = raw.match(/^(-?[\d.]+)vw$/);
   if (vw) return (parseFloat(vw[1]) / 100) * viewportWidth;
   return null;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Resolving a token to a real length at a real width                         */
+/* -------------------------------------------------------------------------- */
+
+// Parsed once. The evaluator walks these thousands of times when finding cap
+// widths, and re-parsing the stylesheet each call made that visibly slow.
+const BASE_TOKENS: Token[] = parseTokenGroups().flatMap((group) => group.tokens);
+const RESPONSIVE: ResponsiveTokens[] = parseResponsiveTokens();
+
+/** Whether a media query applies at a given viewport width. */
+export function queryMatches(query: string, width: number): boolean {
+  const max = query.match(/\(max-width:\s*(\d+)px\)/);
+  const min = query.match(/\(min-width:\s*(\d+)px\)/);
+  if (max && width > Number(max[1])) return false;
+  if (min && width < Number(min[1])) return false;
+  return true;
+}
+
+/**
+ * A token's declaration at a given width, after the media queries have had
+ * their say. Later declarations win, which is the cascade for equal specificity.
+ */
+export function declarationAt(name: string, width: number): string | null {
+  let value = BASE_TOKENS.find((token) => token.name === name)?.value ?? null;
+  for (const band of RESPONSIVE) {
+    if (!queryMatches(band.query, width)) continue;
+    const declared = band.tokens.find((token) => token.name === name);
+    if (declared) value = declared.value;
+  }
+  return value;
+}
+
+/** Split on commas that are not inside parentheses. */
+function splitArgs(input: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let current = '';
+  for (const char of input) {
+    if (char === '(') depth += 1;
+    if (char === ')') depth -= 1;
+    if (char === ',' && depth === 0) {
+      parts.push(current);
+      current = '';
+      continue;
+    }
+    current += char;
+  }
+  parts.push(current);
+  return parts;
+}
+
+/**
+ * Evaluate a CSS length expression at a width.
+ *
+ * Handles the four forms this stylesheet uses: a bare length, `var()`,
+ * `clamp(a, b, c)` and `calc(A ± B)`. Everything the type scale is expressed in
+ * is one of those, and anything else returns null rather than guessing — a
+ * wrong number here would be worse than a blank cell, because it would look
+ * like an answer.
+ */
+export function evaluateLength(
+  expression: string,
+  width: number,
+  rootPx: number = ROOT_PX,
+  depth = 0,
+): number | null {
+  if (depth > 8) return null;
+  const expr = expression.trim();
+
+  const variable = expr.match(/^var\(\s*(--[\w-]+)\s*\)$/);
+  if (variable) {
+    const declared = declarationAt(variable[1], width);
+    return declared === null ? null : evaluateLength(declared, width, rootPx, depth + 1);
+  }
+
+  const clamp = expr.match(/^clamp\(([\s\S]*)\)$/);
+  if (clamp) {
+    const args = splitArgs(clamp[1]).map((arg) =>
+      evaluateLength(arg, width, rootPx, depth + 1),
+    );
+    if (args.length !== 3 || args.some((value) => value === null)) return null;
+    const [min, preferred, max] = args as number[];
+    return Math.min(Math.max(min, preferred), max);
+  }
+
+  const calc = expr.match(/^calc\(([\s\S]*)\)$/);
+  if (calc) {
+    const parts = calc[1].split(/\s+([+-])\s+/);
+    let total = evaluateLength(parts[0], width, rootPx, depth + 1);
+    if (total === null) return null;
+    for (let i = 1; i < parts.length; i += 2) {
+      const value = evaluateLength(parts[i + 1], width, rootPx, depth + 1);
+      if (value === null) return null;
+      total = parts[i] === '+' ? total + value : total - value;
+    }
+    return total;
+  }
+
+  return lengthToPx(expr, width, rootPx);
 }
 
 /**
@@ -277,20 +402,7 @@ export function fontSizeAt(
   viewportWidth: number,
   rootPx: number = ROOT_PX,
 ): number | null {
-  if (viewportWidth <= 767 && style.mobile?.fontSize) {
-    return lengthToPx(style.mobile.fontSize, viewportWidth, rootPx);
-  }
-
-  const clamp = style.fontSize.match(/^clamp\(([^,]+),([^,]+),([^)]+)\)$/);
-  if (clamp) {
-    const min = lengthToPx(clamp[1], viewportWidth, rootPx);
-    const preferred = lengthToPx(clamp[2], viewportWidth, rootPx);
-    const max = lengthToPx(clamp[3], viewportWidth, rootPx);
-    if (min === null || preferred === null || max === null) return null;
-    return Math.min(Math.max(min, preferred), max);
-  }
-
-  return lengthToPx(style.fontSize, viewportWidth, rootPx);
+  return evaluateLength(style.fontSize, viewportWidth, rootPx);
 }
 
 /**
@@ -384,12 +496,17 @@ export function gridColsAt(width: number, css: string = raw): number {
  * design was drawn at — actually appears.
  */
 export function capWidth(style: TypeStyle): number | null {
-  const clamp = style.fontSize.match(/^clamp\(([^,]+),\s*([\d.]+)vw\s*,([^)]+)\)$/);
-  if (!clamp) return null;
-  const max = lengthToPx(clamp[3], 0);
-  const vw = parseFloat(clamp[2]);
-  if (max === null || !vw) return null;
-  return Math.ceil((max / vw) * 100);
+  const SCAN_TO = 2560;
+  const ceiling = evaluateLength(style.fontSize, SCAN_TO);
+  if (ceiling === null) return null;
+
+  // Scanned rather than solved: the declaration is a var() that resolves to a
+  // different expression in each band, so there is no single formula to invert.
+  for (let width = MIN_WIDTH; width <= SCAN_TO; width += 1) {
+    const value = evaluateLength(style.fontSize, width);
+    if (value !== null && value >= ceiling - 0.01) return width;
+  }
+  return null;
 }
 
 /** The narrowest width the design system claims to support. */

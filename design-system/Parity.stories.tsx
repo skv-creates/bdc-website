@@ -8,6 +8,7 @@ import {
   parityRows,
   type ParityRow,
 } from './parity';
+import { DESIGN_WIDTH, fontSizeAt } from './tokens';
 import { Note, Page, Section } from './Page';
 import { claimCounts, claims } from './claims';
 
@@ -42,7 +43,10 @@ function Row({ row }: { row: ParityRow }) {
   const figmaSize = row.figma ? `${row.figma.sizePx}px` : '—';
   const figmaLh = row.figma ? `${row.figma.lineHeightPct}%` : '—';
 
-  const branchSize = row.branch ? desktopPx(row.branch.fontSize) : null;
+  // Evaluated at the design width: sizes resolve per band through var(), so
+  // there is no literal maximum written on the rule to read.
+  const branchRaw = row.branch ? fontSizeAt(row.branch, DESIGN_WIDTH) : null;
+  const branchSize = branchRaw === null ? null : Math.round(branchRaw * 100) / 100;
   const branchLh = row.branch ? lineHeightPct(row.branch.lineHeight) : null;
   const liveSize = row.live ? desktopPx(row.live.fontSize) : null;
   const liveLh = row.live ? lineHeightPct(row.live.lineHeight) : null;
@@ -217,10 +221,11 @@ export const Audit: Story = {
     // comparison by loosening it, this fails.
     const byKey = (key: string) => parityRows.find((row) => row.key === key)!;
 
-    // h04 and h05 are a step larger in CSS than in Figma.
-    await expect(desktopPx(byKey('t-h04')!.branch!.fontSize)).toBe(40);
+    // h04 and h05 now match Figma at the design width. They used to be a step
+    // larger — 40px against 32, and 32px against 24.
+    await expect(fontSizeAt(byKey('t-h04')!.branch!, DESIGN_WIDTH)).toBeCloseTo(32, 2);
     await expect(byKey('t-h04').figma!.sizePx).toBe(32);
-    await expect(desktopPx(byKey('t-h05')!.branch!.fontSize)).toBe(32);
+    await expect(fontSizeAt(byKey('t-h05')!.branch!, DESIGN_WIDTH)).toBeCloseTo(24, 2);
     await expect(byKey('t-h05').figma!.sizePx).toBe(24);
 
     // Two Figma styles have no implementation at all.

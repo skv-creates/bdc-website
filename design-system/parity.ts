@@ -11,7 +11,7 @@
  */
 import live from './live-type.generated.json';
 import { FIGMA_TEXT_STYLES, CSS_ONLY_CLASSES, type FigmaTextStyle } from './figma-library';
-import { typeStyles, type TypeStyle } from './tokens';
+import { DESIGN_WIDTH, fontSizeAt, typeStyles, type TypeStyle } from './tokens';
 
 const ROOT_PX = 16;
 
@@ -97,8 +97,12 @@ export function buildParity(): ParityRow[] {
       }
 
       if (branch) {
-        const size = desktopPx(branch.fontSize);
-        if (size !== null && size !== figma.sizePx) {
+        // Evaluated at the design width rather than read off the declaration:
+        // sizes are now `var(--fs-*)` resolved per band, so there is no literal
+        // maximum to read out of the rule.
+        const raw = fontSizeAt(branch, DESIGN_WIDTH);
+        const size = raw === null ? null : Math.round(raw * 100) / 100;
+        if (size !== null && Math.abs(size - figma.sizePx) > 0.01) {
           issues.push({
             severity: 'error',
             label: 'Size differs from Figma',
