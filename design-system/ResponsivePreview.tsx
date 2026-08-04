@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { globalsCss, REFERENCE_WIDTHS, typeStyles } from './tokens';
+import { BANDS, capAllWidth, globalsCss, typeStyles } from './tokens';
 
 /**
  * A real viewport you can drag.
@@ -65,15 +65,22 @@ p { margin: 6px 0 0; }
 }
 
 /**
- * The breakpoints declared in globals.css, both edges of each band.
+ * The bands declared in globals.css, and the pixels either side of each edge.
  *
- * These used to be device names — iPhone SE, iPad landscape and so on — which
- * was wrong twice over: those widths are not in the stylesheet, and a device
- * list goes stale every autumn. What matters is where the CSS behaves
- * differently, so the buttons are generated from the media queries themselves
- * and a new breakpoint appears here without anyone editing this file.
+ * Two rows, because they answer different questions. A band is where you spend
+ * time — "what does a tablet get" — and is the thing a breakpoint actually is.
+ * The boundary pixels are for checking the handover, which is where the scale
+ * has its discontinuities.
+ *
+ * Neither is a device list. Earlier versions of this control read "iPhone SE"
+ * and "iPad landscape", widths that appear nowhere in the stylesheet and go
+ * stale every autumn.
  */
-const PRESETS = REFERENCE_WIDTHS;
+const CAP = capAllWidth();
+
+const BOUNDARY_WIDTHS = BANDS.flatMap((band) =>
+  band.to === null ? [] : [band.to, band.to + 1],
+);
 
 export function ResponsivePreview() {
   const [width, setWidth] = useState(393);
@@ -153,19 +160,56 @@ export function ResponsivePreview() {
       </p>
 
       <div className="flex flex-wrap items-center gap-3">
-        {PRESETS.map((preset) => (
+        <span className="t-caption w-20 uppercase tracking-[0.08em] opacity-60">Band</span>
+        {BANDS.map((band) => {
+          const active = width >= band.from && (band.to === null || width <= band.to);
+          return (
+            <button
+              key={band.from}
+              type="button"
+              onClick={() => setWidth(band.sample)}
+              aria-pressed={active}
+              className={`t-caption rounded-full border-2 px-4 py-1.5 transition-colors ${
+                active
+                  ? 'border-brand bg-brand'
+                  : 'border-border hover:bg-brand-hover hover:text-text-invert'
+              }`}
+            >
+              {band.range} · {band.cols} col
+            </button>
+          );
+        })}
+        {CAP && (
           <button
-            key={preset.width}
             type="button"
-            onClick={() => setWidth(preset.width)}
-            aria-pressed={width === preset.width}
+            onClick={() => setWidth(CAP)}
+            aria-pressed={width === CAP}
             className={`t-caption rounded-full border-2 px-4 py-1.5 transition-colors ${
-              width === preset.width
+              width === CAP
                 ? 'border-brand bg-brand'
                 : 'border-border hover:bg-brand-hover hover:text-text-invert'
             }`}
           >
-            {preset.width}px · {preset.note}
+            {CAP}px · all at max
+          </button>
+        )}
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <span className="t-caption w-20 uppercase tracking-[0.08em] opacity-60">Edges</span>
+        {BOUNDARY_WIDTHS.map((edge) => (
+          <button
+            key={edge}
+            type="button"
+            onClick={() => setWidth(edge)}
+            aria-pressed={width === edge}
+            className={`t-caption rounded-full border px-3 py-1 transition-colors ${
+              width === edge
+                ? 'border-[var(--bdc-burgundy)] bg-[var(--bdc-burgundy)] text-[var(--bdc-white)]'
+                : 'border-black/25 hover:border-border'
+            }`}
+          >
+            {edge}px
           </button>
         ))}
       </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect } from 'storybook/test';
 import {
+  BANDS,
   boundaryJump,
   deadMinimum,
   fontSizeAt,
@@ -596,8 +597,8 @@ export const Interactive: Story = {
     await expect(slider).toHaveValue('393');
 
     // The preset buttons are the interaction: pressing one moves the viewport.
-    // The presets are the breakpoints declared in globals.css, so this asserts
-    // against the derived list rather than a label someone typed.
+    // Bands come from the media queries, so this asserts against the derived
+    // list rather than a label someone typed.
     const widest = REFERENCE_WIDTHS[REFERENCE_WIDTHS.length - 1];
     const preset = canvas.getByRole('button', {
       name: `${widest.width}px · ${widest.note}`,
@@ -605,6 +606,13 @@ export const Interactive: Story = {
     await userEvent.click(preset);
     await expect(slider).toHaveValue(String(widest.width));
     await expect(preset).toHaveAttribute('aria-pressed', 'true');
+
+    // Every band is offered as a range rather than as a single pixel.
+    for (const band of BANDS) {
+      await expect(
+        canvas.getByRole('button', { name: `${band.range} · ${band.cols} col` }),
+      ).toBeVisible();
+    }
 
     // The frame is a real viewport, and its width follows the control.
     const frame = canvas.getByTitle(`Type scale at ${widest.width} pixels`);

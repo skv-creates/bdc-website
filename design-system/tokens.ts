@@ -392,50 +392,97 @@ export function capWidth(style: TypeStyle): number | null {
   return Math.ceil((max / vw) * 100);
 }
 
+/** The narrowest width the design system claims to support. */
+export const MIN_WIDTH = 320;
+
+export type BreakpointBand = {
+  /** Inclusive lower bound. */
+  from: number;
+  /** Inclusive upper bound; null means open-ended. */
+  to: number | null;
+  cols: number;
+  /** "≤767px", "768–1023px", "1024px and up". */
+  range: string;
+  /** A width inside the band to preview and tabulate at. */
+  sample: number;
+};
+
 /**
- * Sample widths, from the two kinds of width this stylesheet treats specially.
+ * The breakpoints as bands, which is what a breakpoint actually is.
  *
- * **Breakpoints** — each `max-width` boundary contributes the last pixel of its
- * band and the first pixel of the next, because breakpoint problems live either
- * side of an edge rather than in the middle of a band.
+ * The stylesheet declares edges — `max-width: 767px`, `max-width: 1023px` — but
+ * an edge on its own is not a breakpoint any more than a fence post is a field.
+ * What the design has is three bands, each with its own column count, and the
+ * useful question is which band a width falls in.
  *
- * **The cap** — the width at which the last `clamp()` reaches its maximum. Every
- * breakpoint in this stylesheet is at or below 1024px, but `.t-h01` does not
- * reach its 80px until 1334px, so a table built from breakpoints alone never
- * shows a single style at its desktop size. That was a real omission: the widest
- * column read 61.44px for the hero and looked like the answer.
+ * Bands are cut from the `max-width` values in source order: everything up to
+ * the first, then between each pair, then everything above the last.
  */
-export function breakpointSamples(css: string = raw): {
-  label: string;
-  width: number;
-  note: string;
-}[] {
-  const widths = new Set<number>();
-  for (const edge of parseBreakpointEdges(css)) {
-    if (edge.kind === 'max') {
-      widths.add(edge.px);
-      widths.add(edge.px + 1);
-    } else {
-      widths.add(edge.px);
-    }
+export function breakpointBands(css: string = raw): BreakpointBand[] {
+  const maxEdges = parseBreakpointEdges(css)
+    .filter((edge) => edge.kind === 'max')
+    .map((edge) => edge.px)
+    .sort((a, b) => a - b);
+
+  const bands: BreakpointBand[] = [];
+  let from = MIN_WIDTH;
+
+  for (const edge of maxEdges) {
+    bands.push({
+      from,
+      to: edge,
+      cols: gridColsAt(edge, css),
+      range: from === MIN_WIDTH ? `≤${edge}px` : `${from}–${edge}px`,
+      // The widest width in the band: where a fluid style in it is largest, and
+      // where it is about to hand over to the next band.
+      sample: edge,
+    });
+    from = edge + 1;
   }
 
+  bands.push({
+    from,
+    to: null,
+    cols: gridColsAt(from, css),
+    range: `${from}px and up`,
+    sample: from,
+  });
+
+  return bands;
+}
+
+/**
+ * The width at which every fluid style has stopped growing.
+ *
+ * Not a breakpoint — no media query mentions it — but the first width at which
+ * each style is at the size it was drawn at, so a table without it never shows a
+ * desktop value. Every breakpoint here is at or below 1024px while `.t-h01` does
+ * not reach its 80px until 1334px, and leaving this out once made the widest
+ * column read 61.44px for the hero as though that were the answer.
+ */
+export function capAllWidth(css: string = raw): number | null {
   const caps = parseTypeStyles(css)
     .map((style) => capWidth(style))
     .filter((width): width is number => width !== null);
-  const lastCap = caps.length > 0 ? Math.max(...caps) : null;
-  if (lastCap) widths.add(lastCap);
-
-  return [...widths]
-    .sort((a, b) => a - b)
-    .map((width) => ({
-      label: `${width}`,
-      width,
-      note: width === lastCap ? 'all at max' : `${gridColsAt(width, css)} col`,
-    }));
+  return caps.length > 0 ? Math.max(...caps) : null;
 }
 
-export const REFERENCE_WIDTHS = breakpointSamples();
+export const BANDS: BreakpointBand[] = breakpointBands();
+
+/**
+ * Columns for the size tables: one per band, plus the width where every style
+ * has reached its maximum.
+ */
+export const REFERENCE_WIDTHS: { label: string; width: number; note: string }[] = [
+  ...BANDS.map((band) => ({
+    label: band.range,
+    width: band.sample,
+    note: `${band.cols} col`,
+  })),
+  ...(capAllWidth()
+    ? [{ label: `${capAllWidth()}px`, width: capAllWidth()!, note: 'all at max' }]
+    : []),
+];
 
 /**
  * The size jump, if any, across the 767 → 768 boundary.
