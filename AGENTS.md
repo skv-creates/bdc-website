@@ -67,7 +67,18 @@ reproduces the current state of Notion.
 This is the only place a Notion token lives outside a laptop. It is a
 **repository secret**, not a file in the repo: Actions never hands secrets to
 workflows triggered by forked pull requests, so a public repo does not leak it.
-The token still only needs **Read content** — nothing in CI writes to Notion.
+
+The token is **Read + Update + Insert**, which is a deliberate change from how
+this started. Read alone is all the sync itself needs — it only ever pulls. The
+write half is there so the flow can be genuinely two-way: the Shift+E editor on
+staging writes copy back, and a sync can stamp a row once it is live rather
+than leaving someone to remember which events have been published.
+
+The cost of one integration doing both is that revoking it stops the sync and
+the editor together. Two integrations would let you kill one and keep the
+other. That was weighed and one was chosen; if the write side is ever handed to
+something less trusted than a scheduled job and a passphrase-gated staging
+route, split it.
 To set it up once:
 
     gh secret set NOTION_TOKEN                          # your read-only secret
@@ -267,10 +278,16 @@ Three things have to be set up once, and none of them live in this repo:
     wrangler secret put EDIT_PASSPHRASE --env=""
     wrangler secret put NOTION_WRITE_TOKEN --env=""
 
-`NOTION_WRITE_TOKEN` is the **only write-capable Notion integration anywhere in
-this project**. Everything else — the scheduled events sync, the bios sync on a
-laptop — is deliberately read-only. It is a Worker secret on staging and must
-never be added to the production environment, to CI, or to `.env.example`.
+`NOTION_WRITE_TOKEN` is the same integration as `NOTION_TOKEN` in CI — one
+Notion integration with Read + Update + Insert, held in two places. It needs
+**Insert** as well as Update: adding a paragraph appends a block, which Notion
+counts as an insert, and a token with Update alone fails on exactly the edit
+that adds a sentence.
+
+It is a Worker secret on **staging** and must never be added to the production
+environment or to `.env.example`. Bios syncs run from a laptop and should still
+use a personal read-only integration — see `.env.example`; there is no reason
+for a laptop token to be able to write.
 
 What you edit is Notion's own source, brackets and all: `[label](url)`, because
 that is what the sync writes into `lib/events.generated.json` and what
