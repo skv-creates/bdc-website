@@ -395,6 +395,16 @@ export function capWidth(style: TypeStyle): number | null {
 /** The narrowest width the design system claims to support. */
 export const MIN_WIDTH = 320;
 
+/**
+ * The width the designs are drawn at.
+ *
+ * A design fact rather than a CSS one — no media query mentions 1512, so it
+ * cannot be derived from the stylesheet the way the bands are. It is the default
+ * the previews open at, because it is the width every design decision on this
+ * site was made against, and the one a reviewer should see first.
+ */
+export const DESIGN_WIDTH = 1512;
+
 export type BreakpointBand = {
   /** Inclusive lower bound. */
   from: number;
@@ -479,6 +489,7 @@ export const REFERENCE_WIDTHS: { label: string; width: number; note: string }[] 
     width: band.sample,
     note: `${band.cols} col`,
   })),
+  { label: `${DESIGN_WIDTH}px`, width: DESIGN_WIDTH, note: 'design width' },
   ...(capAllWidth()
     ? [{ label: `${capAllWidth()}px`, width: capAllWidth()!, note: 'all at max' }]
     : []),

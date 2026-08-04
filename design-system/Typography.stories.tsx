@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect } from 'storybook/test';
 import {
   BANDS,
+  DESIGN_WIDTH,
   boundaryJump,
   deadMinimum,
   fontSizeAt,
@@ -398,10 +399,11 @@ export const Scale: Story = {
     await expect(h01?.fontSize).toMatch(/^clamp\(/);
     await expect(h01?.mobile?.fontSize).toBe('2.75rem');
 
-    // t-body is one of the two that is not fluid — fixed rem at both ends.
+    // t-body is fixed at 1.25rem — 20px — and is no longer overridden on
+    // phones, so body-default is 20px at every width.
     const body = typeStyles.find((s) => s.name === 't-body');
     await expect(body?.fontSize).toBe('1.25rem');
-    await expect(body?.mobile?.fontSize).toBe('1.2rem');
+    await expect(body?.mobile?.fontSize).toBeUndefined();
 
     await expect(canvas.getByText('About Beige Standard')).toBeVisible();
   },
@@ -461,6 +463,23 @@ export const Constraints: Story = {
     await expect(fontSizeAt(body!, PHONE)).toBeGreaterThanOrEqual(18);
     await expect(fontSizeAt(label!, PHONE)).toBeGreaterThanOrEqual(18);
     await expect(fontSizeAt(caption!, PHONE)).toBe(16);
+
+    // body-default is 20px, at every width. It used to drop to 19.2px on
+    // phones under a comment claiming the phone got larger text, which it
+    // never did.
+    for (const { width } of REFERENCE_WIDTHS) {
+      await expect(fontSizeAt(body!, width)).toBe(20);
+    }
+
+    // Ordering: a style named larger must never paint smaller than the one
+    // below it. .t-body-lg broke this at every width under 1250px, because its
+    // floor was 18px — Figma's body-small — against .t-body's 20px.
+    const bodyLg = byName('t-body-lg')!;
+    for (const { width } of REFERENCE_WIDTHS) {
+      const large = fontSizeAt(bodyLg, width)!;
+      const normal = fontSizeAt(body!, width)!;
+      await expect(large).toBeGreaterThan(normal);
+    }
 
     // The widest sample must be a width where the styles have finished growing.
     // This is the guard for a regression that already happened: when the sample
@@ -593,8 +612,10 @@ export const Interactive: Story = {
     </Page>
   ),
   play: async ({ canvas, userEvent }) => {
+    // Opens at the width the designs were drawn at, so the first thing a
+    // reviewer sees is the intended state rather than an arbitrary phone.
     const slider = canvas.getByRole('slider');
-    await expect(slider).toHaveValue('393');
+    await expect(slider).toHaveValue(String(DESIGN_WIDTH));
 
     // The preset buttons are the interaction: pressing one moves the viewport.
     // Bands come from the media queries, so this asserts against the derived

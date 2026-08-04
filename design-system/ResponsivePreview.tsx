@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BANDS, capAllWidth, globalsCss, typeStyles } from './tokens';
+import { BANDS, capAllWidth, DESIGN_WIDTH, globalsCss, typeStyles } from './tokens';
 
 /**
  * A real viewport you can drag.
@@ -83,7 +83,9 @@ const BOUNDARY_WIDTHS = BANDS.flatMap((band) =>
 );
 
 export function ResponsivePreview() {
-  const [width, setWidth] = useState(393);
+  // Opens at the width the designs were drawn at, so the first thing anyone sees
+  // is the intended state rather than an arbitrary phone.
+  const [width, setWidth] = useState(DESIGN_WIDTH);
   const [painted, setPainted] = useState<Record<string, number>>({});
   const [reference, setReference] = useState<Record<string, number>>({});
   const frame = useRef<HTMLIFrameElement>(null);
@@ -179,6 +181,18 @@ export function ResponsivePreview() {
             </button>
           );
         })}
+        <button
+          type="button"
+          onClick={() => setWidth(DESIGN_WIDTH)}
+          aria-pressed={width === DESIGN_WIDTH}
+          className={`t-caption rounded-full border-2 px-4 py-1.5 transition-colors ${
+            width === DESIGN_WIDTH
+              ? 'border-brand bg-brand'
+              : 'border-border hover:bg-brand-hover hover:text-text-invert'
+          }`}
+        >
+          {DESIGN_WIDTH}px · design width
+        </button>
         {CAP && (
           <button
             type="button"
