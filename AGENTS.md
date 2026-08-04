@@ -59,16 +59,27 @@ re-run the sync:
 The output is deterministic (keys sorted), so whoever runs it last simply
 reproduces the current state of Notion.
 
-# Events sync on a schedule — the one token on GitHub
+# Events sync runs when asked, and there is no token on GitHub
 
-`.github/workflows/sync-events.yml` runs `npm run sync:events` every 8 hours on
-`main`, commits `lib/events.generated.json` when it changed, and deploys.
+`.github/workflows/sync-events.yml` runs `npm run sync:events`, commits
+`lib/events.generated.json` when it changed, and deploys. It is
+**`workflow_dispatch` only** — there is no schedule.
 
-This is the only place a Notion token lives outside a laptop. It is a
-**repository secret**, not a file in the repo: Actions never hands secrets to
-workflows triggered by forked pull requests, so a public repo does not leak it.
-The token still only needs **Read content** — nothing in CI writes to Notion.
-To set it up once:
+There was one, every eight hours, and it failed all 23 times it ever ran because
+`NOTION_TOKEN` was never set. The council's decision is that the Notion
+credential lives in Cloudflare — where the Shift+E editor uses it — and not in
+this public repository, so there is nothing for a schedule to authenticate with.
+Events reach the site when somebody asks. For a handful of events a month that
+is the better trade: nothing publishes itself unlooked-at.
+
+Everything below about tokens, variables and the deploy-itself behaviour still
+applies to a manual run, and is what you need if the schedule is ever restored.
+
+If the schedule is ever restored, the token would be a **repository secret**,
+not a file in the repo: Actions never hands secrets to workflows triggered by
+forked pull requests, so a public repo does not leak it. It needs only **Read
+content** — nothing in CI writes to Notion, and it must be a *different*
+integration from the write-capable one in Cloudflare. To set that up:
 
     gh secret set NOTION_TOKEN                          # your read-only secret
     gh variable set NOTION_EVENTS_DATA_SOURCE_ID --body b51c7693-aa03-8324-9099-87dd784391f9

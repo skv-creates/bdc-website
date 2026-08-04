@@ -1,18 +1,29 @@
 name: Sync events from Notion
 
-# Pulls the Събития tab into lib/events.generated.json every 8 hours and commits
-# the result to main when it changed.
+# Pulls the Събития tab into lib/events.generated.json and commits the result to
+# main when it changed.
 #
-# This is the one place a Notion token exists outside an editor's laptop. It is
-# a repository secret, not a file in the repo — Actions never exposes secrets to
-# workflows triggered by forked pull requests, so a public repo does not leak it.
-# The token still only needs "Read content"; nothing here writes back to Notion.
+# ON DEMAND ONLY. It used to run every eight hours, and that schedule was
+# deleted rather than paused, for two reasons.
 #
-# Scheduled workflows only run from the default branch, so this file has to be on
-# main to fire at all.
+# The first is that it never once worked: NOTION_TOKEN was never set, so all 23
+# scheduled runs failed, every eight hours, mailing a failure notice each time.
+# A red job nobody can fix without a decision is worse than no job — it teaches
+# everyone to ignore the Actions tab, which is where a real breakage would also
+# appear.
+#
+# The second is the decision itself. The council keeps the Notion credential in
+# Cloudflare, where the staging editor uses it, and deliberately does not put one
+# in this public repository. Without a token here there is nothing to schedule.
+# Events reach the site when someone asks for them, which for a handful of events
+# a month is the honest trade: fewer moving parts, and nothing publishes itself
+# unlooked-at.
+#
+# To turn the schedule back on you need `gh secret set NOTION_TOKEN` with a
+# READ-ONLY integration first — see AGENTS.md — and then restore the `schedule:`
+# key below. Scheduled workflows only run from the default branch, so this file
+# has to be on main to fire at all.
 on:
-  schedule:
-    - cron: "0 */8 * * *" # 00:00, 08:00, 16:00 UTC
   workflow_dispatch:
 
 # Let the job commit the regenerated JSON.
