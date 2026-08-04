@@ -45,7 +45,7 @@ export function TextSizeMatrix() {
                 : 'border-border hover:bg-brand-hover hover:text-text-invert'
             }`}
           >
-            {reference.label} · {reference.width}
+            {reference.width}px · {reference.note}
           </button>
         ))}
       </div>

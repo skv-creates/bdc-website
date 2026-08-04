@@ -342,21 +342,75 @@ export function respondsToTextSize(
 }
 
 /**
- * The widths worth stating a number at.
+ * The breakpoints, read out of the media queries in globals.css.
  *
- * 767 and 768 are adjacent on purpose. They are one pixel apart and they are
- * where the mobile overrides hand over to the clamps, so any discontinuity in
- * the scale shows up as two very different numbers in neighbouring columns.
- * Averaging that boundary away by only sampling 390 and 768 is how a 44% jump
- * in the hero goes unnoticed.
+ * Not device names. "iPhone 15" is a width someone chose to care about; a
+ * breakpoint is a width the stylesheet actually behaves differently either side
+ * of, and only the second kind belongs in a design system. Add a media query to
+ * globals.css and it appears here on its own.
  */
-export const REFERENCE_WIDTHS = [
-  { label: 'Phone', width: 390, note: '4 col' },
-  { label: 'Phone max', width: 767, note: 'last fixed px' },
-  { label: 'Tablet', width: 768, note: '8 col · clamp starts' },
-  { label: 'Laptop', width: 1024, note: '12 col' },
-  { label: 'Desktop', width: 1512, note: 'Figma width' },
-] as const;
+export function parseBreakpointEdges(css: string = raw): { kind: 'min' | 'max'; px: number }[] {
+  const edges = new Map<string, { kind: 'min' | 'max'; px: number }>();
+  for (const { query } of mediaBlocks(css)) {
+    for (const match of query.matchAll(/\((min|max)-width:\s*(\d+)px\)/g)) {
+      const kind = match[1] as 'min' | 'max';
+      const px = Number(match[2]);
+      edges.set(`${kind}-${px}`, { kind, px });
+    }
+  }
+  return [...edges.values()].sort((a, b) => a.px - b.px);
+}
+
+/** How many grid columns are active at a given width, per the stylesheet. */
+export function gridColsAt(width: number, css: string = raw): number {
+  let cols = Number(parseTokenGroups(css).flatMap((g) => g.tokens).find((t) => t.name === '--grid-cols')?.value ?? 12);
+
+  for (const { query, tokens } of parseResponsiveTokens(css)) {
+    const max = query.match(/\(max-width:\s*(\d+)px\)/);
+    const min = query.match(/\(min-width:\s*(\d+)px\)/);
+    if (max && width > Number(max[1])) continue;
+    if (min && width < Number(min[1])) continue;
+    const declared = tokens.find((token) => token.name === '--grid-cols');
+    if (declared) cols = Number(declared.value);
+  }
+  return cols;
+}
+
+/**
+ * Sample widths built from the breakpoints themselves.
+ *
+ * Each `max-width` boundary contributes two: the last pixel of its band and the
+ * first pixel of the next. Breakpoint problems live either side of the edge, not
+ * in the middle of a band, so sampling only band centres hides them.
+ */
+export function breakpointSamples(css: string = raw): {
+  label: string;
+  width: number;
+  note: string;
+}[] {
+  const widths = new Set<number>();
+  for (const edge of parseBreakpointEdges(css)) {
+    if (edge.kind === 'max') {
+      widths.add(edge.px);
+      widths.add(edge.px + 1);
+    } else {
+      widths.add(edge.px);
+    }
+  }
+
+  return [...widths]
+    .sort((a, b) => a - b)
+    .map((width) => {
+      const cols = gridColsAt(width, css);
+      return {
+        label: `${width}`,
+        width,
+        note: `${cols} col`,
+      };
+    });
+}
+
+export const REFERENCE_WIDTHS = breakpointSamples();
 
 /**
  * The size jump, if any, across the 767 → 768 boundary.

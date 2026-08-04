@@ -143,13 +143,11 @@ function AcrossBreakpoints() {
             <th className="t-caption pb-3 pe-6 uppercase tracking-[0.08em] opacity-60">
               Style
             </th>
-            {REFERENCE_WIDTHS.map(({ label, width, note }) => (
-              <th key={label} className="pb-3 pe-6">
+            {REFERENCE_WIDTHS.map(({ width, note }) => (
+              <th key={width} className="pb-3 pe-6">
+                <span className="t-caption block font-mono">{width}px</span>
                 <span className="t-caption block uppercase tracking-[0.08em] opacity-60">
-                  {label}
-                </span>
-                <span className="t-caption block font-mono opacity-60">
-                  {width}px · {note}
+                  {note}
                 </span>
               </th>
             ))}
@@ -164,14 +162,14 @@ function AcrossBreakpoints() {
             return (
               <tr key={style.name} className="border-b border-black/10">
                 <td className="t-caption py-3 pe-6 font-bold">.{style.name}</td>
-                {REFERENCE_WIDTHS.map(({ label, width }) => {
+                {REFERENCE_WIDTHS.map(({ width }) => {
                   const px = fontSizeAt(style, width);
                   const overridden = width <= 767 && Boolean(style.mobile?.fontSize);
                   return (
-                    <td key={label} className="t-caption py-3 pe-6 font-mono">
+                    <td key={width} className="t-caption py-3 pe-6 font-mono">
                       {px === null ? '—' : `${Math.round(px * 10) / 10}px`}
                       {overridden && (
-                        <span className="ms-2 t-caption opacity-60">fixed</span>
+                        <span className="t-caption ms-2 opacity-60">fixed</span>
                       )}
                     </td>
                   );
@@ -591,15 +589,18 @@ export const Interactive: Story = {
     await expect(slider).toHaveValue('393');
 
     // The preset buttons are the interaction: pressing one moves the viewport.
-    await userEvent.click(canvas.getByRole('button', { name: 'Figma' }));
-    await expect(slider).toHaveValue('1512');
-    await expect(canvas.getByRole('button', { name: 'Figma' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
+    // The presets are the breakpoints declared in globals.css, so this asserts
+    // against the derived list rather than a label someone typed.
+    const widest = REFERENCE_WIDTHS[REFERENCE_WIDTHS.length - 1];
+    const preset = canvas.getByRole('button', {
+      name: `${widest.width}px · ${widest.note}`,
+    });
+    await userEvent.click(preset);
+    await expect(slider).toHaveValue(String(widest.width));
+    await expect(preset).toHaveAttribute('aria-pressed', 'true');
 
     // The frame is a real viewport, and its width follows the control.
-    const frame = canvas.getByTitle('Type scale at 1512 pixels');
+    const frame = canvas.getByTitle(`Type scale at ${widest.width} pixels`);
     await expect(frame).toBeVisible();
 
     // The hero used to be the worst offender here, at +44% across one pixel.

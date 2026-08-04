@@ -173,5 +173,27 @@
       "letterSpacing": "var(--ls-tight)",
       "fontWeight": "var(--weight-bold)"
     }
-  ]
+  ],
+  "usage": {
+    "a.t-caption": 17,
+    "a.t-label": 3,
+    "blockquote.t-quote": 1,
+    "button.t-caption": 2,
+    "h1.t-h01": 1,
+    "h2.t-h02": 4,
+    "h2.t-h03": 1,
+    "h3.t-h03": 2,
+    "h3.t-h04": 3,
+    "li.t-body": 6,
+    "p.t-body": 25,
+    "p.t-body-lg": 2,
+    "p.t-caption": 13,
+    "p.t-digit": 2,
+    "p.t-h05": 2,
+    "p.t-label": 3,
+    "span.t-body": 36,
+    "span.t-body-lg": 8,
+    "span.t-caption": 34,
+    "span.t-h01": 1
+  }
 }

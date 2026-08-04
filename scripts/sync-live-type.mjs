@@ -22,17 +22,39 @@ const ORIGIN = process.env.LIVE_ORIGIN ?? "https://bulgariandesigncouncil.org";
 const PAGE = `${ORIGIN}/bg`;
 const OUT = resolve(import.meta.dirname, "..", "design-system", "live-type.generated.json");
 
-/** Pull every stylesheet the page links, in document order. */
-async function stylesheetUrls() {
+async function fetchPage() {
   const res = await fetch(PAGE, { headers: { "user-agent": "bdc-design-system-sync" } });
   if (!res.ok) throw new Error(`${PAGE} returned ${res.status}`);
-  const html = await res.text();
+  return res.text();
+}
 
+/** Every stylesheet the page links, in document order. */
+function stylesheetUrls(html) {
   const hrefs = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(
     (match) => match[1],
   );
   if (hrefs.length === 0) throw new Error("No stylesheet links found on the live page.");
   return hrefs.map((href) => (href.startsWith("http") ? href : `${ORIGIN}${href}`));
+}
+
+/**
+ * Which element carries which `.t-*` class, in the published markup.
+ *
+ * The stylesheet says what a style looks like; only the HTML says where it is
+ * used. Both are needed to answer questions like "what is the home page's first
+ * heading" without reading the source and hoping it is deployed.
+ */
+function classUsage(html) {
+  const counts = new Map();
+  for (const match of html.matchAll(/<([a-z][a-z0-9]*)\b[^>]*\bclass="([^"]*)"/gi)) {
+    const tag = match[1].toLowerCase();
+    for (const cls of match[2].split(/\s+/)) {
+      if (!/^t-[a-z0-9-]+$/.test(cls)) continue;
+      const key = `${tag}.${cls}`;
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+  }
+  return Object.fromEntries([...counts.entries()].sort());
 }
 
 /**
@@ -137,7 +159,8 @@ function rootTokens(css) {
   return tokens;
 }
 
-const urls = await stylesheetUrls();
+const html = await fetchPage();
+const urls = stylesheetUrls(html);
 let combined = "";
 for (const url of urls) {
   const res = await fetch(url, { headers: { "user-agent": "bdc-design-system-sync" } });
@@ -162,6 +185,8 @@ const payload = {
   // Sorted so the output is deterministic and two people syncing agree.
   tokens: Object.fromEntries(Object.entries(rootTokens(combined)).sort()),
   styles: styles.sort((a, b) => a.name.localeCompare(b.name)),
+  // tag.class → count, from the published home page markup.
+  usage: classUsage(html),
 };
 
 writeFileSync(OUT, `${JSON.stringify(payload, null, 2)}\n`);

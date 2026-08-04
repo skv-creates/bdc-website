@@ -9,6 +9,7 @@ import {
   type ParityRow,
 } from './parity';
 import { Note, Page, Section } from './Page';
+import { claimCounts, claims } from './claims';
 
 const meta = {
   title: 'Foundations/Figma and live parity',
@@ -152,6 +153,45 @@ export const Audit: Story = {
             </tbody>
           </table>
         </div>
+      </Section>
+
+      <Section
+        title="Statements checked against the published site"
+        intro="Everything asserted about this scale while it was being built, re-derived from the live CSS and markup each time this page renders."
+      >
+        <ul className="flex flex-col gap-6">
+          {claims.map((claim) => (
+            <li key={claim.statement} className="border-t border-black/10 pt-5">
+              <div className="flex flex-wrap items-baseline gap-x-4">
+                <span
+                  className={`t-caption rounded-full px-3 py-1 font-bold ${
+                    claim.verdict === 'wrong'
+                      ? 'bg-[var(--bdc-burgundy)] text-[var(--bdc-white)]'
+                      : claim.verdict === 'pending'
+                        ? 'border-2 border-border'
+                        : 'opacity-60'
+                  }`}
+                >
+                  {claim.verdict === 'wrong'
+                    ? 'Wrong'
+                    : claim.verdict === 'pending'
+                      ? 'Not published'
+                      : 'Confirmed'}
+                </span>
+                <p className="t-body flex-1">{claim.statement}</p>
+              </div>
+              <p className="t-caption mt-2 opacity-70">{claim.evidence}</p>
+              {claim.correction && (
+                <p className="t-caption mt-2 font-bold">{claim.correction}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+
+        <p className="t-caption mt-8 opacity-70">
+          {claimCounts.confirmed} confirmed · {claimCounts.wrong} wrong ·{' '}
+          {claimCounts.pending} awaiting publication.
+        </p>
       </Section>
 
       <Note title="Reading the three columns">

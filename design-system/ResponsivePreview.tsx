@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { globalsCss, typeStyles } from './tokens';
+import { globalsCss, REFERENCE_WIDTHS, typeStyles } from './tokens';
 
 /**
  * A real viewport you can drag.
@@ -64,15 +64,16 @@ p { margin: 6px 0 0; }
 <body>${specimens}</body></html>`;
 }
 
-const PRESETS = [
-  { label: 'iPhone SE', width: 375 },
-  { label: 'iPhone 15', width: 393 },
-  { label: 'Phone max', width: 767 },
-  { label: 'Tablet', width: 768 },
-  { label: 'iPad landscape', width: 1024 },
-  { label: 'Laptop', width: 1280 },
-  { label: 'Figma', width: 1512 },
-];
+/**
+ * The breakpoints declared in globals.css, both edges of each band.
+ *
+ * These used to be device names — iPhone SE, iPad landscape and so on — which
+ * was wrong twice over: those widths are not in the stylesheet, and a device
+ * list goes stale every autumn. What matters is where the CSS behaves
+ * differently, so the buttons are generated from the media queries themselves
+ * and a new breakpoint appears here without anyone editing this file.
+ */
+const PRESETS = REFERENCE_WIDTHS;
 
 export function ResponsivePreview() {
   const [width, setWidth] = useState(393);
@@ -154,7 +155,7 @@ export function ResponsivePreview() {
       <div className="flex flex-wrap items-center gap-3">
         {PRESETS.map((preset) => (
           <button
-            key={preset.label}
+            key={preset.width}
             type="button"
             onClick={() => setWidth(preset.width)}
             aria-pressed={width === preset.width}
@@ -164,7 +165,7 @@ export function ResponsivePreview() {
                 : 'border-border hover:bg-brand-hover hover:text-text-invert'
             }`}
           >
-            {preset.label}
+            {preset.width}px · {preset.note}
           </button>
         ))}
       </div>
