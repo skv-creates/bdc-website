@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BANDS, capAllWidth, DESIGN_WIDTH, globalsCss, typeStyles } from './tokens';
+import { BANDS, DESIGN_WIDTH, globalsCss, REFERENCE_WIDTHS, typeStyles } from './tokens';
 
 /**
  * A real viewport you can drag.
@@ -65,41 +65,22 @@ p { margin: 6px 0 0; }
 }
 
 /**
- * The bands declared in globals.css, and the pixels either side of each edge.
+ * The five widths the scale is anchored at, and nothing else.
  *
- * Two rows, because they answer different questions. A band is where you spend
- * time — "what does a tablet get" — and is the thing a breakpoint actually is.
- * The boundary pixels are for checking the handover, which is where the scale
- * has its discontinuities.
+ * This control has been through two worse versions. It started as device names
+ * — iPhone SE, iPad landscape — widths that appear nowhere in the stylesheet
+ * and go stale every autumn. Then it became bands plus the pixel either side of
+ * every boundary, which was accurate and unusable: thirteen buttons over two
+ * rows to express five decisions.
  *
- * Neither is a device list. Earlier versions of this control read "iPhone SE"
- * and "iPad landscape", widths that appear nowhere in the stylesheet and go
- * stale every autumn.
+ * These are the anchors: the widths where a value was actually chosen. Every
+ * other width is a point on a line between two of them, and the slider reaches
+ * those — including 389 and 1023, one drag away, for anyone checking a handover.
  */
-const CAP = capAllWidth();
-
-/**
- * One entry per band, plus the design width, plus the cap — but only where the
- * cap is a different width.
- *
- * Every style now reaches its maximum by 1512, so the cap and the design width
- * are the same number. Offering both put two buttons reading "1512px" side by
- * side, which said nothing and looked like a bug because it was one.
- */
-const PRESETS: { width: number; label: string }[] = [
-  ...BANDS.map((band) => ({
-    width: band.sample,
-    label: `${band.range} · ${band.cols} col`,
-  })),
-  { width: DESIGN_WIDTH, label: `${DESIGN_WIDTH}px · design width` },
-  ...(CAP && CAP !== DESIGN_WIDTH ? [{ width: CAP, label: `${CAP}px · all at max` }] : []),
-].filter(
-  (preset, index, all) => all.findIndex((other) => other.width === preset.width) === index,
-);
-
-const BOUNDARY_WIDTHS = BANDS.flatMap((band) =>
-  band.to === null ? [] : [band.to, band.to + 1],
-);
+const PRESETS: { width: number; label: string }[] = REFERENCE_WIDTHS.map((entry) => ({
+  width: entry.width,
+  label: `${entry.width}px`,
+}));
 
 export function ResponsivePreview() {
   // Opens at the width the designs were drawn at, so the first thing anyone sees
@@ -172,7 +153,11 @@ export function ResponsivePreview() {
     return () => hidden.remove();
   }, [srcDoc]);
 
-  const band = width <= 767 ? 'fixed mobile sizes' : 'fluid clamp()';
+  // The context the button labels used to carry, moved to one line under the
+  // slider so it stays true while dragging rather than only on an exact match.
+  const current = BANDS.find(
+    (entry) => width >= entry.from && (entry.to === null || width <= entry.to),
+  );
 
   return (
     <div>
@@ -181,11 +166,8 @@ export function ResponsivePreview() {
       </p>
 
       <div className="flex flex-wrap items-center gap-3">
-        <span className="t-caption w-20 uppercase tracking-[0.08em] ds-label">Band</span>
         {PRESETS.map((preset) => {
-          // Exactly one preset can be selected, and only on an exact match.
-          // Highlighting every preset whose *range* contained the width lit
-          // three buttons at once and made the control unreadable.
+          // Exactly one can be selected, and only on an exact match.
           const selected = width === preset.width;
           return (
             <button
@@ -205,25 +187,6 @@ export function ResponsivePreview() {
         })}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3">
-        <span className="t-caption w-20 uppercase tracking-[0.08em] ds-muted">Edges</span>
-        {BOUNDARY_WIDTHS.map((edge) => (
-          <button
-            key={edge}
-            type="button"
-            onClick={() => setWidth(edge)}
-            aria-pressed={width === edge}
-            className={`t-caption rounded-full border px-3 py-1 transition-colors ${
-              width === edge
-                ? 'border-[var(--bdc-burgundy)] bg-[var(--bdc-burgundy)] text-[var(--bdc-white)]'
-                : 'border-black/25 hover:border-border'
-            }`}
-          >
-            {edge}px
-          </button>
-        ))}
-      </div>
-
       <label className="mt-6 flex items-center gap-4">
         <span className="t-caption uppercase tracking-[0.08em] ds-muted">Width</span>
         <input
@@ -239,8 +202,8 @@ export function ResponsivePreview() {
       </label>
 
       <p className="t-caption mt-2 ds-muted">
-        {band}
-        {width >= 767 && width <= 768 && ' — drag one pixel across this boundary'}
+        {current ? `${current.range} · ${current.cols} columns` : ''}
+        {current?.to === null ? ' · every style at its full size' : ''}
       </p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">

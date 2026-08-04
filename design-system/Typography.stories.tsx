@@ -649,25 +649,24 @@ export const Interactive: Story = {
     await expect(slider).toHaveValue(String(DESIGN_WIDTH));
 
     // The preset buttons are the interaction: pressing one moves the viewport.
-    // Bands come from the media queries, so this asserts against the derived
-    // list rather than a label someone typed.
-    const widestBand = BANDS[BANDS.length - 1];
-    const preset = canvas.getByRole('button', {
-      name: `${widestBand.range} · ${widestBand.cols} col`,
-    });
-    await userEvent.click(preset);
-    await expect(slider).toHaveValue(String(widestBand.sample));
-    await expect(preset).toHaveAttribute('aria-pressed', 'true');
+    // One button per anchor width and nothing else. This control previously
+    // offered thirteen — every band plus the pixel either side of every
+    // boundary — which was accurate and unusable.
+    const buttons = canvas.getAllByRole('button');
+    await expect(buttons).toHaveLength(REFERENCE_WIDTHS.length);
 
-    // Every band is offered as a range rather than as a single pixel.
-    for (const band of BANDS) {
-      await expect(
-        canvas.getByRole('button', { name: `${band.range} · ${band.cols} col` }),
-      ).toBeVisible();
+    for (const { width } of REFERENCE_WIDTHS) {
+      await expect(canvas.getByRole('button', { name: `${width}px` })).toBeVisible();
     }
 
+    const widest = REFERENCE_WIDTHS[REFERENCE_WIDTHS.length - 1];
+    const preset = canvas.getByRole('button', { name: `${widest.width}px` });
+    await userEvent.click(preset);
+    await expect(slider).toHaveValue(String(widest.width));
+    await expect(preset).toHaveAttribute('aria-pressed', 'true');
+
     // The frame is a real viewport, and its width follows the control.
-    const frame = canvas.getByTitle(`Type scale at ${widestBand.sample} pixels`);
+    const frame = canvas.getByTitle(`Type scale at ${widest.width} pixels`);
     await expect(frame).toBeVisible();
 
     // No style changes size across the 768px boundary any more. The 768–1023
