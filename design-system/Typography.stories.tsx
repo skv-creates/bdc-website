@@ -408,7 +408,7 @@ export const Scale: Story = {
     // rule holds a var() and the phone value comes from the narrowest band.
     const h01 = typeStyles.find((s) => s.name === 't-h01');
     await expect(h01?.fontSize).toBe('var(--fs-h01)');
-    await expect(h01?.mobile?.fontSize).toBe('2.75rem');
+    await expect(h01?.mobile?.fontSize).toBe('2.5rem');
 
     // body-default is 20px at every width, with no band declaring otherwise.
     const body = typeStyles.find((s) => s.name === 't-body');
@@ -502,7 +502,7 @@ export const Constraints: Story = {
 
     // The council's percentages at the 1024 edge.
     const AT_1024: Record<string, number> = {
-      't-h01': 0.8,
+      't-h01': 0.9,
       't-h02': 0.85,
       't-h03': 0.9,
       't-h04': 0.9,
@@ -645,12 +645,12 @@ export const Interactive: Story = {
     // The preset buttons are the interaction: pressing one moves the viewport.
     // Bands come from the media queries, so this asserts against the derived
     // list rather than a label someone typed.
-    const widest = REFERENCE_WIDTHS[REFERENCE_WIDTHS.length - 1];
+    const widestBand = BANDS[BANDS.length - 1];
     const preset = canvas.getByRole('button', {
-      name: `${widest.width}px · ${widest.note}`,
+      name: `${widestBand.range} · ${widestBand.cols} col`,
     });
     await userEvent.click(preset);
-    await expect(slider).toHaveValue(String(widest.width));
+    await expect(slider).toHaveValue(String(widestBand.sample));
     await expect(preset).toHaveAttribute('aria-pressed', 'true');
 
     // Every band is offered as a range rather than as a single pixel.
@@ -661,7 +661,7 @@ export const Interactive: Story = {
     }
 
     // The frame is a real viewport, and its width follows the control.
-    const frame = canvas.getByTitle(`Type scale at ${widest.width} pixels`);
+    const frame = canvas.getByTitle(`Type scale at ${widestBand.sample} pixels`);
     await expect(frame).toBeVisible();
 
     // No style changes size across the 768px boundary any more. The 768–1023

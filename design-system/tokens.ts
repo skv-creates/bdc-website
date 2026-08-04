@@ -224,9 +224,22 @@ export function parseTypeStyles(css: string = raw): TypeStyle[] {
     const variable = style.fontSize.match(/^var\(\s*(--[\w-]+)\s*\)$/);
     if (!variable) continue;
 
+    /*
+     * The narrowest band that declares it, not simply "the ≤767 one".
+     *
+     * There are two phone bands now — ≤389 and 390–767 — because h01 has a
+     * floor below 390 and a ramp above it. Matching on 767 alone picked the
+     * ramp's calc() and called it the phone size, which is the value at 768
+     * rather than the value a phone gets.
+     */
     const narrowest = mediaBlocks(css)
-      .filter(({ query }) => /max-width:\s*767px/.test(query))
-      .flatMap(({ body }) => declarations(body.match(/:root\s*\{([^}]*)\}/)?.[1] ?? ""))
+      .map(({ query, body }) => ({
+        limit: Number(query.match(/max-width:\s*(\d+)px/)?.[1] ?? Infinity),
+        tokens: declarations(body.match(/:root\s*\{([^}]*)\}/)?.[1] ?? ""),
+      }))
+      .filter((band) => band.limit < 768)
+      .sort((a, b) => a.limit - b.limit)
+      .flatMap((band) => band.tokens)
       .find((token) => token.name === variable[1]);
 
     if (narrowest) {
@@ -557,15 +570,23 @@ export function breakpointBands(css: string = raw): BreakpointBand[] {
   const bands: BreakpointBand[] = [];
   let from = MIN_WIDTH;
 
-  for (const edge of maxEdges) {
+  for (const [index, edge] of maxEdges.entries()) {
     bands.push({
       from,
       to: edge,
       cols: gridColsAt(edge, css),
       range: from === MIN_WIDTH ? `≤${edge}px` : `${from}–${edge}px`,
-      // The widest width in the band: where a fluid style in it is largest, and
-      // where it is about to hand over to the next band.
-      sample: edge,
+      /*
+       * The width the band is sampled and previewed at.
+       *
+       * The first band has no lower edge worth quoting, so it is sampled just
+       * inside its upper one — 388px for a band that ends at 389. Every other
+       * band is sampled at its FIRST pixel, because that is where its ramp
+       * starts and where the council's anchor values are set: 390, 768, 1024.
+       * Sampling the last pixel instead reported 1023 for a value specified at
+       * 1024, which is a different number in a fluid scale.
+       */
+      sample: index === 0 ? edge - 1 : from,
     });
     from = edge + 1;
   }

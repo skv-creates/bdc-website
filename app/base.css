@@ -99,7 +99,9 @@
      The band values live here rather than on the .t-* rules so that all the
      responsive behaviour of the type scale is in one place, and so the design
      system can read each band's declaration directly. */
-  --fs-h01: clamp(64px, calc(30.42623px + 3.278689vw), 80px);
+  /* h01 is anchored at five widths, so its ramp lives in the bands below and
+     this is simply where it lands: 80px from 1512 up, and never more. */
+  --fs-h01: 80px;
   --fs-h02: clamp(47.6px, calc(29.97377px + 1.721311vw), 56px);
   --fs-h03: clamp(36px, calc(27.606557px + 0.819672vw), 40px);
   --fs-h04: clamp(28.8px, calc(22.085246px + 0.655738vw), 32px);
@@ -337,25 +339,36 @@ main:focus { outline: none; }
 @media (max-width: 767px)  { :root { --grid-cols: 4; --grid-gap: 12px; --overlay-panel-left: 3rem; --rail-clear: 12px; } }
 
 /* ---- Responsive: the type scale below 1512 ------------------------------
-   Two bands, both unlayered so they beat the @layer base rules — that is what
+   Four bands, all unlayered so they beat the @layer base rules — that is what
    makes them win, not their position in the file.
 
-   768–1023 is a straight line from each style's phone size at 768 up to its
-   1024 value, so the three bands join with no step at either boundary. That
-   matters: the hero used to change by 44% across the single pixel between 767
-   and 768, because a fixed phone size handed straight over to a vw term with
-   nothing bridging them.
+     ≤389px      a floor. h01 sits at 40px and stops shrinking.
+     390–767     ramps to each style's 768 value
+     768–1023    ramps to its 1024 value
+     1024–1511   ramps to its Figma size, reached exactly at 1512
 
-   Only sizes appear here. Tracking is in em on the base rules, so it follows
-   every size automatically and never needs restating per band. Line heights are
-   ratios and do the same.
+   h01 is anchored on the council's numbers at every edge: 40 / 44 / 64 / 72 /
+   80, which is 50 / 55 / 80 / 90 / 100 percent of its desktop size. Each band
+   is a straight line between two of those anchors, so the whole ramp is
+   continuous — 389→390 steps once, deliberately, and nothing else moves by more
+   than a rounding error across any boundary.
 
-   Caption keeps 16px on phones and tightens its leading only; body and label
-   are 20px at every width. Both are asserted in
-   design-system/Typography.stories.tsx so they cannot be lowered by accident. */
+   The other styles have anchors at 768 and 1024 but not yet at 390, so their
+   two phone bands carry the same value and the 390 boundary is a no-op for
+   them. Give me their numbers and each gains its own ramp here.
+
+   Only sizes appear in these blocks. Tracking is in em on the base rules, so it
+   follows every size automatically and never needs restating per band; line
+   heights are ratios and do the same. */
+@media (min-width: 1024px) and (max-width: 1511px) {
+  :root {
+    --fs-h01: calc(55.213115px + 1.639344vw);  /* 72px at 1024 → 80px at 1512 */
+  }
+}
+
 @media (min-width: 768px) and (max-width: 1023px) {
   :root {
-    --fs-h01: calc(-16px + 7.8125vw);      /* 44px at 768 → 64px at 1024 */
+    --fs-h01: calc(40px + 3.125vw);        /* 64px at 768 → 72px at 1024 */
     --fs-h02: calc(-14.8px + 6.0938vw);    /* 32   → 47.6 */
     --fs-h03: calc(-5.6px + 4.0625vw);     /* 25.6 → 36   */
     --fs-h04: calc(9.6px + 1.875vw);       /* 24   → 28.8 */
@@ -366,10 +379,10 @@ main:focus { outline: none; }
   }
 }
 
-@media (max-width: 767px) {
+@media (min-width: 390px) and (max-width: 767px) {
   :root {
-    --fs-h01: 2.75rem;     /* 44px  · 55% of desktop */
-    --fs-h02: 2rem;        /* 32    · 57% */
+    --fs-h01: calc(23.365079px + 5.291005vw);  /* 44px at 390 → 64px at 768 */
+    --fs-h02: 2rem;        /* 32    · 57% of desktop */
     --fs-h03: 1.6rem;      /* 25.6  · 64% */
     --fs-h04: 1.5rem;      /* 24    · 75% */
     --fs-h05: 1.25rem;     /* 20    · 83% */
@@ -377,5 +390,24 @@ main:focus { outline: none; }
     --fs-digit: 4.5rem;    /* 72    · 60% */
     --fs-body-lg: 1.375rem;/* 22    · 92% */
   }
+}
+
+/* Below 390 the hero stops shrinking. Every other style already holds its phone
+   value here, so this band changes only h01. */
+@media (max-width: 389px) {
+  :root {
+    --fs-h01: 2.5rem;      /* 40px  · 50% of desktop, and the floor */
+    --fs-h02: 2rem;
+    --fs-h03: 1.6rem;
+    --fs-h04: 1.5rem;
+    --fs-h05: 1.25rem;
+    --fs-quote: 2.25rem;
+    --fs-digit: 4.5rem;
+    --fs-body-lg: 1.375rem;
+  }
+}
+
+/* Caption tightens its leading across every phone width, not just one band. */
+@media (max-width: 767px) {
   .t-caption { line-height: 1.2; }
 }
