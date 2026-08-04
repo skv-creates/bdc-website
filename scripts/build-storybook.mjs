@@ -24,7 +24,7 @@
  * no point during the build does `public/bdc-storybook` exist.
  */
 import { execFileSync } from "node:child_process";
-import { renameSync, rmSync } from "node:fs";
+import { readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
@@ -44,4 +44,51 @@ execFileSync("npx", ["storybook", "build", "-o", scratch], {
 
 renameSync(scratch, target);
 
-console.log("Storybook built into public/bdc-storybook (staging only).");
+/**
+ * Name the page, and give it a link preview.
+ *
+ * Storybook writes `<title>storybook - Storybook</title>` into index.html itself,
+ * before anything manager-head.html injects — and a browser or a link-preview
+ * crawler takes the FIRST title in the document, so adding a second one there
+ * does nothing. Pasting the URL into Slack or a message produced a card reading
+ * "storybook - Storybook" with no description.
+ *
+ * Crawlers do not run the manager's JavaScript either, so the static HTML is the
+ * only chance to say what this is. Rewritten here, after the build, for that
+ * reason.
+ */
+const ORIGIN = process.env.STORYBOOK_ORIGIN ?? "https://staging.bulgariandesigncouncil.org";
+const BASE = `${ORIGIN}/bdc-storybook/`;
+const TITLE = "BDC GEL Storybook";
+const DESCRIPTION =
+  "The Bulgarian Design Council's global experience language: colour, typography, " +
+  "space and layout, and the components built from them.";
+
+const indexPath = resolve(target, "index.html");
+const meta = [
+  `<meta name="description" content="${DESCRIPTION}" />`,
+  `<meta property="og:type" content="website" />`,
+  `<meta property="og:site_name" content="${TITLE}" />`,
+  `<meta property="og:title" content="${TITLE}" />`,
+  `<meta property="og:description" content="${DESCRIPTION}" />`,
+  `<meta property="og:url" content="${BASE}" />`,
+  `<meta property="og:image" content="${BASE}brand/favicon.png" />`,
+  `<meta name="twitter:card" content="summary" />`,
+  `<meta name="twitter:title" content="${TITLE}" />`,
+  `<meta name="twitter:description" content="${DESCRIPTION}" />`,
+  `<meta name="twitter:image" content="${BASE}brand/favicon.png" />`,
+  // Staging only, and not something search engines should hold on to.
+  `<meta name="robots" content="noindex, nofollow" />`,
+].join("\n    ");
+
+const html = readFileSync(indexPath, "utf8");
+if (!/<title>[^<]*<\/title>/.test(html)) {
+  console.error("No <title> found in the Storybook index. Refusing to guess.");
+  process.exit(1);
+}
+writeFileSync(
+  indexPath,
+  html.replace(/<title>[^<]*<\/title>/, `<title>${TITLE}</title>\n    ${meta}`),
+);
+
+console.log(`Storybook built into public/bdc-storybook (staging only), titled "${TITLE}".`);

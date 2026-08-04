@@ -18,7 +18,9 @@ import { create } from 'storybook/theming/create';
 export default create({
   base: 'light',
 
-  brandTitle: 'Bulgarian Design Council — design system',
+  // Also what the manager puts in the browser tab at runtime, so it has to match
+  // the static <title> that scripts/build-storybook.mjs writes for link previews.
+  brandTitle: 'BDC GEL Storybook',
   brandUrl: 'https://staging.bulgariandesigncouncil.org',
   // Resolves against the site root, which serves this file at both
   // /bdc-storybook (deployed) and in dev via staticDirs.
