@@ -111,7 +111,16 @@ function PromptCard({ prompt }: { prompt: Prompt }) {
   );
 }
 
-export const Overview: Story = {
+/**
+ * Named to match the last segment of the title on purpose.
+ *
+ * Storybook hoists a single-story component into one sidebar entry only when the
+ * story's name matches its group's. Called anything else — it was `Overview` —
+ * the sidebar shows a "Start here" parent you have to open to reach a child,
+ * which buries the first page anyone is meant to read.
+ */
+export const StartHere: Story = {
+  name: 'Start here',
   render: () => (
     <Page
       title="Bulgarian Design Council — design system"
