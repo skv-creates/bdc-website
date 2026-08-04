@@ -1,10 +1,19 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import dynamic from "next/dynamic";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { getContent, hasLocale, locales } from "@/lib/home-content";
 import { GOOGLE_SITE_VERIFICATION, IS_PRODUCTION_SITE, SITE_ORIGIN } from "@/lib/site";
+
+/**
+ * The Shift+R redlines overlay. Dynamic on purpose: a static import would put it
+ * in the client bundle on every environment, and this exists only on staging.
+ */
+const Redlines = dynamic(() =>
+  import("@/components/dev/Redlines").then((mod) => mod.Redlines),
+);
 
 /**
  * Brand face — "About Beige Standard", self-hosted via next/font/local.
@@ -113,6 +122,11 @@ export default async function RootLayout({
       <body>
         {children}
         {modal}
+        {/* Shift+R draws the grid, type and spacing over the page. Staging only:
+            the flag is read per request from SITE_ORIGIN, and the component is a
+            dynamic import, so on the apex its chunk is never requested. A design
+            tool no visitor asked for should not be in the bytes they download. */}
+        {!IS_PRODUCTION_SITE && <Redlines />}
       </body>
     </html>
   );

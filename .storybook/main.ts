@@ -43,7 +43,10 @@ const config: StorybookConfig = {
    * cost is one upload rather than one per deploy.
    */
   "staticDirs": [
-    "../public"
+    "../public",
+    // Storybook-only brand assets — the tab icon lives here rather than in
+    // public/ so it is never served as part of the site.
+    { "from": "../.storybook/brand", "to": "/brand" }
   ]
 };
 export default config;
