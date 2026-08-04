@@ -81,6 +81,8 @@ export function Redlines() {
   const [readout, setReadout] = useState<Record<string, string>>({});
   const [typeBoxes, setTypeBoxes] = useState<TypeBox[]>([]);
   const [spacingBoxes, setSpacingBoxes] = useState<SpacingBox[]>([]);
+  /** Where the page's real content grid sits, measured from it. */
+  const [gridBox, setGridBox] = useState<{ left: number; width: number } | null>(null);
   const frame = useRef<number | null>(null);
 
   /** Re-measure everything from the live document. */
@@ -100,45 +102,63 @@ export function Redlines() {
       "root font": root.fontSize,
     });
 
-    const scrollY = window.scrollY;
-    const scrollX = window.scrollX;
+    /*
+     * Viewport coordinates, NOT document ones.
+     *
+     * The overlay is `position: fixed`, so an absolutely positioned child
+     * resolves against the viewport. Adding scrollY here — which the first
+     * version did — pushed every label down the page by the scroll amount and
+     * off screen, which is why the type layer looked like it was doing nothing.
+     * Re-measured on scroll instead.
+     */
+    const inView = (r: DOMRect) =>
+      r.bottom > -80 && r.top < window.innerHeight + 80 && r.width > 0 && r.height > 0;
 
     const names = typeClassNames();
     const boxes: TypeBox[] = [];
     for (const name of names) {
       for (const el of Array.from(document.querySelectorAll(`.${name}`))) {
         const r = el.getBoundingClientRect();
-        if (r.width === 0 || r.height === 0) continue;
+        if (!inView(r)) continue;
         const cs = getComputedStyle(el);
         boxes.push({
           name,
-          rect: {
-            top: r.top + scrollY,
-            left: r.left + scrollX,
-            width: r.width,
-            height: r.height,
-          },
-          size: `${px(cs.fontSize)}px`,
-          leading: cs.lineHeight === "normal" ? "normal" : `${px(cs.lineHeight)}px`,
-          tracking: cs.letterSpacing === "normal" ? "0" : `${px(cs.letterSpacing)}px`,
+          rect: { top: r.top, left: r.left, width: r.width, height: r.height },
+          size: `${px(cs.fontSize)}`,
+          leading: cs.lineHeight === "normal" ? "normal" : `${px(cs.lineHeight)}`,
+          tracking: cs.letterSpacing === "normal" ? "0" : `${px(cs.letterSpacing)}`,
           weight: cs.fontWeight,
         });
       }
     }
     setTypeBoxes(boxes);
 
+    /*
+     * The columns are read off a real `.bdc-grid` on the page rather than
+     * rebuilt from the tokens.
+     *
+     * The first version drew them across the whole viewport, which ignored the
+     * gutter and the rail — so the guides were the right count and the wrong
+     * place, and every column edge was a lie. Taking the widest grid element's
+     * own box guarantees the guides sit exactly where the page's columns do.
+     */
+    const grids = Array.from(document.querySelectorAll<HTMLElement>(".bdc-grid"))
+      .map((el) => el.getBoundingClientRect())
+      .filter((r) => r.width > 0);
+    if (grids.length > 0) {
+      const widest = grids.reduce((a, b) => (b.width > a.width ? b : a));
+      setGridBox({ left: widest.left, width: widest.width });
+    } else {
+      setGridBox(null);
+    }
+
     const spacing: SpacingBox[] = [];
     for (const el of Array.from(document.querySelectorAll("section"))) {
       const r = el.getBoundingClientRect();
-      if (r.height === 0) continue;
+      if (!inView(r)) continue;
       const cs = getComputedStyle(el);
       spacing.push({
-        rect: {
-          top: r.top + scrollY,
-          left: r.left + scrollX,
-          width: r.width,
-          height: r.height,
-        },
+        rect: { top: r.top, left: r.left, width: r.width, height: r.height },
         padTop: parseFloat(cs.paddingTop),
         padBottom: parseFloat(cs.paddingBottom),
         marginTop: parseFloat(cs.marginTop),
@@ -191,15 +211,21 @@ export function Redlines() {
       className="pointer-events-none fixed inset-0 z-[9999]"
       data-redlines
     >
-      {layers.grid && (
-        <div className="bdc-grid absolute inset-0 h-full">
+      {layers.grid && gridBox && (
+        <div
+          className="bdc-grid absolute top-0 h-full"
+          style={{ left: gridBox.left, width: gridBox.width }}
+        >
           {Array.from({ length: cols }, (_, i) => (
             <div
               key={i}
-              className="h-full border-x"
+              className="h-full"
               style={{
-                background: "color-mix(in srgb, var(--bdc-rose) 18%, transparent)",
-                borderColor: "color-mix(in srgb, var(--bdc-burgundy) 35%, transparent)",
+                // Light enough to read the page through. The first version put
+                // 18% rose over the entire viewport and turned the site pink.
+                background: "color-mix(in srgb, var(--bdc-rose) 22%, transparent)",
+                outline: "1px solid color-mix(in srgb, var(--bdc-burgundy) 30%, transparent)",
+                outlineOffset: -1,
               }}
             />
           ))}
@@ -248,10 +274,13 @@ export function Redlines() {
             }}
           >
             <span
-              className="absolute -top-[13px] left-0 whitespace-nowrap px-1 font-mono text-[10px] leading-tight"
+              className="absolute -top-[14px] left-0 whitespace-nowrap rounded-t px-1.5 font-mono text-[11px] font-bold leading-[14px]"
               style={{ background: "var(--bdc-indigo)", color: "var(--bdc-white)" }}
             >
-              .{box.name} · {box.size}/{box.leading} · {box.weight} · {box.tracking}
+              {/* The Figma name first — h01, body-lg — because that is what you
+                  go and change. The class is the same string with a t- prefix. */}
+              {box.name.replace(/^t-/, "")} · {box.size}/{box.leading} · {box.weight}
+              {box.tracking !== "0" ? ` · ${box.tracking}` : ""}
             </span>
           </div>
         ))}
