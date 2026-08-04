@@ -90,17 +90,17 @@
      with the full table and the reasoning; putting the whole responsive
      behaviour of the scale in one block is what makes it changeable from one
      place. The design system reads each band's declaration directly. */
-  --fs-h01: 80px;
-  --fs-h02: 56px;
-  --fs-h03: 40px;
-  --fs-h04: 32px;
-  --fs-h05: 24px;   /* 100% at every width — no band entries */
-  --fs-quote: 64px;
-  --fs-digit: 120px;
-  --fs-body-lg: 24px; /* 100% at every width */
-  --fs-body: 20px;    /* 100% at every width */
-  --fs-label: 20px;   /* 100% at every width */
-  --fs-caption: 16px; /* 100% at every width */
+  --fs-h01: 5rem;
+  --fs-h02: 3.5rem;
+  --fs-h03: 2.5rem;
+  --fs-h04: 2rem;
+  --fs-h05: 1.5rem;   /* 100% at every width — no band entries */
+  --fs-quote: 4rem;
+  --fs-digit: 7.5rem;
+  --fs-body-lg: 1.5rem; /* 100% at every width */
+  --fs-body: 1.25rem;    /* 100% at every width */
+  --fs-label: 1.25rem;   /* 100% at every width */
+  --fs-caption: 1rem; /* 100% at every width */
 
   /* ---- Letter spacing, in em -------------------------------------------
      Tracking used to be in px — a single --ls-tight of -1px shared across
@@ -368,45 +368,45 @@ main:focus { outline: none; }
    every size automatically; line heights are ratios and do the same. */
 @media (min-width: 1024px) and (max-width: 1511px) {
   :root {
-    --fs-h01: calc(55.213115px + 1.639344vw);   /* 72 → 80 */
-    --fs-h02: calc(43.606557px + 0.819672vw);   /* 52 → 56 */
-    --fs-h03: calc(33.803279px + 0.409836vw);   /* 38 → 40 */
-    --fs-h04: calc(28.901639px + 0.204918vw);   /* 31 → 32 */
-    --fs-quote: calc(51.606557px + 0.819672vw); /* 60 → 64 */
-    --fs-digit: calc(98.311475px + 1.434426vw); /* 113 → 120 */
+    --fs-h01: calc(3.45082rem + 1.639344vw);   /* 72 → 80 */
+    --fs-h02: calc(2.72541rem + 0.819672vw);   /* 52 → 56 */
+    --fs-h03: calc(2.112705rem + 0.409836vw);   /* 38 → 40 */
+    --fs-h04: calc(1.806352rem + 0.204918vw);   /* 31 → 32 */
+    --fs-quote: calc(3.22541rem + 0.819672vw); /* 60 → 64 */
+    --fs-digit: calc(6.144467rem + 1.434426vw); /* 113 → 120 */
   }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   :root {
-    --fs-h01: calc(40px + 3.125vw);             /* 64 → 72 */
-    --fs-h02: calc(32px + 1.953125vw);          /* 47 → 52 */
-    --fs-h03: calc(30px + 0.78125vw);           /* 36 → 38 */
-    --fs-h04: calc(27px + 0.390625vw);          /* 30 → 31 */
-    --fs-quote: calc(40px + 1.953125vw);        /* 55 → 60 */
-    --fs-digit: calc(85px + 2.734375vw);        /* 106 → 113 */
+    --fs-h01: calc(2.5rem + 3.125vw);             /* 64 → 72 */
+    --fs-h02: calc(2rem + 1.953125vw);          /* 47 → 52 */
+    --fs-h03: calc(1.875rem + 0.78125vw);           /* 36 → 38 */
+    --fs-h04: calc(1.6875rem + 0.390625vw);          /* 30 → 31 */
+    --fs-quote: calc(2.5rem + 1.953125vw);        /* 55 → 60 */
+    --fs-digit: calc(5.3125rem + 2.734375vw);        /* 106 → 113 */
   }
 }
 
 @media (min-width: 390px) and (max-width: 767px) {
   :root {
-    --fs-h01: calc(23.365079px + 5.291005vw);   /* 44 → 64 */
-    --fs-h02: calc(24.650794px + 2.910053vw);   /* 36 → 47 */
-    --fs-h03: calc(27.873016px + 1.058201vw);   /* 32 → 36 */
-    --fs-h04: calc(25.936508px + 0.529101vw);   /* 28 → 30 */
-    --fs-quote: calc(32.650794px + 2.910053vw); /* 44 → 55 */
-    --fs-digit: calc(69.428571px + 4.761905vw); /* 88 → 106 */
+    --fs-h01: calc(1.460317rem + 5.291005vw);   /* 44 → 64 */
+    --fs-h02: calc(1.540675rem + 2.910053vw);   /* 36 → 47 */
+    --fs-h03: calc(1.742063rem + 1.058201vw);   /* 32 → 36 */
+    --fs-h04: calc(1.621032rem + 0.529101vw);   /* 28 → 30 */
+    --fs-quote: calc(2.040675rem + 2.910053vw); /* 44 → 55 */
+    --fs-digit: calc(4.339286rem + 4.761905vw); /* 88 → 106 */
   }
 }
 
 @media (max-width: 389px) {
   :root {
-    --fs-h01: 40px;   /* the one style with a floor below its 390 value */
-    --fs-h02: 36px;
-    --fs-h03: 32px;
-    --fs-h04: 28px;
-    --fs-quote: 44px;
-    --fs-digit: 88px;
+    --fs-h01: 2.5rem;   /* the one style with a floor below its 390 value */
+    --fs-h02: 2.25rem;
+    --fs-h03: 2rem;
+    --fs-h04: 1.75rem;
+    --fs-quote: 2.75rem;
+    --fs-digit: 5.5rem;
   }
 }
 

@@ -407,7 +407,7 @@ export const Scale: Story = {
     // rule holds a var() and the phone value comes from the narrowest band.
     const h01 = typeStyles.find((s) => s.name === 't-h01');
     await expect(h01?.fontSize).toBe('var(--fs-h01)');
-    await expect(h01?.mobile?.fontSize).toBe('40px');
+    await expect(h01?.mobile?.fontSize).toBe('2.5rem');
 
     // body-default is 20px at every width, with no band declaring otherwise.
     const body = typeStyles.find((s) => s.name === 't-body');
@@ -565,6 +565,25 @@ const DEAD = typeStyles
 
 export const Interactive: Story = {
   name: 'Interactive width',
+  parameters: {
+    /**
+     * `frame-tested` reports Inconclusive here, not a violation: axe cannot
+     * inject itself into a `srcdoc` iframe, so it says "I could not test this"
+     * rather than "this failed".
+     *
+     * Turned off for this story only, and only because the frame is a visual
+     * specimen whose every value is also rendered in the table beside it — a
+     * screen-reader user loses nothing by not reaching into it. The frame keeps
+     * its accessible title, and every other axe rule still runs on this page at
+     * error level.
+     *
+     * If the frame ever carries content that is NOT duplicated outside it, this
+     * line has to go and the content has to be reachable.
+     */
+    a11y: {
+      config: { rules: [{ id: 'frame-tested', enabled: false }] },
+    },
+  },
   render: () => (
     <Page
       title="Interactive width"

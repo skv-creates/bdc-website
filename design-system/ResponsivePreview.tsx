@@ -55,6 +55,18 @@ function buildDocument(fontStack: string): string {
 ${collectFontFaces()}
 ${css}
 :root { --font-about-beige: ${fontStack}; }
+/* Defensive, not a fix for anything observed. The frame is taller than it is
+   tall on screen, so it scrolls, and where the OS draws CLASSIC scrollbars
+   rather than overlay ones the bar is taken out of the layout viewport — which
+   is what both @media and vw measure against. A frame set to 390px would then
+   report about 375px to the stylesheet, (min-width: 390px) would not match, and
+   the 390 preset would paint the ≤389 floor of 40px instead of 44.
+   Headless Chromium uses overlay scrollbars and shows 44px at 390 with or
+   without this, so the problem could not be reproduced here — but macOS with
+   "Always show scrollbars" set does use classic ones, and the cost of ruling it
+   out is two lines. */
+html { scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
 body { margin: 0; padding: 20px 16px 40px; }
 section { border-top: 1px solid rgba(0,0,0,.1); padding: 14px 0; }
 section:first-child { border-top: 0; }
