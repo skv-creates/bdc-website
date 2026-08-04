@@ -33,25 +33,21 @@
 		"SITE_ORIGIN": "https://staging.bulgariandesigncouncil.org",
 		"NOTION_EVENTS_DATA_SOURCE_ID": "b51c7693-aa03-8324-9099-87dd784391f9"
 	},
-	// A `DRAFTS` KV namespace goes here, once one exists:
+	// Copy edited on staging with Shift+E, held until the next Notion sync
+	// regenerates lib/events.generated.json. See lib/drafts.ts, which treats a
+	// missing binding as "no drafts" rather than an error.
 	//
-	//     wrangler kv namespace create DRAFTS
-	//     "kv_namespaces": [{ "binding": "DRAFTS", "id": "<the id it prints>" }],
+	// HERE AND DELIBERATELY NOT UNDER env.production. Bindings are not inherited
+	// into a named environment, so its absence down there is not an oversight to
+	// be tidied up later — it is the structural guarantee that the apex cannot
+	// serve a draft even if the code is wrong. The IS_PRODUCTION_SITE checks are
+	// the second lock, not the only one.
 	//
-	// It holds copy edited on staging with Shift+E until the next Notion sync
-	// regenerates lib/events.generated.json — see lib/drafts.ts, which treats a
-	// missing binding as "no drafts" rather than an error, which is why this can
-	// be absent without breaking anything.
-	//
-	// It is NOT written out with a placeholder id in the meantime: wrangler
-	// validates namespace ids at deploy time, so a stand-in string here does not
-	// wait politely to be filled in — it fails every staging deploy, including
-	// the ones the scheduled events sync makes.
-	//
-	// When it is added, it belongs HERE AND NOT under env.production. Bindings
-	// are not inherited into a named environment, so its absence there is the
-	// structural guarantee that the apex cannot serve a draft; the
-	// IS_PRODUCTION_SITE checks in the code are the second lock, not the only one.
+	// The id is not a credential; it names a namespace, and reaching it still
+	// requires the account. The secrets that go with this feature —
+	// EDIT_PASSPHRASE and NOTION_WRITE_TOKEN — are set with `wrangler secret
+	// put --env=""` and appear nowhere in this repository.
+	"kv_namespaces": [{ "binding": "DRAFTS", "id": "a6137050fdb64efd96fbac4bc9e6f812" }],
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
