@@ -408,7 +408,7 @@ export const Scale: Story = {
     // rule holds a var() and the phone value comes from the narrowest band.
     const h01 = typeStyles.find((s) => s.name === 't-h01');
     await expect(h01?.fontSize).toBe('var(--fs-h01)');
-    await expect(h01?.mobile?.fontSize).toBe('2.5rem');
+    await expect(h01?.mobile?.fontSize).toBe('40px');
 
     // body-default is 20px at every width, with no band declaring otherwise.
     const body = typeStyles.find((s) => s.name === 't-body');
@@ -500,21 +500,27 @@ export const Constraints: Story = {
       await expect(fontSizeAt(style, DESIGN_WIDTH)).toBeCloseTo(Number(style.figmaPx), 2);
     }
 
-    // The council's percentages at the 1024 edge.
-    const AT_1024: Record<string, number> = {
-      't-h01': 0.9,
-      't-h02': 0.85,
-      't-h03': 0.9,
-      't-h04': 0.9,
-      't-h05': 0.9,
-      't-body-lg': 1,
-      't-body': 1,
-      't-label': 1,
-      't-caption': 1,
+    // The council's anchors, at every width they were set for. These are the
+    // whole specification of the scale — if one moves, this fails by name.
+    const ANCHORS: Record<string, [number, number, number, number, number]> = {
+      't-h01': [40, 44, 64, 72, 80],
+      't-h02': [36, 36, 47, 52, 56],
+      't-h03': [32, 32, 36, 38, 40],
+      't-h04': [28, 28, 30, 31, 32],
+      't-h05': [24, 24, 24, 24, 24],
+      't-quote': [44, 44, 55, 60, 64],
+      't-digit': [88, 88, 106, 113, 120],
+      't-body-lg': [24, 24, 24, 24, 24],
+      't-body': [20, 20, 20, 20, 20],
+      't-label': [20, 20, 20, 20, 20],
+      't-caption': [16, 16, 16, 16, 16],
     };
-    for (const [name, share] of Object.entries(AT_1024)) {
+    const EDGES = [388, 390, 768, 1024, 1512];
+    for (const [name, sizes] of Object.entries(ANCHORS)) {
       const style = byName(name)!;
-      await expect(fontSizeAt(style, 1024)).toBeCloseTo(Number(style.figmaPx) * share, 2);
+      for (const [index, width] of EDGES.entries()) {
+        await expect(fontSizeAt(style, width)).toBeCloseTo(sizes[index], 2);
+      }
     }
 
     // The widest sample must still be a width where the styles have finished
@@ -524,14 +530,14 @@ export const Constraints: Story = {
     const widest = REFERENCE_WIDTHS[REFERENCE_WIDTHS.length - 1].width;
     await expect(fontSizeAt(byName('t-h01')!, widest)).toBeCloseTo(80, 2);
 
-    // h05 reaches its Figma size at the design width. It used not to: it was
-    // declared at 32px against Figma's 24, and its 2vw term only arrived at
-    // 32px by 1600px, so 1512 painted 30.24 — short of a size that was itself
-    // wrong. Both halves are fixed, and this is what would notice either
-    // returning.
+    // h05 is 24px at every width now — 100 percent of its Figma size on a
+    // phone as well as a desktop. It used to be declared at 32px against
+    // Figma's 24, and its 2vw term only reached 32px by 1600, so the design
+    // width painted 30.24 — short of a size that was itself wrong.
     const h05 = byName('t-h05')!;
-    await expect(fontSizeAt(h05, DESIGN_WIDTH)).toBeCloseTo(24, 2);
-    await expect(fontSizeAt(h05, 1024)).toBeCloseTo(21.6, 2);
+    for (const width of [388, 390, 768, 1024, DESIGN_WIDTH]) {
+      await expect(fontSizeAt(h05, width)).toBeCloseTo(24, 2);
+    }
 
     // The hero is no longer the outlier it was: every heading now sits in the
     // same band as the rest of the scale rather than collapsing on a phone.

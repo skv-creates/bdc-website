@@ -82,37 +82,25 @@
   --overlay-panel-left: var(--page-gutter);
 
   /* ---- Typography · the scale ------------------------------------------
-     Three bands, anchored on values the council set rather than on a curve
-     that happened to look right:
+     These are the sizes at 1512 and above — each one the size its Figma style
+     is drawn at, and the size it stays at on any wider screen.
 
-       1512px and up   every style at the size its Figma style is drawn at
-       1024px          h01 80%, h02 85%, h03/h04/h05 90%, body and below 100%
-       768–1023px      ramps from the phone size at 768 up to the 1024 values
-       767px and below fixed phone sizes
-
-     Between 1024 and 1512 each size is a straight line through both anchors,
-     which is what `calc(Cpx + Mvw)` is: C is where the line meets zero width,
-     M its slope. The clamp caps it at the Figma size so nothing keeps growing
-     on a wide monitor. The numbers are not roundable — they are the solution to
-     two fixed points, and rounding them moves 1512 off its exact value.
-
-     The band values live here rather than on the .t-* rules so that all the
-     responsive behaviour of the type scale is in one place, and so the design
-     system can read each band's declaration directly. */
-  /* h01 is anchored at five widths, so its ramp lives in the bands below and
-     this is simply where it lands: 80px from 1512 up, and never more. */
+     Every style is also anchored at 390, 768 and 1024, and has a floor below
+     390. Those live in the media queries at the foot of this file, together
+     with the full table and the reasoning; putting the whole responsive
+     behaviour of the scale in one block is what makes it changeable from one
+     place. The design system reads each band's declaration directly. */
   --fs-h01: 80px;
-  --fs-h02: clamp(47.6px, calc(29.97377px + 1.721311vw), 56px);
-  --fs-h03: clamp(36px, calc(27.606557px + 0.819672vw), 40px);
-  --fs-h04: clamp(28.8px, calc(22.085246px + 0.655738vw), 32px);
-  --fs-h05: clamp(21.6px, calc(16.563934px + 0.491803vw), 24px);
-  --fs-quote: clamp(54.4px, calc(34.255738px + 1.967213vw), 64px);
-  --fs-digit: clamp(96px, calc(45.639344px + 4.918033vw), 120px);
-  /* 100% of desktop from 1024 up, so these are simply their Figma sizes. */
-  --fs-body-lg: 24px;
-  --fs-body: 20px;
-  --fs-label: 20px;
-  --fs-caption: 16px;
+  --fs-h02: 56px;
+  --fs-h03: 40px;
+  --fs-h04: 32px;
+  --fs-h05: 24px;   /* 100% at every width — no band entries */
+  --fs-quote: 64px;
+  --fs-digit: 120px;
+  --fs-body-lg: 24px; /* 100% at every width */
+  --fs-body: 20px;    /* 100% at every width */
+  --fs-label: 20px;   /* 100% at every width */
+  --fs-caption: 16px; /* 100% at every width */
 
   /* ---- Letter spacing, in em -------------------------------------------
      Tracking used to be in px — a single --ls-tight of -1px shared across
@@ -342,68 +330,83 @@ main:focus { outline: none; }
    Four bands, all unlayered so they beat the @layer base rules — that is what
    makes them win, not their position in the file.
 
-     ≤389px      a floor. h01 sits at 40px and stops shrinking.
-     390–767     ramps to each style's 768 value
-     768–1023    ramps to its 1024 value
-     1024–1511   ramps to its Figma size, reached exactly at 1512
+     ≤389px      a floor. Nothing shrinks below this.
+     390–767     ramps from the 390 anchor to the 768 one
+     768–1023    ramps to the 1024 anchor
+     1024–1511   ramps to the Figma size, reached exactly at 1512
 
-   h01 is anchored on the council's numbers at every edge: 40 / 44 / 64 / 72 /
-   80, which is 50 / 55 / 80 / 90 / 100 percent of its desktop size. Each band
-   is a straight line between two of those anchors, so the whole ramp is
-   continuous — 389→390 steps once, deliberately, and nothing else moves by more
-   than a rounding error across any boundary.
+   Every style is anchored at all five widths the council set:
 
-   The other styles have anchors at 768 and 1024 but not yet at 390, so their
-   two phone bands carry the same value and the 390 boundary is a no-op for
-   them. Give me their numbers and each gains its own ramp here.
+     style      <388   390    768   1024   1512    390 as % of desktop
+     h01          40    44     64     72     80    55
+     h02          36    36     47     52     56    64
+     h03          32    32     36     38     40    80
+     h04          28    28     30     31     32    88
+     h05          24    24     24     24     24   100
+     quote        44    44     55     60     64    69
+     digit        88    88    106    113    120    73
+     body-lg      24    24     24     24     24   100
+     body         20    20     20     20     20   100
+     label        20    20     20     20     20   100
+     caption      16    16     16     16     16   100
 
-   Only sizes appear in these blocks. Tracking is in em on the base rules, so it
-   follows every size automatically and never needs restating per band; line
-   heights are ratios and do the same. */
+   The 390 column is given. 768 and 1024 follow h01's shape — it closes 55.6%
+   of the gap to its desktop size by 768 and 77.8% by 1024, and every other
+   style closes the same proportion of its own gap, rounded to whole pixels. So
+   a style that is already at full size on a phone stays there, and one that is
+   compressed recovers on the same curve rather than on a curve of its own.
+
+   h05, body-lg, body, label and caption are 100% at every width, so they have
+   no band entries at all — their base value is the whole story.
+
+   Below 390 nothing shrinks further: only h01 has a floor distinct from its 390
+   value, and the rest simply hold. Each band is a straight line between two
+   anchors, so the ramp is continuous everywhere bar the one deliberate step at
+   389→390.
+
+   Only sizes appear here. Tracking is in em on the base rules, so it follows
+   every size automatically; line heights are ratios and do the same. */
 @media (min-width: 1024px) and (max-width: 1511px) {
   :root {
-    --fs-h01: calc(55.213115px + 1.639344vw);  /* 72px at 1024 → 80px at 1512 */
+    --fs-h01: calc(55.213115px + 1.639344vw);   /* 72 → 80 */
+    --fs-h02: calc(43.606557px + 0.819672vw);   /* 52 → 56 */
+    --fs-h03: calc(33.803279px + 0.409836vw);   /* 38 → 40 */
+    --fs-h04: calc(28.901639px + 0.204918vw);   /* 31 → 32 */
+    --fs-quote: calc(51.606557px + 0.819672vw); /* 60 → 64 */
+    --fs-digit: calc(98.311475px + 1.434426vw); /* 113 → 120 */
   }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   :root {
-    --fs-h01: calc(40px + 3.125vw);        /* 64px at 768 → 72px at 1024 */
-    --fs-h02: calc(-14.8px + 6.0938vw);    /* 32   → 47.6 */
-    --fs-h03: calc(-5.6px + 4.0625vw);     /* 25.6 → 36   */
-    --fs-h04: calc(9.6px + 1.875vw);       /* 24   → 28.8 */
-    --fs-h05: calc(15.2px + 0.625vw);      /* 20   → 21.6 */
-    --fs-quote: calc(-19.2px + 7.1875vw);  /* 36   → 54.4 */
-    --fs-digit: 9.375vw;                   /* 72   → 96   */
-    --fs-body-lg: calc(16px + 0.7813vw);   /* 22   → 24   */
+    --fs-h01: calc(40px + 3.125vw);             /* 64 → 72 */
+    --fs-h02: calc(32px + 1.953125vw);          /* 47 → 52 */
+    --fs-h03: calc(30px + 0.78125vw);           /* 36 → 38 */
+    --fs-h04: calc(27px + 0.390625vw);          /* 30 → 31 */
+    --fs-quote: calc(40px + 1.953125vw);        /* 55 → 60 */
+    --fs-digit: calc(85px + 2.734375vw);        /* 106 → 113 */
   }
 }
 
 @media (min-width: 390px) and (max-width: 767px) {
   :root {
-    --fs-h01: calc(23.365079px + 5.291005vw);  /* 44px at 390 → 64px at 768 */
-    --fs-h02: 2rem;        /* 32    · 57% of desktop */
-    --fs-h03: 1.6rem;      /* 25.6  · 64% */
-    --fs-h04: 1.5rem;      /* 24    · 75% */
-    --fs-h05: 1.25rem;     /* 20    · 83% */
-    --fs-quote: 2.25rem;   /* 36    · 56% */
-    --fs-digit: 4.5rem;    /* 72    · 60% */
-    --fs-body-lg: 1.375rem;/* 22    · 92% */
+    --fs-h01: calc(23.365079px + 5.291005vw);   /* 44 → 64 */
+    --fs-h02: calc(24.650794px + 2.910053vw);   /* 36 → 47 */
+    --fs-h03: calc(27.873016px + 1.058201vw);   /* 32 → 36 */
+    --fs-h04: calc(25.936508px + 0.529101vw);   /* 28 → 30 */
+    --fs-quote: calc(32.650794px + 2.910053vw); /* 44 → 55 */
+    --fs-digit: calc(69.428571px + 4.761905vw); /* 88 → 106 */
   }
 }
 
-/* Below 390 the hero stops shrinking. Every other style already holds its phone
-   value here, so this band changes only h01. */
 @media (max-width: 389px) {
   :root {
-    --fs-h01: 2.5rem;      /* 40px  · 50% of desktop, and the floor */
-    --fs-h02: 2rem;
-    --fs-h03: 1.6rem;
-    --fs-h04: 1.5rem;
-    --fs-h05: 1.25rem;
-    --fs-quote: 2.25rem;
-    --fs-digit: 4.5rem;
-    --fs-body-lg: 1.375rem;
+    --fs-h01: 40px;   /* the one style with a floor below its 390 value */
+    --fs-h02: 36px;
+    --fs-h03: 32px;
+    --fs-h04: 28px;
+    --fs-quote: 44px;
+    --fs-digit: 88px;
   }
 }
 
