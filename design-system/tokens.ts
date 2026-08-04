@@ -224,14 +224,35 @@ export const layoutGroups: TokenGroup[] = tokenGroups.filter((group) =>
   /spacing|radius|layout/i.test(group.title),
 );
 
-/** Root font size, so rem values can be stated in pixels. */
-const ROOT_PX = 16;
+/** The browser default when the reader has changed nothing. */
+export const ROOT_PX = 16;
 
-/** A CSS length in pixels, resolved against a viewport width. */
-function lengthToPx(value: string, viewportWidth: number): number | null {
+/**
+ * The browser's text-size setting, which is this platform's Dynamic Type.
+ *
+ * Apple varies a style by the reader's content size category — Title 1 is 34pt
+ * at Large and 31pt at xSmall — and the web has exactly the same axis in the
+ * browser's default font size. Every `rem` in the stylesheet is measured against
+ * it, so a reader who sets Large is asking for the whole scale to grow.
+ *
+ * These are Chrome's five presets; Safari and Firefox expose the same thing with
+ * different labels. Nothing in globals.css pins `html { font-size }`, which is
+ * what makes the setting work at all — pinning it to 16px is the single most
+ * common way a site silently overrides an accessibility preference.
+ */
+export const TEXT_SIZE_STEPS = [
+  { label: 'Very small', rootPx: 9 },
+  { label: 'Small', rootPx: 12 },
+  { label: 'Medium (default)', rootPx: 16 },
+  { label: 'Large', rootPx: 20 },
+  { label: 'Very large', rootPx: 24 },
+] as const;
+
+/** A CSS length in pixels, resolved against a viewport width and root size. */
+function lengthToPx(value: string, viewportWidth: number, rootPx = ROOT_PX): number | null {
   const raw = value.trim();
   const rem = raw.match(/^([\d.]+)rem$/);
-  if (rem) return parseFloat(rem[1]) * ROOT_PX;
+  if (rem) return parseFloat(rem[1]) * rootPx;
   const px = raw.match(/^([\d.]+)px$/);
   if (px) return parseFloat(px[1]);
   const vw = raw.match(/^([\d.]+)vw$/);
@@ -251,21 +272,73 @@ function lengthToPx(value: string, viewportWidth: number): number | null {
  * `@layer base` and so beats the layered rule. Applying it first is not a
  * shortcut — it is the cascade this stylesheet actually has.
  */
-export function fontSizeAt(style: TypeStyle, viewportWidth: number): number | null {
+export function fontSizeAt(
+  style: TypeStyle,
+  viewportWidth: number,
+  rootPx: number = ROOT_PX,
+): number | null {
   if (viewportWidth <= 767 && style.mobile?.fontSize) {
-    return lengthToPx(style.mobile.fontSize, viewportWidth);
+    return lengthToPx(style.mobile.fontSize, viewportWidth, rootPx);
   }
 
   const clamp = style.fontSize.match(/^clamp\(([^,]+),([^,]+),([^)]+)\)$/);
   if (clamp) {
-    const min = lengthToPx(clamp[1], viewportWidth);
-    const preferred = lengthToPx(clamp[2], viewportWidth);
-    const max = lengthToPx(clamp[3], viewportWidth);
+    const min = lengthToPx(clamp[1], viewportWidth, rootPx);
+    const preferred = lengthToPx(clamp[2], viewportWidth, rootPx);
+    const max = lengthToPx(clamp[3], viewportWidth, rootPx);
     if (min === null || preferred === null || max === null) return null;
     return Math.min(Math.max(min, preferred), max);
   }
 
-  return lengthToPx(style.fontSize, viewportWidth);
+  return lengthToPx(style.fontSize, viewportWidth, rootPx);
+}
+
+/**
+ * Whether a style actually responds to the reader's text-size setting.
+ *
+ * The catch that makes this worth computing rather than assuming: a `vw` term
+ * is measured against the viewport, not the root font size. So while the
+ * clamp's floor and ceiling move with the reader's preference, the preferred
+ * term does not — and wherever the `vw` value sits between the two, turning the
+ * setting up changes nothing at all. That is a real accessibility gap and it is
+ * invisible unless you check for it.
+ */
+export type TextSizeBehaviour = {
+  /** One size per step in TEXT_SIZE_STEPS. */
+  values: number[];
+  /** `full` — every step grows. `partial` — it stops growing. `none` — flat. */
+  verdict: 'full' | 'partial' | 'none';
+  /** Label of the first step that produced no increase, when partial. */
+  flatFrom?: string;
+};
+
+export function respondsToTextSize(
+  style: TypeStyle,
+  viewportWidth: number,
+): TextSizeBehaviour | null {
+  const values = TEXT_SIZE_STEPS.map((step) =>
+    fontSizeAt(style, viewportWidth, step.rootPx),
+  );
+  if (values.some((value) => value === null)) return null;
+  const sizes = values as number[];
+
+  // Where does turning the setting up stop having an effect? Half a pixel is
+  // the threshold because sub-pixel growth is not growth a reader can see.
+  let flatIndex = -1;
+  for (let i = 1; i < sizes.length; i += 1) {
+    if (sizes[i] <= sizes[i - 1] + 0.5) {
+      flatIndex = i;
+      break;
+    }
+  }
+
+  if (flatIndex === -1) return { values: sizes, verdict: 'full' };
+  if (flatIndex === 1) return { values: sizes, verdict: 'none' };
+  return {
+    values: sizes,
+    verdict: 'partial',
+    flatFrom: TEXT_SIZE_STEPS[flatIndex].label.replace(' (default)', ''),
+  };
 }
 
 /**

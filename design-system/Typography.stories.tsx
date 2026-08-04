@@ -11,6 +11,7 @@ import {
 } from './tokens';
 import { Note, Page, Section } from './Page';
 import { ResponsivePreview } from './ResponsivePreview';
+import { TextSizeMatrix } from './TextSizeMatrix';
 
 const meta = {
   title: 'Foundations/Typography',
@@ -303,6 +304,47 @@ export const Scale: Story = {
         intro="The same eleven styles, resolved to real pixels at the three widths the site is designed against."
       >
         <AcrossBreakpoints />
+      </Section>
+
+      <Section
+        title="Text size — the reader's axis"
+        intro={
+          <>
+            Apple publishes a table like this one: a style down the side, the
+            reader&rsquo;s content size category across the top, a real size in
+            every cell. The web has the same axis in the browser&rsquo;s default
+            font size, which every <code>rem</code> here is measured against.
+            Nothing in <code>globals.css</code> pins{' '}
+            <code>html &#123; font-size &#125;</code>, which is what makes the
+            setting work at all — pinning it to 16px is the commonest way a site
+            silently overrides an accessibility preference.
+          </>
+        }
+      >
+        <TextSizeMatrix />
+
+        <div className="t-body mt-10 max-w-[68ch] opacity-80">
+          <p>
+            <strong>
+              One difference from Apple&rsquo;s table that changes how to read
+              this.
+            </strong>{' '}
+            Apple&rsquo;s values are designed — somebody chose 31pt for xSmall and
+            38pt for xxLarge, so the ramp is tuned per style. These are computed:
+            they are whatever the <code>rem</code> maths yields. On the web you
+            cannot hand-pick a cell without writing a query for it.
+          </p>
+          <p className="mt-4">
+            Which is why the last column matters more than any single number. A{' '}
+            <code>vw</code> term is measured against the viewport and not against
+            the root font size, so on a wide screen it can sit between the
+            clamp&rsquo;s floor and ceiling and swallow the reader&rsquo;s
+            preference entirely — turning the setting up produces no change.
+            Switch the viewport to Desktop and most headings read{' '}
+            <strong>flat from Large</strong>. On a phone every style responds
+            fully, because the overrides are plain <code>rem</code>.
+          </p>
+        </div>
       </Section>
 
       <Section
