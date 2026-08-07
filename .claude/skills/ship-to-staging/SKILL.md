@@ -125,10 +125,12 @@ gh pr list --state open
 
 ## Repo gotchas that bite during a deploy
 
-- **The events sync deploys staging on its own.** `sync-events.yml` runs every
-  8 hours on `main` and, when Notion has new events, commits and runs the same
-  staging deploy. It will overwrite a `staging`-branch deploy with `main`'s
-  build. If staging suddenly looks like it lost your work, check
+- **The events sync deploys staging when somebody runs it.** `sync-events.yml`
+  is `workflow_dispatch` only — the eight-hourly schedule was deleted, because
+  there is no Notion token in this public repo for it to authenticate with. When
+  it does run on `main` and Notion has new events, it commits and runs the same
+  staging deploy, overwriting a `staging`-branch deploy with `main`'s build. If
+  staging suddenly looks like it lost your work, check
   `gh run list --workflow=sync-events.yml` before debugging anything else —
   then merge `main` into `staging` and re-dispatch.
 - **`SITE_ORIGIN` is baked at build time**, on the npm script, not in
