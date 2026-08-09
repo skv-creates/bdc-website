@@ -278,10 +278,17 @@ Three things have to be set up once, and none of them live in this repo:
     wrangler secret put EDIT_PASSPHRASE --env=""
     wrangler secret put NOTION_WRITE_TOKEN --env=""
 
-`NOTION_WRITE_TOKEN` is the **only write-capable Notion integration anywhere in
-this project**. Everything else — the scheduled events sync, the bios sync on a
-laptop — is deliberately read-only. It is a Worker secret on staging and must
+`NOTION_WRITE_TOKEN` is the **only write-capable Notion integration in this
+repository**. Everything else here — the scheduled events sync, the bios sync on
+a laptop — is deliberately read-only. It is a Worker secret on staging and must
 never be added to the production environment, to CI, or to `.env.example`.
+
+There is a second write-capable integration, `NOTION_PRIORITISATION_TOKEN`, but
+it belongs to a different system in a different repository — see the last
+section. **The two must stay separate**: one bug should not be able to reach
+both the public site's content and the council's internal prioritisation data.
+Neither is ever a substitute for the other, and neither belongs in this repo, in
+`.env.example`, or in CI.
 
 What you edit is Notion's own source, brackets and all: `[label](url)`, because
 that is what the sync writes into `lib/events.generated.json` and what
@@ -316,3 +323,26 @@ Four things that will bite:
 Initiatives are **not** editable this way, and cannot be: they are hand-written
 in `lib/home-content.ts` and have no Notion rows to write back to. Only bios,
 FAQ and events come from Notion.
+
+# The prioritisation Worker lives in another repository
+
+`bdc-prioritisation` is a **second Cloudflare Worker** automating the council's
+internal Notion board `Приоритет на инициативи` — assigning an initiative to a
+звено, and taking it off the ballot when its epic is deleted. It has nothing to
+do with the public site: no shared code, no shared build, no shared deploy path.
+
+Its source, its design record and the `wire-zveno-to-board` procedure live in
+the private repo **`autotelicbydesign/bdc-prioritisation`**, which is where any
+question about it belongs. Both used to sit here and were moved out on
+2026-08-09; nothing in this repository ever built, tested or deployed the Worker
+itself.
+
+Two things a person working *here* still needs to know:
+
+- **`NOTION_PRIORITISATION_TOKEN` and `NOTION_WRITE_TOKEN` are different
+  integrations and must stay separate** — see the Shift+E section above. That
+  rule is about *this* repo's blast radius, which is why it is stated here and
+  not only there.
+- **Do not rebuild any of it here.** If board automation needs work, it happens
+  in the other repo. Adding a `workers/` directory to the website is how two
+  deliberately separate blast radii get welded back together.
