@@ -21,6 +21,17 @@ export function Hero({ hero }: { hero: SiteContent["hero"] }) {
       {/* body-medium — 24px/1.5 in the design system, i.e. .t-body-lg. */}
       <p className="t-body-lg col-span-full lg:col-span-5">{hero.subheading}</p>
 
+      {/* Who is saying it. Deliberately in the hero rather than the footer: the
+          site used to state its non-profit status only inside an FAQ answer a
+          third of the way down and in the privacy policy, so a first-time reader
+          — or a grant reviewer — had to hunt for it. Caption-size and on the
+          same 5 columns as the standfirst, so it reads as a byline under the
+          claim rather than competing with it.
+
+          Negative top margin pulls it up out of the grid's 48px row gap: it
+          belongs to the sentence above it, not to the buttons below. */}
+      <p className="t-caption col-span-full -mt-8 lg:col-span-5">{hero.status}</p>
+
       <div className="col-span-full flex flex-wrap gap-6">
         <Button variant="primary" href={hero.primary.href}>
           {hero.primary.label}
