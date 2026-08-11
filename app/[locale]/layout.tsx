@@ -8,14 +8,21 @@ import { getContent, hasLocale, locales } from "@/lib/home-content";
 import { GOOGLE_SITE_VERIFICATION, IS_PRODUCTION_SITE, SITE_ORIGIN } from "@/lib/site";
 
 /**
- * The Shift+R redlines overlay. Dynamic on purpose: a static import would put it
- * in the client bundle on every environment, and this exists only on staging.
+ * The Shift+R redlines overlay and the Shift+E copy editor. Staging only.
+ *
+ * Dynamic so the chunk is separate from the page's own JavaScript — but note
+ * that `dynamic()` is NOT what keeps them off the apex. Both specifiers are
+ * aliased to components/dev/DevToolsStub.tsx by next.config.ts when SITE_ORIGIN
+ * is the production origin, so on a production build these resolve to
+ * `() => null` and the real modules are not in the graph at all. Keep the
+ * specifiers written exactly as the alias keys in next.config.ts spell them; a
+ * rename here silently un-aliases them, which is what
+ * scripts/assert-no-dev-tools.mjs catches.
  */
 const Redlines = dynamic(() =>
   import("@/components/dev/Redlines").then((mod) => mod.Redlines),
 );
 
-/** The Shift+E copy editor. Same arrangement, same reason. */
 const EditMode = dynamic(() =>
   import("@/components/dev/EditMode").then((mod) => mod.EditMode),
 );
@@ -128,9 +135,9 @@ export default async function RootLayout({
         {children}
         {modal}
         {/* Shift+R draws the grid, type and spacing over the page. Staging only:
-            the flag is read per request from SITE_ORIGIN, and the component is a
-            dynamic import, so on the apex its chunk is never requested. A design
-            tool no visitor asked for should not be in the bytes they download. */}
+            this gate is what makes it unreachable, and the build-time alias
+            described above is what keeps it out of the bytes a visitor
+            downloads. A design tool no visitor asked for should be neither. */}
         {!IS_PRODUCTION_SITE && <Redlines />}
         {/* Shift+E edits an event's copy and its images' alt text in place,
             writing to Notion and to the staging draft store. Gated identically

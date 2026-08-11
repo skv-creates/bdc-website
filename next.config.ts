@@ -1,6 +1,44 @@
 import type { NextConfig } from "next";
 
+import { PRODUCTION_ORIGIN } from "./lib/site";
+
+/**
+ * Is this build the public site? Read from the same env var, and compared
+ * against the same constant, as `IS_PRODUCTION_SITE` in lib/site.ts — the
+ * render-time gate and this build-time one must never disagree about which
+ * site is being built.
+ */
+const IS_PRODUCTION_BUILD = process.env.SITE_ORIGIN === PRODUCTION_ORIGIN;
+
 const nextConfig: NextConfig = {
+  /**
+   * Keep the staging-only dev tools out of the production bundle entirely.
+   *
+   * `!IS_PRODUCTION_SITE` in app/[locale]/layout.tsx stops Redlines and
+   * EditMode rendering on the apex, and that is what makes them unreachable.
+   * It does not stop them being *bundled*: a `next/dynamic` import is still a
+   * static edge in the module graph, and Turbopack put both components in a
+   * shared client chunk that the apex then loaded on the home page and on every
+   * event page. The comments in those files asserted the opposite for months.
+   *
+   * Aliasing the two specifiers to a stub that exports `() => null` removes the
+   * real modules from the production graph, so there is no chunk to request.
+   * Staging builds — any SITE_ORIGIN that is not the apex — resolve normally and
+   * keep both tools.
+   *
+   * Verified by scripts/assert-no-dev-tools.mjs, which runs between the
+   * production build and the production deploy.
+   */
+  ...(IS_PRODUCTION_BUILD
+    ? {
+        turbopack: {
+          resolveAlias: {
+            "@/components/dev/Redlines": "./components/dev/DevToolsStub.tsx",
+            "@/components/dev/EditMode": "./components/dev/DevToolsStub.tsx",
+          },
+        },
+      }
+    : {}),
   /**
    * Image optimisation runs through Cloudflare's IMAGES binding (see the
    * `images` block in wrangler.jsonc), not on a build server — every distinct

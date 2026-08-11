@@ -9,9 +9,13 @@
  * to Notion and to the staging draft store, and the page reloads showing what
  * you wrote.
  *
- * Mounted from app/[locale]/layout.tsx behind `!IS_PRODUCTION_SITE` and pulled
- * in with `next/dynamic`, exactly like Redlines — the apex never requests the
- * chunk. See components/dev/Redlines.tsx for why that matters here.
+ * Mounted from app/[locale]/layout.tsx behind `!IS_PRODUCTION_SITE`, which is
+ * what makes it unreachable on the apex, and aliased away by `next.config.ts` on
+ * a production build, which is what keeps it out of the bundle. `next/dynamic`
+ * was doing only the first of those, despite this comment once saying otherwise:
+ * the apex was downloading this file's code, including the passphrase cookie
+ * name and the editing endpoint's path, on every event page. See
+ * components/dev/Redlines.tsx and components/dev/DevToolsStub.tsx.
  *
  * **What you edit is source, not rendered text.** A description arrives from
  * Notion as `[European Design Awards Festival](https://…)`, and the page turns

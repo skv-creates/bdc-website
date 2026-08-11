@@ -307,6 +307,20 @@ Four things that will bite:
   *production* build too — `/[locale]/events/[slug]` went from ● to ƒ — which
   costs the public site its prerendering. Not a trade worth making for a tool
   no visitor uses.
+- **Not rendering and not shipping are two different jobs.** `!IS_PRODUCTION_SITE`
+  in `app/[locale]/layout.tsx` is what makes Shift+E and Shift+R unreachable on
+  the apex. It does nothing about whether they are *bundled*, and for months they
+  were: `next/dynamic` is still a static edge in the module graph, so Turbopack
+  put both components in one shared client chunk that the apex loaded as an async
+  script on the home page and on every event page. Three comments claimed the
+  opposite. What actually keeps them out is `turbopack.resolveAlias` in
+  `next.config.ts`, which swaps both specifiers for
+  `components/dev/DevToolsStub.tsx` when `SITE_ORIGIN` is the apex, and
+  `scripts/assert-no-dev-tools.mjs`, which greps the built client assets and
+  fails between the production build and the production deploy. Add a third dev
+  tool and it needs an alias entry and a fingerprint, or the guard will not know
+  to look for it. Rename a specifier in the layout and it silently un-aliases —
+  which is the case the guard exists for.
 - **`DRAFTS` is bound on staging and nowhere else.** Bindings are not inherited
   into a named environment, so its absence under `env.production` is the
   structural guarantee that the apex cannot serve a draft. The

@@ -8,10 +8,19 @@
  * one is actually painting, the vertical spacing of every section, and a readout
  * of the live breakpoint values.
  *
- * STAGING ONLY. It is rendered from app/[locale]/layout.tsx behind
- * `!IS_PRODUCTION_SITE`, and imported with `next/dynamic` so its chunk is never
- * even requested on the apex. The council publishes a carbon figure; a design
- * tool no visitor asked for should not be in the bytes they download.
+ * STAGING ONLY, in two independent ways. It is rendered from
+ * app/[locale]/layout.tsx behind `!IS_PRODUCTION_SITE`, which is what makes it
+ * unreachable on the apex; and `next.config.ts` aliases this module to
+ * components/dev/DevToolsStub.tsx on a production build, which is what keeps it
+ * out of the bytes a visitor downloads. The council publishes a carbon figure;
+ * a design tool no visitor asked for should not be in those bytes.
+ *
+ * `next/dynamic` alone does NOT do the second thing, whatever this comment used
+ * to claim. A dynamic import is still a static edge in the module graph, and
+ * Turbopack folded this component and EditMode into one shared client chunk
+ * that the apex loaded on the home page and on every event page. The alias is
+ * the fix; scripts/assert-no-dev-tools.mjs is what proves it, on every
+ * production deploy.
  *
  * Nothing here is hardcoded. The class list is read out of the loaded
  * stylesheet, the columns and gutters come from the custom properties, and the
