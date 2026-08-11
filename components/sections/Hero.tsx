@@ -28,9 +28,17 @@ export function Hero({ hero }: { hero: SiteContent["hero"] }) {
           same 5 columns as the standfirst, so it reads as a byline under the
           claim rather than competing with it.
 
-          Negative top margin pulls it up out of the grid's 48px row gap: it
+          `col-start-1` is load-bearing: the standfirst above spans only 5 of the
+          11 tracks, so without it auto-placement drops this into the free
+          columns *beside* the standfirst instead of under it — which reads as a
+          floating caption in the middle of the hero. Starting it explicitly on
+          column 1 forces a new row.
+
+          Negative top margin then pulls it up out of the grid's 48px row gap: it
           belongs to the sentence above it, not to the buttons below. */}
-      <p className="t-caption col-span-full -mt-8 lg:col-span-5">{hero.status}</p>
+      <p className="t-caption col-span-full -mt-8 lg:col-start-1 lg:col-span-5">
+        {hero.status}
+      </p>
 
       <div className="col-span-full flex flex-wrap gap-6">
         <Button variant="primary" href={hero.primary.href}>
