@@ -24,6 +24,38 @@ export const localePath = (locale: Locale, path = "") => `/${locale}${path}`;
 export const absoluteUrl = (path: string) => new URL(path, SITE_ORIGIN).toString();
 
 /**
+ * Notion body text with the sync's markup taken back out.
+ *
+ * Event descriptions reach us as the whole Notion body, including the raw
+ * `[label](url)` runs the sync writes for links. Twelve of the sixteen event
+ * descriptions shipped literal square brackets and a URL into the page's <meta>
+ * tag, one of them a percent-encoded Cyrillic LinkedIn address 90 characters
+ * long.
+ *
+ * Google asks a description to be unique per page, to summarise it accurately,
+ * and to be human-readable rather than "long strings of keywords". A tag
+ * containing a percent-encoded URL fails the last of those. Length is not part
+ * of it: Google states outright that "there's no limit on how long a meta
+ * description can be" and truncates the snippet at display width itself, so
+ * nothing here shortens the text.
+ *
+ * Used wherever the prose leaves the page for a machine: the <meta> tag on the
+ * event route, and schema.org/Event in lib/structured-data.ts.
+ */
+export function plainText(text: string): string {
+  return (
+    text
+      // `[label](url)` becomes `label`: the label is the readable half, and a
+      // bare URL in a description is characters that tell a reader nothing.
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, "$1")
+      // Notion separates paragraphs with blank lines. A newline inside an
+      // attribute is legal and survives to the tag, where it is noise.
+      .replace(/\s+/g, " ")
+      .trim()
+  );
+}
+
+/**
  * hreflang targets for one page, in every locale plus x-default.
  *
  * x-default points at /bg rather than /, even though a redirecting root is the

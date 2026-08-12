@@ -10,7 +10,7 @@ import { notFound } from "next/navigation";
 import { OverlayPanel } from "@/components/ui/OverlayPanel";
 import { EventOverlayContent } from "@/components/ui/EventOverlayContent";
 import { getEvent, getEventSlugs } from "@/lib/events";
-import { localeAlternates, openGraphBase } from "@/lib/seo";
+import { localeAlternates, plainText, openGraphBase } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { eventNode } from "@/lib/structured-data";
 import { getContent, hasLocale } from "@/lib/home-content";
@@ -31,15 +31,20 @@ export async function generateMetadata({
   // page that is about to 404 would invite crawlers to keep asking for it.
   if (!event) return {};
   const path = `/events/${slug}`;
+  // The Notion body verbatim is not a description: it carries the sync's
+  // `[label](url)` runs and its blank lines straight into the tag. Cleaned once
+  // and used for both, so the search snippet and the share card cannot drift
+  // apart. See plainText in lib/seo.ts.
+  const description = plainText(event.description);
   return {
     title: event.name,
-    description: event.description,
+    description,
     alternates: localeAlternates(locale, path),
     openGraph: {
       ...openGraphBase(
         locale,
         path,
-        { title: event.name, description: event.description, type: "article" },
+        { title: event.name, description, type: "article" },
         getContent(locale).meta.title,
       ),
       // The event's own photographs, with the dimensions already recorded for

@@ -16,7 +16,7 @@
  */
 import type { SiteContent, Locale } from "./home-content";
 import type { BdcEvent } from "./events";
-import { absoluteUrl, localePath } from "./seo";
+import { absoluteUrl, localePath, plainText } from "./seo";
 
 /** Stable per-locale ids so nodes can reference each other. */
 const orgId = (locale: Locale) => `${absoluteUrl(localePath(locale))}#organization`;
@@ -101,7 +101,9 @@ export function eventNode(event: BdcEvent, locale: Locale, siteName: string) {
     "@type": "Event",
     "@id": url,
     name: event.name,
-    description: event.description,
+    // Cleaned, not shortened: a consumer reading schema.org/Event wants the
+    // whole description, but not the sync's `[label](url)` runs.
+    description: plainText(event.description),
     // Date only, no time: the CMS holds no start time, and inventing 00:00
     // would claim a midnight event.
     startDate: event.date,
