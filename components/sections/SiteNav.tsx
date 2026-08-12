@@ -47,22 +47,9 @@ export function SiteNav({
   // section — matching on href rather than label so it survives translation.
   const megaHref = "#initiatives";
 
-  // Always a real route, including on the home page itself, where this used to
-  // be "#". A bare "#" is the one link on the site that goes nowhere — harmless
-  // to a person, but it is also what a crawler or a grant reviewer checking for
-  // dead links finds first, since it sits on the logo of every page.
-  const homeHref = `/${locale}`;
-  /**
-   * Nav hrefs come from content in two forms, and both need the locale:
-   * "/about" is a route, "#team" is a section of the home page. An anchor only
-   * needs rewriting when we are *not* on the home page — there it stays a plain
-   * in-page jump so it scrolls instead of navigating.
-   */
-  const linkHref = (href: string) => {
-    if (href.startsWith("#")) return path ? `/${locale}${href}` : href;
-    if (href.startsWith("/")) return `/${locale}${href}`;
-    return href;
-  };
+  const homeHref = path ? `/${locale}` : "#";
+  const linkHref = (href: string) =>
+    path && href.startsWith("#") ? `/${locale}${href}` : href;
 
   // Language toggle points at the same page in the other locale.
   const otherLocale: Locale = locale === "bg" ? "en" : "bg";
@@ -277,18 +264,6 @@ export function SiteNav({
                           </a>
                         </li>
                       ))}
-
-                      {/* The index, as in the desktop mega menu. */}
-                      <li className="border-y border-border">
-                        <a
-                          href={`/${locale}/initiatives`}
-                          onClick={() => setOpen(false)}
-                          className="t-caption flex items-center gap-2 py-3"
-                        >
-                          {ui.allInitiatives}
-                          <span aria-hidden>→</span>
-                        </a>
-                      </li>
                     </ul>
                   )}
                 </div>
@@ -324,7 +299,6 @@ export function SiteNav({
           >
             <MegaMenu
               initiatives={initiatives}
-              ui={ui}
               locale={locale}
               onNavigate={() => setMega(false)}
             />

@@ -30,13 +30,10 @@ import type { Locale, SiteContent } from "@/lib/home-content";
 
 export function MegaMenu({
   initiatives,
-  ui,
   locale,
   onNavigate,
 }: {
   initiatives: SiteContent["initiatives"];
-  /** For the "all initiatives" row at the foot of the list. */
-  ui: SiteContent["ui"];
   locale: Locale;
   /** Close the menu once a row is followed. */
   onNavigate: () => void;
@@ -144,20 +141,6 @@ export function MegaMenu({
               </a>
             </li>
           ))}
-
-          {/* The index page. Not one of the initiatives, so it sits below the
-              rules as its own row rather than joining the hover/preview cycle —
-              there is no cover to preview for it. */}
-          <li className="border-y border-border">
-            <a
-              href={`/${locale}/initiatives`}
-              onClick={onNavigate}
-              className="t-caption flex items-center gap-2 py-3"
-            >
-              {ui.allInitiatives}
-              <span aria-hidden>→</span>
-            </a>
-          </li>
         </ul>
       </div>
     </div>

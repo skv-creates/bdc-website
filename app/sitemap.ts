@@ -1,5 +1,5 @@
 /**
- * The sitemap — 40 URLs, each with its bg/en/x-default alternates.
+ * The sitemap — 30 URLs, each with its bg/en/x-default alternates.
  *
  * Slugs are derived, never listed. getInitiativeSlugs() reads the content
  * *after* applyCms() has filtered `published !== false`, so the two
@@ -31,12 +31,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const paths = [
     "",
-    "/about",
-    "/contact",
-    // The two listing pages. Their children are derived below; the indexes
-    // themselves are fixed routes, so they are listed here.
-    "/events",
-    "/initiatives",
     "/privacy",
     "/accessibility",
     "/volunteer",

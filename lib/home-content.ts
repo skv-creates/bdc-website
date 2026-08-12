@@ -182,31 +182,14 @@ const bg = {
     seeMore: "Виж повече",
     /** Tertiary button under the landing showcase blurb (Figma 398:3188). */
     readMore: "Прочети повече",
-    /**
-     * Foot of the initiatives mega menu and of its mobile equivalent. The menu
-     * lists the initiatives themselves; this is the way to the index page, which
-     * would otherwise be reachable from the sitemap and nowhere a person looks.
-     */
-    allInitiatives: "Всички инициативи",
   },
 
-  /**
-   * Top-level navigation.
-   *
-   * An href starting with "/" is a route and SiteNav prefixes the locale; one
-   * starting with "#" is a section of the home page. "Мисия" used to be an
-   * anchor and is now "За нас", pointing at the About page — which opens with
-   * the mission and, unlike a scroll position, is somewhere a search engine or a
-   * grant reviewer can be sent. "Инициативи" keeps its "#initiatives" href
-   * because SiteNav matches on exactly that string to turn the item into the
-   * mega-menu trigger; the menu itself links on to /initiatives.
-   */
   nav: {
     links: [
-      { label: "За нас", href: "/about" },
       { label: "Инициативи", href: "#initiatives" },
-      { label: "Събития", href: "/events" },
-      { label: "Контакти", href: "/contact" },
+      { label: "Мисия", href: "#mission" },
+      { label: "Събития", href: "#activities" },
+      { label: "Екип", href: "#team" },
     ],
     cta: { label: "Членувай →", href: "https://tally.so/r/81PbQA" },
   },
@@ -215,19 +198,6 @@ const bg = {
     heading: "Дизайнът движи нации. Ние го задвижваме в България.",
     subheading:
       "България, която не догонва бъдещето, а го проектира чрез дизайн капацитет, движещ нацията напред.",
-    /**
-     * Who is saying this. It sat only in an FAQ answer 35% down the page and in
-     * the privacy policy, so the site never told a first-time reader — or a
-     * grant reviewer — that this is a non-profit until they went looking.
-     *
-     * "независима неправителствена организация" is the council's own wording
-     * from the `about` block below. Whether the сдружение is registered *в
-     * обществена полза* or *в частна полза* is deliberately not claimed here:
-     * nothing in this repository establishes which, and it is a legal
-     * designation, not a turn of phrase.
-     */
-    status:
-      "Сдружение „Български дизайн съвет“ — независима неправителствена организация с нестопанска цел.",
     primary: { label: "Стани член ↗", href: "https://tally.so/r/81PbQA" },
     secondary: {
       label: "Партнирай с нас",
@@ -1088,15 +1058,14 @@ const en: typeof bg = {
     switchLanguage: "Български",
     seeMore: "See more",
     readMore: "Read more",
-    allInitiatives: "All initiatives",
   },
 
   nav: {
     links: [
-      { label: "About", href: "/about" },
       { label: "Initiatives", href: "#initiatives" },
-      { label: "Events", href: "/events" },
-      { label: "Contact", href: "/contact" },
+      { label: "Mission", href: "#mission" },
+      { label: "Events", href: "#activities" },
+      { label: "Team", href: "#team" },
     ],
     cta: { label: "Become a member →", href: "https://tally.so/r/81PbQA" },
   },
@@ -1105,8 +1074,6 @@ const en: typeof bg = {
     heading: "Design moves nations. We are putting it to work for Bulgaria.",
     subheading:
       "A Bulgaria that does not chase the future but designs it, through design capability that moves the nation forward.",
-    status:
-      "The Bulgarian Design Council Association — an independent non-governmental, not-for-profit organization.",
     primary: { label: "Become a member ↗", href: "https://tally.so/r/81PbQA" },
     secondary: {
       label: "Build a partnership",
