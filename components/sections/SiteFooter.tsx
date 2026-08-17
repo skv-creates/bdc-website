@@ -94,9 +94,29 @@ export function SiteFooter({
                 <p className="t-caption max-w-[46ch] opacity-80">{footer.heritage.body}</p>
               </div>
 
-              <p className="t-caption opacity-70">
-                <Bar />
-                {footer.uic}
+              {/* Registration code, then the statute it belongs to. They sit
+                  together because they answer the same question — is this a
+                  real, registered organisation — and the statute was reachable
+                  only from the About page until now.
+
+                  The code keeps its 70% opacity; the link does not, because a
+                  dimmed link on a dark ground is the one thing here that has to
+                  read as clickable. Underline on an inner inline span, the same
+                  as the policy links below: on the anchor it is a 2px border on
+                  a block box and adds 2px to the column height. */}
+              <p className="t-caption flex flex-wrap items-center gap-x-4 gap-y-2">
+                <span className="inline-flex items-center opacity-70">
+                  <Bar />
+                  {footer.uic}
+                </span>
+                <span aria-hidden className="opacity-40">
+                  ·
+                </span>
+                <a href={`/${locale}/statute`} className="group">
+                  <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
+                    {footer.statute}
+                  </span>
+                </a>
               </p>
             </div>
 

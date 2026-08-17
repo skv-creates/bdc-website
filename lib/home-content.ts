@@ -1007,6 +1007,8 @@ const bg = {
     email: "info@bulgariandesigncouncil.org",
     /** Регистрация в Търговския регистър — същият код като в Политиката за поверителност. */
     uic: "ЕИК 208377927",
+    /** Уставът, до който ЕИК-ът стои — на сайта, не в Notion. */
+    statute: "Устав",
     heritage: {
       heading: "Почит към наследството",
       body:
@@ -1852,6 +1854,7 @@ const en: typeof bg = {
     email: "info@bulgariandesigncouncil.org",
     /** Same code as the privacy policy gives; "UIC" is the wording used there. */
     uic: "UIC 208377927",
+    statute: "Statute",
     heritage: {
       heading: "Honouring Our Heritage",
       body:

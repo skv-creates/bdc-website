@@ -56,6 +56,16 @@ const SPEED_HOVER = 18;
 const EASE_PER_SECOND = 3;
 
 /**
+ * How long to leave a native smooth scroll alone after an arrow press. There
+ * is no "smooth scroll finished" event, and browsers take roughly 300–500ms
+ * depending on distance, so this covers the longest of them with margin. Too
+ * short and the glide resumes mid-animation and cancels it — the bug this
+ * exists to prevent; too long and the strip simply sits still a moment before
+ * gliding on, which nobody notices.
+ */
+const SMOOTH_SCROLL_MS = 700;
+
+/**
  * What width this slide will actually be shown at, per breakpoint.
  *
  * Rounded up: `sizes` is a hint the browser matches against `deviceSizes`, and
@@ -110,6 +120,18 @@ export function PhotoCarousel({
    */
   const [paused, setPaused] = useState(false);
 
+  /**
+   * While an arrow's scroll is still animating, the frame clock must not touch
+   * scrollLeft.
+   *
+   * The glide writes el.scrollLeft every frame, and writing scrollLeft cancels
+   * a native smooth scroll already in flight — so an arrow press travelled a
+   * few pixels and stopped dead, which read as the arrows simply not working.
+   * The press records a deadline here; until it passes, `step` follows the
+   * browser instead of driving.
+   */
+  const glideHoldUntil = useRef(0);
+
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const sync = () => setReduced(mq.matches);
@@ -153,6 +175,16 @@ export function PhotoCarousel({
       const dt = Math.min(now - last, 100) / 1000;
       last = now;
 
+      // An arrow is mid-flight: keep pace with where the browser has scrolled
+      // to, but write nothing, or the smooth scroll is cancelled on its first
+      // frame. Resuming from `pos = el.scrollLeft` means the glide picks up
+      // exactly where the arrow left the strip.
+      if (now < glideHoldUntil.current) {
+        pos = el.scrollLeft;
+        raf = requestAnimationFrame(step);
+        return;
+      }
+
       // If the visitor has scrolled, swiped or pressed an arrow, scrollLeft has
       // moved somewhere this loop did not put it. Take their position as the
       // new truth rather than yanking the strip back.
@@ -184,6 +216,12 @@ export function PhotoCarousel({
       if (!el) return;
       const slide = el.children[0] as HTMLElement | undefined;
       const step = (slide?.offsetWidth ?? 400) + 24;
+      // Hand the strip to the browser for the length of the animation. Nothing
+      // observable tells us when a smooth scroll has finished — there is no
+      // event for it — so this is a window rather than a callback, generous
+      // enough to cover the ~300-500ms browsers actually take. Under reduced
+      // motion the scroll is instant and there is nothing to protect.
+      glideHoldUntil.current = reduced ? 0 : performance.now() + SMOOTH_SCROLL_MS;
       el.scrollBy({ left: dir * step, behavior: reduced ? "auto" : "smooth" });
     },
     [reduced],
