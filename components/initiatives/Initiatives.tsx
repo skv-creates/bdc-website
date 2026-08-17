@@ -72,6 +72,13 @@ const AUTOPLAY_MS = 4000;
 const SLIDE_MS = 500;
 
 /**
+ * How far a thumb has to travel before it counts as a swipe rather than a tap
+ * that wandered. 40px is the usual floor — below it, tapping the cover to open
+ * the initiative starts changing it instead.
+ */
+const SWIPE_MIN = 40;
+
+/**
  * Copies of the list laid end to end. `pos` indexes into the whole run, and at
  * rest sits in copy 1 — the band [N, 2N) — so there is a copy either side to
  * travel into. Sliding one step off the end of the band lands on the identical
@@ -193,6 +200,37 @@ function InitiativesShowcase({
   };
 
   /**
+   * Swipe to change initiative, on the whole block rather than just the picture.
+   *
+   * On a phone the strip of titles is the only control there is, and it is a
+   * row of 220px cards clipped at the screen edge — you can reach the next one,
+   * but the gesture anyone actually tries on a full-width photograph is a
+   * swipe. Reading `touches` on start and `changedTouches` on end keeps this to
+   * two passive listeners, so it never fights the page's own scrolling.
+   *
+   * The horizontal distance has to clear SWIPE_MIN *and* beat the vertical, or
+   * a thumb dragging diagonally down the page would step the carousel on its
+   * way past. Left travels forward, matching the direction the strip moves.
+   */
+  const touch = useRef<{ x: number; y: number } | null>(null);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touch.current = { x: t.clientX, y: t.clientY };
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touch.current;
+    touch.current = null;
+    if (!start) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) <= Math.abs(dy)) return;
+    step(dx < 0 ? 1 : -1);
+  };
+
+  /**
    * Arrow keys walk the strip; Home and End jump to its ends. Focus follows, so
    * the title being read out is the one on screen. The strip is a single tab
    * stop — tabbing in lands on the selected title and tabbing again leaves —
@@ -232,26 +270,42 @@ function InitiativesShowcase({
     <section id="initiatives" className="bdc-stop-11 py-20 md:py-28">
       <Header initiatives={initiatives} />
 
-      <div className="mt-12 grid gap-x-6 gap-y-12 lg:mt-20 lg:grid-cols-11">
-        {/* initiative-info (398:3185) — columns 1–5. */}
-        <div key={active} className={`${styles.fadeIn} flex flex-col gap-8 lg:col-span-5`}>
-          <h3 className="t-h03">
-            <a href={href(item)} className="hover:underline">
-              {item.title}
-            </a>
-          </h3>
-          <p className="t-body">{item.text}</p>
-          {/* button-terciary (398:3188). The arrow is part of the label rather
-              than an icon, exactly as in the frame. */}
-          <a
-            href={href(item)}
-            className="t-caption group inline-flex items-center gap-3 font-medium"
-          >
-            {ui.readMore}
-            <span aria-hidden className="transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </a>
+      {/* Swipe is bound here rather than on the picture so the gesture works
+          anywhere in the block — including over the copy, which is most of what
+          fills a phone screen once the cover has scrolled past. */}
+      <div
+        className="mt-12 grid gap-x-6 gap-y-8 lg:mt-20 lg:grid-cols-11 lg:gap-y-12"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* initiative-info (398:3185) — columns 1–5. All four are rendered and
+            stacked so the block holds the height of the longest; see
+            .infoStack. */}
+        <div className={`${styles.infoStack} lg:col-span-5`}>
+          {items.map((it, i) => (
+            <div
+              key={it.slug}
+              className={`${i === active ? styles.infoLayerActive : styles.infoLayer} flex flex-col gap-8`}
+            >
+              <h3 className="t-h03">
+                <a href={href(it)} className="hover:underline">
+                  {it.title}
+                </a>
+              </h3>
+              <p className="t-body">{it.text}</p>
+              {/* button-terciary (398:3188). The arrow is part of the label
+                  rather than an icon, exactly as in the frame. */}
+              <a
+                href={href(it)}
+                className="t-caption group inline-flex items-center gap-3 font-medium"
+              >
+                {ui.readMore}
+                <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                  →
+                </span>
+              </a>
+            </div>
+          ))}
         </div>
 
         {/* initiative-cover (398:3184) — six columns at 4:3, per the annotation.
@@ -266,7 +320,14 @@ function InitiativesShowcase({
           href={href(item)}
           aria-hidden
           tabIndex={-1}
-          className="relative block aspect-[4/3] overflow-hidden lg:col-span-6 lg:col-start-6"
+          // order-first below lg: the cover is third in the DOM because on
+          // desktop it sits to the right of the copy, but stacked that put the
+          // title, the blurb and the link above the photograph — so a phone
+          // opened on a wall of text with the picture buried under it. Reading
+          // order on a narrow screen is picture, title, blurb, link, strip.
+          // Source order is left alone so the heading still precedes the image
+          // for a screen reader, which is why this is `order` and not a move.
+          className="relative order-first block aspect-[4/3] overflow-hidden lg:order-none lg:col-span-6 lg:col-start-6"
         >
           <div className={styles.coverPlate} aria-hidden />
           {items.map((it, i) => {

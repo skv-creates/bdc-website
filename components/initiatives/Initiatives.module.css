@@ -83,6 +83,53 @@
   background: var(--color-brand);
 }
 
+/* ── The copy block, stacked ────────────────────────────────────────────────
+   Every initiative's title, blurb and link are rendered into the same grid
+   cell, one on top of another, and all but the current one are hidden. The
+   cell is therefore always as tall as the *longest* of them, so the block
+   keeps one height for the whole cycle.
+
+   It used to render only the active initiative, which meant the section grew
+   and shrank by the difference between a two-line blurb and a four-line one
+   every four seconds, shoving the rest of the page up and down while you were
+   reading it. Reserving the tallest costs some white space under the shorter
+   entries; a page that moves under the reader costs more. */
+.infoStack {
+  display: grid;
+}
+
+.infoStack > * {
+  grid-area: 1 / 1;
+}
+
+/* `visibility` rather than `display` or a conditional render: it keeps the
+   layer's size, so it still counts towards the cell's height, while taking it
+   out of the tab order and the accessibility tree — without which every
+   initiative's title and "read more" would be announced and tabbed through
+   four times over.
+
+   The 300ms delay on the way out holds visibility until the fade has finished;
+   without it the layer vanishes on the first frame and there is nothing to
+   fade. Going in, both start at once. */
+.infoLayer {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 300ms ease-out, visibility 0s linear 300ms;
+}
+
+.infoLayerActive {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 300ms ease-out, visibility 0s linear 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .infoLayer,
+  .infoLayerActive {
+    transition: none;
+  }
+}
+
 /* The cover's bottom layer, so an initiative still awaiting a photograph shows
    a neutral plate rather than the page, and so cross-fading between covers
    never flashes white. */
@@ -92,17 +139,7 @@
   background: color-mix(in srgb, var(--color-text) 8%, var(--color-page));
 }
 
-.fadeIn {
-  animation: initiativeFade 300ms ease-out both;
-}
-
-@keyframes initiativeFade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .fadeIn { animation: none; }
   .navRule::before { transition: none; }
 }
 
