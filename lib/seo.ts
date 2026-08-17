@@ -93,20 +93,49 @@ export function sitemapAlternates(path = "") {
 }
 
 /**
+ * The default share card, one per language.
+ *
+ * The card carries a sentence — "Една държава се проектира всеки ден" on /bg,
+ * "A country is designed every day" on /en — so it cannot be one file. That is
+ * why this is here and not app/[locale]/opengraph-image.jpg: the file
+ * convention resolves per *segment*, not per param, so a single file served
+ * both locales and showed the English line to Bulgarian readers.
+ *
+ * Relative on purpose, like `url` below: Next resolves it against
+ * metadataBase, so staging cards point at staging instead of quietly
+ * advertising production URLs from a noindex host.
+ *
+ * PNG rather than JPEG, which is not the usual choice for a share card: this
+ * one is three flat brand colours and a line of type, so JPEG spent its bytes
+ * putting ringing around every letter edge. Lossless came out at 29KB against
+ * the JPEG's 67KB — sharper and less than half the size.
+ *
+ * The alt text is written out here rather than pulled from lib/home-content so
+ * this module stays content-free and app/sitemap.ts can keep importing it
+ * without dragging the whole dictionary along.
+ */
+const shareCard = (locale: Locale) => ({
+  url: `/og/share-${locale}.png`,
+  width: 1200,
+  height: 630,
+  alt:
+    locale === "bg"
+      ? "Български дизайн съвет — Една държава се проектира всеки ден"
+      : "Bulgarian Design Council — A country is designed every day",
+});
+
+/**
  * The Open Graph fields every page shares.
  *
  * `url` is left relative so it resolves against metadataBase, which keeps
  * staging cards pointing at staging rather than quietly advertising production
  * URLs from a noindex host.
  *
- * No `images` here — pages that own a photograph pass their own, and everything
- * else inherits the site card from app/[locale]/opengraph-image. Setting a
- * default here instead would override that file convention on every page.
- *
- * One known gap: because every page sets `openGraph` explicitly, Next does not
- * merge the sidecar opengraph-image.alt.txt, so the default card ships without
- * og:image:alt. Pages that pass their own images set alt themselves. No
- * platform requires it, so this is a note rather than a bug to chase.
+ * `images` is set here rather than on the layout because metadata does not
+ * merge: an `openGraph` object on a page replaces the layout's wholesale, and
+ * every page in this app builds its `openGraph` through this helper. Pages that
+ * own a photograph — events, initiatives — spread this and then set `images`
+ * themselves, so theirs still wins.
  */
 export function openGraphBase(
   locale: Locale,
@@ -125,6 +154,7 @@ export function openGraphBase(
     title,
     description,
     siteName,
+    images: [shareCard(locale)],
     // Facebook's territory-qualified form; anything else is ignored.
     locale: locale === "bg" ? "bg_BG" : "en_US",
     ...(other ? { alternateLocale: other === "bg" ? "bg_BG" : "en_US" } : {}),

@@ -155,9 +155,9 @@ export type FaqGroup = { title: string; items: FaqItem[] };
 ============================================================================= */
 const bg = {
   meta: {
-    title: "Български Дизайн Съвет",
+    title: "Български дизайн съвет",
     description:
-      "Българският Дизайн Съвет обединява професионалисти, експерти и организации с обща мисия — да развиваме българския дизайн.",
+      "Изграждаме дизайн способността на България там, където решенията оформят бъдещето.",
     /** Wraps every child page's title. "%s" is that page's own title. */
     titleTemplate: "%s — Български дизайн съвет",
   },
@@ -1036,7 +1036,7 @@ const en: typeof bg = {
   meta: {
     title: "Bulgarian Design Council",
     description:
-      "The Bulgarian Design Council unites professionals, experts and organizations around one shared mission — to grow Bulgarian design.",
+      "We build Bulgaria’s design capability where decisions shape the future.",
     /** Wraps every child page's title. "%s" is that page's own title. */
     titleTemplate: "%s — Bulgarian Design Council",
   },
