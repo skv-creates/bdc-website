@@ -19,6 +19,35 @@ import type { SiteContent } from "@/lib/home-content";
 type OverlayUi = Pick<SiteContent["ui"], "prev" | "next" | "pause" | "play" | "opensInNewTab" | "openLink">;
 
 /**
+ * Type, date and place — the line under the title, shared by both layouts.
+ *
+ * It was written out twice, and the copies had already drifted by one class.
+ * Adding the location to both was the second time the same three lines needed
+ * the same edit, so they live here now.
+ *
+ * The location is the `Локация` column of the Notion row. It has been synced
+ * into events.generated.json all along and fed to schema.org/Event, but no part
+ * of the page ever showed it — so seven of the eight events knew where they
+ * happened and told nobody. Online events have none, and the field is simply
+ * absent rather than filled with "Онлайн", which the type label already says.
+ */
+function EventMeta({ event }: { event: BdcEvent }) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+      <span className="flex items-center gap-3">
+        {/* 16×8 accent block before the event type. Tracks the pattern-rail
+            recolour (--tri-band = tomato by default), like the bottom strip.
+            Inline style, not bg-[var(--tri-band)] — see Safari gotcha. */}
+        <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
+        <span className="t-caption">{event.type.label}</span>
+      </span>
+      <span className="t-caption">{event.dateLong}</span>
+      {event.location && <span className="t-caption">{event.location}</span>}
+    </div>
+  );
+}
+
+/**
  * Turn the `[label](href)` runs the sync writes into real anchors.
  *
  * The descriptions come out of Notion as plain text, and the links in them —
@@ -72,53 +101,121 @@ function videoIn(paragraph: string): { id: string; title: string } | null {
   return id ? { id, title: m[1] } : null;
 }
 
-/** One paragraph: a player where it is a lone video link, prose otherwise. */
-function Para({ text, ui }: { text: string; ui: OverlayUi }) {
+/**
+ * One paragraph: a player where it is a lone video link, prose otherwise.
+ *
+ * `className` carries the type treatment because the same paragraph is set
+ * three ways — 24px as a standfirst, 20px at looser leading in a long body,
+ * 20px at the site's default elsewhere — and the caller is the only thing that
+ * knows which. A video is a video in all three, so it ignores it.
+ */
+function Para({ text, ui, className = "t-body" }: { text: string; ui: OverlayUi; className?: string }) {
   const video = videoIn(text);
   if (video) return <VideoEmbed id={video.id} title={video.title} />;
-  return <p className="t-body">{withLinks(text, ui)}</p>;
+  return <p className={className}>{withLinks(text, ui)}</p>;
+}
+
+/**
+ * Long-form body type: the site's 20px, opened from 1.4 to 1.6.
+ *
+ * .t-body's 1.4 is right for a card or a caption and too tight for a thousand
+ * words — the eye loses its place returning to the left margin. Set here
+ * rather than on the token, because every other .t-body on the site is short.
+ */
+const PROSE = "t-body leading-[1.6]";
+
+/**
+ * Reading measure. 65 characters is the middle of the 60–75 band typography
+ * has settled on: wider and the return sweep starts missing lines, narrower
+ * and it breaks the sentence into stutters. It is a cap, not a width — the
+ * column is still fluid below it.
+ */
+const MEASURE = "max-w-[65ch]";
+
+/**
+ * Column placement per variant, shared by both layouts.
+ *
+ * overlay — <OverlayPanel/> spans over the pattern rail and has no gutter of
+ *   its own, so column 1 acts as one and every block starts at column 2. The md
+ *   step is load-bearing: px-0 begins at md but the lg offset does not, and
+ *   without it content sits flush against the panel edge. Twelve tracks.
+ * page — the standalone shell already applies --page-gutter and the rail inset,
+ *   so blocks start at column 1. Repeating either here double-pads the edge and
+ *   indents everything one column past the logo.
+ *
+ * **The two variants have different column counts.** The page variant sits in
+ * `.bdc-stop-11`, which sets `--grid-cols: 11` from 1024px up — the same
+ * breakpoint every `lg:` class here applies at. So a `lg:col-start-7
+ * lg:col-span-6` cover, which is right in a twelve-track grid, asks for columns
+ * 7–12 of an eleven-track one and CSS Grid quietly invents a twelfth. Five
+ * columns of copy, a column of air, five of photograph — the overlay's
+ * proportions, one track narrower. Check any new class here against 11, not 12.
+ */
+function columns(inPage: boolean) {
+  return {
+    text: inPage
+      ? "col-span-full lg:col-span-5"
+      : "col-span-full md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-5",
+    cover: inPage
+      ? "col-span-full lg:col-start-7 lg:col-span-5"
+      : "col-span-full md:col-start-2 md:col-span-6 lg:col-start-8 lg:col-span-5",
+    wide: inPage
+      ? "col-span-full"
+      : "col-span-full md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-11",
+    // Running text — starts on the same left axis as the title and is capped
+    // by MEASURE rather than by a column count, so the line length is the
+    // constraint on every screen instead of a proportion of the viewport.
+    prose: inPage
+      ? "col-span-full"
+      : "col-span-full md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10",
+  };
 }
 
 export function EventOverlayContent({
   event,
   ui,
   locale,
+  variant = "overlay",
 }: {
   event: BdcEvent;
   ui: OverlayUi;
   locale: Locale;
+  /** Which shell this is inside. See `columns` above. */
+  variant?: "overlay" | "page";
 }) {
   // Two or more pictures makes this an "event with photo carousel". With one
   // picture the original side-by-side layout is still the right shape, and
   // most events have no pictures at all.
-  if (event.covers.length >= 2) return <EventOverlayGallery event={event} ui={ui} locale={locale} />;
+  if (event.covers.length >= 2)
+    return (
+      <EventOverlayGallery
+        event={event}
+        ui={ui}
+        locale={locale}
+        variant={variant}
+      />
+    );
+
+  const inPage = variant === "page";
+  const col = columns(inPage);
 
   return (
     <div
       // Same column grid as the rest of the site (.bdc-grid = --grid-cols cols,
-      // --grid-gap gutter). The panel starts at --page-gutter, so col 1 lines up
-      // with the page's col 1; the rail-width right padding matches the page's
-      // end inset, so all 12 columns coincide with the global grid.
-      className="bdc-grid gap-y-10 px-6 pt-16 md:px-0 lg:gap-y-0 lg:pt-20"
-      style={{ paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))" }}
+      // --grid-gap gutter). In the panel, col 1 lines up with the page's col 1
+      // and the rail-width right padding matches the page's end inset, so all
+      // 12 columns coincide with the global grid. In the page shell both come
+      // from the wrapper instead, and bdc-stop-11 keeps the copy off the
+      // pattern.
+      className={`bdc-grid gap-y-10 pt-16 lg:gap-y-0 lg:pt-20 ${
+        inPage ? "bdc-stop-11" : "px-6 md:px-0"
+      }`}
+      style={inPage ? undefined : { paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))" }}
     >
-      {/* Text — page grid cols 2–6 on desktop (col 1 is the gutter), cols 2–7
-          of the 8-col tablet grid. The md placement matters: px-0 starts at md
-          but the lg column offset doesn't, so without it the 768–1023 band had
-          no left inset at all and text sat flush against the panel edge. */}
-      <div className="col-span-full flex flex-col gap-8 md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-5">
+      <div className={`${col.text} flex flex-col gap-8`}>
         <h1 className="t-h03">{event.name}</h1>
 
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          <span className="flex items-center gap-3">
-            {/* 16×8 accent block before the event type. Tracks the pattern-rail
-                recolour (--tri-band = tomato by default), like the bottom strip.
-                Inline style, not bg-[var(--tri-band)] — see Safari gotcha. */}
-            <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
-            <span className="t-caption">{event.type.label}</span>
-          </span>
-          <span className="t-caption">{event.dateLong}</span>
-        </div>
+        <EventMeta event={event} />
 
         <div className="h-px w-full bg-border" />
 
@@ -126,9 +223,9 @@ export function EventOverlayContent({
             a single <p> would run them together into one wall of text. Split
             here rather than storing HTML — the JSON stays plain text, which is
             what the sync can regenerate losslessly. */}
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
           {paragraphs(event.description).map((p) => (
-            <Para key={p} text={p} ui={ui} />
+            <Para key={p} text={p} ui={ui} className={PROSE} />
           ))}
         </div>
       </div>
@@ -147,7 +244,7 @@ export function EventOverlayContent({
           Falls back to square only if a record is missing its dimensions. */}
       {event.covers[0] && (
         <div
-          className="relative w-full col-span-full md:col-start-2 md:col-span-6 lg:col-start-8 lg:col-span-5"
+          className={`relative w-full ${col.cover}`}
           style={{
             aspectRatio: event.covers[0].width
               ? `${event.covers[0].width} / ${event.covers[0].height}`
@@ -182,46 +279,54 @@ function EventOverlayGallery({
   event,
   ui,
   locale,
+  variant,
 }: {
   event: BdcEvent;
   ui: OverlayUi;
   locale: Locale;
+  variant: "overlay" | "page";
 }) {
   const [intro, ...rest] = paragraphs(event.description);
-  // Split what is left down the middle, so the two columns end level rather
-  // than one running twice the length of the other.
-  const half = Math.ceil(rest.length / 2);
-  const columns = [rest.slice(0, half), rest.slice(half)];
+
+  const inPage = variant === "page";
+  const col = columns(inPage);
 
   return (
     <div
-      className="bdc-grid gap-y-12 px-6 pt-16 md:px-0 lg:pt-20"
-      style={{ paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))" }}
+      className={`bdc-grid gap-y-12 pt-16 lg:pt-20 ${inPage ? "bdc-stop-11" : "px-6 md:px-0"}`}
+      style={inPage ? undefined : { paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))" }}
     >
       {/* event-info-wrapper (449:1705) — five of the twelve columns, so the
           title wraps as it does in the frame instead of running the full width. */}
-      <div className="col-span-full flex flex-col gap-8 md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-5">
+      <div className={`${col.text} flex flex-col gap-8`}>
         <h1 className="t-h03">{event.name}</h1>
 
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          <span className="flex items-center gap-3">
-            <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
-            <span className="t-caption">{event.type.label}</span>
-          </span>
-          <span className="t-caption">{event.dateLong}</span>
-        </div>
+        <EventMeta event={event} />
 
         <div className="h-px w-full bg-border" />
-
-        {intro && <Para text={intro} ui={ui} />}
       </div>
+
+      {/* The opening paragraph, above the carousel.
+
+          Set at the body size, not a step up: a standfirst was tried here and
+          reads as a second heading under the title rather than as the start of
+          the piece. It keeps its own row rather than sitting in the
+          five-column header, though — at that width it wrapped to a column of
+          fragments with the right half of the row empty above a full-width
+          carousel. Out here it takes the same measure as the body below, so
+          the whole page runs on one left axis at one size. */}
+      {intro && (
+        <div className={col.prose}>
+          <Para text={intro} ui={ui} className={`${PROSE} ${MEASURE}`} />
+        </div>
+      )}
 
       {/* Column 2 through the last one. It used to stop at 11, which left a
           column of dead space down the right that read as a mistake — and the
           reason for it (giving a two-slide strip something to travel) went
           away once the gallery took all six pictures and started gliding
           rather than paging. */}
-      <div className="col-span-full lg:col-start-2 lg:col-span-11">
+      <div className={col.wide}>
         <PhotoCarousel
           images={event.covers}
           label={event.name}
@@ -231,17 +336,17 @@ function EventOverlayGallery({
         />
       </div>
 
+      {/* The body, in one column.
+          It was two, split down the middle so they ended level. That reads in
+          print, where both columns are in view at once; on a screen you reach
+          the foot of the first and have to scroll back up to start the second.
+          It survived only because the copy was short enough that neither
+          column ran past a screen — at three thousand characters it does. */}
       {rest.length > 0 && (
-        <div className="col-span-full grid gap-x-[var(--grid-gap)] gap-y-5 md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-10 lg:grid-cols-2 lg:gap-x-[120px]">
-          {columns.map((col, i) =>
-            col.length ? (
-              <div key={i} className="flex flex-col gap-5">
-                {col.map((p) => (
-                  <Para key={p} text={p} ui={ui} />
-                ))}
-              </div>
-            ) : null,
-          )}
+        <div className={`${col.prose} ${MEASURE} flex flex-col gap-6`}>
+          {rest.map((p) => (
+            <Para key={p} text={p} ui={ui} className={PROSE} />
+          ))}
         </div>
       )}
     </div>

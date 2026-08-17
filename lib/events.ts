@@ -182,6 +182,28 @@ const MOCK: RawEvent[] = [
    Localization + formatting
 ============================================================================= */
 
+/**
+ * Venue names that need saying differently in English.
+ *
+ * `Локация` is a single Notion column, not a bilingual pair, so whatever an
+ * editor types appears on both sites. Most values need nothing — "Barter,
+ * Sofia", "Toplocentrala, Sofia", "SOHO, Sofia, Bulgaria" are already the names
+ * those places go by in either language. Two are Bulgarian abbreviations that
+ * an English reader cannot expand, and left alone they put Cyrillic on three of
+ * the eight English event pages.
+ *
+ * Deliberately a lookup of exact strings rather than a transliterator:
+ * "НБУ, София" is not New Bulgarian University because of its letters, it is
+ * because that is the institution. A transliterator would produce "NBU, Sofia"
+ * and think it had done the job. An unmapped value falls through unchanged,
+ * which is the right failure — a venue name in its own language beats a
+ * mangled one.
+ */
+const LOCATION_EN: Record<string, string> = {
+  "НБУ, София": "New Bulgarian University, Sofia",
+  "БДС Офис": "Bulgarian Design Council Office",
+};
+
 /** "2026-04-25" → { short: "25.04", long: "25.04.2026" } (locale-neutral, numeric). */
 function formatDate(iso: string): { short: string; long: string } {
   const [y, m, d] = iso.split("-");
@@ -199,7 +221,10 @@ function localize(raw: RawEvent, locale: Locale): BdcEvent {
     name: raw.name[locale],
     type: { label: meta.label[locale], accent: meta.accent },
     description: raw.description[locale],
-    location: raw.location ?? "",
+    location:
+      locale === "en" && raw.location
+        ? LOCATION_EN[raw.location] ?? raw.location
+        : raw.location ?? "",
     covers: raw.covers ?? [],
   };
 }
