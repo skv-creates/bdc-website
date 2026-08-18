@@ -117,6 +117,14 @@ export function SiteFooter({
                     {footer.statute}
                   </span>
                 </a>
+                <span aria-hidden className="opacity-40">
+                  ·
+                </span>
+                <a href={`/${locale}/about`} className="group">
+                  <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
+                    {footer.about}
+                  </span>
+                </a>
               </p>
             </div>
 

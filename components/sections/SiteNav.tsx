@@ -47,9 +47,29 @@ export function SiteNav({
   // section — matching on href rather than label so it survives translation.
   const megaHref = "#initiatives";
 
-  const homeHref = path ? `/${locale}` : "#";
+  /**
+   * The logo always goes home — including from the home page itself.
+   *
+   * It used to be `path ? \`/${locale}\` : "#"`, so on the home page, and on
+   * any page rendering the nav without a `path` (the 404), it was href="#":
+   * the one link on the site that went nowhere, on the pages a visitor is most
+   * likely to click it. A logo is the most-clicked way home on any website,
+   * and "#" jumps to the top of the current document instead — which on the
+   * home page looks like it worked and on a 404 looks broken.
+   *
+   * Linking home from home is not a problem: it is what every site does, it
+   * costs nothing on a prerendered route, and it is what a screen reader
+   * announces via ui.home anyway.
+   */
+  const homeHref = `/${locale}`;
+  // Hash links point into the home page (prefixed once we are off it);
+  // path links ("/about") are locale-prefixed always.
   const linkHref = (href: string) =>
-    path && href.startsWith("#") ? `/${locale}${href}` : href;
+    href.startsWith("/")
+      ? `/${locale}${href}`
+      : path && href.startsWith("#")
+        ? `/${locale}${href}`
+        : href;
 
   // Language toggle points at the same page in the other locale.
   const otherLocale: Locale = locale === "bg" ? "en" : "bg";

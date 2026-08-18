@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import dynamic from "next/dynamic";
-import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { getContent, hasLocale, locales } from "@/lib/home-content";
+import { aboutBeige } from "@/lib/fonts";
 import { GOOGLE_SITE_VERIFICATION, IS_PRODUCTION_SITE, SITE_ORIGIN } from "@/lib/site";
 
 /**
@@ -27,25 +27,6 @@ const EditMode = dynamic(() =>
   import("@/components/dev/EditMode").then((mod) => mod.EditMode),
 );
 
-/**
- * Brand face — "About Beige Standard", self-hosted via next/font/local.
- *
- * Three weights, matching the three the type scale actually uses:
- * --weight-regular 400, --weight-medium 500, --weight-bold 700 in globals.css.
- * Heavy (800) was declared here and shipped on every page while nothing
- * referenced it — no --weight-heavy token, no font-weight: 800, no
- * font-extrabold anywhere. Adding a fourth weight costs ~70KB on first load,
- * so only add one when a type class needs it.
- */
-const aboutBeige = localFont({
-  src: [
-    { path: "../fonts/AboutBeigeStandard-Regular.woff2", weight: "400", style: "normal" },
-    { path: "../fonts/AboutBeigeStandard-Medium.woff2", weight: "500", style: "normal" },
-    { path: "../fonts/AboutBeigeStandard-Bold.woff2", weight: "700", style: "normal" },
-  ],
-  variable: "--font-about-beige",
-  display: "swap",
-});
 
 /* Opt into the full screen so env(safe-area-inset-*) returns the real notch /
    status-bar insets — used by the sticky nav to paint white under the iOS

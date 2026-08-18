@@ -190,6 +190,7 @@ const bg = {
       { label: "Мисия", href: "#mission" },
       { label: "Събития", href: "#activities" },
       { label: "Екип", href: "#team" },
+      { label: "За нас", href: "/about" },
     ],
     cta: { label: "Членувай →", href: "https://tally.so/r/81PbQA" },
   },
@@ -1009,6 +1010,7 @@ const bg = {
     uic: "ЕИК 208377927",
     /** Уставът, до който ЕИК-ът стои — на сайта, не в Notion. */
     statute: "Устав",
+    about: "За нас",
     heritage: {
       heading: "Почит към наследството",
       body:
@@ -1068,6 +1070,7 @@ const en: typeof bg = {
       { label: "Mission", href: "#mission" },
       { label: "Events", href: "#activities" },
       { label: "Team", href: "#team" },
+      { label: "About", href: "/about" },
     ],
     cta: { label: "Become a member →", href: "https://tally.so/r/81PbQA" },
   },
@@ -1855,6 +1858,7 @@ const en: typeof bg = {
     /** Same code as the privacy policy gives; "UIC" is the wording used there. */
     uic: "UIC 208377927",
     statute: "Statute",
+    about: "About us",
     heritage: {
       heading: "Honouring Our Heritage",
       body:
