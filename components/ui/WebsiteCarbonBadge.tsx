@@ -37,6 +37,13 @@ const SCRIPT = "https://unpkg.com/website-carbon-badges@1.1.3/b.min.js";
  * It measures `window.location.href`, so each page reports its own weight. On
  * localhost that is unreachable from their API and the badge reads "No Result";
  * that is expected in development, not a fault.
+ *
+ * The script is not loaded until the footer is within a viewport of being
+ * seen. It used to load on mount, which put unpkg.com and websitecarbon.com
+ * on every page view's critical window — two third-party connections spent
+ * measuring the weight of a page they were making heavier, for a badge the
+ * visitor had not scrolled to. Lighthouse billed those connections at ~300ms
+ * each on mobile.
  */
 export function WebsiteCarbonBadge() {
   useEffect(() => {
@@ -86,15 +93,41 @@ export function WebsiteCarbonBadge() {
     // with insertAdjacentHTML every time it runs — so only ever add it once
     // per document, or a client-side navigation stacks a second badge inside
     // the first.
-    if (!document.querySelector(`script[src="${SCRIPT}"]`)) {
-      const script = document.createElement("script");
-      script.src = SCRIPT;
-      script.defer = true;
-      document.body.appendChild(script);
+    const load = () => {
+      if (!document.querySelector(`script[src="${SCRIPT}"]`)) {
+        const script = document.createElement("script");
+        script.src = SCRIPT;
+        script.defer = true;
+        document.body.appendChild(script);
+      }
+    };
+    // rootMargin of one viewport: the script has time to load and its API
+    // call to resolve while the visitor covers the last screenful, so the
+    // badge is usually populated by the time it is actually seen.
+    let io: IntersectionObserver | null = null;
+    if (root && !document.querySelector(`script[src="${SCRIPT}"]`)) {
+      io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            load();
+            io?.disconnect();
+            io = null;
+          }
+        },
+        { rootMargin: "100% 0px" },
+      );
+      io.observe(root);
+    } else {
+      // No #wcb in the document, or the script is already there from a
+      // previous page — nothing to defer.
+      load();
     }
     fix();
 
-    return () => observer?.disconnect();
+    return () => {
+      observer?.disconnect();
+      io?.disconnect();
+    };
   }, []);
 
   return (

@@ -342,7 +342,10 @@ function InitiativesShowcase({
                 fill
                 sizes="(max-width: 1023px) 100vw, 624px"
                 quality={80}
-                priority={i === 0}
+                // Not priority: this section sits 2.5–3 viewports below the
+                // fold on every form factor (measured live), and the preload
+                // was competing with the fonts for the critical window — the
+                // H1's swap repaint is the page's LCP.
                 className="object-cover transition-opacity duration-300"
                 style={{ opacity: i === active ? 1 : 0 }}
               />
