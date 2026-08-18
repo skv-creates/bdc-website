@@ -24,7 +24,7 @@
  */
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { ListPointer } from "@/components/ui/icons";
+import { ChecklistRows } from "@/components/ui/ChecklistRows";
 import type { Initiative } from "@/lib/home-content";
 
 /** 16×8 accent block before the category — matches EventOverlayContent. */
@@ -281,46 +281,3 @@ export function InitiativeOverlayContent({
   );
 }
 
-/**
- * The ruled "list-wrapper" rows (Figma 327:1174).
- *
- * Hover fills the row with the brand rose — which is also the colour of the
- * marker, so the marker would vanish into it. That is why the design swaps it
- * for a ✲ on hover rather than just tinting the row. Both markers occupy the
- * same fixed 16px slot, so nothing shifts.
- *
- * Shared because two frames place it differently: full width under the feature
- * block, or nested inside the feature's right column. Only the wrapper class
- * differs.
- */
-function ChecklistRows({ rows, className = "" }: { rows: string[]; className?: string }) {
-  return (
-    <ul className={`flex flex-col ${className}`}>
-      {rows.map((row) => (
-        <li
-          key={row}
-          // A hovered row loses its own rule and the one under it — the rose
-          // fill is the separator at that point, and leaving the rules in cuts
-          // the block in two. The sibling selector is why this can't be a plain
-          // hover: utility on the row, effect on the next one.
-          className="group border-t border-border transition-colors duration-[120ms] ease-out hover:border-t-transparent hover:bg-brand [&:hover+li]:border-t-transparent"
-        >
-          {/* items-start, not items-center: the marker aligns to the first
-              line, so a row that wraps — which is most of them once the column
-              narrows — keeps its marker at the top rather than floating to the
-              middle. The 14px/3px offsets are the design's. */}
-          <div className="flex items-start gap-3 py-3">
-            <span className="relative w-4 shrink-0" aria-hidden>
-              <span
-                className="mt-[14px] block h-2 w-4 transition-opacity duration-[120ms] group-hover:opacity-0"
-                style={{ background: "var(--tri-accent)" }}
-              />
-              <ListPointer className="absolute left-1/2 top-[3px] -translate-x-1/2 opacity-0 transition-opacity duration-[120ms] group-hover:opacity-100" />
-            </span>
-            <p className="t-body-lg font-bold leading-[1.3] tracking-[-0.7px]">{row}</p>
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-}
