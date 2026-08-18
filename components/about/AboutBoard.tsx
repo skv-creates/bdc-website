@@ -38,11 +38,12 @@ export function AboutBoard({
 
   /**
    * While the middle card passes over the pinned title, the two texts sit on
-   * top of each other and neither reads. The title fades towards 50% in
-   * proportion to how much of it the card covers — a continuous function of
-   * scroll, so the motion is exactly as smooth as the scrolling itself, with
-   * a short transition to soften the frame steps. Driven per-frame rather
-   * than by a toggle so there is no pop at the crossing point.
+   * top of each other and neither reads. The title fades out completely in
+   * proportion to how much of it the card covers — gone at full overlap, so
+   * Радина's name and role read clean — a continuous function of scroll, as
+   * smooth as the scrolling itself, with a short transition to soften the
+   * frame steps. Driven per-frame rather than by a toggle so there is no pop
+   * at the crossing point.
    */
   const titleRef = useRef<HTMLDivElement>(null);
   const middleRef = useRef<HTMLButtonElement>(null);
@@ -53,9 +54,13 @@ export function AboutBoard({
       const t = titleRef.current, m = middleRef.current;
       if (!t || !m) return;
       const tr = t.getBoundingClientRect(), mr = m.getBoundingClientRect();
-      const overlap = Math.min(tr.bottom, mr.bottom) - Math.max(tr.top, mr.top);
-      const ratio = Math.max(0, Math.min(1, overlap / tr.height));
-      t.style.opacity = String(1 - 0.5 * ratio);
+      // Clearance between the card (photo AND caption) and the title:
+      // positive once they are apart, negative while they intersect. The
+      // title is fully hidden the moment they touch and only returns over
+      // the 120px after they separate — fading by intersection ratio
+      // brought it back while Радина's caption still sat on top of it.
+      const clearance = Math.max(tr.top - mr.bottom, mr.top - tr.bottom);
+      t.style.opacity = String(Math.max(0, Math.min(1, clearance / 120)));
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -77,9 +82,14 @@ export function AboutBoard({
           ref={titleRef}
           className="z-0 col-span-full flex flex-col items-start gap-6 text-left transition-opacity duration-150 ease-linear lg:col-start-4 lg:col-span-5 lg:row-start-1 lg:row-end-4 lg:items-center lg:self-start lg:sticky lg:text-center lg:top-[38vh]"
         >
-          <p className="t-label">{team.label}</p>
+          {/* The site's section eyebrow — 16×8 tomato accent + caption,
+              same as «Управление и отчетност» above. */}
+          <p className="flex items-center gap-3">
+            <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
+            <span className="t-caption">{team.label}</span>
+          </p>
           <h2 className="t-h03">{team.heading}</h2>
-          <p className="t-body">{team.subtitle}</p>
+          <p className="t-body w-full whitespace-pre-line">{team.subtitle}</p>
         </div>
 
         {team.members.map((m, i) => {

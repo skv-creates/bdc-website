@@ -72,7 +72,7 @@ export function HowGroups({
           group the frame draws 48 between the title row and the content row,
           and the accordion top-aligns with the BODY text, not the title. */}
       {groups.map((group) => (
-        <div key={group.title} className="bdc-grid col-span-full gap-y-6 py-6 lg:gap-y-12 lg:py-20">
+        <div key={group.title} className="bdc-grid col-span-full gap-y-6 py-[60px] lg:gap-y-12 lg:py-20">
           <h3 className="t-h03 col-span-full whitespace-pre-line lg:col-span-5 lg:row-start-1">
             {group.title}
           </h3>

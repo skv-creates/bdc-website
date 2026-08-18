@@ -152,7 +152,7 @@ export default async function AboutPage({
             <section className="bdc-stop-11 bdc-grid py-12 lg:py-[104px]">
               {/* Label→heading 32 (gap-8), heading→lead 48 (gap-12): the
                   frame's own steps (574:5689 / 574:5427). */}
-              <div className="col-span-full flex flex-col gap-12 pb-6 lg:col-start-2 lg:col-span-5 lg:pb-20">
+              <div className="col-span-full flex flex-col gap-12 pb-[60px] lg:col-start-2 lg:col-span-5 lg:pb-20">
                 <div className="flex flex-col gap-8">
                   <Eyebrow text={copy.how.label} />
                   <h2 className="t-h02">{copy.how.heading}</h2>
@@ -167,7 +167,7 @@ export default async function AboutPage({
               {/* 240 above (the group's 80 + this 160), per the design
                   redline: the eyebrow opens a sub-section, not another group,
                   so it takes three 80-steps rather than the group rhythm. */}
-              <div className="col-span-full flex flex-col items-start gap-12 pt-12 lg:col-start-2 lg:col-span-8 lg:pt-40">
+              <div className="col-span-full flex flex-col items-start gap-12 pt-[60px] lg:col-start-2 lg:col-span-8 lg:pt-40">
                 <div className="flex flex-col gap-8">
                   <Eyebrow text={copy.how.closing.label} />
                   <h2 className="t-h02">{copy.how.closing.heading}</h2>
@@ -287,9 +287,6 @@ export default async function AboutPage({
                 <div className="border-t border-border" aria-hidden />
               </dl>
 
-              <div className="col-span-full flex flex-col items-start gap-5 lg:col-span-6">
-                <p className="t-body">{copy.statuteIntro}</p>
-              </div>
             </section>
 
           {/* ── The board (574:6470) — Relume team22's motion: the title is

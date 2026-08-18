@@ -81,7 +81,7 @@ export type AboutCopy = {
     label: string;
     /** Two lines, drawn as two <p>s in the frame (574:5778). */
     headingLines: [string, string];
-    paragraphs: [string, string];
+    paragraphs: string[];
     statuteLabel: string;
     managementLabel: string;
     eik: string;
@@ -97,7 +97,7 @@ export type AboutCopy = {
 
   buildWithUs: {
     heading: string;
-    paragraphs: [string, string];
+    paragraphs: string[];
     partnerLabel: string;
     volunteerLabel: string;
     credit: [string, string];
@@ -293,6 +293,8 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
           "целите, определени в устава.",
         "Органите на съвета са Общото събрание, Управителният съвет и " +
           "Учредителния съвет.",
+        "Подробна информация за целите, структурата и управлението на " +
+          "сдружението ще намерите в устава.",
       ],
       statuteLabel: "Устав",
       managementLabel: "Управление",
@@ -371,7 +373,7 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
       { label: "ЕИК", value: "208377927" },
       {
         label: "Седалище и адрес на управление",
-        value: "ул. „Винсент Ван Гог“ № 1, ап. 7, 1407, кв. Лозенец, гр. София, България",
+        value: "ул. Винсент ван Гог 1, ап. 7, 1407, кв. Лозенец, гр. София, България",
       },
       { label: "Имейл", value: "info@bulgariandesigncouncil.org" },
     ],
@@ -545,6 +547,8 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
           "its statute.",
         "The council's bodies are the General Assembly, the Management Board and " +
           "the Founders' Council.",
+        "You will find full detail on the association's aims, structure and " +
+          "governance in its statute.",
       ],
       statuteLabel: "Statute",
       managementLabel: "Governance",
@@ -621,7 +625,7 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
       { label: "EIK", value: "208377927" },
       {
         label: "Registered address",
-        value: "1 Vincent Van Gogh St, apt. 7, 1407, Lozenets, Sofia, Bulgaria",
+        value: "1 Vincent van Gogh St, apt. 7, 1407, Lozenets, Sofia, Bulgaria",
       },
       { label: "Email", value: "info@bulgariandesigncouncil.org" },
     ],
