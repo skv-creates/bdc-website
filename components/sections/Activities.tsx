@@ -3,7 +3,7 @@
  *
  * Async server component: pulls localized events (Notion at build time, mock
  * until wired — see lib/events.ts) and renders one row each: date · name · type,
- * with an ↗ that fades in on hover. Each row links to /[locale]/events/[slug];
+ * with a → that fades in on hover. Each row links to /[locale]/events/[slug];
  * on the home page that navigation is intercepted by the @modal parallel route
  * and shown as an <OverlayPanel/> overlay instead of a full page.
  */

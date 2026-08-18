@@ -12,7 +12,6 @@
  */
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight } from "@/components/ui/icons";
 import type { BdcEvent } from "@/lib/events";
 import type { Locale } from "@/lib/home-content";
 
@@ -57,10 +56,22 @@ export function ActivitiesList({
                 {e.type.label}
               </span>
               <span
-                className="col-start-4 row-start-1 hidden justify-self-end opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 md:col-start-11 md:block lg:col-start-10"
+                // Left-aligned in the last column, not justify-self-end. Pushed
+                // to the row's end it sat hard against the edge of the hover
+                // band with nothing after it, which reads as clipped. Starting
+                // the column leaves the rest of that column as the gap — the
+                // same thing the mega menu's initiative rows do, and the reason
+                // theirs sit comfortably.
+                className="col-start-4 row-start-1 hidden opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 md:col-start-11 md:block lg:col-start-10"
                 aria-hidden
               >
-                <ArrowUpRight className="h-5 w-5" />
+                {/* → and not ↗, and the same glyph the mega menu's initiative
+                    rows use rather than an icon that only resembles it. The
+                    up-right arrow reads as "leaves the site" — it is what the
+                    footer's external links carry — and every row here goes to
+                    an event page on this site. Two arrows for two meanings; a
+                    row that stays put gets the one that points along. */}
+                →
               </span>
             </Link>
           </li>

@@ -116,13 +116,16 @@ function Para({ text, ui, className = "t-body" }: { text: string; ui: OverlayUi;
 }
 
 /**
- * Long-form body type: the site's 20px, opened from 1.4 to 1.6.
+ * Body type for the description. Plain .t-body — 20/1.4, the scale's own
+ * value.
  *
- * .t-body's 1.4 is right for a card or a caption and too tight for a thousand
- * words — the eye loses its place returning to the left margin. Set here
- * rather than on the token, because every other .t-body on the site is short.
+ * This used to add `leading-[1.6]`, on the reasoning that 1.4 is tight for
+ * long copy. That reasoning may even be right, but it is an argument to have
+ * against the type scale in Storybook and settle once for the whole site — not
+ * a local override that silently makes one page's paragraphs disagree with
+ * every other page's.
  */
-const PROSE = "t-body leading-[1.6]";
+const PROSE = "t-body";
 
 /**
  * Reading measure. 65 characters is the middle of the 60–75 band typography
