@@ -607,7 +607,7 @@ const bg = {
     label: "Нашата мисия",
     heading: "Изграждаме устойчива и разпознаваема дизайн култура в България",
     paragraphs: [
-      "Българският Дизайн Съвет е независима неправителствена организация, създадена от дизайнери за дизайнери.",
+      "Български дизайн съвет е независимо сдружение с нестопанска цел — неправителствена организация, създадена от дизайнери за дизайнери.",
       "Целта ни е да изградим устойчива, свързана и силно конкурентна дизайн екосистема в България.",
     ],
   },
@@ -693,7 +693,7 @@ const bg = {
   faq: {
     heading: "Въпроси? Отговори.",
     subheading:
-      "Българският Дизайн Съвет е независима неправителствена организация, създадена от дизайнери за дизайнери, с цел да изгради устойчива, свързана и силно конкурентна дизайн екосистема в България.",
+      "Български дизайн съвет е независимо сдружение с нестопанска цел, създадено от дизайнери за дизайнери, с цел да изгради устойчива, свързана и силно конкурентна дизайн екосистема в България.",
     groups: [
       {
         title: "Структура, управление и правна рамка",
@@ -985,7 +985,7 @@ const bg = {
 
   cta: {
     heading: "Бюлетин",
-    subheading: "Българският Дизайн Съвет е независима неправителствена организация,",
+    subheading: "Български дизайн съвет е независима неправителствена организация с нестопанска цел.",
     inputPlaceholder: "Твоят имейл",
     button: "Запиши се",
     image: "/figma/cta-cover.png",
@@ -1006,6 +1006,14 @@ const bg = {
     contactHeading: "Контакти",
     phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
+    /**
+     * The legal identity, said in words — Ad Grants reviewers must find the
+     * non-profit status "prominently displayed", and a bare registry code
+     * does not read as a status to anyone outside Bulgaria.
+     */
+    legalStatus:
+      "Сдружение „Български дизайн съвет“ е юридическо лице с нестопанска цел, " +
+      "регистрирано в Република България.",
     /** Регистрация в Търговския регистър — същият код като в Политиката за поверителност. */
     uic: "ЕИК 208377927",
     /** Уставът, до който ЕИК-ът стои — на сайта, не в Notion. */
@@ -1460,7 +1468,7 @@ const en: typeof bg = {
     label: "Our Mission",
     heading: "We are building a sustainable and recognizable design culture in Bulgaria",
     paragraphs: [
-      "The Bulgarian Design Council is an independent non-governmental organization, created by designers for designers.",
+      "The Bulgarian Design Council is an independent non-profit association — a non-governmental organization created by designers for designers.",
       "Our goal is to build a sustainable, connected and highly competitive design ecosystem in Bulgaria.",
     ],
   },
@@ -1542,7 +1550,7 @@ const en: typeof bg = {
   faq: {
     heading: "Questions? Answers.",
     subheading:
-      "The Bulgarian Design Council is an independent non-governmental organization, created by designers for designers, with the goal of building a sustainable, connected and highly competitive design ecosystem in Bulgaria.",
+      "The Bulgarian Design Council is an independent non-profit association, created by designers for designers, with the goal of building a sustainable, connected and highly competitive design ecosystem in Bulgaria.",
     groups: [
       {
         title: "Structure, governance and legal framework",
@@ -1834,7 +1842,7 @@ const en: typeof bg = {
 
   cta: {
     heading: "Newsletter",
-    subheading: "The Bulgarian Design Council is an independent non-governmental organization,",
+    subheading: "The Bulgarian Design Council is an independent non-profit organization.",
     inputPlaceholder: "Your email",
     button: "Sign up",
     image: "/figma/cta-cover.png",
@@ -1856,6 +1864,9 @@ const en: typeof bg = {
     phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
     /** Same code as the privacy policy gives; "UIC" is the wording used there. */
+    legalStatus:
+      "The Bulgarian Design Council is a non-profit association registered in " +
+      "Bulgaria.",
     uic: "UIC 208377927",
     statute: "Statute",
     about: "About us",

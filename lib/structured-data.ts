@@ -47,6 +47,23 @@ export function homeGraph(c: SiteContent, locale: Locale) {
     "@type": "NGO",
     "@id": orgId(locale),
     name: c.meta.title,
+    // The registry facts, machine-readable: an Ad Grants (or any) reviewer
+    // asking "is this a real registered non-profit" can be answered by a
+    // parser. All four values are published prose on /about and /statute.
+    legalName: "Сдружение „Български дизайн съвет“",
+    identifier: {
+      "@type": "PropertyValue",
+      propertyID: "ЕИК (Bulgarian company registry UIC)",
+      value: "208377927",
+    },
+    foundingDate: "2025-06-25",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "ул. Винсент ван Гог 1, ап. 7",
+      addressLocality: "София",
+      postalCode: "1407",
+      addressCountry: "BG",
+    },
     description: c.meta.description,
     url: home,
     email: c.footer.email,

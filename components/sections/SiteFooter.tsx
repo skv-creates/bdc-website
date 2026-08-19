@@ -104,6 +104,11 @@ export function SiteFooter({
                   read as clickable. Underline on an inner inline span, the same
                   as the policy links below: on the anchor it is a 2px border on
                   a block box and adds 2px to the column height. */}
+              {/* The status in words before the registry code: "non-profit,
+                  registered" is what a reader — or an Ad Grants reviewer —
+                  actually needs; the ЕИК alone reads as a number. */}
+              <p className="t-caption max-w-[46ch]">{footer.legalStatus}</p>
+
               <p className="t-caption flex flex-wrap items-center gap-x-4 gap-y-2">
                 <span className="inline-flex items-center opacity-70">
                   <Bar />
