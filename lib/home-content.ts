@@ -187,8 +187,8 @@ const bg = {
   nav: {
     links: [
       { label: "Инициативи", href: "#initiatives" },
-      { label: "Мисия", href: "#mission" },
       { label: "Събития", href: "#activities" },
+      { label: "Мисия", href: "#mission" },
       { label: "Екип", href: "#team" },
       { label: "За нас", href: "/about" },
     ],
@@ -1067,8 +1067,8 @@ const en: typeof bg = {
   nav: {
     links: [
       { label: "Initiatives", href: "#initiatives" },
-      { label: "Mission", href: "#mission" },
       { label: "Events", href: "#activities" },
+      { label: "Mission", href: "#mission" },
       { label: "Team", href: "#team" },
       { label: "About", href: "/about" },
     ],
