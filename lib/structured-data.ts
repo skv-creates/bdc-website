@@ -53,7 +53,7 @@ export function homeGraph(c: SiteContent, locale: Locale) {
     legalName: "Сдружение „Български дизайн съвет“",
     identifier: {
       "@type": "PropertyValue",
-      propertyID: "ЕИК (Bulgarian company registry UIC)",
+      propertyID: "UIC (ЕИК — Bulgarian registry Unified Identification Code)",
       value: "208377927",
     },
     foundingDate: "2025-06-25",

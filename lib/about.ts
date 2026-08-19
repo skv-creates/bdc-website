@@ -552,7 +552,7 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
       ],
       statuteLabel: "Statute",
       managementLabel: "Governance",
-      eik: "EIK 208377927",
+      eik: "UIC 208377927",
     },
 
     team: {
@@ -622,7 +622,7 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
     identityHeading: "Registration and details",
     identityRows: [
       { label: "Registered entity", value: "Bulgarian Design Council Association" },
-      { label: "EIK", value: "208377927" },
+      { label: "UIC", value: "208377927" },
       {
         label: "Registered address",
         value: "1 Vincent van Gogh St, apt. 7, 1407, Lozenets, Sofia, Bulgaria",

@@ -1867,7 +1867,7 @@ const en: typeof bg = {
     legalStatus:
       "The Bulgarian Design Council is a non-profit association registered in " +
       "Bulgaria.",
-    uic: "UIC 208377927",
+    uic: "Registered Non-profit: UIC 208377927",
     statute: "Statute",
     about: "About us",
     heritage: {
