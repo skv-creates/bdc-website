@@ -270,6 +270,8 @@ const bg = {
     heading: "Инициативи",
     /** Standfirst beside the heading in the related-initiatives section. */
     lede: "Идеите намират почва, когато хората се съберат около тях.",
+    /** The mega menu's link to the /initiatives index page. */
+    allLabel: "Всички инициативи",
     items: [
       {
         slug: "policy-lab",
@@ -1145,6 +1147,7 @@ const en: typeof bg = {
   initiatives: {
     heading: "Initiatives",
     lede: "Ideas take root when people gather around them.",
+    allLabel: "All initiatives",
     items: [
       {
         slug: "policy-lab",
@@ -1942,6 +1945,18 @@ function withCmsFields(locale: Locale, members: Member[]): Member[] {
  * has never run — or every row is still in draft — the section renders what it
  * always did rather than disappearing.
  */
+/**
+ * The Notion pages some FAQ answers still link to now live on this site.
+ * Mapped at render time rather than in the JSON so the fix survives every
+ * future `sync:faq` — the sync would otherwise reintroduce the Notion URLs.
+ * Fixing the rows in Notion as well is welcome; this stays as the belt.
+ */
+function localiseFaqHref(href: string, locale: Locale): string {
+  if (href.includes("39fc7693aa03800c9166cb3150292332")) return `/${locale}/statute`;
+  if (href.includes("30ac7693aa0380b18035f56657f28616")) return `/${locale}/volunteer`;
+  return href;
+}
+
 function cmsFaqGroups(locale: Locale): FaqGroup[] | null {
   const groups = generatedFaq.groups ?? [];
   if (groups.length === 0) return null;
@@ -1949,7 +1964,9 @@ function cmsFaqGroups(locale: Locale): FaqGroup[] | null {
     title: g.title[locale],
     items: g.items.map((it) => ({
       q: it.q[locale],
-      a: it.a[locale] as FaqBlock[],
+      a: (it.a[locale] as FaqBlock[]).map((b) =>
+        "link" in b ? { link: { ...b.link, href: localiseFaqHref(b.link.href, locale) } } : b,
+      ),
     })),
   }));
 }

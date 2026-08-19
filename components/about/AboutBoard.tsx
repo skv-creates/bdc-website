@@ -34,6 +34,10 @@ export function AboutBoard({
   bioPlaceholder: string;
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  /** Hover frames download on first intent — see MemberCard for the why. */
+  const [armed, setArmed] = useState<Set<number>>(new Set());
+  const arm = (i: number) =>
+    setArmed((prev) => (prev.has(i) ? prev : new Set(prev).add(i)));
   const openMember = openIndex !== null ? photoSource.find((b) => b.name === team.members[openIndex].homeName) : undefined;
 
   /**
@@ -109,6 +113,8 @@ export function AboutBoard({
               ref={i === 2 ? middleRef : undefined}
               type="button"
               onClick={() => setOpenIndex(i)}
+              onMouseEnter={() => arm(i)}
+              onFocus={() => arm(i)}
               aria-haspopup="dialog"
               className={`z-10 col-span-full flex flex-col gap-3 text-left md:col-span-4 ${place}`}
             >
@@ -124,7 +130,7 @@ export function AboutBoard({
                       className="object-cover"
                     />
                   )}
-                  {home?.photoHover && (
+                  {home?.photoHover && armed.has(i) && (
                     <Image
                       src={home.photoHover}
                       alt=""

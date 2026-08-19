@@ -14,7 +14,7 @@
  * machine-readable form is worse than none — it is exactly the kind of thing
  * an assistant will read out as fact.
  */
-import type { SiteContent, Locale } from "./home-content";
+import type { FaqBlock, SiteContent, Locale } from "./home-content";
 import type { BdcEvent } from "./events";
 import { absoluteUrl, localePath, plainText } from "./seo";
 
@@ -96,12 +96,27 @@ export function homeGraph(c: SiteContent, locale: Locale) {
       group.items.map((item) => ({
         "@type": "Question",
         name: item.q,
-        acceptedAnswer: { "@type": "Answer", text: item.a.join("\n\n") },
+        // Answers are FaqBlock[]; joining them directly serialised every
+        // block as "[object Object]", which is literally what Google was
+        // being handed as the answer text.
+        acceptedAnswer: { "@type": "Answer", text: faqBlockText(item.a) },
       })),
     ),
   };
 
   return { "@context": "https://schema.org", "@graph": [organization, website, faq] };
+}
+
+/** FaqBlock[] → the plain prose a rich-results parser should read. */
+function faqBlockText(blocks: FaqBlock[]): string {
+  return blocks
+    .map((b) => {
+      if ("p" in b) return b.p;
+      if ("h" in b) return b.h;
+      if ("ul" in b) return b.ul.map((li) => `• ${li}`).join("\n");
+      return b.link.label;
+    })
+    .join("\n\n");
 }
 
 /** One event. */

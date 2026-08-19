@@ -142,6 +142,19 @@ export function MegaMenu({
             </li>
           ))}
         </ul>
+
+        {/* The one destination the rows can't offer: the index page that
+            collects and explains all the initiatives — the crawlable URL the
+            mega-menu button itself is not. Bottom rule closes the list. */}
+        <a
+          href={`/${locale}/initiatives`}
+          onClick={onNavigate}
+          className="group border-t border-border py-3"
+        >
+          <span className="t-caption inline-flex items-center gap-3 border-b-2 border-transparent pb-0.5 transition-colors group-hover:border-current">
+            {initiatives.allLabel} <span aria-hidden>→</span>
+          </span>
+        </a>
       </div>
     </div>
   );

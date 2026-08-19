@@ -109,9 +109,18 @@ function InitiativesShowcase({
 }) {
   const items = initiatives.items;
   const N = items.length;
+  /**
+   * The four clone copies exist only after hydration. Server HTML used to
+   * carry all five — every initiative's card five times per page, which is
+   * what a crawler reads. The first client render matches the server (one
+   * copy, at rest), then `mounted` flips and the clones join; the transform
+   * below compensates so the flip is pixel-identical.
+   */
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const LOOP = useMemo(
-    () => Array.from({ length: COPIES }, () => items).flat(),
-    [items],
+    () => (mounted ? Array.from({ length: COPIES }, () => items).flat() : items),
+    [items, mounted],
   );
 
   /** The real, keyboard-reachable titles — one copy of the list, at rest. */
@@ -366,7 +375,9 @@ function InitiativesShowcase({
             style={{
               // Inline rather than an arbitrary Tailwind class: Safari drops
               // `translate-x-[var(--x)]`-style utilities silently.
-              transform: `translate3d(calc(${-pos} * (var(--nav-item) + var(--grid-gap, 24px))), 0, 0)`,
+              // Before the clones mount there is one copy and the resting
+              // offset is zero; afterwards the same titles sit one copy in.
+              transform: `translate3d(calc(${-(mounted ? pos : pos - N)} * (var(--nav-item) + var(--grid-gap, 24px))), 0, 0)`,
               transition: animate && !reduced ? `transform ${SLIDE_MS}ms cubic-bezier(0.4, 0, 0.2, 1)` : "none",
             }}
           >
@@ -378,7 +389,7 @@ function InitiativesShowcase({
               // on screen for part of the cycle — but out of the accessibility
               // tree and out of the tab order, so each initiative is announced
               // once rather than five times.
-              const real = i >= N && i < 2 * N;
+              const real = mounted ? i >= N && i < 2 * N : true;
               return (
                 <li key={i} className={styles.navItem}>
                   <button

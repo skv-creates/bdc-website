@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import type { Member } from "@/lib/home-content";
 
@@ -16,6 +19,16 @@ export function MemberCard({
   showAlt = false,
 }: Member & { showAlt?: boolean }) {
   const sizes = "(max-width: 767px) 90vw, (max-width: 1023px) 45vw, 304px";
+  /**
+   * The alternate portrait downloads on first intent, not on scroll: latched
+   * once showAlt first goes true and never released, so the crossfade only
+   * pays the network cost for cards someone actually hovers. Ten portraits
+   * per page-view saved for everyone else.
+   */
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (showAlt) setArmed(true);
+  }, [showAlt]);
   return (
     <figure className="flex flex-col gap-3">
       {/* Brand box behind; the inner photo insets 16px on hover (absolute inset,
@@ -33,7 +46,7 @@ export function MemberCard({
             // Portrait pending — Figma placeholder tile.
             <div className="size-full bg-[#9faacb]" aria-hidden />
           )}
-          {photoHover && (
+          {photoHover && (showAlt || armed) && (
             <Image
               src={photoHover}
               alt=""

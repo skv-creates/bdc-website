@@ -83,7 +83,10 @@ const nextConfig: NextConfig = {
      * worst gap; check any new fixed-width slot lands just above a step rather
      * than just below one.
      */
-    deviceSizes: [640, 750, 828, 1080, 1200, 1280, 1920, 2560],
+    // 2560 is gone: no source image on the site exceeds 2400px, so that tier
+    // only ever upscaled — and it was the fallback `src` every crawler fetched,
+    // 11 Worker-resized requests per page.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1280, 1920],
     /**
      * WebP only, which is Next's default. AVIF encodes smaller but costs
      * materially more per transform, and this is a shared image binding in the
