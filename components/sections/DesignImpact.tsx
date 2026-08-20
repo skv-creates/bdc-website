@@ -36,13 +36,18 @@ export function DesignImpact({ designImpact }: { designImpact: SiteContent["desi
           return (
             <div
               key={stat.value}
-              className={`col-span-full flex flex-col gap-6 md:col-span-3 ${
+              className={`col-span-full flex flex-col gap-6 md:col-span-4 ${
                 i > 0 ? "md:col-start-6" : "md:col-start-2"
               }`}
             >
               {/* aria-hidden on the marker: it is a typographic pointer to the
-                  line below, and read aloud it is just "star". */}
-              <p className="t-digit">{stat.value}</p>
+                  line below, and read aloud it is just "star".
+                  The comparison glyph (592:3276) sits beside the figure at the
+                  same 120px — "≈ 2 ×", "≤ 80%" read as one expression. */}
+              <p className="t-digit flex items-start gap-4">
+                <span>{stat.prefix}</span>
+                <span>{stat.value}</span>
+              </p>
               <div>
                 <p className="t-body font-bold">
                   {stat.text}

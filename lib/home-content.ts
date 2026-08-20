@@ -276,16 +276,19 @@ const bg = {
    * into the copy, and stay right if a third is added.
    */
   designImpact: {
-    heading: "Защо дизайн капацитетът е важен?",
+    heading: "Дизайнът определя резултатите",
     stats: [
       {
-        value: "45%",
-        text: "от климатичните решения идват от интелигентен продуктов и системен дизайн.",
-        source: "Ellen MacArthur",
+        /** The big comparison glyph beside the figure (592:3276). */
+        prefix: "≈",
+        value: "2 ×",
+        text: "по-висок ръст на приходите постигат компаниите с най-силни дизайн практики.",
+        source: "McKinsey & Company",
       },
       {
+        prefix: "≤",
         value: "80%",
-        text: "от въздействието на един продукт върху хората и планетата се определя на етап дизайн.",
+        text: "от екологичното въздействие на един продукт се определя на етап дизайн.",
         source: "Европейската комисия",
       },
     ],
@@ -1171,17 +1174,19 @@ const en: typeof bg = {
   },
 
   designImpact: {
-    heading: "Why does design capacity matter?",
+    heading: "Design determines outcomes",
     stats: [
       {
-        value: "45%",
-        text: "of climate solutions come from intelligent product and systems design.",
-        source: "Ellen MacArthur",
+        prefix: "≈",
+        value: "2 ×",
+        text: "higher revenue growth is achieved by companies with the strongest design practices.",
+        source: "McKinsey & Company",
       },
       {
+        prefix: "≤",
         value: "80%",
-        text: "of a product's impact on people and the planet is decided at the design stage.",
-        source: "the European Commission",
+        text: "of a product's environmental impact is determined at the design stage.",
+        source: "European Commission",
       },
     ],
   },
