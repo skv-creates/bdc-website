@@ -103,6 +103,17 @@ type RawEvent = {
   covers?: EventImage[];
 };
 
+/**
+ * Editorial removals that must survive regeneration of events.generated.json.
+ *
+ * Event galleries are synced from Notion wholesale. Keeping the exclusion at
+ * the data boundary means a later manual sync cannot silently republish a
+ * photograph that has been explicitly withdrawn from the public event page.
+ */
+const HIDDEN_EVENT_COVERS = new Set([
+  "/figma/events/parvo-obshto-sabranie-na-bds-2.jpg",
+]);
+
 /** The synced rows. */
 const GENERATED: RawEvent[] = (generatedEvents.events ?? []).map((e) => ({
   slug: e.slug,
@@ -115,7 +126,9 @@ const GENERATED: RawEvent[] = (generatedEvents.events ?? []).map((e) => ({
   // public/figma/events — a Notion file URL is signed and expires in an hour,
   // so it cannot be baked into a static build. Rows without any are the norm;
   // the overlay simply opens on its title.
-  covers: (e as { covers?: EventImage[] }).covers,
+  covers: (e as { covers?: EventImage[] }).covers?.filter(
+    ({ src }) => !HIDDEN_EVENT_COVERS.has(src),
+  ),
 }));
 
 /* =============================================================================
