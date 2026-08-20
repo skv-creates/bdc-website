@@ -65,24 +65,40 @@ export function MegaMenu({
           {/* card-hero-image, 240px (391:4835) — the same frame the carousel
               card uses, so a photograph crops identically in both. */}
           <div className="relative h-[240px] w-full overflow-hidden">
-            {/* The initiative's own cover, matching the carousel card, so the
-                preview shows the page the row opens. Initiatives without a
-                long-form page have no cover and keep their pattern tile — none
-                of the published ones are in that state today, so this is a
-                floor rather than something the menu actually shows.
-                alt="" — the row being previewed already names it. */}
-            {(active.cardCover ?? active.cover) ? (
-              <Image
-                src={(active.cardCover ?? active.cover)!.src}
-                alt=""
-                fill
-                sizes="504px"
-                quality={80}
-                className="object-cover"
-              />
-            ) : (
-              <PatternTile n={active.pattern} />
-            )}
+            {/* EVERY initiative's cover is mounted, stacked, and the active one
+                shown by opacity — the same trick the landing showcase uses.
+                Rendering only the active cover meant each hover fetched its
+                image right then, and the preview visibly lagged behind the
+                pointer anywhere the cache was cold. Mounted together they all
+                load once, when the menu opens, and hovering costs nothing.
+                Initiatives without a long-form page have no cover and keep
+                their pattern tile — a floor, none of the published ones are in
+                that state today. alt="" — the row being previewed already
+                names it. */}
+            {items.map((item, i) => {
+              const cover = item.cardCover ?? item.cover;
+              return (
+                <div
+                  key={item.slug}
+                  className="absolute inset-0 transition-opacity duration-150"
+                  style={{ opacity: i === activeIndex ? 1 : 0 }}
+                  aria-hidden={i === activeIndex ? undefined : true}
+                >
+                  {cover ? (
+                    <Image
+                      src={cover.src}
+                      alt=""
+                      fill
+                      sizes="504px"
+                      quality={80}
+                      className="object-cover"
+                    />
+                  ) : (
+                    <PatternTile n={item.pattern} />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
