@@ -105,7 +105,7 @@ export default async function AboutPage({
       <a href="#main" className="skip-link t-caption font-bold">
         {c.ui.skipToContent}
       </a>
-      <PatternRail />
+      <PatternRail locale={locale} />
 
       <div
         style={{

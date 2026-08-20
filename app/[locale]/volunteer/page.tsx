@@ -54,7 +54,7 @@ export default async function VolunteerPage({
       <a href="#main" className="skip-link t-caption font-bold">
         {c.ui.skipToContent}
       </a>
-      <PatternRail />
+      <PatternRail locale={locale} />
 
       <div
         style={{

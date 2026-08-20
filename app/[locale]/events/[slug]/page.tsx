@@ -97,7 +97,7 @@ export default async function EventPage({
       <a href="#main" className="skip-link t-caption font-bold">
         {c.ui.skipToContent}
       </a>
-      <PatternRail />
+      <PatternRail locale={locale} />
 
       {/* Same symmetric shell as every other page: gutter left, rail right. */}
       <div

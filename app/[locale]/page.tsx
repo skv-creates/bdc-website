@@ -68,7 +68,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       </a>
       <SmoothScroll />
       {process.env.NODE_ENV !== "production" && <GridOverlay />}
-      <PatternRail />
+      <PatternRail locale={locale} />
 
       <div
         style={{

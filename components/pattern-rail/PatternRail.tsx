@@ -10,6 +10,7 @@ import {
 } from "react";
 import styles from "./PatternRail.module.css";
 import { PALETTES, PATTERNS, PatternMobile, TILE } from "./patterns";
+import type { Locale } from "@/lib/i18n";
 
 /** Pattern drifts at a quarter of the user's scroll speed, same direction. */
 const PARALLAX_FACTOR = 0.25;
@@ -30,7 +31,7 @@ const serverHydrated = () => false;
  *  - Clicking the rail cycles the recolor palette by reassigning the
  *    --pattern-c1..c4 slots; the inline SVG inherits them.
  */
-export function PatternRail() {
+export function PatternRail({ locale }: { locale: Locale }) {
   const patternId = useId().replace(/:/g, "");
   const hydrated = useSyncExternalStore(
     subscribeToHydration,
@@ -100,8 +101,8 @@ export function PatternRail() {
       className={styles.rail}
       style={colorVars}
       onClick={cyclePalette}
-      aria-label="Смени цвета на шарката"
-      title="Смени цвета на шарката"
+      aria-label={locale === "bg" ? "Смени цвета на шарката" : "Change pattern colours"}
+      title={locale === "bg" ? "Смени цвета на шарката" : "Change pattern colours"}
     >
       <span ref={tileRef} className={styles.tile} aria-hidden="true">
         {/* tablet / desktop (≥768px): random diagonal-or-mesh tile */}
