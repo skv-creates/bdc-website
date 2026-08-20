@@ -1065,7 +1065,6 @@ const bg = {
     privacyShort: "Поверителност",
     accessibilityShort: "Достъпност",
     contactHeading: "Контакти",
-    phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
     /**
      * The legal status in words before the registry code — Ad Grants reviewers
@@ -1974,7 +1973,6 @@ const en: typeof bg = {
     privacyShort: "Privacy",
     accessibilityShort: "Accessibility",
     contactHeading: "Contacts",
-    phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
     /** Same code as the privacy policy gives; "UIC" is the wording used there. */
     uicStatus: "Registered Non-profit",

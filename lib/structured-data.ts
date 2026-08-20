@@ -9,10 +9,10 @@
  * describe one organisation twice with different names, and a consumer
  * reconciling them has to pick a winner.
  *
- * Nothing here invents data. `footer.phone` is deliberately absent because it
- * is still the placeholder "+359 2 123 4567", and a wrong phone number in
- * machine-readable form is worse than none — it is exactly the kind of thing
- * an assistant will read out as fact.
+ * Nothing here invents data. There is no phone number anywhere — the council
+ * has none to publish, and a wrong phone number in machine-readable form is
+ * worse than none — it is exactly the kind of thing an assistant will read
+ * out as fact.
  */
 import type { FaqBlock, SiteContent, Locale } from "./home-content";
 import type { BdcEvent } from "./events";
