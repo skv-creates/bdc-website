@@ -1239,13 +1239,19 @@ const en: typeof bg = {
     heading: "Initiatives",
     lede: "Ideas take root when people gather around them.",
     allLabel: "All initiatives",
+    // Bulgarian is the editorial source of truth. The overview `text` for
+    // every item below is a direct translation of its Bulgarian counterpart,
+    // never an independently shortened marketing blurb.
     items: [
       {
         slug: "policy-lab",
         cover: { src: "/figma/initiatives/policy-lab-hero.jpg", alt: "A woman reading the book “How to Public Sector?” in a glass-walled office doorway" },
         label: "Society",
         title: "Policy Lab",
-        text: "A place for the problems no single organisation can solve alone.",
+        text:
+          "We are developing a Bulgarian model for working on complex societal " +
+          "challenges. The Policy Lab helps public institutions explore complex " +
+          "challenges before committing to a single pre-selected answer.",
         pattern: 1,
         detail: {
           lead: "A place for the problems no single organisation can solve alone.",
@@ -1305,7 +1311,11 @@ const en: typeof bg = {
         cover: { src: "/figma/initiatives/bulgaria-by-design-hero.jpg", alt: "Two people looking over a project together on a laptop" },
         label: "Revival",
         title: "Bulgaria by Design",
-        text: "A visual identity for Bulgaria's institutions that strengthens public trust and national pride.",
+        text:
+          "The state speaks through everything it creates. We are developing " +
+          "the way Bulgaria expresses its identity, values and confidence, " +
+          "because the beautiful and dignified appearance of the institutions " +
+          "that work for us also changes the way we see ourselves as a nation.",
         pattern: 1,
         cta: { label: "View the project →", href: "https://bulgariabydesign.com" },
         detail: {
@@ -1370,7 +1380,12 @@ const en: typeof bg = {
         cover: { src: "/figma/initiatives/future-makers-lab-hero.jpg", alt: "Workshop participants arranging materials on a table", focal: "center 46%" },
         label: "Education",
         title: "Future Makers Lab",
-        text: "A lab for teenagers that builds systems thinking, problem framing, a research culture, inclusive design and responsible work with AI.",
+        text:
+          "A living, modular educational system that turns a library of design " +
+          "knowledge and practices into flexible labs. Its modular model allows " +
+          "it to reach schools, universities and youth programmes across the " +
+          "country. Our mission is to put the power of design in the hands of " +
+          "the generation creating our tomorrow.",
         pattern: 2,
         detail: {
           lead: "The earliest sparks almost always catch in the classroom.",
@@ -1451,7 +1466,11 @@ const en: typeof bg = {
         cover: { src: "/figma/initiatives/design-maturity-assessment-hero.jpg", alt: "Two women discussing documents in front of a wall of sticky notes" },
         label: "Innovation",
         title: "Design Maturity",
-        text: "A self-assessment tool for the design maturity of business organizations, with guidance on how to raise it.",
+        text:
+          "A national initiative to assess, develop and raise the design " +
+          "maturity of Bulgarian business. We are developing the ability of " +
+          "Bulgarian businesses to use design as a strategic resource for " +
+          "better decisions, innovation, competitiveness and sustainable growth.",
         pattern: 3,
         // Figma 418:2237.
         detail: {

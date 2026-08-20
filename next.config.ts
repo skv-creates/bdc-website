@@ -12,6 +12,21 @@ const IS_PRODUCTION_BUILD = process.env.SITE_ORIGIN === PRODUCTION_ORIGIN;
 
 const nextConfig: NextConfig = {
   /**
+   * `/privacy` is canonical. Preserve previously shared `/policy` links as
+   * permanent redirects rather than turning them into 404s.
+   */
+  async redirects() {
+    return [
+      {
+        source: "/:locale(bg|en)/policy",
+        destination: "/:locale/privacy",
+        permanent: true,
+      },
+      { source: "/policy", destination: "/bg/privacy", permanent: true },
+      { source: "/privacy", destination: "/bg/privacy", permanent: true },
+    ];
+  },
+  /**
    * Keep the staging-only dev tools out of the production bundle entirely.
    *
    * `!IS_PRODUCTION_SITE` in app/[locale]/layout.tsx stops Redlines and

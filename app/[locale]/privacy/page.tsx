@@ -1,5 +1,7 @@
 /**
  * Privacy policy — a standalone locale page (/bg/privacy, /en/privacy).
+ * next.config.ts permanently redirects the previously shared /policy URLs so
+ * old and new links both remain valid.
  *
  * Reuses the home page's two-layer shell (fixed pattern rail + padded content
  * column + full-bleed footer). <SiteNav/> gets `path="/privacy"` so its in-page

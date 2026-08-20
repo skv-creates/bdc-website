@@ -44,6 +44,9 @@ export const PARTNER_COPY: Record<
       topicLabels: Record<PartnerTopic, string>;
       message: string;
       submit: string;
+      /** Point-of-collection notice beside the submit action. */
+      privacyNotice: string;
+      privacyLink: string;
       /** Shown when the API reports a failure — with the email as fallback. */
       error: string;
     };
@@ -79,6 +82,11 @@ export const PARTNER_COPY: Record<
       },
       message: "Съобщение",
       submit: "Изпрати запитване",
+      privacyNotice:
+        "Използваме предоставените данни само за да разгледаме и отговорим " +
+        "на запитването ви за партньорство. Изпращаме формуляра до служебната " +
+        "ни поща чрез доставчика на имейл услуги Resend.",
+      privacyLink: "Прочетете Политиката за поверителност.",
       error:
         "Съобщението не можа да бъде изпратено. Опитайте отново или ни " +
         "пишете направо на info@bulgariandesigncouncil.org.",
@@ -119,6 +127,11 @@ export const PARTNER_COPY: Record<
       },
       message: "Message",
       submit: "Send enquiry",
+      privacyNotice:
+        "We use the information you provide only to review and respond to your " +
+        "partnership enquiry. We send the form to our council inbox through " +
+        "the email service provider Resend.",
+      privacyLink: "Read our Privacy Policy.",
       error:
         "The message could not be sent. Try again, or write to us directly " +
         "at info@bulgariandesigncouncil.org.",

@@ -161,6 +161,16 @@ export default async function PartnerPage({
                 <textarea name="message" required rows={6} maxLength={5000} className={field} />
               </label>
 
+              <p className="t-caption max-w-[52ch]">
+                {f.privacyNotice}{" "}
+                <a
+                  href={`/${locale}/privacy`}
+                  className="border-b-2 border-current transition-opacity hover:opacity-70"
+                >
+                  {f.privacyLink}
+                </a>
+              </p>
+
               <div className="sm:self-start">
                 <Button type="submit">{f.submit}</Button>
               </div>
