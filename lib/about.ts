@@ -288,6 +288,8 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
       label: "Управление и отчетност",
       headingLines: ["Независими по форма.", "Отговорни по избор."],
       paragraphs: [
+        "Сдружение „Български дизайн съвет“ е юридическо лице с нестопанска цел, " +
+          "регистрирано в Република България.",
         "Сдружението има неправителствен, неполитически и нерелигиозен характер и " +
           "не разпределя печалба. Имуществото му се използва за постигане на " +
           "целите, определени в устава.",
@@ -369,7 +371,7 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
     identityLabel: "Правен статут",
     identityHeading: "Регистрация и данни",
     identityRows: [
-      { label: "Юридическо лице", value: "Сдружение „Български дизайн съвет“" },
+      { label: "Юридическо лице с нестопанска цел (ЮЛНЦ)", value: "Сдружение „Български дизайн съвет“" },
       { label: "ЕИК", value: "208377927" },
       {
         label: "Седалище и адрес на управление",
@@ -542,6 +544,8 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
       label: "Governance and accountability",
       headingLines: ["Independent by form.", "Accountable by choice."],
       paragraphs: [
+        "The Bulgarian Design Council Association is a non-profit legal entity " +
+          "registered in the Republic of Bulgaria.",
         "The association is non-governmental, non-political and non-religious, and " +
           "distributes no profit. Its assets are used to pursue the aims set out in " +
           "its statute.",

@@ -106,13 +106,58 @@ export function SiteFooter({
                   a block box and adds 2px to the column height. */}
               {/* The status in words before the registry code: "non-profit,
                   registered" is what a reader — or an Ad Grants reviewer —
-                  actually needs; the ЕИК alone reads as a number. */}
-              <p className="t-caption max-w-[46ch]">{footer.legalStatus}</p>
+                  actually needs; the ЕИК alone reads as a number. Where the
+                  status is an abbreviation (ЮЛНЦ), the content supplies its
+                  expansion, shown in the same dark hover card as the team
+                  avatars' (AvatarGroup) — not the browser's native tooltip.
+                  The card carries a hairline ring because, unlike the
+                  avatars', it floats on the footer's own dark ground.
 
+                  The opacity-70 sits on the text pieces, not the wrapper —
+                  on the wrapper it would dim the tooltip too, since a
+                  child cannot exceed its parent's opacity. */}
               <p className="t-caption flex flex-wrap items-center gap-x-4 gap-y-2">
-                <span className="inline-flex items-center opacity-70">
+                <span className="inline-flex items-center">
                   <Bar />
-                  {footer.uic}
+                  {footer.uicStatusTitle ? (
+                    <span className="group/tip relative">
+                      <abbr
+                        tabIndex={0}
+                        className="cursor-help underline decoration-dotted underline-offset-2 opacity-70"
+                      >
+                        {footer.uicStatus}
+                      </abbr>
+                      {/* The expansion for screen readers, which get no hover. */}
+                      <span className="sr-only"> ({footer.uicStatusTitle})</span>
+                      {/* Inverted from the avatar tooltips' dark card: this one
+                          floats on the footer's own dark ground, where a dark
+                          card reads as nothing at all. Anchored to the trigger's
+                          left edge, not centred — ЮЛНЦ sits near the page edge
+                          and a centred card walks off the screen — and held to a
+                          width that breaks the expansion onto two rows. */}
+                      <span
+                        className="pointer-events-none absolute bottom-full left-0 z-20 hidden w-max max-w-[22ch] pb-3 opacity-0 transition-opacity duration-[120ms] ease-out group-hover/tip:opacity-100 group-focus-within/tip:opacity-100 md:block"
+                        aria-hidden
+                      >
+                        <span className="relative block rounded-2xl bg-page px-5 py-4 text-text">
+                          <span className="t-caption">{footer.uicStatusTitle}</span>
+                          {/* Tail: a rotated square straddling the bottom edge,
+                              as on the avatar tooltips — over the trigger, not
+                              the card's centre. */}
+                          <span
+                            className="absolute left-6 top-full size-3 -translate-y-1/2 rotate-45 bg-page"
+                            aria-hidden
+                          />
+                        </span>
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="opacity-70">{footer.uicStatus}</span>
+                  )}
+                  <span aria-hidden className="px-1 opacity-40">
+                    ·
+                  </span>
+                  <span className="opacity-70">{footer.uic}</span>
                 </span>
                 <span aria-hidden className="opacity-40">
                   ·

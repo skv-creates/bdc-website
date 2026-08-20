@@ -219,7 +219,7 @@ const bg = {
     ],
     primary: {
       label: "Партнирай с нас",
-      href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership",
+      href: "/bg/partner",
     },
     /** The portfolio button lands on the initiatives index (585:3021). */
     secondary: { label: "Портфолио инициативи", href: "/bg/initiatives" },
@@ -306,7 +306,11 @@ const bg = {
         cover: { src: "/figma/initiatives/policy-lab-hero.jpg", alt: "Жена, която чете книгата „How to Public Sector?“ пред остъклена офис врата" },
         label: "Общество",
         title: "Лаборатория за политики",
-        text: "Място за проблемите, които никоя организация не може да реши сама.",
+        text:
+          "Разработваме български модел за работа по сложни обществени " +
+          "предизвикателства. Лабораторията за политики помага на публичните " +
+          "институции да изследват сложни предизвикателства, преди да се " +
+          "обвържат с един предварително избран отговор.",
         pattern: 1,
         detail: {
           lead: "Място за проблемите, които никоя организация не може да реши сама.",
@@ -342,7 +346,7 @@ const bg = {
             "Решението има дългосрочни обществени, икономически или екологични последствия.",
           ],
           actions: [
-            { label: "Партнирай с нас", href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab" },
+            { label: "Партнирай с нас", href: "/bg/partner?re=policy-lab" },
             { label: "Предложи казус", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
           ],
           team: {
@@ -368,7 +372,11 @@ const bg = {
         cover: { src: "/figma/initiatives/bulgaria-by-design-hero.jpg", alt: "Двама души разглеждат заедно проект на лаптоп" },
         label: "Възраждане",
         title: "България чрез Дизайн",
-        text: "Визуална идентичност на българските институции, която засилва вярата в институциите и националната гордост.",
+        text:
+          "Държавата говори чрез всичко, което създава. Развиваме начина, по " +
+          "който България изразява своята идентичност, ценности и увереност, " +
+          "защото красивият и достоен облик на институциите, които работят за " +
+          "нас, променя и начина, по който се възприемаме като нация.",
         pattern: 1,
         cta: { label: "Към проекта →", href: "https://bulgariabydesign.com" },
         // Figma 355:3283. Two feature blocks rather than Policy Lab's one, and
@@ -391,7 +399,7 @@ const bg = {
           actions: [
             {
               label: "Партнирай с нас",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Bulgaria%20by%20Design",
+              href: "/bg/partner?re=bulgaria-by-design",
               variant: "primary",
             },
             {
@@ -439,7 +447,12 @@ const bg = {
         cover: { src: "/figma/initiatives/future-makers-lab-hero.jpg", alt: "Участници в работилница подреждат материали върху маса", focal: "center 46%" },
         label: "Образование",
         title: "Създатели на бъдещето",
-        text: "Лаборатория за юноши, която развива системно мислене, проблемно рамкиране, изследователска култура, включващ дизайн и отговорна работа с AI.",
+        text:
+          "Жива, модулна образователна система, превръщаща библиотека от дизайн " +
+          "знания и практики в гъвкави лаборатории. Модулният ѝ модел позволява " +
+          "да достига до училища, университети и младежки програми в цялата " +
+          "страна. Мисията ни е да поставим силата на дизайна в ръцете на " +
+          "поколението, което създава нашето утре.",
         pattern: 2,
         // Figma 373:4086. The eleven topics sit inside the feature column here,
         // continuing the sentence above them rather than starting a section.
@@ -460,7 +473,7 @@ const bg = {
           actions: [
             {
               label: "Партнирай с нас",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Future%20Makers%20Lab",
+              href: "/bg/partner?re=future-makers-lab",
               variant: "primary",
             },
             {
@@ -524,7 +537,11 @@ const bg = {
         cover: { src: "/figma/initiatives/design-maturity-assessment-hero.jpg", alt: "Две жени обсъждат документи пред стена със стикери" },
         label: "Иновации",
         title: "Дизайн зрялост",
-        text: "Инструмент за самооценка на дизайн зрелостта на бизнес организации и насоки за повишаването ѝ.",
+        text:
+          "Национална инициатива за оценка, развитие и повишаване на дизайн " +
+          "зрелостта на българския бизнес. Развиваме способността на българския " +
+          "бизнес да използва дизайна като стратегически ресурс за по-добри " +
+          "решения, иновации, конкурентоспособност и устойчив растеж.",
         pattern: 3,
         // Figma 418:2237.
         detail: {
@@ -548,7 +565,7 @@ const bg = {
             },
             {
               label: "Партнирай с нас",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Design%20Maturity",
+              href: "/bg/partner?re=design-maturity",
               variant: "secondary",
             },
           ],
@@ -1037,13 +1054,14 @@ const bg = {
     phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
     /**
-     * The legal identity, said in words — Ad Grants reviewers must find the
-     * non-profit status "prominently displayed", and a bare registry code
-     * does not read as a status to anyone outside Bulgaria.
+     * The legal status in words before the registry code — Ad Grants reviewers
+     * must find the non-profit status "prominently displayed", and a bare
+     * registry code does not read as a status to anyone outside Bulgaria. The
+     * full sentence lives on the About page's governance section now.
      */
-    legalStatus:
-      "Сдружение „Български дизайн съвет“ е юридическо лице с нестопанска цел, " +
-      "регистрирано в Република България.",
+    uicStatus: "ЮЛНЦ",
+    /** Разгъва абревиатурата при посочване; празен низ = без пояснение. */
+    uicStatusTitle: "Юридическо лице с нестопанска цел",
     /** Регистрация в Търговския регистър — същият код като в Политиката за поверителност. */
     uic: "ЕИК 208377927",
     /** Уставът, до който ЕИК-ът стои — на сайта, не в Notion. */
@@ -1131,7 +1149,7 @@ const en: typeof bg = {
     ],
     primary: {
       label: "Build a partnership",
-      href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership",
+      href: "/en/partner",
     },
     secondary: { label: "Initiatives portfolio", href: "/en/initiatives" },
   },
@@ -1237,7 +1255,7 @@ const en: typeof bg = {
             "The decision carries long-term social, economic or environmental consequences.",
           ],
           actions: [
-            { label: "Partner with us", href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Policy%20Lab" },
+            { label: "Partner with us", href: "/en/partner?re=policy-lab" },
             { label: "Propose a case", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
           ],
           team: {
@@ -1282,7 +1300,7 @@ const en: typeof bg = {
           actions: [
             {
               label: "Build a partnership",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Bulgaria%20by%20Design",
+              href: "/en/partner?re=bulgaria-by-design",
               variant: "primary",
             },
             {
@@ -1345,7 +1363,7 @@ const en: typeof bg = {
           actions: [
             {
               label: "Build a partnership",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Future%20Makers%20Lab",
+              href: "/en/partner?re=future-makers-lab",
               variant: "primary",
             },
             {
@@ -1431,7 +1449,7 @@ const en: typeof bg = {
             },
             {
               label: "Partner with us",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership%20%2F%20Design%20Maturity",
+              href: "/en/partner?re=design-maturity",
               variant: "secondary",
             },
           ],
@@ -1914,10 +1932,10 @@ const en: typeof bg = {
     phone: "+359 2 123 4567",
     email: "info@bulgariandesigncouncil.org",
     /** Same code as the privacy policy gives; "UIC" is the wording used there. */
-    legalStatus:
-      "The Bulgarian Design Council is a non-profit association registered in " +
-      "Bulgaria.",
-    uic: "Registered Non-profit: UIC 208377927",
+    uicStatus: "Registered Non-profit",
+    /* Already spelled out — nothing for a tooltip to add. */
+    uicStatusTitle: "",
+    uic: "UIC 208377927",
     statute: "Statute",
     about: "About us",
     heritage: {
