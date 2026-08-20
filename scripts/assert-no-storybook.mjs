@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Refuses to build production if Storybook is sitting in `public/`.
+ * Refuses to build or deploy production if Storybook is sitting in `public/`
+ * or in the generated OpenNext asset manifest.
  *
  * `/bdc-storybook` is a staging-only surface: it is the design system in
  * progress, it is not translated, it is not part of what the council publishes,
@@ -19,21 +20,24 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
-const target = resolve(import.meta.dirname, "..", "public", "bdc-storybook");
+const root = resolve(import.meta.dirname, "..");
+const targets = [
+  resolve(root, "public", "bdc-storybook"),
+  resolve(root, ".open-next", "assets", "bdc-storybook"),
+];
+const target = targets.find((candidate) => existsSync(candidate));
 
-if (existsSync(target)) {
+if (target) {
   console.error(
     [
       "",
-      "  Refusing to build production: public/bdc-storybook exists.",
+      `  Refusing production release: ${target.slice(root.length + 1)} exists.`,
       "",
-      "  That directory is a staging-only Storybook build, left behind by a",
-      "  previous `npm run deploy`. Shipping it would publish the design system",
-      "  on the live site.",
+      "  That directory is a staging-only Storybook build. Shipping it would",
+      "  publish the design system on the live site.",
       "",
-      "  Remove it and try again:",
-      "",
-      "      rm -rf public/bdc-storybook",
+      "  Remove public/bdc-storybook when present, clean the generated OpenNext",
+      "  output, and build production again.",
       "",
     ].join("\n"),
   );
