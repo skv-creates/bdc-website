@@ -424,16 +424,23 @@ function InitiativesShowcase({
    INSIDE-PAGES TRACK (Figma 327:1543)
    ══════════════════════════════════════════════════════════════════════════ */
 
-function Card({
+export function Card({
   item,
   index,
   locale,
   seeMore,
+  /**
+   * The /initiatives index lays the same cards in a static grid: `fluid`
+   * drops the track's fixed width and scroll-snap so the grid cell owns the
+   * size. Everything else — grounds, label mark, stretched link — is shared.
+   */
+  fluid = false,
 }: {
   item: Initiative;
   index: number;
   locale: Locale;
   seeMore: string;
+  fluid?: boolean;
 }) {
   /**
    * Inside pages keep the three-colour rotation. slotStyle also carries
@@ -446,7 +453,7 @@ function Card({
     <article
       // .card carries the flex/scroll-snap behaviour; .cardInside only overrides
       // the width, and is declared after it so it wins.
-      className={`${styles.card} ${styles.cardInside} relative flex cursor-pointer flex-col gap-12 p-8`}
+      className={`${fluid ? "h-full" : `${styles.card} ${styles.cardInside}`} relative flex cursor-pointer flex-col gap-12 p-8`}
       style={style}
     >
       <div className="flex items-center gap-5">
