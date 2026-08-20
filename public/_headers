@@ -8,6 +8,20 @@
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
 
+# The site's photography. This rule is what makes next/image cacheable at all:
+# OpenNext's /_next/image handler copies NO Cache-Control onto its transformed
+# responses unless the source asset's own response says "immutable"
+# (createImageResponse in @opennextjs/cloudflare's images template). Without
+# it, every image view — every hover, every navigation — re-ran a ~1s
+# transform in the request path and the browser cached none of it.
+#
+# The cost of "immutable": replacing a photograph under the SAME filename
+# leaves returning visitors on the old one. Give a changed image a new name.
+# The events sync names files by event slug, so an event whose pictures are
+# swapped in Notion needs its old files deleted rather than overwritten.
+/figma/*
+  Cache-Control: public,max-age=31536000,immutable
+
 # The staging-only Storybook build. Staging's robots.txt already disallows
 # everything, but that is a request made to well-behaved crawlers about a host
 # they have to fetch first; X-Robots-Tag travels with the response itself and
