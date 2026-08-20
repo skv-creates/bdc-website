@@ -15,12 +15,18 @@ const padStyle = {
   paddingInlineEnd: "var(--rail-clear)",
 } as const;
 
-/* The fixed header is full-bleed at the top to cover the iOS status-bar area,
-   but its right edge stops where the rail begins so its bg-page never paints
-   over the pattern. */
+/* The sticky header is full-bleed at the top, including the iOS safe area, but
+   its right edge stops where the rail begins so its bg-page never paints over
+   the pattern. Because it remains in the page shell's flow, it yields when the
+   shell ends instead of floating over the footer. */
 const headerStyle = {
   ...padStyle,
-  insetInlineEnd: "var(--rail-w)",
+  // SiteNav sits inside the page's already-padded content shell. Pull only the
+  // header background back across the leading gutter and the small mobile
+  // rail-clear gap. The inner padding puts the navigation content back on the
+  // same grid while the white paint still reaches the rail's leading edge.
+  marginInlineStart: "calc(-1 * var(--page-gutter))",
+  marginInlineEnd: "calc(-1 * var(--rail-clear))",
 } as const;
 
 export function SiteNav({
@@ -75,9 +81,8 @@ export function SiteNav({
   const otherLocale: Locale = locale === "bg" ? "en" : "bg";
   const switchHref = `/${otherLocale}${path}`;
   const switchLabel = otherLocale.toUpperCase(); // compact "EN" / "BG"
-  // The header is position:fixed (so it reliably covers the very top of the
-  // viewport on iOS — sticky pins below the status-bar inset there). A spacer
-  // matching its measured height keeps the content flowing below it.
+  // Its measured height tells the mega-menu scrim where the panel ends. The
+  // header itself remains in flow, so the page needs no duplicate spacer.
   const headerRef = useRef<HTMLElement>(null);
   const [navH, setNavH] = useState(0);
   // The panel is absolutely positioned, so it does not count toward the
@@ -159,7 +164,7 @@ export function SiteNav({
         // pb-10 below lg, pb-6 from there: on a phone and a tablet the bar is
         // the only thing between the logo and whatever is scrolling under it,
         // and 24px left the copy looking stuck to the wordmark.
-        className="fixed left-0 top-0 z-40 bg-page pb-10 pt-[calc(env(safe-area-inset-top)+1.5rem)] lg:pb-6"
+        className="sticky left-0 top-0 z-40 bg-page pb-10 pt-[calc(env(safe-area-inset-top)+1.5rem)] lg:pb-6"
         style={headerStyle}
         onMouseLeave={() => setMega(false)}
       >
@@ -344,13 +349,6 @@ export function SiteNav({
         />
       )}
 
-      {/* reserves the fixed header's space in the flow; the min-height is an
-          SSR/first-paint fallback until the exact height is measured. */}
-      <div
-        aria-hidden
-        className="min-h-[calc(env(safe-area-inset-top)+5rem)]"
-        style={{ height: navH || undefined }}
-      />
     </>
   );
 }

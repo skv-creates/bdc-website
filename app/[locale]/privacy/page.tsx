@@ -93,7 +93,7 @@ export default async function PrivacyPage({
                   // Focusable only as a scroll target, so jumping from the
                   // index also moves the reading position. Being in `[tabindex]`
                   // picks up the global scroll-margin-top that keeps a heading
-                  // out from under the fixed header.
+                  // out from under the pinned header.
                   tabIndex={-1}
                   className={`border-t-2 border-border pt-8 ${i > 0 ? "mt-14" : ""}`}
                 >
