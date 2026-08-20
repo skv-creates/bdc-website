@@ -18,10 +18,22 @@ export function Hero({ hero }: { hero: SiteContent["hero"] }) {
     <section className="bdc-stop-11 bdc-grid gap-y-12 pt-16 pb-20 lg:pt-[120px]">
       <h1 className="t-h01 col-span-full lg:col-span-10">{hero.heading}</h1>
 
-      {/* body-medium — 24px/1.5 in the design system, i.e. .t-body-lg. */}
-      <p className="t-body-lg col-span-full lg:col-span-5">{hero.subheading}</p>
+      {/* body-medium — 24px/1.5 in the design system, i.e. .t-body-lg.
+          Two paragraphs of bold/plain segments (585:3022): the first names
+          the organisation and its non-profit form, in bold where drawn. */}
+      <div className="t-body-lg col-span-full flex flex-col gap-6 lg:col-start-6 lg:col-span-6">
+        {hero.subheading.map((para, i) => (
+          <p key={i}>
+            {para.map((seg, j) =>
+              seg.bold ? <strong key={j}>{seg.text}</strong> : <span key={j}>{seg.text}</span>,
+            )}
+          </p>
+        ))}
+      </div>
 
-      <div className="col-span-full flex flex-wrap gap-6">
+      {/* The frame (585:3019) hangs the buttons off the standfirst's own
+          left edge — column 6 — not the page's. */}
+      <div className="col-span-full flex flex-wrap gap-6 lg:col-start-6 lg:col-span-6">
         <Button variant="primary" href={hero.primary.href}>
           {hero.primary.label}
         </Button>

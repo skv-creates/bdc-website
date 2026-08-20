@@ -20,7 +20,9 @@ export function DesignImpact({ designImpact }: { designImpact: SiteContent["desi
           8-column and the 11-column grid, and starting on 2 leaves only 7
           tracks at md. Spanning further would spill into implicit columns. */}
       <div className="bdc-grid">
-        <h3 className="t-h03 col-span-full md:col-start-2 md:col-span-7">
+        {/* v03 (590:3272) sets this as the feature label — 20px bold, wide
+            tracking — rather than a display heading. */}
+        <h3 className="t-body col-span-full font-bold tracking-[0.05px] md:col-start-2 md:col-span-6">
           {designImpact.heading}
         </h3>
       </div>

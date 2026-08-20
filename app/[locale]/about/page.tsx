@@ -175,7 +175,7 @@ export default async function AboutPage({
                 <p className="t-body lg:max-w-[62%]">{copy.how.closing.body}</p>
                 <div className="flex flex-wrap gap-6">
                   <Button href={`/${locale}/volunteer`}>{copy.buildWithUs.volunteerLabel}</Button>
-                  <Button href={c.hero.secondary.href} variant="secondary">
+                  <Button href={c.hero.primary.href} variant="secondary">
                     {copy.buildWithUs.partnerLabel}
                   </Button>
                 </div>
@@ -320,7 +320,7 @@ export default async function AboutPage({
                       <p key={para}>{para}</p>
                     ))}
                   </div>
-                  <Button href={c.hero.secondary.href}>{copy.buildWithUs.partnerLabel}</Button>
+                  <Button href={c.hero.primary.href}>{copy.buildWithUs.partnerLabel}</Button>
                   <Button variant="tertiary" href={`/${locale}/volunteer`}>
                     {copy.buildWithUs.volunteerLabel}
                   </Button>

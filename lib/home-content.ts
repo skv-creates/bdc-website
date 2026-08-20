@@ -197,21 +197,46 @@ const bg = {
 
   hero: {
     heading: "Дизайнът движи нации. Ние го задвижваме в България.",
-    subheading:
-      "България, която не догонва бъдещето, а го проектира чрез дизайн капацитет, движещ нацията напред.",
-    primary: { label: "Стани член ↗", href: "https://tally.so/r/81PbQA" },
-    secondary: {
+    /**
+     * Two paragraphs (Figma 585:3022), the first opening with the bold name —
+     * the non-profit status now leads the hero, which is also what the Ad
+     * Grants reviewer scans the entry page for. Segments render in order;
+     * `bold` marks the strong run.
+     */
+    subheading: [
+      [
+        { text: "Български дизайн съвет", bold: true },
+        { text: " (БДС) е независимо сдружение с нестопанска цел." },
+      ],
+      [
+        {
+          text:
+            "Обединяваме хора, организации и институции, за да преосмисляме " +
+            "системи, променяме нагласи и правим възможно онова, което никой " +
+            "сектор не може да постигне сам.",
+        },
+      ],
+    ],
+    primary: {
       label: "Партнирай с нас",
       href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership",
     },
+    /** The portfolio button lands on the initiatives index (585:3021). */
+    secondary: { label: "Портфолио инициативи", href: "/bg/initiatives" },
   },
 
   mission: {
     label: "Мисия",
     heading:
-      "България е държава, в която дизайнът е разпознат и утвърден като стратегическа сила за иновации, обществено благополучие и устойчиво развитие.",
+      "Превръщаме дизайна в сила за по-достойно, проспериращо и устойчиво бъдеще на България.",
+    // The frame (588:3270) writes "постигем"; rendered correctly here.
     body: [
-      "Обединяваме дизайнерите, бизнеса, образованието и институциите в една обща мисия: да създаде България бъдещето си, с умисъл.",
+      "Свързваме публичния сектор, бизнеса, образованието и гражданското " +
+        "общество чрез изследвания, програми и пилотни инициативи, за да " +
+        "изградим колективно националния дизайн капацитет на България.",
+      "Заедно определяме промяната, която искаме да постигнем, и очертаваме " +
+        "пътя към нея. Създаваме условия решенията да се развиват и " +
+        "надграждат, а въздействието им да се проследява във времето.",
     ],
     /**
      * Closing line. The section as drawn in Figma 332:3279 ends at `body`, so
@@ -251,7 +276,7 @@ const bg = {
    * into the copy, and stay right if a third is added.
    */
   designImpact: {
-    heading: "Защо дизайнът е важен",
+    heading: "Защо дизайн капацитетът е важен?",
     stats: [
       {
         value: "45%",
@@ -1087,21 +1112,38 @@ const en: typeof bg = {
 
   hero: {
     heading: "Design moves nations. We are putting it to work for Bulgaria.",
-    subheading:
-      "A Bulgaria that does not chase the future but designs it, through design capability that moves the nation forward.",
-    primary: { label: "Become a member ↗", href: "https://tally.so/r/81PbQA" },
-    secondary: {
+    subheading: [
+      [
+        { text: "The Bulgarian Design Council", bold: true },
+        { text: " (BDC) is an independent non-profit association." },
+      ],
+      [
+        {
+          text:
+            "We bring together people, organisations and institutions to " +
+            "rethink systems, shift attitudes and make possible what no " +
+            "sector can achieve alone.",
+        },
+      ],
+    ],
+    primary: {
       label: "Build a partnership",
       href: "mailto:info@bulgariandesigncouncil.org?subject=Partnership",
     },
+    secondary: { label: "Initiatives portfolio", href: "/en/initiatives" },
   },
 
   mission: {
     label: "Mission",
     heading:
-      "Bulgaria is a country where design is recognized and established as a strategic force for innovation, social wellbeing and sustainable development.",
+      "We turn design into a force for a more dignified, prosperous and sustainable future for Bulgaria.",
     body: [
-      "We bring designers, business, education and institutions together around one shared mission: for Bulgaria to design its own future, on purpose.",
+      "We connect the public sector, business, education and civil society " +
+        "through research, programmes and pilot initiatives, to collectively " +
+        "build Bulgaria's national design capacity.",
+      "Together we define the change we want to achieve and chart the path " +
+        "towards it. We create the conditions for solutions to grow and build " +
+        "on one another, and for their impact to be tracked over time.",
     ],
     emphasis: "Bulgaria has design intelligence. It’s time it became visible.",
     stats: [
@@ -1129,7 +1171,7 @@ const en: typeof bg = {
   },
 
   designImpact: {
-    heading: "Why design matters:",
+    heading: "Why does design capacity matter?",
     stats: [
       {
         value: "45%",
