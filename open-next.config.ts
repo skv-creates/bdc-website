@@ -1,8 +1,16 @@
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+import staticAssetsIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/static-assets-incremental-cache";
 
-// The site has no ISR or revalidated data, so no incremental cache override is
-// needed. Its route handlers are either static files/redirects or deliberately
-// request-time endpoints; the partner endpoint's Resend fetch is not cacheable.
-// Add `incrementalCache` (and the matching R2 bucket in wrangler.jsonc) if a
-// page ever starts revalidating.
-export default defineCloudflareConfig({});
+// Every public page is prerendered and changes only when a new build deploys.
+// Keep those build outputs in Workers Static Assets instead of asking the
+// Worker to reconstruct them on every request. Besides being faster, this is
+// what keeps the full Next server path away from Cloudflare's CPU limit.
+//
+// This cache is deliberately read-only: it is suitable only while the site has
+// no ISR or on-demand revalidation. If that changes, replace it with R2 (and
+// the matching bindings) rather than silently accepting failed cache writes.
+// Request-time endpoints such as the partnership form have no prerender entry
+// and continue through the Worker normally.
+export default defineCloudflareConfig({
+  incrementalCache: staticAssetsIncrementalCache,
+});
