@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest run",
     "sync:bios": "node scripts/sync-team-bios.mjs",
     "ping:indexnow": "node scripts/ping-indexnow.mjs",
     "prepare": "git config core.hooksPath .githooks || true",

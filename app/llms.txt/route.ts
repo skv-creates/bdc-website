@@ -1,21 +1,15 @@
 /**
  * llms.txt — a plain-text map of the site for language models.
  *
- * Be clear about what this is: a PROPOSED convention (Jeremy Howard,
- * Answer.AI, 2024), not a standard, and no major crawler is known to consume
- * it today. It is here because it costs about a kilobyte and needs no
- * maintenance, not because anything is known to read it.
- *
- * It is also moot while Cloudflare's managed robots.txt blocks GPTBot,
- * ClaudeBot and the rest at the door — see app/robots.ts. Unblocking those is
- * a dashboard action.
+ * A compact map for the AI Search and Assistant agents the council deliberately
+ * allows. Training crawlers remain a different category and are blocked by
+ * Cloudflare AI Crawl Control; see AGENTS.md and app/robots.ts.
  *
  * Generated rather than a static public/llms.txt for two reasons: a static
  * file cannot know which origin it is being served from, so it would have to
- * hardcode the apex and lie on staging; and events resync from Notion every
- * eight hours unattended, so a hand-written list would be wrong by the end of
- * the day. force-static means it is still built into the assets, with no
- * Worker cost per request.
+ * hardcode the apex and lie on staging; and events change through the requested
+ * Notion sync, so a second hand-written list would drift. force-static means it
+ * is still built into the assets, with no Worker cost per request.
  */
 import { getContent } from "@/lib/home-content";
 import { getEvents } from "@/lib/events";

@@ -188,9 +188,13 @@ const bg = {
       label: "Съгласие за аналитични бисквитки",
       text:
         "Използваме Google Analytics, за да разбираме как се използва сайтът — " +
-        "само с ваше съгласие. Без него не зареждаме аналитични бисквитки.",
+        "само с ваше съгласие. Без него не зареждаме аналитични бисквитки. " +
+        "Можете да промените избора си по всяко време.",
       accept: "Приемам",
       decline: "Отказвам",
+      settings: "Настройки за анализи",
+      close: "Затвори",
+      privacy: "Политика за поверителност",
     },
   },
 
@@ -1132,9 +1136,13 @@ const en: typeof bg = {
       label: "Analytics cookie consent",
       text:
         "We use Google Analytics to understand how the site is used — only " +
-        "with your consent. Without it, no analytics cookies are loaded.",
+        "with your consent. Without it, no analytics cookies are loaded. " +
+        "You can change your choice at any time.",
       accept: "Accept",
       decline: "Decline",
+      settings: "Analytics settings",
+      close: "Close",
+      privacy: "Privacy policy",
     },
   },
 

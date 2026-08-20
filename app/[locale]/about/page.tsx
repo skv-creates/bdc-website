@@ -197,8 +197,6 @@ export default async function AboutPage({
                   src="/figma/about/founders.jpg"
                   hoverSrc="/figma/about/founders-hover.jpg"
                   alt={copy.photoAlt}
-                  width={2000}
-                  height={1333}
                   aspect="1092/600"
                   focal="50% 12%"
                 />
@@ -223,10 +221,9 @@ export default async function AboutPage({
 
           {/* ── Quote (506:2412) — the page's closing thought. ── */}
             <section className="bdc-stop-11 bdc-grid gap-y-12 py-12 lg:gap-y-20 lg:py-[104px]">
-              <img
+              <Image
                 src="/figma/about/quote-mark.svg"
                 alt=""
-                aria-hidden
                 width={73}
                 height={60}
                 className="col-span-full block rotate-180"

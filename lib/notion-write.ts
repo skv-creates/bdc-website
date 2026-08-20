@@ -3,8 +3,8 @@ import "server-only";
 /**
  * Writing event copy back to Notion.
  *
- * The read direction lives in scripts/sync-notion-events.mjs and runs on a
- * schedule in CI. This is the other half: what the Shift+E editor on staging
+ * The read direction lives in scripts/sync-notion-events.mjs and runs only
+ * when requested. This is the other half: what the Shift+E editor on staging
  * calls when someone saves. Notion stays the source of truth — an edit is not
  * considered saved until it is recorded here, and only then is it mirrored into
  * the staging draft store so the page can show it immediately.

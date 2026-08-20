@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bulgarian Design Council website
 
-## Getting Started
+Bilingual public website for the Bulgarian Design Council, built with Next.js
+16 and deployed as two separate OpenNext Workers on Cloudflare.
 
-First, run the development server:
+- Staging: <https://staging.bulgariandesigncouncil.org>
+- Production: <https://bulgariandesigncouncil.org>
+- Bulgarian is the default locale (`/bg`); English lives at `/en`.
+
+The repository is public. Never commit credentials or copy them into issues,
+chat, terminal transcripts or shared documents. Put local read-only Notion
+credentials in `.env.local`; put deployed secrets in the appropriate
+Cloudflare Worker environment.
+
+## Local development
+
+Requires Node.js 24 for parity with GitHub Actions.
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>. The bare root redirects by locale; use `/bg` or
+`/en` when testing a specific language.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Before committing:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm test
+npm run build
+```
 
-## Learn More
+`npm test` runs the Storybook interaction and accessibility suite in Chromium.
+Install its browser once on a development machine with:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npx playwright install chromium
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The component and foundation catalogue runs with `npm run storybook` and builds
+with `npm run build-storybook`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Content ownership
 
-## Deploy on Vercel
+The source of truth depends on the content:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Initiatives, names, roles, photographs and ordering are maintained in
+  `lib/home-content.ts`.
+- Published event rows are synced from Notion into
+  `lib/events.generated.json`; event photographs are downloaded into
+  `public/figma/events/`.
+- Published board biographies are synced into
+  `lib/team-bios.generated.json`.
+- Published FAQ content is synced into `lib/faq.generated.json`.
+- Legal, statute and accessibility pages are maintained in their corresponding
+  files under `lib/`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Copy `.env.example` to `.env.local`, add your own read-only Notion integration,
+then run the required sync:
+
+```bash
+npm run sync:bios
+npm run sync:events
+npm run sync:faq
+```
+
+These commands are deliberate, human-requested operations. Events are not on a
+schedule. Generated JSON is committed so deployment never needs a Notion token.
+Never hand-merge generated biography or event JSON; take one side and rerun the
+corresponding sync. Approved privacy-policy wording must be changed in Notion
+first, then copied into `lib/legal-content.ts`.
+
+## Deployment
+
+Staging and production are different Workers:
+
+- `bdc-website` serves staging.
+- `bdc-website-production` serves the live apex.
+
+Every push to `main` runs `.github/workflows/deploy.yml` and updates staging
+only. Production is promoted from `main` by manually running
+`.github/workflows/deploy-production.yml` and entering `publish`.
+
+Local equivalents exist, but GitHub Actions is the normal release path:
+
+```bash
+npm run deploy             # staging
+npm run deploy:production  # live; explicit approval only
+```
+
+`SITE_ORIGIN` is required at both build time and Worker runtime. The npm scripts
+supply the build value; `wrangler.jsonc` supplies each Worker's runtime value.
+Do not collapse the two Workers or remove either half.
+
+Storybook and the Shift+R/Shift+E tools are staging-only. Production builds
+alias the dev tools to a stub and run a bundle assertion before deployment.
+The `DRAFTS` KV binding and Notion write token exist only on staging.
+
+## Public endpoints and integrations
+
+- `/api/partner` sends partnership enquiries through Resend. `RESEND_API_KEY`
+  is a Worker secret in each environment, never a repository value.
+- `/api/staging-edit` writes event copy to Notion and staging KV; it returns 404
+  on production.
+- `/sitemap.xml`, `/robots.txt`, `/llms.txt` and
+  `/.well-known/tdmrep.json` describe indexing and text/data-mining policy.
+- Production allows search and citation while Cloudflare blocks training
+  crawlers. See `AGENTS.md` before changing crawler controls.
+
+## Operating notes
+
+`AGENTS.md` is the detailed operational record: Notion data-source rules,
+event carousel conventions, indexing safeguards, production gates, Shift+E
+security, and the separation from the private prioritisation Worker. Read the
+relevant section before changing those systems.

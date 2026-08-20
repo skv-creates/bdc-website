@@ -136,14 +136,11 @@ hand to a scheduled job.
 # Indexing, canonicals and machine-readability
 
 `app/sitemap.ts` and `app/robots.ts` are generated, and both depend on
-**`SITE_ORIGIN`**, which is set on the npm script — `npm run deploy` says
-staging, `npm run deploy:production` says the apex. It is read at **build**
-time on purpose: every page here is prerendered, so by the time a request
-reaches the Worker the canonical tags are already written.
-
-It cannot come from `vars` in `wrangler.jsonc`, which is the obvious place to
-reach for. `opennextjs-cloudflare build` never passes those to `next build` —
-a var there looks right and does nothing.
+**`SITE_ORIGIN`**. It must be set in two places: the npm command supplies it to
+`next build`, while each environment's `vars` block in `wrangler.jsonc`
+supplies it when OpenNext renders through the Worker. Wrangler variables do not
+reach `next build`, and a build-only value disappears before request-time
+rendering. Staging and production therefore repeat the value deliberately.
 
 Unset, it defaults to **staging**, never production. Staging deploys on every
 push and production only by hand, so a forgotten variable on staging would
@@ -247,7 +244,7 @@ and warns. Both npm scripts therefore pass `--env` explicitly — staging as
 `--env=""` (the top-level config), production as `--env production`. Keep them
 explicit.
 
-One consequence worth remembering: the scheduled events sync deploys *staging*
+One consequence worth remembering: a manually requested events sync deploys *staging*
 when it commits new events. Fresh events sit on staging until someone runs the
 production workflow, which is the intended trade — nothing reaches the apex
 unlooked-at.
@@ -279,7 +276,7 @@ Three things have to be set up once, and none of them live in this repo:
     wrangler secret put NOTION_WRITE_TOKEN --env=""
 
 `NOTION_WRITE_TOKEN` is the **only write-capable Notion integration in this
-repository**. Everything else here — the scheduled events sync, the bios sync on
+repository**. Everything else here — the manual events sync, the bios sync on
 a laptop — is deliberately read-only. It is a Worker secret on staging and must
 never be added to the production environment, to CI, or to `.env.example`.
 

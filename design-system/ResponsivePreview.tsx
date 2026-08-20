@@ -234,6 +234,9 @@ export function ResponsivePreview() {
       <p className="t-caption mt-2 ds-muted">
         {current ? `${current.range} · ${current.cols} columns` : ''}
         {current?.to === null ? ' · every style at its full size' : ''}
+        {frameViewport !== null && frameViewport !== width
+          ? ` · frame reports ${frameViewport}px ⚠`
+          : ''}
       </p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">

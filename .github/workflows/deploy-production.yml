@@ -29,14 +29,23 @@ jobs:
           echo "::error::Confirmation was '${{ inputs.confirm }}', expected 'publish'. Nothing deployed."
           exit 1
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
 
       - run: npm ci
+
+      - name: Install browser for component checks
+        run: npx playwright install --with-deps chromium
+
+      - name: Check authored code
+        run: npm run lint
+
+      - name: Run component and accessibility checks
+        run: npm test
 
       # The canonical origin is baked into every prerendered page at build
       # time, so a wrong one ships wrong canonicals and a wrong sitemap to the

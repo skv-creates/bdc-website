@@ -19,14 +19,23 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
 
       - run: npm ci
+
+      - name: Install browser for component checks
+        run: npx playwright install --with-deps chromium
+
+      - name: Check authored code
+        run: npm run lint
+
+      - name: Run component and accessibility checks
+        run: npm test
 
       # opennextjs-cloudflare build + deploy; wrangler reads these two env vars.
       - run: npm run deploy

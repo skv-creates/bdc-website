@@ -49,8 +49,6 @@ export function HoverRevealImage({
   src,
   hoverSrc,
   alt,
-  width,
-  height,
   /** The frame's aspect from md up. Figma 500:1917 draws 1092×624. */
   aspect = "1092/624",
   /** Phones get a square: a wide crop at that width is a strip, not a portrait. */
@@ -77,9 +75,6 @@ export function HoverRevealImage({
   hoverSrc: string;
   /** One alt for the pair: it is the same three people in both frames. */
   alt: string;
-  /** Intrinsic pixels, so the aspect is exact rather than assumed. */
-  width: number;
-  height: number;
   aspect?: string;
   phoneAspect?: string;
   maxHeight?: number;

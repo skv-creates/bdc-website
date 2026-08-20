@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./Initiatives.module.css";
@@ -79,6 +79,15 @@ const SLIDE_MS = 500;
 const SWIPE_MIN = 40;
 
 /**
+ * Hydration signal without an effect-driven state update. React uses the
+ * server snapshot for the prerender and the first hydration pass, then reads
+ * the client snapshot and schedules the one post-hydration render we need.
+ */
+const subscribeToHydration = () => () => {};
+const clientHydrated = () => true;
+const serverHydrated = () => false;
+
+/**
  * Copies of the list laid end to end. `pos` indexes into the whole run, and at
  * rest sits in copy 1 — the band [N, 2N) — so there is a copy either side to
  * travel into. Sliding one step off the end of the band lands on the identical
@@ -116,8 +125,11 @@ function InitiativesShowcase({
    * copy, at rest), then `mounted` flips and the clones join; the transform
    * below compensates so the flip is pixel-identical.
    */
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useSyncExternalStore(
+    subscribeToHydration,
+    clientHydrated,
+    serverHydrated,
+  );
   const LOOP = useMemo(
     () => (mounted ? Array.from({ length: COPIES }, () => items).flat() : items),
     [items, mounted],

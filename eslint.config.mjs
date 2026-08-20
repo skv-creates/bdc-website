@@ -12,8 +12,13 @@ const eslintConfig = defineConfig([
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
+    ".open-next/**",
+    ".wrangler/**",
     "out/**",
     "build/**",
+    "coverage/**",
+    "storybook-static/**",
+    "public/bdc-storybook/**",
     "next-env.d.ts",
   ]),
   ...storybook.configs["flat/recommended"]

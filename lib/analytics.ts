@@ -8,6 +8,8 @@
  * variable can.
  *
  * Empty string = analytics fully off: components/ui/AnalyticsConsent renders
- * nothing, no banner, no script. Nothing else needs to change to enable it.
+ * nothing, no banner, no script. Keep it empty until the approved privacy
+ * policy describes GA4; that copy is maintained in Notion, not directly in
+ * lib/legal-content.ts.
  */
 export const GA4_MEASUREMENT_ID = "";

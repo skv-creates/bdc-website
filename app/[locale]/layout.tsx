@@ -7,6 +7,7 @@ import { getContent, hasLocale, locales } from "@/lib/home-content";
 import { aboutBeige } from "@/lib/fonts";
 import { GOOGLE_SITE_VERIFICATION, IS_PRODUCTION_SITE, SITE_ORIGIN } from "@/lib/site";
 import { AnalyticsConsent } from "@/components/ui/AnalyticsConsent";
+import { GA4_MEASUREMENT_ID } from "@/lib/analytics";
 
 /**
  * The Shift+R redlines overlay and the Shift+E copy editor. Staging only.
@@ -126,11 +127,16 @@ export default async function RootLayout({
             — and the endpoint it talks to is itself a 404 on the apex, so the
             gate failing open would still not give anyone a way in. */}
         {!IS_PRODUCTION_SITE && <EditMode />}
-        {/* GA4 behind an explicit opt-in — see the component. Production only,
-            the inverse gate of the dev tools above: staging visits are the
-            team's own and would pollute the property. Renders nothing until
-            lib/analytics.ts carries the measurement id. */}
-        {IS_PRODUCTION_SITE && <AnalyticsConsent consent={getContent(locale).ui.consent} />}
+        {/* GA4 behind an explicit opt-in — see the component. Staging gets the
+            same consent UI for review, but `collect` keeps every Google request
+            disabled there. Renders nothing until lib/analytics.ts carries the
+            measurement id. */}
+        <AnalyticsConsent
+          consent={getContent(locale).ui.consent}
+          collect={IS_PRODUCTION_SITE}
+          locale={locale}
+          measurementId={GA4_MEASUREMENT_ID}
+        />
       </body>
     </html>
   );

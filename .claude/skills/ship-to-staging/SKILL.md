@@ -133,15 +133,16 @@ gh pr list --state open
   staging suddenly looks like it lost your work, check
   `gh run list --workflow=sync-events.yml` before debugging anything else —
   then merge `main` into `staging` and re-dispatch.
-- **`SITE_ORIGIN` is baked at build time**, on the npm script, not in
-  `wrangler.jsonc`. Unset it defaults to staging, which means noindex. Do not
-  move it into `vars` — `opennextjs-cloudflare build` never passes those to
-  `next build`.
+- **`SITE_ORIGIN` is needed twice**: the npm script supplies the build, and the
+  per-environment `vars` in `wrangler.jsonc` supply OpenNext at request time.
+  Wrangler vars do not reach `next build`; the build command does not replace
+  the runtime var. Unset or inconsistent values fail toward staging/noindex.
 - **`lib/events.generated.json` and `lib/team-bios.generated.json` are marked
   `-merge`.** Never hand-resolve a conflict in them. Take either side and re-run
   the sync:
   `git checkout --ours <file> && npm run sync:events` (or `sync:bios`).
-- **Bios and FAQ sync from a laptop, not CI.** Only events run scheduled.
+- **Bios, FAQ and events are normally synced by request.** The events workflow
+  is manual-only and needs a separately configured read-only secret to run.
 - **This repo is public and permanent.** No credential ever goes in a file, a
   commit, or a transcript. If one leaks, rotating it is the fix, not a revert.
 - **`/bdc-storybook` is staging-only, by construction.** `npm run deploy` builds

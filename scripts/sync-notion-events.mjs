@@ -5,15 +5,16 @@
  *   node scripts/sync-notion-events.mjs [--dry]
  *
  * Reads NOTION_TOKEN and NOTION_EVENTS_DATA_SOURCE_ID from .env.local, or from
- * the ambient environment when it runs in CI (see
- * .github/workflows/sync-events.yml, which runs this every 8 hours on main).
+ * the ambient environment when the manual sync-events workflow is explicitly
+ * configured and dispatched. There is no schedule and no repository token by
+ * default.
  *
  * Only rows whose Статус matches NOTION_EVENTS_STATUS are pulled — default
  * "Готово за публикуване". Change the variable, not this file, when the
  * editors move to a different column.
  *
  * Output is deterministic: rows sorted newest first, object keys written in a
- * fixed order. Two people (or a person and the scheduled job) syncing the same
+ * fixed order. Two people (or a person and a manually dispatched job) syncing the same
  * Notion state produce byte-identical files, which is what lets the workflow
  * decide "nothing changed, don't commit".
  */

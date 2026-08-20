@@ -37,10 +37,18 @@ export function BoardGrid({
 }) {
   // Desktop hover drives the card's swap-and-inset state (see MemberCard).
   const [hovered, setHovered] = useState<number | null>(null);
+  // Once a hover portrait has been requested, keep it mounted so later
+  // cross-fades are immediate. Intent events own this latch; no effect is
+  // needed to mirror one piece of React state into another.
+  const [armed, setArmed] = useState<ReadonlySet<number>>(() => new Set());
   // Clicking a member opens the shared overlay panel as a client-side modal.
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const clear = (i: number) => setHovered((h) => (h === i ? null : h));
+  const reveal = (i: number) => {
+    setHovered(i);
+    setArmed((current) => (current.has(i) ? current : new Set(current).add(i)));
+  };
 
   return (
     <>
@@ -50,14 +58,14 @@ export function BoardGrid({
             key={`${m.name}-${i}`}
             type="button"
             className={`${MEMBER_SPAN} block text-left`}
-            onMouseEnter={() => setHovered(i)}
+            onMouseEnter={() => reveal(i)}
             onMouseLeave={() => clear(i)}
-            onFocus={() => setHovered(i)}
+            onFocus={() => reveal(i)}
             onBlur={() => clear(i)}
             onClick={() => setOpenIndex(i)}
             aria-haspopup="dialog"
           >
-            <MemberCard {...m} showAlt={hovered === i} />
+            <MemberCard {...m} showAlt={hovered === i} loadAlt={armed.has(i)} />
           </button>
         ))}
       </div>

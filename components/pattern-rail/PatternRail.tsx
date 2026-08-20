@@ -1,11 +1,22 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+} from "react";
 import styles from "./PatternRail.module.css";
 import { PALETTES, PATTERNS, PatternMobile, TILE } from "./patterns";
 
 /** Pattern drifts at a quarter of the user's scroll speed, same direction. */
 const PARALLAX_FACTOR = 0.25;
+
+const subscribeToHydration = () => () => {};
+const clientHydrated = () => true;
+const serverHydrated = () => false;
 
 /**
  * The right-hand decorative rail.
@@ -21,14 +32,14 @@ const PARALLAX_FACTOR = 0.25;
  */
 export function PatternRail() {
   const patternId = useId().replace(/:/g, "");
-  const [patternIndex, setPatternIndex] = useState(0);
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    clientHydrated,
+    serverHydrated,
+  );
+  const [randomPattern] = useState(() => Math.floor(Math.random() * PATTERNS.length));
   const [paletteIndex, setPaletteIndex] = useState(0);
   const tileRef = useRef<HTMLSpanElement>(null);
-
-  // Randomize the pattern once, on the client, after hydration.
-  useEffect(() => {
-    setPatternIndex(Math.floor(Math.random() * PATTERNS.length));
-  }, []);
 
   // Parallax: half-speed, same direction, seamless via tile-period wrap.
   useEffect(() => {
@@ -56,7 +67,10 @@ export function PatternRail() {
     };
   }, []);
 
-  const Tile = PATTERNS[patternIndex];
+  // The server and hydration pass both use pattern zero. Once hydration is
+  // complete, the already-chosen client pattern replaces it without a
+  // setState-in-effect cascade or an HTML mismatch.
+  const Tile = PATTERNS[hydrated ? randomPattern : 0];
   const palette = PALETTES[paletteIndex];
 
   const colorVars = {

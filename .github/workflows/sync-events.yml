@@ -40,11 +40,11 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -61,6 +61,15 @@ jobs:
           # the site to e.g. "Обявено" without touching this workflow.
           NOTION_EVENTS_STATUS: ${{ vars.NOTION_EVENTS_STATUS }}
         run: npm run sync:events
+
+      - name: Install browser for component checks
+        run: npx playwright install --with-deps chromium
+
+      - name: Check authored code
+        run: npm run lint
+
+      - name: Run component and accessibility checks
+        run: npm test
 
       # The sync output is deterministic, so an unchanged Notion means an
       # unchanged file and no commit — the schedule stays quiet on quiet days.
