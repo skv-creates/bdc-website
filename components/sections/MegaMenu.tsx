@@ -163,17 +163,19 @@ export function MegaMenu({
 
         {/* The one destination the rows can't offer: the index page that
             collects and explains all the initiatives — the crawlable URL the
-            mega-menu button itself is not. Bottom rule closes the list. */}
-        {/* mt-12: the frame's 48px of air between the last row and this link,
-            so the index link reads as the list's coda rather than a fifth row. */}
+            mega-menu button itself is not. Its top rule closes the list, and
+            it uses the same seven-column grid as every row: the label ends in
+            page column 10 while the arrow starts on page column 11. */}
         <a
           href={`/${locale}/initiatives`}
           onClick={onNavigate}
-          className="group mt-12 border-t border-border py-3"
+          className="group bdc-grid items-center border-t border-border py-3"
+          style={{ ["--grid-cols" as string]: 7 }}
         >
-          <span className="t-caption inline-flex items-center gap-3 border-b-2 border-transparent pb-0.5 transition-colors group-hover:border-current">
-            {initiatives.allLabel} <span aria-hidden>→</span>
+          <span className="t-caption col-span-2 col-start-5 justify-self-end border-b-2 border-transparent pb-0.5 transition-colors group-hover:border-current">
+            {initiatives.allLabel}
           </span>
+          <span className="t-caption col-start-7" aria-hidden>→</span>
         </a>
       </div>
     </div>

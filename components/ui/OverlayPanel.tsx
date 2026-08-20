@@ -34,6 +34,8 @@ export function OverlayPanel({
   homeHref,
   intercepted = false,
   onClose,
+  closeLabel = "Close",
+  dialogLabel,
 }: {
   children: ReactNode;
   // Routable use (events): dismiss navigates via homeHref / router.back().
@@ -41,9 +43,14 @@ export function OverlayPanel({
   intercepted?: boolean;
   // Client-modal use (board members): dismiss calls onClose instead of routing.
   onClose?: () => void;
+  /** Locale-correct accessible name for the icon-only close control. */
+  closeLabel?: string;
+  /** Accessible name for modal uses whose content heading has no stable id. */
+  dialogLabel?: string;
 }) {
   const router = useRouter();
   const closeRef = useRef<HTMLButtonElement>(null);
+  const restoreFocusRef = useRef<HTMLElement | null>(null);
   const closingRef = useRef(false);
   // `entered` drives the enter transition: scrim opacity (immediate) and the
   // panel slide, delayed one beat so the scrim reads as arriving first.
@@ -58,29 +65,47 @@ export function OverlayPanel({
     closingRef.current = true;
     const dismiss =
       onClose ?? (() => (intercepted ? router.back() : router.push(homeHref ?? "/")));
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const dismissAndRestoreFocus = () => {
       dismiss();
+      // Let React commit the parent's state change before focusing its trigger.
+      // Otherwise the browser can move focus back to <body> when it removes the
+      // currently focused close button later in the same commit.
+      window.setTimeout(() => restoreFocusRef.current?.focus(), 0);
+    };
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      dismissAndRestoreFocus();
       return;
     }
     setExiting(true);
-    window.setTimeout(dismiss, 80);
+    window.setTimeout(dismissAndRestoreFocus, 80);
   }, [onClose, intercepted, homeHref, router]);
 
   useEffect(() => {
-    closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
     };
     document.addEventListener("keydown", onKey);
 
+    return () => document.removeEventListener("keydown", onKey);
+  }, [close]);
+
+  useEffect(() => {
+    // Remember the exact name/card that opened a client modal. React removes
+    // the focused close button on dismissal, so restoration must be explicit
+    // if a keyboard reader is to continue from the same sentence or card.
+    const previousFocus =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    restoreFocusRef.current = previousFocus;
+    closeRef.current?.focus();
+
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     return () => {
-      document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
+      previousFocus?.focus();
     };
-  }, [close]);
+  }, []);
 
   // Kick off the enter transition one paint after mount (double rAF so the
   // initial hidden state is committed first). Reduced motion → snap in place.
@@ -108,10 +133,10 @@ export function OverlayPanel({
   /**
    * A dialog only when there is a page behind it.
    *
-   * `intercepted` already distinguishes the two ways this mounts, and the
-   * semantics have to follow it. Opened over the home page via @modal it is a
-   * genuine modal: `aria-modal="true"` correctly tells a screen reader the
-   * content behind is inert, and Esc/scrim dismiss it.
+   * An intercepted route or a client-state `onClose` means there is still a
+   * page behind this layer. In either case it is a genuine modal:
+   * `aria-modal="true"` correctly tells a screen reader the background is out
+   * of scope, and Esc/scrim dismiss it.
    *
    * Arrived at directly — /bg/events/<slug> from a search result, a shared
    * link or a refresh — none of that is true. There is nothing behind it to
@@ -125,9 +150,14 @@ export function OverlayPanel({
    * and keyboard users navigate by, and what the skip link in the layout
    * targets.
    */
-  const Root = intercepted ? "div" : "main";
-  const rootRole = intercepted
-    ? ({ role: "dialog", "aria-modal": true as const } as const)
+  const isDialog = intercepted || Boolean(onClose);
+  const Root = isDialog ? "div" : "main";
+  const rootRole = isDialog
+    ? ({
+        role: "dialog",
+        "aria-modal": true as const,
+        ...(dialogLabel ? { "aria-label": dialogLabel } : {}),
+      } as const)
     : ({ id: "main", tabIndex: -1 } as const);
 
   return (
@@ -152,7 +182,7 @@ export function OverlayPanel({
           ref={closeRef}
           type="button"
           onClick={close}
-          aria-label="Close"
+          aria-label={closeLabel}
           // 44px hit area (WCAG 2.5.5 target size) with the 24px glyph centred
           // inside it. `left` centres that 44px box in the scrim band at every
           // width, so it tracks --overlay-panel-left instead of needing a

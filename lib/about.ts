@@ -116,9 +116,11 @@ export type AboutCopy = {
   photoAlt: string;
   /**
    * The caption under the photograph (561:4805): plain segments and bold
-   * name segments, rendered in order.
+   * name segments, rendered in order. `memberHomeName` is the stable Bulgarian
+   * key used by the About board too; it connects a displayed founder name to
+   * the locale-correct profile without duplicating the bio here.
    */
-  photoCaption: { text: string; bold?: boolean }[];
+  photoCaption: { text: string; bold?: boolean; memberHomeName?: string }[];
 
   /** The founders' narrative. Ends on the founding date and the purpose. */
   story: string[];
@@ -339,11 +341,15 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
     photoCaption: [
       // The \n is the frame's own break (561:4805): the names sit on their own line.
       { text: "Съоснователките на БДС (от ляво на дясно)\n" },
-      { text: "Радина Донева", bold: true },
+      { text: "Радина Донева", bold: true, memberHomeName: "Радина Донева" },
       { text: ", " },
-      { text: "Добра Славкова", bold: true },
+      { text: "Добра Славкова", bold: true, memberHomeName: "Добра Славкова" },
       { text: " и " },
-      { text: "Стефка Пейкова Кришнан", bold: true },
+      {
+        text: "Стефка Пейкова Кришнан",
+        bold: true,
+        memberHomeName: "Стефи Пейкова Кришнан",
+      },
       { text: " (Стефи)" },
     ],
 
@@ -594,11 +600,15 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
       "the Bulgarian Design Council",
     photoCaption: [
       { text: "The co-founders of the BDC (left to right)\n" },
-      { text: "Radina Doneva", bold: true },
+      { text: "Radina Doneva", bold: true, memberHomeName: "Радина Донева" },
       { text: ", " },
-      { text: "Dobra Slavkova", bold: true },
+      { text: "Dobra Slavkova", bold: true, memberHomeName: "Добра Славкова" },
       { text: " and " },
-      { text: "Stefka Peykova Krishnan", bold: true },
+      {
+        text: "Stefka Peykova Krishnan",
+        bold: true,
+        memberHomeName: "Стефи Пейкова Кришнан",
+      },
       { text: " (Stefi)" },
     ],
 

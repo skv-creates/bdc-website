@@ -31,6 +31,7 @@ import Link from "next/link";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { HowGroups } from "@/components/about/HowGroups";
 import { AboutBoard } from "@/components/about/AboutBoard";
+import { FoundersCaption } from "@/components/about/FoundersCaption";
 import { AvatarGroup } from "@/components/ui/AvatarGroup";
 import { Button } from "@/components/ui/Button";
 import { HoverRevealImage } from "@/components/ui/HoverRevealImage";
@@ -87,6 +88,17 @@ export default async function AboutPage({
   // getContent(locale) finds nothing on /en and every card showed the
   // placeholder ground.
   const photoSource = getContent("bg").team.board.members;
+  // `homeName` is the locale-neutral key already used by AboutBoard. Resolve
+  // it to this locale's Notion-enriched Member once, then let the interactive
+  // caption reuse the resulting name, role, portrait and bio verbatim.
+  const founderHomeNames = new Set(
+    copy.photoCaption.flatMap(({ memberHomeName }) => memberHomeName ?? []),
+  );
+  const founderProfiles = copy.team.members.flatMap(({ name, homeName }) => {
+    if (!founderHomeNames.has(homeName)) return [];
+    const member = c.team.board.members.find((candidate) => candidate.name === name);
+    return member ? [{ homeName, member }] : [];
+  });
 
   return (
     <>
@@ -201,11 +213,12 @@ export default async function AboutPage({
                   focal="50% 12%"
                 />
               </div>
-              <p className="t-caption col-span-full whitespace-pre-line lg:col-span-7">
-                {copy.photoCaption.map((seg, i) =>
-                  seg.bold ? <strong key={i}>{seg.text}</strong> : <span key={i}>{seg.text}</span>,
-                )}
-              </p>
+              <FoundersCaption
+                caption={copy.photoCaption}
+                founders={founderProfiles}
+                bioPlaceholder={c.team.bioPlaceholder}
+                closeLabel={c.ui.consent.close}
+              />
             </section>
 
           {/* ── The founders' story (500:1920) ── */}
