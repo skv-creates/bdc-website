@@ -182,6 +182,16 @@ const bg = {
     seeMore: "Виж повече",
     /** Tertiary button under the landing showcase blurb (Figma 398:3188). */
     readMore: "Прочети повече",
+    /** The analytics consent banner (components/ui/AnalyticsConsent). Nothing
+        loads before Приемам — declining stores the choice and loads nothing. */
+    consent: {
+      label: "Съгласие за аналитични бисквитки",
+      text:
+        "Използваме Google Analytics, за да разбираме как се използва сайтът — " +
+        "само с ваше съгласие. Без него не зареждаме аналитични бисквитки.",
+      accept: "Приемам",
+      decline: "Отказвам",
+    },
   },
 
   nav: {
@@ -1118,6 +1128,14 @@ const en: typeof bg = {
     switchLanguage: "Български",
     seeMore: "See more",
     readMore: "Read more",
+    consent: {
+      label: "Analytics cookie consent",
+      text:
+        "We use Google Analytics to understand how the site is used — only " +
+        "with your consent. Without it, no analytics cookies are loaded.",
+      accept: "Accept",
+      decline: "Decline",
+    },
   },
 
   nav: {
