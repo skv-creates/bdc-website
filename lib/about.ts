@@ -625,7 +625,7 @@ export const ABOUT_COPY: Record<Locale, AboutCopy> = {
     identityLabel: "Legal status",
     identityHeading: "Registration and details",
     identityRows: [
-      { label: "Registered entity", value: "Bulgarian Design Council Association" },
+      { label: "Registered Non-profit", value: "Bulgarian Design Council Association" },
       { label: "UIC", value: "208377927" },
       {
         label: "Registered address",
