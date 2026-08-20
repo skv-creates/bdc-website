@@ -89,9 +89,11 @@ export function MegaMenu({
         {/* No button: the preview belongs to whichever row the pointer is on,
             and that row is already the link. A second control for the same
             destination, one the pointer has to leave the list to reach, is
-            just something else to aim at. Clamped to the frame's 88px box so a
-            long blurb can't stretch the panel. */}
-        <p className="t-body line-clamp-3 text-[18px]">{active.text}</p>
+            just something else to aim at. Clamped to three rows so a long
+            blurb can't stretch the panel — and held at three rows' height
+            (3 × 1.4 line-height) even when the blurb is shorter, so the panel
+            does not change height as the pointer walks the rows. */}
+        <p className="t-body line-clamp-3 min-h-[4.2em] text-[18px]">{active.text}</p>
       </div>
 
       {/* Columns 5–11 of the panel. Seven tracks rather than six so the rows can
@@ -146,10 +148,12 @@ export function MegaMenu({
         {/* The one destination the rows can't offer: the index page that
             collects and explains all the initiatives — the crawlable URL the
             mega-menu button itself is not. Bottom rule closes the list. */}
+        {/* mt-12: the frame's 48px of air between the last row and this link,
+            so the index link reads as the list's coda rather than a fifth row. */}
         <a
           href={`/${locale}/initiatives`}
           onClick={onNavigate}
-          className="group border-t border-border py-3"
+          className="group mt-12 border-t border-border py-3"
         >
           <span className="t-caption inline-flex items-center gap-3 border-b-2 border-transparent pb-0.5 transition-colors group-hover:border-current">
             {initiatives.allLabel} <span aria-hidden>→</span>

@@ -173,6 +173,15 @@
      391:4821 — two cards sit fully in the column with the third peeking. It
      used to be 6, which showed one card and a sliver. */
   width: calc((100% - 10 * var(--grid-gap, 24px)) / 11 * 5 + 4 * var(--grid-gap, 24px));
+  /* One colour for the whole track, not the three-colour rotation: grey at
+     rest, brand rose while the card is fully in the track's viewport. The
+     track's IntersectionObserver writes data-focus (see Initiatives.tsx). */
+  background: #f3f3f3;
+  transition: background-color 300ms ease-out;
+}
+
+.card[data-focus="in"] {
+  background: var(--color-brand);
 }
 
 @media (max-width: 1023px) {

@@ -443,10 +443,13 @@ export function Card({
   fluid?: boolean;
 }) {
   /**
-   * Inside pages keep the three-colour rotation. slotStyle also carries
-   * --p1/--p2/--p3, which the pattern tile needs.
+   * The track's cards are one colour, not the three-colour rotation: grey at
+   * rest, brand rose while fully in view — the track's IntersectionObserver
+   * drives that through data-focus (see .card in the module CSS). The fluid
+   * grid variant keeps the rotation; slotStyle also carries --p1/--p2/--p3,
+   * which the pattern tile needs.
    */
-  const style = slotStyle(index);
+  const style = fluid ? slotStyle(index) : undefined;
   const href = `/${locale}/initiatives/${item.slug}`;
 
   return (
@@ -555,11 +558,25 @@ function InitiativesTrack({
     };
     track.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", start);
+    // A card is "in focus" while it sits fully inside the track's viewport —
+    // those are rose; the ones clipped at either edge are grey. 0.95 rather
+    // than 1 so a sub-pixel of scroll position can't flicker the state.
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          (e.target as HTMLElement).dataset.focus =
+            e.intersectionRatio >= 0.95 ? "in" : "out";
+        }
+      },
+      { root: track, threshold: [0.95] },
+    );
+    for (const card of Array.from(track.children)) io.observe(card);
     return () => {
       clearTimeout(settle);
       cancelAnimationFrame(rafRef.current);
       track.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", start);
+      io.disconnect();
     };
   }, [N]);
 

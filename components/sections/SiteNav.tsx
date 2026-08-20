@@ -175,11 +175,15 @@ export function SiteNav({
               initiatives && l.href === megaHref ? (
                 // A button, not a link: it opens a panel rather than navigating,
                 // and aria-expanded is what tells a screen reader that.
+                // Click only opens — never toggles shut. Pressing the trigger
+                // again while reading the panel used to snap it closed; the
+                // ways out are navigating a row, Escape, the scrim, or moving
+                // the pointer off the header.
                 <button
                   key={l.label}
                   type="button"
                   aria-expanded={mega}
-                  onClick={() => setMega((v) => !v)}
+                  onClick={() => setMega(true)}
                   onMouseEnter={() => setMega(true)}
                   className={`t-caption cursor-pointer whitespace-nowrap border-b-2 transition-colors ${
                     mega ? "border-current" : "border-transparent hover:border-current"
