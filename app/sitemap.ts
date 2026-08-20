@@ -1,5 +1,5 @@
 /**
- * The sitemap — 30 URLs, each with its bg/en/x-default alternates.
+ * The sitemap — every indexable URL, each with its bg/en/x-default alternates.
  *
  * Slugs are derived, never listed. getInitiativeSlugs() reads the content
  * *after* applyCms() has filtered `published !== false`, so the two
@@ -37,6 +37,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/privacy",
     "/accessibility",
     "/volunteer",
+    // /partner/thanks is deliberately absent: it is the Ad Grants conversion
+    // page (noindexed), and a crawler-found arrival would count as a
+    // conversion that never happened.
+    "/partner",
     ...events.map(({ slug }) => `/events/${slug}`),
     ...getInitiativeSlugs().map(({ slug }) => `/initiatives/${slug}`),
   ];
