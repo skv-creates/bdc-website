@@ -146,10 +146,10 @@ export function SiteNav({
     };
   }, [open]);
 
-  // Widening past xl swaps the drawer for the desktop bar; without this the
+  // Widening past lg swaps the drawer for the desktop bar; without this the
   // drawer's scroll lock would survive as an invisible frozen page.
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1280px)");
+    const mq = window.matchMedia("(min-width: 1024px)");
     const close = () => mq.matches && setOpen(false);
     mq.addEventListener("change", close);
     return () => mq.removeEventListener("change", close);
@@ -164,22 +164,21 @@ export function SiteNav({
         // pb-10 below lg, pb-6 from there: on a phone and a tablet the bar is
         // the only thing between the logo and whatever is scrolling under it,
         // and 24px left the copy looking stuck to the wordmark.
-        className="sticky left-0 top-0 z-40 bg-page pb-10 pt-[calc(env(safe-area-inset-top)+1.5rem)] xl:pb-6"
+        className="sticky left-0 top-0 z-40 bg-page pb-10 pt-[calc(env(safe-area-inset-top)+1.5rem)] lg:pb-6"
         style={headerStyle}
         onMouseLeave={() => setMega(false)}
       >
-        <div className="flex items-center justify-between gap-6 xl:grid xl:grid-cols-12 xl:gap-x-[var(--grid-gap)]">
-          <a href={homeHref} aria-label={ui.home} className="shrink-0 xl:col-start-1 xl:col-span-3 xl:justify-self-start">
+        <div className="flex items-center justify-between gap-6 lg:grid lg:grid-cols-12 lg:gap-x-[var(--grid-gap)]">
+          <a href={homeHref} aria-label={ui.home} className="shrink-0 lg:col-start-1 lg:col-span-3 lg:justify-self-start">
             <Logo variant="dark" locale={locale} className="h-8 w-auto md:h-10" />
           </a>
 
-          {/* desktop nav — one row starting at page-grid column 4, links spaced
-              by a fixed 20px gap (they no longer snap to a column each). The
-              bar arrives at xl, not lg: six links plus the partner CTA do not
-              fit twelve columns at 1024 — the button printed over the last
-              link and swallowed its clicks — so the 1024–1279 band keeps the
-              drawer instead. */}
-          <nav className="hidden xl:col-start-4 xl:col-span-5 xl:flex xl:items-center xl:gap-5 xl:justify-self-start">
+          {/* desktop nav — one row starting at page-grid column 4. Five
+              columns, and a 16px link gap at lg widening to the design's 20px
+              at xl: the Bulgarian labels miss the 1024 grid by 3px at 20px
+              gaps, and a printed-over Контакт link that swallows its clicks
+              is the failure that margin protects against. */}
+          <nav className="hidden lg:col-start-4 lg:col-span-5 lg:flex lg:items-center lg:gap-4 lg:justify-self-start xl:gap-5">
             {nav.links.map((l) =>
               initiatives && l.href === megaHref ? (
                 // A link that also discloses: hover opens the panel, click and
@@ -214,7 +213,7 @@ export function SiteNav({
 
           {/* justify-end against cols 9–12 lands the CTA + language toggle on
               the right edge, clear of the rail; the nav owns 4–8. */}
-          <div className="hidden items-center gap-4 xl:col-start-9 xl:col-span-4 xl:flex xl:justify-end">
+          <div className="hidden items-center gap-4 lg:col-start-9 lg:col-span-4 lg:flex lg:justify-end">
             <Button variant="small" href={linkHref(nav.cta.href)}>{nav.cta.label}</Button>
             {/* inline-grid + min-h-6/min-w-6 so the two-letter toggle still
                 meets the 24×24 of WCAG 2.2 2.5.8; it measured 22×26. */}
@@ -230,7 +229,7 @@ export function SiteNav({
           {/* mobile toggle */}
           <button
             type="button"
-            className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 xl:hidden"
+            className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden"
             aria-label={ui.menu}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
@@ -251,7 +250,7 @@ export function SiteNav({
             // of one long scrolling column, so on a short screen — or once the
             // initiatives archive is expanded — "Членувай" and the language
             // toggle fell off the bottom and had to be hunted for.
-            className="absolute inset-x-0 top-full z-30 flex flex-col bg-page xl:hidden"
+            className="absolute inset-x-0 top-full z-30 flex flex-col bg-page lg:hidden"
             style={{ ...padStyle, height: `calc(100dvh - ${navH}px)` }}
           >
             <nav className="flex flex-1 flex-col gap-6 overflow-y-auto overscroll-contain pb-8 pt-4">
@@ -326,7 +325,7 @@ export function SiteNav({
             // still sits on the page gutter. Tinting the padded child instead
             // leaves the scrim showing down the left.
             ref={megaRef}
-            className="absolute inset-x-0 top-full z-40 hidden bg-page xl:block"
+            className="absolute inset-x-0 top-full z-40 hidden bg-page lg:block"
             style={padStyle}
           >
             <MegaMenu
@@ -345,7 +344,7 @@ export function SiteNav({
           the header. */}
       {initiatives && mega && (
         <div
-          className="fixed inset-x-0 bottom-0 z-30 hidden bg-[rgba(21,21,21,0.3)] xl:block"
+          className="fixed inset-x-0 bottom-0 z-30 hidden bg-[rgba(21,21,21,0.3)] lg:block"
           style={{ top: navH + megaH }}
           onClick={() => setMega(false)}
           aria-hidden

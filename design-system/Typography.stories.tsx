@@ -273,9 +273,10 @@ export const Scale: Story = {
           </li>
           <li>
             <strong>Choose by role, not by size.</strong> <code>.t-label</code>{' '}
-            and <code>.t-body</code> are both 20px and differ in weight and
-            tracking. They also behave differently on phones, so the right one
-            matters even where they look alike.
+            and <code>.t-body</code> are both 20px at desktop and differ in
+            weight and tracking. On a phone they part ways — label holds 20px
+            while body drops to its 18px mobile size — so the right one matters
+            even where they look alike.
           </li>
           <li>
             <strong>Three weights are available.</strong> Regular, Medium and
@@ -410,10 +411,12 @@ export const Scale: Story = {
     await expect(h01?.fontSize).toBe('var(--fs-h01)');
     await expect(h01?.mobile?.fontSize).toBe('2.5rem');
 
-    // body-default is 20px at every width, with no band declaring otherwise.
+    // body-default is 18px on a phone — the design system's mobile size —
+    // recovering to its 20px desktop size by 1024. The floor block holds it
+    // at 18 below 390.
     const body = typeStyles.find((s) => s.name === 't-body');
     await expect(body?.fontSize).toBe('var(--fs-body)');
-    await expect(body?.mobile?.fontSize).toBeUndefined();
+    await expect(body?.mobile?.fontSize).toBe('1.125rem');
 
     await expect(canvas.getByText('About Beige Standard')).toBeVisible();
   },
@@ -438,7 +441,8 @@ export const Constraints: Story = {
         <ul className="t-body flex max-w-[68ch] flex-col gap-4">
           <li>
             Body and label text stay at or above <strong>18px</strong> on mobile,
-            at the default browser text size. Currently 19.2px.
+            at the default browser text size. Body sits exactly on the floor —
+            18px is its designed mobile size — and label stays at 20px.
           </li>
           <li>
             Caption stays at <strong>16px</strong> on mobile. Its leading tightens;
@@ -474,11 +478,20 @@ export const Constraints: Story = {
     await expect(fontSizeAt(label!, PHONE)).toBeGreaterThanOrEqual(18);
     await expect(fontSizeAt(caption!, PHONE)).toBe(16);
 
-    // body-default is 20px, at every width. It used to drop to 19.2px on
-    // phones under a comment claiming the phone got larger text, which it
-    // never did.
-    for (const { width } of REFERENCE_WIDTHS) {
-      await expect(fontSizeAt(body!, width)).toBe(20);
+    // body-default is 18px on a phone and 20px from 1024 up — the design
+    // system's sizes, restored after a spell pinned at 20 everywhere. It
+    // never leaves that range, and it never shrinks as the viewport grows.
+    // toBeCloseTo, not toBe: each fluid size is the solution to two fixed
+    // points, so its coefficients are irrational and the residue is around a
+    // millionth of a pixel — same reason as the design-width check below.
+    await expect(fontSizeAt(body!, PHONE)).toBeCloseTo(18, 2);
+    await expect(fontSizeAt(body!, DESIGN_WIDTH)).toBeCloseTo(20, 2);
+    let previous = 0;
+    for (const { width } of [...REFERENCE_WIDTHS].sort((a, b) => a.width - b.width)) {
+      const size = fontSizeAt(body!, width)!;
+      await expect(size).toBeGreaterThanOrEqual(Math.max(18, previous) - 0.01);
+      await expect(size).toBeLessThanOrEqual(20 + 0.01);
+      previous = size;
     }
 
     // Ordering: a style named larger must never paint smaller than the one
@@ -510,8 +523,8 @@ export const Constraints: Story = {
       't-h05': [24, 24, 24, 24, 24],
       't-quote': [44, 44, 55, 60, 64],
       't-digit': [88, 88, 106, 113, 120],
-      't-body-lg': [24, 24, 24, 24, 24],
-      't-body': [20, 20, 20, 20, 20],
+      't-body-lg': [20, 20, 22, 23, 24],
+      't-body': [18, 18, 19, 20, 20],
       't-label': [20, 20, 20, 20, 20],
       't-caption': [16, 16, 16, 16, 16],
     };

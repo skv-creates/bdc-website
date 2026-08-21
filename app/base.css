@@ -97,8 +97,8 @@
   --fs-h05: 1.5rem;   /* 100% at every width — no band entries */
   --fs-quote: 4rem;
   --fs-digit: 7.5rem;
-  --fs-body-lg: 1.5rem; /* 100% at every width */
-  --fs-body: 1.25rem;    /* 100% at every width */
+  --fs-body-lg: 1.5rem; /* 24 at desktop; 20 on a phone — see the bands */
+  --fs-body: 1.25rem;    /* 20 at desktop; 18 on a phone — see the bands */
   --fs-label: 1.25rem;   /* 100% at every width */
   --fs-caption: 1rem; /* 100% at every width */
 
@@ -345,8 +345,8 @@ main:focus { outline: none; }
      h05          24    24     24     24     24   100
      quote        44    44     55     60     64    69
      digit        88    88    106    113    120    73
-     body-lg      24    24     24     24     24   100
-     body         20    20     20     20     20   100
+     body-lg      20    20     22     23     24    83
+     body         18    18     19     20     20    90
      label        20    20     20     20     20   100
      caption      16    16     16     16     16   100
 
@@ -356,8 +356,11 @@ main:focus { outline: none; }
    a style that is already at full size on a phone stays there, and one that is
    compressed recovers on the same curve rather than on a curve of its own.
 
-   h05, body-lg, body, label and caption are 100% at every width, so they have
-   no band entries at all — their base value is the whole story.
+   h05, label and caption are 100% at every width, so they have no band
+   entries at all — their base value is the whole story. body-lg and body are
+   the design system's mobile sizes — 20 and 18 on a phone — and recover on
+   the shared curve like the headings; body closes its whole gap by 1024, so
+   its top band has no entry.
 
    Below 390 nothing shrinks further: only h01 has a floor distinct from its 390
    value, and the rest simply hold. Each band is a straight line between two
@@ -374,6 +377,7 @@ main:focus { outline: none; }
     --fs-h04: calc(1.806352rem + 0.204918vw);   /* 31 → 32 */
     --fs-quote: calc(3.22541rem + 0.819672vw); /* 60 → 64 */
     --fs-digit: calc(6.144467rem + 1.434426vw); /* 113 → 120 */
+    --fs-body-lg: calc(1.306352rem + 0.204918vw); /* 23 → 24 */
   }
 }
 
@@ -385,6 +389,8 @@ main:focus { outline: none; }
     --fs-h04: calc(1.6875rem + 0.390625vw);          /* 30 → 31 */
     --fs-quote: calc(2.5rem + 1.953125vw);        /* 55 → 60 */
     --fs-digit: calc(5.3125rem + 2.734375vw);        /* 106 → 113 */
+    --fs-body-lg: calc(1.1875rem + 0.390625vw);      /* 22 → 23 */
+    --fs-body: calc(1rem + 0.390625vw);              /* 19 → 20 */
   }
 }
 
@@ -396,6 +402,8 @@ main:focus { outline: none; }
     --fs-h04: calc(1.621032rem + 0.529101vw);   /* 28 → 30 */
     --fs-quote: calc(2.040675rem + 2.910053vw); /* 44 → 55 */
     --fs-digit: calc(4.339286rem + 4.761905vw); /* 88 → 106 */
+    --fs-body-lg: calc(1.121032rem + 0.529101vw); /* 20 → 22 */
+    --fs-body: calc(1.060516rem + 0.264550vw);    /* 18 → 19 */
   }
 }
 
@@ -407,6 +415,8 @@ main:focus { outline: none; }
     --fs-h04: 1.75rem;
     --fs-quote: 2.75rem;
     --fs-digit: 5.5rem;
+    --fs-body-lg: 1.25rem;
+    --fs-body: 1.125rem;
   }
 }
 

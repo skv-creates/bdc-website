@@ -200,19 +200,18 @@ const bg = {
 
   nav: {
     links: [
-      // Real pages, not home-page anchors: a nav of "#" links reads as a
-      // single-page site to a crawler (and to an Ad Grants reviewer). The
-      // initiatives item still opens the mega menu on hover — see SiteNav.
+      // Real pages only — no home-page anchors: a nav of "#" links reads as a
+      // single-page site to a crawler (and to an Ad Grants reviewer), and the
+      // mission and team sections are one scroll away on the home page anyway.
+      // The initiatives item still opens the mega menu on hover — see SiteNav.
       { label: "Инициативи", href: "/initiatives" },
-      { label: "Събития", href: "/events" },
-      { label: "Мисия", href: "#mission" },
-      { label: "Екип", href: "#team" },
+      { label: "Новини и събития", href: "/events" },
       { label: "За нас", href: "/about" },
       { label: "Контакт", href: "/contact" },
     ],
     // The partner page: the one form this codebase hosts itself, so the
     // primary CTA stays on the site from click to confirmation.
-    cta: { label: "Партнирай с нас →", href: "/partner" },
+    cta: { label: "Партньорство →", href: "/partner" },
   },
 
   hero: {
@@ -1171,13 +1170,11 @@ const en: typeof bg = {
   nav: {
     links: [
       { label: "Initiatives", href: "/initiatives" },
-      { label: "Events", href: "/events" },
-      { label: "Mission", href: "#mission" },
-      { label: "Team", href: "#team" },
+      { label: "News and events", href: "/events" },
       { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
     ],
-    cta: { label: "Partner with us →", href: "/partner" },
+    cta: { label: "Partnership →", href: "/partner" },
   },
 
   hero: {
