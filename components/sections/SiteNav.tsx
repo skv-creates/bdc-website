@@ -50,8 +50,8 @@ export function SiteNav({
   const [open, setOpen] = useState(false);
   const [mega, setMega] = useState(false);
   // The nav item that opens the menu is the one pointing at the initiatives
-  // section — matching on href rather than label so it survives translation.
-  const megaHref = "#initiatives";
+  // index — matching on href rather than label so it survives translation.
+  const megaHref = "/initiatives";
 
   /**
    * The logo always goes home — including from the home page itself.
@@ -178,24 +178,23 @@ export function SiteNav({
           <nav className="hidden lg:col-start-4 lg:col-span-4 lg:flex lg:items-center lg:gap-5 lg:justify-self-start">
             {nav.links.map((l) =>
               initiatives && l.href === megaHref ? (
-                // A button, not a link: it opens a panel rather than navigating,
-                // and aria-expanded is what tells a screen reader that.
-                // Click only opens — never toggles shut. Pressing the trigger
-                // again while reading the panel used to snap it closed; the
-                // ways out are navigating a row, Escape, the scrim, or moving
-                // the pointer off the header.
-                <button
+                // A link that also discloses: hover opens the panel, click and
+                // Enter navigate to the initiatives index — so the item is a
+                // conventional nav link to a crawler and to the keyboard, and
+                // the panel is a pointer shortcut on top. Plain <a>, like the
+                // panel's own rows, so the @modal interceptor stays out of it.
+                <a
                   key={l.label}
-                  type="button"
+                  href={linkHref(l.href)}
                   aria-expanded={mega}
-                  onClick={() => setMega(true)}
+                  aria-haspopup="true"
                   onMouseEnter={() => setMega(true)}
-                  className={`t-caption cursor-pointer whitespace-nowrap border-b-2 transition-colors ${
+                  className={`t-caption whitespace-nowrap border-b-2 transition-colors ${
                     mega ? "border-current" : "border-transparent hover:border-current"
                   }`}
                 >
                   {l.label}
-                </button>
+                </a>
               ) : (
                 <a
                   key={l.label}
@@ -212,7 +211,7 @@ export function SiteNav({
           {/* justify-end against cols 8–11 lands the CTA + language toggle on
               the right edge of column 11, clear of the rail. */}
           <div className="hidden items-center gap-4 lg:col-start-8 lg:col-span-4 lg:flex lg:justify-end">
-            <Button variant="small" href={nav.cta.href}>{nav.cta.label}</Button>
+            <Button variant="small" href={linkHref(nav.cta.href)}>{nav.cta.label}</Button>
             {/* inline-grid + min-h-6/min-w-6 so the two-letter toggle still
                 meets the 24×24 of WCAG 2.2 2.5.8; it measured 22×26. */}
             <a
@@ -302,7 +301,7 @@ export function SiteNav({
             {/* Pinned. The rule marks it off from the list that scrolls past. */}
             <div className="flex shrink-0 items-center gap-8 border-t border-border/20 pb-8 pe-8 pt-6">
               <div className="flex-1">
-                <Button variant="secondary" href={nav.cta.href} fullWidth>
+                <Button variant="secondary" href={linkHref(nav.cta.href)} fullWidth>
                   {nav.cta.label}
                 </Button>
               </div>

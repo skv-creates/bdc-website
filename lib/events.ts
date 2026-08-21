@@ -101,6 +101,13 @@ type RawEvent = {
   description: Record<Locale, string>;
   location?: string;
   covers?: EventImage[];
+  /**
+   * Notion's last_edited_time (date part), stamped by the sync — the one real
+   * modification date this site holds, and the only thing the sitemap is
+   * allowed to say `lastmod` with. Optional because rows synced before the
+   * field existed do not carry it; they simply say nothing.
+   */
+  lastEdited?: string;
 };
 
 /**
@@ -129,6 +136,7 @@ const GENERATED: RawEvent[] = (generatedEvents.events ?? []).map((e) => ({
   covers: (e as { covers?: EventImage[] }).covers?.filter(
     ({ src }) => !HIDDEN_EVENT_COVERS.has(src),
   ),
+  lastEdited: (e as { lastEdited?: string }).lastEdited,
 }));
 
 /* =============================================================================
@@ -233,8 +241,8 @@ export async function getEvent(locale: Locale, slug: string): Promise<BdcEvent |
  * locales), so both the full page and the intercepted modal prerender the same
  * set under each `[locale]`.
  */
-export async function getEventSlugs(): Promise<{ slug: string }[]> {
-  return fetchRawEvents().map((e) => ({ slug: e.slug }));
+export async function getEventSlugs(): Promise<{ slug: string; lastEdited?: string }[]> {
+  return fetchRawEvents().map((e) => ({ slug: e.slug, lastEdited: e.lastEdited }));
 }
 
 /** Locales this module knows about (re-export for callers building param grids). */

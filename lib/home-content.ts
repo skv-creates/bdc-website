@@ -200,13 +200,19 @@ const bg = {
 
   nav: {
     links: [
-      { label: "Инициативи", href: "#initiatives" },
-      { label: "Събития", href: "#activities" },
+      // Real pages, not home-page anchors: a nav of "#" links reads as a
+      // single-page site to a crawler (and to an Ad Grants reviewer). The
+      // initiatives item still opens the mega menu on hover — see SiteNav.
+      { label: "Инициативи", href: "/initiatives" },
+      { label: "Събития", href: "/events" },
       { label: "Мисия", href: "#mission" },
       { label: "Екип", href: "#team" },
       { label: "За нас", href: "/about" },
+      { label: "Контакт", href: "/contact" },
     ],
-    cta: { label: "Членувай →", href: "https://tally.so/r/81PbQA" },
+    // The landing page, not the Tally form: the application still lives there,
+    // but the primary CTA stays on the site and /join explains before it asks.
+    cta: { label: "Членувай →", href: "/join" },
   },
 
   hero: {
@@ -668,7 +674,7 @@ const bg = {
     label: "Нашата мисия",
     heading: "Изграждаме устойчива и разпознаваема дизайн култура в България",
     paragraphs: [
-      "Български дизайн съвет е независимо сдружение с нестопанска цел — неправителствена организация, създадена от дизайнери за дизайнери.",
+      "Български дизайн съвет е независимо сдружение с нестопанска цел — неправителствена организация, която укрепва националната дизайн способност на България.",
       "Целта ни е да изградим устойчива, свързана и силно конкурентна дизайн екосистема в България.",
     ],
   },
@@ -754,7 +760,7 @@ const bg = {
   faq: {
     heading: "Въпроси? Отговори.",
     subheading:
-      "Български дизайн съвет е независимо сдружение с нестопанска цел, създадено от дизайнери за дизайнери, с цел да изгради устойчива, свързана и силно конкурентна дизайн екосистема в България.",
+      "Български дизайн съвет е независимо сдружение с нестопанска цел. Укрепваме националната дизайн способност на България за по-добри икономически, обществени, културни и екологични резултати.",
     groups: [
       {
         title: "Структура, управление и правна рамка",
@@ -1066,6 +1072,8 @@ const bg = {
     accessibilityShort: "Достъпност",
     contactHeading: "Контакти",
     email: "info@bulgariandesigncouncil.org",
+    /** Линк към страницата за контакт, под имейла в същата колона. */
+    contactPage: "Свържи се с нас",
     /**
      * The legal status in words before the registry code — Ad Grants reviewers
      * must find the non-profit status "prominently displayed", and a bare
@@ -1147,13 +1155,14 @@ const en: typeof bg = {
 
   nav: {
     links: [
-      { label: "Initiatives", href: "#initiatives" },
-      { label: "Events", href: "#activities" },
+      { label: "Initiatives", href: "/initiatives" },
+      { label: "Events", href: "/events" },
       { label: "Mission", href: "#mission" },
       { label: "Team", href: "#team" },
       { label: "About", href: "/about" },
+      { label: "Contact", href: "/contact" },
     ],
-    cta: { label: "Become a member →", href: "https://tally.so/r/81PbQA" },
+    cta: { label: "Become a member →", href: "/join" },
   },
 
   hero: {
@@ -1580,7 +1589,7 @@ const en: typeof bg = {
     label: "Our Mission",
     heading: "We are building a sustainable and recognizable design culture in Bulgaria",
     paragraphs: [
-      "The Bulgarian Design Council is an independent non-profit association — a non-governmental organization created by designers for designers.",
+      "The Bulgarian Design Council is an independent non-profit association — a non-governmental organization strengthening Bulgaria's national design capability.",
       "Our goal is to build a sustainable, connected and highly competitive design ecosystem in Bulgaria.",
     ],
   },
@@ -1662,7 +1671,7 @@ const en: typeof bg = {
   faq: {
     heading: "Questions? Answers.",
     subheading:
-      "The Bulgarian Design Council is an independent non-profit association, created by designers for designers, with the goal of building a sustainable, connected and highly competitive design ecosystem in Bulgaria.",
+      "The Bulgarian Design Council is an independent non-profit association. We strengthen Bulgaria's national design capability for better economic, social, cultural and environmental outcomes.",
     groups: [
       {
         title: "Structure, governance and legal framework",
@@ -1974,6 +1983,8 @@ const en: typeof bg = {
     accessibilityShort: "Accessibility",
     contactHeading: "Contacts",
     email: "info@bulgariandesigncouncil.org",
+    /** Link to the contact page, under the email in the same column. */
+    contactPage: "Get in touch",
     /** Same code as the privacy policy gives; "UIC" is the wording used there. */
     uicStatus: "Registered Non-profit",
     /* Already spelled out — nothing for a tooltip to add. */

@@ -11,14 +11,14 @@
  * intercepting routes share their URLs with the real pages and produce none of
  * their own, so they cannot appear here by construction.
  *
- * No lastModified, changeFrequency or priority. Google ignores the last two
- * outright. lastModified is left off because the only date this site holds for
- * an event is the date the event happens — several of them in the future,
- * none of them a modification time — and a sitemap caught lying about lastmod
- * once has the whole file's lastmod discounted thereafter. scripts/
- * sync-notion-events.mjs can supply a real one (Notion's last_edited_time is
- * already on every row it fetches); until then, saying nothing is the honest
- * option.
+ * No changeFrequency or priority — Google ignores both outright. lastModified
+ * appears only where a real modification time exists: the `lastEdited` the
+ * events sync stamps from Notion's last_edited_time (rows synced before the
+ * field existed carry none and say nothing), and the events index, which is
+ * honestly "modified" whenever its newest row is. The hand-edited pages state
+ * no lastmod at all: a build date is not an edit date, and a sitemap caught
+ * lying about lastmod once has the whole file's lastmod discounted
+ * thereafter.
  */
 import type { MetadataRoute } from "next";
 import { locales } from "@/lib/i18n";
@@ -28,26 +28,40 @@ import { absoluteUrl, localePath, sitemapAlternates } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const events = await getEventSlugs();
+  // The index changes when its newest-edited row does; with no stamped rows
+  // it simply says nothing, like the hand-edited pages.
+  const eventsIndexEdited = events
+    .map((e) => e.lastEdited)
+    .filter((d): d is string => Boolean(d))
+    .sort()
+    .at(-1);
 
-  const paths = [
-    "",
-    "/about",
-    "/initiatives",
-    "/statute",
-    "/privacy",
-    "/accessibility",
-    "/volunteer",
+  const paths: { path: string; lastModified?: string }[] = [
+    { path: "" },
+    { path: "/about" },
+    { path: "/initiatives" },
+    { path: "/events", lastModified: eventsIndexEdited },
+    { path: "/statute" },
+    { path: "/privacy" },
+    { path: "/accessibility" },
+    { path: "/volunteer" },
     // /partner/thanks is deliberately absent: it is the Ad Grants conversion
     // page (noindexed), and a crawler-found arrival would count as a
     // conversion that never happened.
-    "/partner",
-    ...events.map(({ slug }) => `/events/${slug}`),
-    ...getInitiativeSlugs().map(({ slug }) => `/initiatives/${slug}`),
+    { path: "/partner" },
+    { path: "/join" },
+    { path: "/contact" },
+    ...events.map(({ slug, lastEdited }) => ({
+      path: `/events/${slug}`,
+      lastModified: lastEdited,
+    })),
+    ...getInitiativeSlugs().map(({ slug }) => ({ path: `/initiatives/${slug}` })),
   ];
 
-  return paths.flatMap((path) =>
+  return paths.flatMap(({ path, lastModified }) =>
     locales.map((locale) => ({
       url: absoluteUrl(localePath(locale, path)),
+      ...(lastModified ? { lastModified } : {}),
       alternates: { languages: sitemapAlternates(path) },
     })),
   );

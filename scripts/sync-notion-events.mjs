@@ -425,6 +425,11 @@ const events = rows
       location: text(row, "Локация"),
       name: { bg: nameBg, en: nameEn },
       description: { bg: descBg, en: descEn || descBg },
+      // The one real modification date this site holds — the sitemap uses it
+      // as the event page's lastmod, and nothing else is allowed to claim one
+      // (see app/sitemap.ts). Date part only: the hour is Notion's, not the
+      // page's.
+      lastEdited: row.last_edited_time?.slice(0, 10),
       // Carried alongside so the download pass below can reach them; stripped
       // again before the JSON is written.
       imageUrls: body.images,
