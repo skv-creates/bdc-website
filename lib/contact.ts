@@ -61,8 +61,8 @@ export const CONTACT_COPY: Record<
       {
         title: "Членство",
         body: "Искаш да станеш част от сдружението — като физическо лице или организация.",
-        label: "Как се членува",
-        href: "/join",
+        label: "Заявление за членство",
+        href: "https://tally.so/r/81PbQA",
       },
       {
         title: "Доброволчество",
@@ -103,8 +103,8 @@ export const CONTACT_COPY: Record<
       {
         title: "Membership",
         body: "You want to become part of the association — as an individual or an organisation.",
-        label: "How to join",
-        href: "/join",
+        label: "Membership application",
+        href: "https://tally.so/r/81PbQA",
       },
       {
         title: "Volunteering",

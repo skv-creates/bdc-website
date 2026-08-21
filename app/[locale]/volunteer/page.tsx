@@ -148,16 +148,8 @@ export default async function VolunteerPage({
         </main>
       </div>
 
-      {/* Three-block strip between the content and the footer (358:3753).
-          Widths are the frame's, as percentages so they hold at any width:
-          129 / 556 / 827 of 1512. The colours are the pattern-rail recolour
-          slots, so clicking the rail restyles this too. */}
-      <div className="relative z-30 flex h-3" aria-hidden>
-        <span className="w-[8.55%]" style={{ background: "var(--tri-accent)" }} />
-        <span className="w-[36.75%]" style={{ background: "var(--tri-band)" }} />
-        <span className="flex-1" style={{ background: "var(--tri-ground)" }} />
-      </div>
-
+      {/* No strip here: <SiteFooter/> draws the brand strip across its own
+          top edge, and a second one put two bands above the footer. */}
       <SiteFooter footer={c.footer} locale={locale} />
     </>
   );

@@ -210,9 +210,9 @@ const bg = {
       { label: "За нас", href: "/about" },
       { label: "Контакт", href: "/contact" },
     ],
-    // The landing page, not the Tally form: the application still lives there,
-    // but the primary CTA stays on the site and /join explains before it asks.
-    cta: { label: "Членувай →", href: "/join" },
+    // The partner page: the one form this codebase hosts itself, so the
+    // primary CTA stays on the site from click to confirmation.
+    cta: { label: "Партнирай с нас →", href: "/partner" },
   },
 
   hero: {
@@ -320,6 +320,21 @@ const bg = {
     lede: "Идеите намират почва, когато хората се съберат около тях.",
     /** The mega menu's link to the /initiatives index page. */
     allLabel: "Всички инициативи",
+    /** The /initiatives index page's own copy (Figma 604:4917). */
+    index: {
+      title: "Дизайнът в действие.",
+      lede: "Разгледайте активните ни програми и пилотните инициативи.",
+      readMore: "Прочети повече",
+      /* Затварящата секция за партньорства; заглавието ѝ е lede по-горе. */
+      partners: {
+        eyebrow: "Партньорства",
+        body:
+          "Работим с организации и институции по изследвания, програми и пилотни инициативи. " +
+          "Разкажете ни за предизвикателството и промяната, която искате да създадем заедно.",
+        partnerLabel: "Партнирай с нас",
+        volunteerLabel: "Стани доброволец",
+      },
+    },
     items: [
       {
         slug: "policy-lab",
@@ -1162,7 +1177,7 @@ const en: typeof bg = {
       { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
     ],
-    cta: { label: "Become a member →", href: "/join" },
+    cta: { label: "Partner with us →", href: "/partner" },
   },
 
   hero: {
@@ -1247,6 +1262,21 @@ const en: typeof bg = {
     heading: "Initiatives",
     lede: "Ideas take root when people gather around them.",
     allLabel: "All initiatives",
+    /** The /initiatives index page's own copy (Figma 604:4917). */
+    index: {
+      title: "Design in action.",
+      lede: "Explore our active programmes and pilot initiatives.",
+      readMore: "Read more",
+      /* The closing partnerships section; its heading is the lede above. */
+      partners: {
+        eyebrow: "Partnerships",
+        body:
+          "We work with organisations and institutions on research, programmes and pilot initiatives. " +
+          "Tell us about the challenge, and the change you want us to create together.",
+        partnerLabel: "Partner with us",
+        volunteerLabel: "Become a volunteer",
+      },
+    },
     // Bulgarian is the editorial source of truth. The overview `text` for
     // every item below is a direct translation of its Bulgarian counterpart,
     // never an independently shortened marketing blurb.

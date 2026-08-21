@@ -1,22 +1,21 @@
 /**
- * /[locale]/initiatives — the index the navigation never had.
+ * /[locale]/initiatives — the initiatives index (Figma 604:4917).
  *
- * The nav's «Инициативи» is a mega-menu *button*, which works for a pointer
- * and gives a crawler nothing: there was no URL that collects and explains
- * the council's activities. This page is that URL — the Ad Grants policy
- * asks for exactly such a place ("describe its activities or services").
- *
- * Everything is reused: the section's own eyebrow + standfirst grammar for
- * the head, and the events page's ruled-row list for the four initiatives —
- * title, category and the hover →, with each card's blurb underneath.
+ * Three movements, per the frame: the head — eyebrow «Инициативи», the
+ * display line "Дизайнът в действие." and its standfirst; the archive — one
+ * tall cover on the left that follows the pointer, the four initiatives as
+ * ruled rows on the right (InitiativeArchive); and the partnerships close —
+ * the section's own lede as the heading, a short invitation, and the two
+ * doors: the partner form and the volunteer page.
  */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { localeAlternates, openGraphBase } from "@/lib/seo";
-import Image from "next/image";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
+import { Button } from "@/components/ui/Button";
+import { InitiativeArchive } from "@/components/initiatives/InitiativeArchive";
 import { getContent, hasLocale, locales } from "@/lib/home-content";
 
 export function generateStaticParams() {
@@ -33,12 +32,12 @@ export async function generateMetadata({
   const c = getContent(locale);
   return {
     title: c.initiatives.heading,
-    description: c.initiatives.lede,
+    description: c.initiatives.index.lede,
     alternates: localeAlternates(locale, "/initiatives"),
     openGraph: openGraphBase(
       locale,
       "/initiatives",
-      { title: c.initiatives.heading, description: c.initiatives.lede },
+      { title: c.initiatives.heading, description: c.initiatives.index.lede },
       c.meta.title,
     ),
   };
@@ -52,6 +51,7 @@ export default async function InitiativesPage({
   const { locale } = await params;
   if (!hasLocale(locale)) notFound();
   const c = getContent(locale);
+  const index = c.initiatives.index;
 
   return (
     <>
@@ -69,66 +69,54 @@ export default async function InitiativesPage({
         <SiteNav nav={c.nav} ui={c.ui} locale={locale} path="/initiatives" initiatives={c.initiatives} />
 
         <main id="main" tabIndex={-1} className="pt-16 lg:pt-[120px]">
-          {/* The section's own grammar, page-sized: eyebrow naming the
-              section, the standfirst as the display heading — exactly how
-              the home section and the About page open. */}
+          {/* The head (604:4923): eyebrow naming the section, the display
+              line, the standfirst under it. */}
           <section className="bdc-stop-11 bdc-grid gap-y-12 pb-12 lg:pb-20">
             <div className="col-span-full flex items-center gap-3">
               <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
               <span className="t-caption">{c.initiatives.heading}</span>
             </div>
-            <h1 className="t-h01 col-span-full lg:col-span-9">{c.initiatives.lede}</h1>
+            <h1 className="t-h01 col-span-full lg:col-span-6">{index.title}</h1>
+            <p className="t-body col-span-full lg:col-span-7">{index.lede}</p>
           </section>
 
-          {/* The four initiatives as the events page's own ruled rows —
-              each initiative's cover photograph leading the row, then title,
-              category and the → that answers hover, with the card blurb
-              carried underneath so the page still describes each activity. */}
-          <section className="bdc-stop-11 bdc-grid pb-20 lg:pb-[120px]">
-            <ul className="col-span-full border-b border-border lg:col-start-2 lg:col-span-10">
-              {c.initiatives.items.map((it) => (
-                <li key={it.slug} className="border-t border-border">
-                  {/* A plain <a>, not <Link>, on purpose: client-side
-                      navigation to /initiatives/[slug] is intercepted by
-                      @modal/(.)initiatives/[slug] and opens the overlay. From
-                      an index whose whole job is to lead into the initiative
-                      pages, the full page is the right destination, and only
-                      a full navigation reaches it. */}
-                  <a
-                    href={`/${locale}/initiatives/${it.slug}`}
-                    className="group grid grid-cols-4 gap-x-6 py-6 transition-colors hover:bg-brand md:grid-cols-10"
-                  >
-                    {it.cover && (
-                      <span className="relative col-span-4 row-start-1 mb-4 block aspect-square overflow-hidden md:col-span-2 md:row-span-2 md:mb-0">
-                        <Image
-                          src={it.cover.src}
-                          alt={it.cover.alt}
-                          fill
-                          sizes="(max-width: 767px) 90vw, 20vw"
-                          className="object-cover"
-                          style={{ objectPosition: it.cover.focal ?? "center" }}
-                        />
-                      </span>
-                    )}
-                    <span className="t-body-lg col-span-3 row-start-2 font-bold md:col-start-3 md:col-span-5 md:row-start-1">
-                      {it.title}
-                    </span>
-                    <span className="t-body col-span-4 row-start-3 mt-2 md:col-start-3 md:col-span-5 md:row-start-2 md:mt-3">
-                      {it.text}
-                    </span>
-                    <span className="t-caption col-start-4 row-start-2 md:col-span-2 md:col-start-8 md:row-start-1 md:mt-1">
-                      {it.label}
-                    </span>
-                    <span
-                      className="col-start-4 row-start-1 hidden opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 md:col-start-10 md:block"
-                      aria-hidden
-                    >
-                      →
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+          {/* The archive (604:4931): cover left, ruled rows right. */}
+          <section className="bdc-stop-11 py-12">
+            <InitiativeArchive
+              initiatives={c.initiatives}
+              readMore={index.readMore}
+              locale={locale}
+            />
+          </section>
+
+          {/* The partnerships close (611:2630): the section's lede promoted
+              to the heading, the invitation, and the two doors. */}
+          <section className="bdc-stop-11 py-20 lg:py-[120px]">
+            <div className="flex max-w-[1056px] flex-col gap-12">
+              <div className="flex flex-col gap-8">
+                <div className="flex items-center gap-3">
+                  <span
+                    className="h-2 w-4 shrink-0"
+                    style={{ background: "var(--bdc-tomato)" }}
+                    aria-hidden
+                  />
+                  <span className="t-caption">{index.partners.eyebrow}</span>
+                </div>
+                <h2 className="t-h02 max-w-[684px]">{c.initiatives.lede}</h2>
+              </div>
+
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
+                <p className="t-body max-w-[516px]">{index.partners.body}</p>
+                <div className="flex flex-col items-start gap-4 md:flex-row md:items-end md:gap-6">
+                  <Button href={`/${locale}/partner`} variant="primary">
+                    {index.partners.partnerLabel}
+                  </Button>
+                  <Button href={`/${locale}/volunteer`} variant="secondary">
+                    {index.partners.volunteerLabel}
+                  </Button>
+                </div>
+              </div>
+            </div>
           </section>
         </main>
       </div>

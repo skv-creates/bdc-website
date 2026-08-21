@@ -1,16 +1,16 @@
 /**
  * Events index — /bg/events, /en/events.
  *
- * Every synced event, newest first, with its full date (year included — the
- * home page's list can afford "25.04", an archive cannot), its format, where
- * it happened, and the opening of its description. Each row links to the
- * event's own page.
+ * The full archive, in exactly the layout the home page's five-row list
+ * teaches: date · name · type, hairline rows, the same component
+ * (ActivitiesList) rendering both so they cannot drift apart. The home list's
+ * "see all" link lands here; here every row shows and there is nothing left
+ * to unfold.
  *
- * Plain <a> links, same rule as the mega menu: a soft navigation would be
- * caught by the @modal/(.)events interceptor and open the overlay on top of
- * this page, and the destination here is the event's own document.
- *
- * The "upcoming" chip is client-rendered — see components/events/UpcomingBadge.
+ * Rows link with next/link, as on the home page, so the @modal/(.)events
+ * interceptor opens the event as an overlay on top of the list — the same
+ * browsing rhythm the home page has — while a hard visit to the URL still
+ * gets the full document.
  */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -18,7 +18,7 @@ import { localeAlternates, openGraphBase } from "@/lib/seo";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
-import { UpcomingBadge } from "@/components/events/UpcomingBadge";
+import { ActivitiesList } from "@/components/sections/ActivitiesList";
 import { getContent, hasLocale } from "@/lib/home-content";
 import { getEvents } from "@/lib/events";
 import { EVENTS_INDEX_COPY } from "@/lib/events-index";
@@ -77,7 +77,7 @@ export default async function EventsPage({
         />
 
         <main id="main" tabIndex={-1} className="bdc-stop-11 pb-20 pt-20 md:pb-[72px] md:pt-[120px]">
-          <div className="flex max-w-[1056px] flex-col gap-12">
+          <div className="flex flex-col gap-12">
             <div className="flex items-center gap-3">
               <span
                 className="h-2 w-4 shrink-0"
@@ -89,64 +89,14 @@ export default async function EventsPage({
 
             <h1 className="t-h01 max-w-[732px]">{copy.title}</h1>
 
-            <hr className="border-0 border-t border-border" />
-
             <p className="t-h05 max-w-[540px]">{copy.lead}</p>
+          </div>
 
-            <ul className="flex flex-col">
-              {events.map((e) => (
-                <li key={e.slug} className="border-t border-border">
-                  {/* The whole row is the link — a block anchor, so the date,
-                      the title and the excerpt all take a visitor to the page. */}
-                  <a
-                    href={`/${locale}/events/${e.slug}`}
-                    className="group grid gap-x-8 gap-y-3 py-8 md:grid-cols-[10rem_1fr]"
-                  >
-                    <div className="flex flex-col items-start gap-2">
-                      {/* The full date, year included: an archive is read long
-                          after "25.04" stops being obvious. */}
-                      <time dateTime={e.date} className="t-body font-bold">
-                        {e.dateLong}
-                      </time>
-                      <UpcomingBadge date={e.date} label={copy.upcoming} />
-                    </div>
-                    <div className="flex max-w-[640px] flex-col gap-3">
-                      <h2 className="t-h05">
-                        <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
-                          {e.name}
-                        </span>
-                      </h2>
-                      <p className="t-caption flex items-center gap-2">
-                        <span
-                          aria-hidden
-                          className="size-2 shrink-0"
-                          style={{ background: e.type.accent }}
-                        />
-                        {e.type.label}
-                        {e.location && <span> · {e.location}</span>}
-                      </p>
-                      {/* The description's opening paragraph, clamped: enough
-                          to say what the council did there, short enough that
-                          the archive stays a list. The full text is one click
-                          away. */}
-                      {e.description && (
-                        <p className="t-body line-clamp-3">
-                          {e.description.split("\n\n")[0]}
-                        </p>
-                      )}
-                    </div>
-                  </a>
-                </li>
-              ))}
-            </ul>
+          {/* The archive, in the home page's own list layout. */}
+          <div className="bdc-grid">
+            <ActivitiesList events={events} locale={locale} />
           </div>
         </main>
-      </div>
-
-      <div className="relative z-30 flex h-3" aria-hidden>
-        <span className="w-[8.55%]" style={{ background: "var(--tri-accent)" }} />
-        <span className="w-[36.75%]" style={{ background: "var(--tri-band)" }} />
-        <span className="flex-1" style={{ background: "var(--tri-ground)" }} />
       </div>
 
       <SiteFooter footer={c.footer} locale={locale} />

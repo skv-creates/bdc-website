@@ -31,9 +31,13 @@ export async function Activities({
 
         {/* Indented to start at column 2 on desktop (per design); the list
             then runs to the grid's right edge. Full width on tablet/mobile.
-            The rows are a client component only because the fold needs a
-            click — they are still rendered here, on the server. */}
-        <ActivitiesList events={events} locale={locale} showMoreLabel={showMoreLabel} />
+            Folded after five rows; the control under the list goes to the
+            events page, where the whole archive lives. */}
+        <ActivitiesList
+          events={events}
+          locale={locale}
+          seeAll={{ label: showMoreLabel, href: `/${locale}/events` }}
+        />
       </div>
     </section>
   );

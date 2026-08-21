@@ -129,17 +129,29 @@ export default async function ContactPage({
           <div className="mt-20 flex max-w-[1056px] flex-col gap-8">
             <h2 className="t-h02">{copy.routesHeading}</h2>
             <div className="grid gap-8 md:grid-cols-3">
-              {copy.routes.map((r) => (
-                <div key={r.title} className="flex flex-col gap-3 border-t border-border pt-5">
-                  <h3 className="t-body font-bold">{r.title}</h3>
-                  <p className="t-body">{r.body}</p>
-                  <a href={`/${locale}${r.href}`} className="t-body group mt-auto self-start">
-                    <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                      {r.label} →
-                    </span>
-                  </a>
-                </div>
-              ))}
+              {copy.routes.map((r) => {
+                // The membership application lives on Tally; the other two
+                // doors are pages of this site. ↗ for the one that leaves,
+                // → for the ones that stay — the footer's own convention.
+                const external = r.href.startsWith("http");
+                return (
+                  <div key={r.title} className="flex flex-col gap-3 border-t border-border pt-5">
+                    <h3 className="t-body font-bold">{r.title}</h3>
+                    <p className="t-body">{r.body}</p>
+                    <a
+                      href={external ? r.href : `/${locale}${r.href}`}
+                      target={external ? "_blank" : undefined}
+                      rel={external ? "noreferrer" : undefined}
+                      className="t-body group mt-auto self-start"
+                    >
+                      <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
+                        {r.label} {external ? "↗" : "→"}
+                      </span>
+                      {external && <span className="sr-only"> {c.footer.newWindow}</span>}
+                    </a>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -173,12 +185,8 @@ export default async function ContactPage({
         </main>
       </div>
 
-      <div className="relative z-30 flex h-3" aria-hidden>
-        <span className="w-[8.55%]" style={{ background: "var(--tri-accent)" }} />
-        <span className="w-[36.75%]" style={{ background: "var(--tri-band)" }} />
-        <span className="flex-1" style={{ background: "var(--tri-ground)" }} />
-      </div>
-
+      {/* No strip here: <SiteFooter/> draws the brand strip across its own
+          top edge, and a second one put two bands above the footer. */}
       <SiteFooter footer={c.footer} locale={locale} />
     </>
   );

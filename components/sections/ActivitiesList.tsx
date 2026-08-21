@@ -1,35 +1,38 @@
-"use client";
-
 /**
- * The event rows, with the older ones folded away behind a "show more" button.
+ * The event rows — the one layout events are listed in, on the home page and
+ * on /events alike.
  *
- * Every row is rendered on the server and present in the HTML — the button
- * only unhides them. Fetching the rest on click would be the obvious reading
- * of "load all other" and is the wrong one here: the whole list is a few
- * kilobytes of text, it is already in the page, and making it a request would
- * cost a round trip, hide the events from anyone without JavaScript, and keep
- * them out of the page a search engine indexes.
+ * On the home page (`seeAll` supplied) the older rows are folded away and the
+ * control under the list is a link to the events page, where every row shows.
+ * The folded rows are still rendered and present in the HTML — `hidden` only
+ * unpaints them — so the list is whole for a crawler and the count in the
+ * link's label is honest.
+ *
+ * No "use client": since the fold stopped being a click and became a page,
+ * nothing here needs JavaScript.
  */
-import { useState } from "react";
 import Link from "next/link";
 import type { BdcEvent } from "@/lib/events";
 import type { Locale } from "@/lib/home-content";
 
-/** How many stay visible before the fold. */
+/** How many stay visible before the fold, where a fold is asked for. */
 const VISIBLE = 5;
 
 export function ActivitiesList({
   events,
   locale,
-  showMoreLabel,
+  seeAll,
 }: {
   events: BdcEvent[];
   locale: Locale;
-  /** Localized, with {count} where the number goes. */
-  showMoreLabel: string;
+  /**
+   * Fold the list after five rows and close it with a link to the full
+   * archive. `label` is localized, with {count} where the number of folded
+   * rows goes. Omit on the events page itself, which shows everything.
+   */
+  seeAll?: { label: string; href: string };
 }) {
-  const [expanded, setExpanded] = useState(false);
-  const hidden = Math.max(0, events.length - VISIBLE);
+  const hidden = seeAll ? Math.max(0, events.length - VISIBLE) : 0;
 
   return (
     <div className="col-span-full mt-12 md:mt-16 lg:col-start-2 lg:col-span-10">
@@ -38,11 +41,7 @@ export function ActivitiesList({
           <li
             key={e.slug}
             className="border-t border-border"
-            // Kept in the DOM rather than sliced out of it, so the list is
-            // whole for a crawler and for anyone with JavaScript off — for
-            // whom `hidden` simply never gets removed, and who get five
-            // events rather than a broken button.
-            hidden={!expanded && i >= VISIBLE}
+            hidden={hidden > 0 && i >= VISIBLE}
           >
             <Link
               href={`/${locale}/events/${e.slug}`}
@@ -79,27 +78,23 @@ export function ActivitiesList({
       </ul>
 
       {/* Right-aligned, under the end of the rows, so it reads as belonging to
-          the list rather than starting a new block beneath it.
-
-          Disappears once used. There is no "show less": the rows are a short
-          list, not a long article, and a control that folds them back up is
-          one more thing to reason about for no gain. */}
-      {hidden > 0 && !expanded && (
+          the list rather than starting a new block beneath it. A link now, not
+          a reveal: the rows it used to unfold live on the events page, which
+          also holds the full dates and the older years the home page's five
+          rows cannot. Plain <a> — the destination is the index, which no
+          @modal route intercepts, but the archive is a document, not an
+          overlay. */}
+      {hidden > 0 && seeAll && (
         <div className="mt-6 flex justify-end">
-          {/* button-terciary (398:3188) — label and mark, no pill. The arrow is
-              part of the label rather than an icon, as in the frame, and it
-              points down because this reveals rows below rather than
-              navigating anywhere. */}
-          <button
-            type="button"
-            onClick={() => setExpanded(true)}
+          <a
+            href={seeAll.href}
             className="t-caption group inline-flex min-h-11 items-center gap-3 font-medium"
           >
-            {showMoreLabel.replace("{count}", String(hidden))}
-            <span aria-hidden className="transition-transform group-hover:translate-y-1">
-              ↓
+            {seeAll.label.replace("{count}", String(hidden))}
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              →
             </span>
-          </button>
+          </a>
         </div>
       )}
     </div>
