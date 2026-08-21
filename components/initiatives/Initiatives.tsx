@@ -141,6 +141,14 @@ function InitiativesShowcase({
   const [pos, setPos] = useState(N);
   /** Set once the visitor picks a title; the strip never auto-advances again. */
   const [picked, setPicked] = useState(false);
+  /**
+   * Autoplay only runs while the section is actually on screen. Advancing
+   * off-screen walked the strip through covers nobody had seen, so whichever
+   * slide was "active" when the visitor scrolled back was one whose image had
+   * mounted hidden — an empty colour plate until its fetch caught up.
+   */
+  const root = useRef<HTMLElement | null>(null);
+  const [inView, setInView] = useState(false);
   const [animate, setAnimate] = useState(true);
   const [reduced, setReduced] = useState(false);
 
@@ -169,14 +177,22 @@ function InitiativesShowcase({
   // Autoplay. Keyed on `pos`, so every advance — including one the visitor
   // triggers — restarts the dwell rather than firing partway through it.
   useEffect(() => {
-    if (picked || reduced) return;
+    const el = root.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (picked || reduced || !inView) return;
     const t = setTimeout(() => {
       const next = pos + 1;
       setSeen((prev) => (prev.has(next % N) ? prev : new Set(prev).add(next % N)));
       setPos(next);
     }, AUTOPLAY_MS);
     return () => clearTimeout(t);
-  }, [pos, picked, reduced, N]);
+  }, [pos, picked, reduced, inView, N]);
 
   // Once a slide out of the resting band has finished, drop back to the
   // matching title inside it — whichever side it left by. Same picture, so the
@@ -288,7 +304,7 @@ function InitiativesShowcase({
   const href = (it: Initiative) => `/${locale}/initiatives/${it.slug}`;
 
   return (
-    <section id="initiatives" className="bdc-stop-11 py-20 md:py-28">
+    <section id="initiatives" ref={root} className="bdc-stop-11 py-20 md:py-28">
       <Header initiatives={initiatives} />
 
       {/* Swipe is bound here rather than on the picture so the gesture works
@@ -367,6 +383,13 @@ function InitiativesShowcase({
                 // fold on every form factor (measured live), and the preload
                 // was competing with the fonts for the critical window — the
                 // H1's swap repaint is the page's LCP.
+                //
+                // But eager, not the default lazy: `seen` is already the lazy
+                // gate — a cover only mounts once the strip shows it. Native
+                // lazy on top of that never fires for a cover mounted while
+                // the section is off-viewport, so the slide got opacity 1
+                // with zero pixels behind it and the plate showed through.
+                loading="eager"
                 className="object-cover transition-opacity duration-300"
                 style={{ opacity: i === active ? 1 : 0 }}
               />
