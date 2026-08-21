@@ -20,7 +20,8 @@ import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { getContent, hasLocale } from "@/lib/home-content";
-import { CONTACT_COPY } from "@/lib/contact";
+import { CONTACT_COPY, CONTACT_FORM_ID } from "@/lib/contact";
+import { ContactFormEmbed } from "@/components/contact/ContactFormEmbed";
 
 export async function generateMetadata({
   params,
@@ -134,6 +135,17 @@ export default async function ContactPage({
               })}
             </div>
           </div>
+
+          {/* The adaptive Tally form, between the pathways and the paperwork —
+              once CONTACT_FORM_ID names a published form. Until then the
+              section is simply absent and the email above stays the way in. */}
+          {CONTACT_FORM_ID && (
+            <div className="mt-20 flex max-w-[732px] flex-col gap-6">
+              <h2 className="t-h02">{copy.formHeading}</h2>
+              <p className="t-body max-w-[540px]">{copy.formLead}</p>
+              <ContactFormEmbed formId={CONTACT_FORM_ID} title={copy.formTitle} />
+            </div>
+          )}
 
           {/* The official details — reassurance, not the main event. */}
           <div className="mt-24 flex max-w-[516px] flex-col gap-6">

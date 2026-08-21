@@ -16,6 +16,18 @@
 
 export type Locale = "bg" | "en";
 
+/**
+ * The adaptive contact form on Tally — one form whose first question is
+ * "За какво се свързваш с нас?", branching to partnership, membership,
+ * volunteering and general enquiries via Tally's conditional logic.
+ *
+ * null until that form is built and published in the council's Tally
+ * account; the page renders its form section only when this holds the
+ * form's id (the part after tally.so/r/). When it goes live, the privacy
+ * policy needs its Tally-as-processor clause in the same change.
+ */
+export const CONTACT_FORM_ID: string | null = null;
+
 export const CONTACT_COPY: Record<
   Locale,
   {
@@ -25,6 +37,11 @@ export const CONTACT_COPY: Record<
     /** The three pathways — whole cards are the links. */
     routesHeading: string;
     routes: { title: string; body: string; label: string; href: string }[];
+    /** The inline Tally form, rendered only once CONTACT_FORM_ID is set. */
+    formHeading: string;
+    formLead: string;
+    /** The iframe's accessible name. */
+    formTitle: string;
     /** The official details, lower down. */
     legalHeading: string;
     orgName: string;
@@ -63,6 +80,10 @@ export const CONTACT_COPY: Record<
         href: "/volunteer",
       },
     ],
+    formHeading: "Разкажи ни малко повече",
+    formLead:
+      "Избери тема и ни изпрати кратко съобщение. Ще насочим запитването към правилния човек от екипа.",
+    formTitle: "Форма за запитване",
     legalHeading: "Официални данни",
     orgName: "Сдружение „Български дизайн съвет“",
     orgStatus: "Юридическо лице с нестопанска цел",
@@ -101,6 +122,10 @@ export const CONTACT_COPY: Record<
         href: "/volunteer",
       },
     ],
+    formHeading: "Tell us a little more",
+    formLead:
+      "Pick a topic and send us a short message. We will route your enquiry to the right person on the team.",
+    formTitle: "Enquiry form",
     legalHeading: "Official details",
     orgName: "Bulgarian Design Council Association",
     orgStatus: "Non-profit legal entity",
