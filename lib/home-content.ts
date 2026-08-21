@@ -205,7 +205,7 @@ const bg = {
       // mission and team sections are one scroll away on the home page anyway.
       // The initiatives item still opens the mega menu on hover — see SiteNav.
       { label: "Инициативи", href: "/initiatives" },
-      { label: "Новини и събития", href: "/events" },
+      { label: "Събития", href: "/events" },
       { label: "За нас", href: "/about" },
       { label: "Контакт", href: "/contact" },
     ],
@@ -1170,7 +1170,7 @@ const en: typeof bg = {
   nav: {
     links: [
       { label: "Initiatives", href: "/initiatives" },
-      { label: "News and events", href: "/events" },
+      { label: "Events", href: "/events" },
       { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
     ],

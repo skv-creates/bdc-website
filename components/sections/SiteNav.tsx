@@ -173,12 +173,12 @@ export function SiteNav({
             <Logo variant="dark" locale={locale} className="h-8 w-auto md:h-10" />
           </a>
 
-          {/* desktop nav — one row starting at page-grid column 4. Five
-              columns, and a 16px link gap at lg widening to the design's 20px
-              at xl: the Bulgarian labels miss the 1024 grid by 3px at 20px
-              gaps, and a printed-over Контакт link that swallows its clicks
-              is the failure that margin protects against. */}
-          <nav className="hidden lg:col-start-4 lg:col-span-5 lg:flex lg:items-center lg:gap-4 lg:justify-self-start xl:gap-5">
+          {/* desktop nav — one row starting at page-grid column 4, links
+              spaced by a fixed 20px gap (they no longer snap to a column
+              each). Watch the width when adding a link or lengthening a
+              label: the row once outgrew its columns at 1024 and the CTA
+              printed over the last link, swallowing its clicks. */}
+          <nav className="hidden lg:col-start-4 lg:col-span-5 lg:flex lg:items-center lg:gap-5 lg:justify-self-start">
             {nav.links.map((l) =>
               initiatives && l.href === megaHref ? (
                 // A link that also discloses: hover opens the panel, click and
