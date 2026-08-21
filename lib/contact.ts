@@ -17,16 +17,11 @@
 export type Locale = "bg" | "en";
 
 /**
- * The adaptive contact form on Tally — one form whose first question is
- * "За какво се свързваш с нас?", branching to partnership, membership,
- * volunteering and general enquiries via Tally's conditional logic.
- *
- * null until that form is built and published in the council's Tally
- * account; the page renders its form section only when this holds the
- * form's id (the part after tally.so/r/). When it goes live, the privacy
- * policy needs its Tally-as-processor clause in the same change.
+ * The membership application on Tally — the same form the FAQ links to,
+ * embedded inline so applying does not mean leaving the site. The id is the
+ * part after tally.so/r/.
  */
-export const CONTACT_FORM_ID: string | null = null;
+export const CONTACT_FORM_ID = "81PbQA";
 
 export const CONTACT_COPY: Record<
   Locale,
@@ -70,8 +65,9 @@ export const CONTACT_COPY: Record<
       {
         title: "Членство",
         body: "За хора и организации, които искат да допринасят дългосрочно за развитието на дизайна в България.",
+        // Down the page, not out to Tally: the application is embedded below.
         label: "Кандидатствай за членство",
-        href: "https://tally.so/r/81PbQA",
+        href: "#membership",
       },
       {
         title: "Доброволчество",
@@ -80,10 +76,10 @@ export const CONTACT_COPY: Record<
         href: "/volunteer",
       },
     ],
-    formHeading: "Разкажи ни малко повече",
+    formHeading: "Кандидатствай за членство",
     formLead:
-      "Избери тема и ни изпрати кратко съобщение. Ще насочим запитването към правилния човек от екипа.",
-    formTitle: "Форма за запитване",
+      "Членството е отворено за физически лица и организации, които споделят мисията и ценностите на сдружението. Заявлението отнема няколко минути.",
+    formTitle: "Заявление за членство в БДС",
     legalHeading: "Официални данни",
     orgName: "Сдружение „Български дизайн съвет“",
     orgStatus: "Юридическо лице с нестопанска цел",
@@ -113,7 +109,7 @@ export const CONTACT_COPY: Record<
         title: "Membership",
         body: "For people and organisations who want to contribute to the long-term development of design in Bulgaria.",
         label: "Apply for membership",
-        href: "https://tally.so/r/81PbQA",
+        href: "#membership",
       },
       {
         title: "Volunteering",
@@ -122,10 +118,10 @@ export const CONTACT_COPY: Record<
         href: "/volunteer",
       },
     ],
-    formHeading: "Tell us a little more",
+    formHeading: "Apply for membership",
     formLead:
-      "Pick a topic and send us a short message. We will route your enquiry to the right person on the team.",
-    formTitle: "Enquiry form",
+      "Membership is open to individuals and organisations who share the association's mission and values. The application takes a few minutes.",
+    formTitle: "BDC membership application",
     legalHeading: "Official details",
     orgName: "Bulgarian Design Council Association",
     orgStatus: "Non-profit legal entity",

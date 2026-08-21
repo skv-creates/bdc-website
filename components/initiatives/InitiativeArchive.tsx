@@ -73,34 +73,47 @@ export function InitiativeArchive({
       </div>
 
       {/* The archive rows (frame: columns 6–11, inset 32px): category label,
-          title, blurb, and the read-more that the whole row answers. Plain
-          <a>, not <Link> — a soft navigation is intercepted by
+          title, blurb, and the read-more. The title and the read-more are the
+          links — not the whole row: a row-sized anchor made the blurbs
+          unselectable, and text a visitor (or a crawler) cannot select and
+          copy is a page telling them it is an application, not a document.
+          Plain <a>, not <Link> — a soft navigation is intercepted by
           @modal/(.)initiatives and opens the overlay; from the index the
           destination is the initiative's own page. */}
       <ul className="col-span-full flex flex-col lg:col-span-6 lg:col-start-6 lg:px-8">
-        {items.map((it, i) => (
-          <li key={it.slug} className="border-t border-border">
-            <a
-              href={`/${locale}/initiatives/${it.slug}`}
+        {items.map((it, i) => {
+          const href = `/${locale}/initiatives/${it.slug}`;
+          return (
+            <li
+              key={it.slug}
               onMouseEnter={() => setActive(i)}
               onFocus={() => setActive(i)}
-              className="group flex flex-col gap-4 py-6 lg:py-8"
+              className="flex flex-col gap-4 border-t border-border py-6 lg:py-8"
             >
               <span className="t-label inline-flex items-center gap-3">
                 <LabelMark />
                 {it.label}
               </span>
-              <h2 className="t-h03">{it.title}</h2>
-              <p className="t-body-lg">{it.text}</p>
-              <span className="t-caption inline-flex items-center gap-3 font-medium">
+              <h3 className="t-h03">
+                <a href={href} className="border-b-2 border-transparent transition-colors hover:border-current">
+                  {it.title}
+                </a>
+              </h3>
+              <p className="t-body">{it.text}</p>
+              <a
+                href={href}
+                tabIndex={-1}
+                aria-hidden
+                className="t-caption group inline-flex items-center gap-3 self-start font-medium"
+              >
                 {readMore}
                 <span aria-hidden className="transition-transform group-hover:translate-x-1">
                   →
                 </span>
-              </span>
-            </a>
-          </li>
-        ))}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

@@ -93,7 +93,7 @@ export default async function ContactPage({
             {/* The address comes from `footer`, so it changes in one place. */}
             <a
               href={`mailto:${c.footer.email}`}
-              className="t-h05 group self-start [overflow-wrap:anywhere]"
+              className="t-body group self-start font-bold [overflow-wrap:anywhere]"
             >
               <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
                 {c.footer.email}
@@ -110,10 +110,11 @@ export default async function ContactPage({
             <div className="grid border-t border-border md:grid-cols-3 md:border-t-0">
               {copy.routes.map((r) => {
                 const external = r.href.startsWith("http");
+                const hash = r.href.startsWith("#");
                 return (
                   <a
                     key={r.title}
-                    href={external ? r.href : `/${locale}${r.href}`}
+                    href={external || hash ? r.href : `/${locale}${r.href}`}
                     target={external ? "_blank" : undefined}
                     rel={external ? "noreferrer" : undefined}
                     className="group flex flex-col gap-3 border-b border-border py-6 transition-colors hover:bg-brand md:border-b-0 md:border-t md:px-5 md:py-8 md:first:pl-0 md:last:pr-0"
@@ -126,7 +127,9 @@ export default async function ContactPage({
                         aria-hidden
                         className="transition-transform group-hover:translate-x-1"
                       >
-                        {external ? "↗" : "→"}
+                        {/* ↗ leaves the site, ↓ scrolls to the form below,
+                            → goes to another page here. */}
+                        {external ? "↗" : hash ? "↓" : "→"}
                       </span>
                       {external && <span className="sr-only"> {c.footer.newWindow}</span>}
                     </span>
@@ -136,16 +139,14 @@ export default async function ContactPage({
             </div>
           </div>
 
-          {/* The adaptive Tally form, between the pathways and the paperwork —
-              once CONTACT_FORM_ID names a published form. Until then the
-              section is simply absent and the email above stays the way in. */}
-          {CONTACT_FORM_ID && (
-            <div className="mt-20 flex max-w-[732px] flex-col gap-6">
-              <h2 className="t-h02">{copy.formHeading}</h2>
-              <p className="t-body max-w-[540px]">{copy.formLead}</p>
-              <ContactFormEmbed formId={CONTACT_FORM_ID} title={copy.formTitle} />
-            </div>
-          )}
+          {/* The membership application, embedded — between the pathways and
+              the paperwork, where the Членство card's ↓ lands. scroll-mt
+              keeps the heading clear of the sticky header on arrival. */}
+          <div id="membership" className="mt-20 flex max-w-[732px] scroll-mt-32 flex-col gap-6">
+            <h2 className="t-h02">{copy.formHeading}</h2>
+            <p className="t-body max-w-[540px]">{copy.formLead}</p>
+            <ContactFormEmbed formId={CONTACT_FORM_ID} title={copy.formTitle} />
+          </div>
 
           {/* The official details — reassurance, not the main event. */}
           <div className="mt-24 flex max-w-[516px] flex-col gap-6">

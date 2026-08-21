@@ -71,17 +71,20 @@ export default async function InitiativesPage({
         <main id="main" tabIndex={-1} className="pt-16 lg:pt-[120px]">
           {/* The head (604:4923): eyebrow naming the section, the display
               line, the standfirst under it. */}
-          <section className="bdc-stop-11 bdc-grid gap-y-12 pb-12 lg:pb-20">
+          {/* Tighter than the other page heads on purpose: the archive is the
+              page, and the first cover should be in view without a scroll.
+              The display line gets the full grid so it sets on one line. */}
+          <section className="bdc-stop-11 bdc-grid gap-y-8 pb-8 lg:pb-10">
             <div className="col-span-full flex items-center gap-3">
               <span className="h-2 w-4 shrink-0" style={{ background: "var(--tri-band)" }} aria-hidden />
               <span className="t-caption">{c.initiatives.heading}</span>
             </div>
-            <h1 className="t-h01 col-span-full lg:col-span-6">{index.title}</h1>
+            <h1 className="t-h01 col-span-full">{index.title}</h1>
             <p className="t-body col-span-full lg:col-span-7">{index.lede}</p>
           </section>
 
           {/* The archive (604:4931): cover left, ruled rows right. */}
-          <section className="bdc-stop-11 py-12">
+          <section className="bdc-stop-11 pb-12">
             <InitiativeArchive
               initiatives={c.initiatives}
               readMore={index.readMore}
