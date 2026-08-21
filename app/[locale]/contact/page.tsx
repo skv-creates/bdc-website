@@ -1,16 +1,17 @@
 /**
  * Contact — /bg/contact, /en/contact.
  *
- * The registered organisation in one discoverable place: name, legal status,
- * ЕИК, registered office, mailbox — plus signposts to the three forms that
- * already exist, a plain statement of what to expect after writing, and the
- * social channels. Linked from the header and from the footer's contact
- * column, so it is reachable from every page.
+ * Calm and direct, in three movements: the invitation — «Контакти», "Идеите
+ * започват с разговор.", the answering promise and the mailbox itself; the
+ * three pathways as selectable destinations — whole cards, hover band, each
+ * leading to the door that is staffed for it; and the official details lower
+ * down, where they reassure (a grants reviewer still needs to find them)
+ * without being the page's opening experience.
  *
  * There is no form here on purpose: /partner already carries the one form
- * this codebase owns, and duplicating it would mean two submission paths to
- * keep honest. The routes section sends each kind of message to the door
- * that is actually staffed for it.
+ * this codebase owns. And the pattern rail is rendered after the content —
+ * it is position:fixed, so the page looks identical, but its recolour button
+ * stops being the first thing the keyboard lands on.
  */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -57,7 +58,6 @@ export default async function ContactPage({
       <a href="#main" className="skip-link t-caption font-bold">
         {c.ui.skipToContent}
       </a>
-      <PatternRail locale={locale} />
 
       <div
         style={{
@@ -74,7 +74,8 @@ export default async function ContactPage({
         />
 
         <main id="main" tabIndex={-1} className="bdc-stop-11 pb-20 pt-20 md:pb-[72px] md:pt-[120px]">
-          <div className="flex max-w-[1056px] flex-col gap-12">
+          {/* The invitation: eyebrow, the line, the promise, the mailbox. */}
+          <div className="flex max-w-[1056px] flex-col gap-8">
             <div className="flex items-center gap-3">
               <span
                 className="h-2 w-4 shrink-0"
@@ -86,107 +87,89 @@ export default async function ContactPage({
 
             <h1 className="t-h01 max-w-[732px]">{copy.title}</h1>
 
-            <hr className="border-0 border-t border-border" />
+            <p className="t-body max-w-[540px]">{copy.lead}</p>
 
-            <p className="t-h05 max-w-[540px]">{copy.lead}</p>
-
-            {/* The registered details and the mailbox, side by side — the two
-                things a visitor (or a grants reviewer) comes to verify. */}
-            <div className="grid gap-8 md:grid-cols-2">
-              <section className="flex flex-col gap-3" aria-label={copy.orgHeading}>
-                <h2 className="t-caption font-bold">{copy.orgHeading}</h2>
-                <p className="t-body font-bold">{copy.orgName}</p>
-                <p className="t-body">
-                  {copy.orgStatus} · {copy.orgUic}
-                </p>
-                <p className="t-body">
-                  <span className="block t-caption">{copy.addressLabel}</span>
-                  {copy.addressLines.map((line) => (
-                    <span key={line} className="block">
-                      {line}
-                    </span>
-                  ))}
-                </p>
-              </section>
-
-              <section className="flex flex-col gap-3" aria-label={copy.emailLabel}>
-                <h2 className="t-caption font-bold">{copy.emailLabel}</h2>
-                {/* The address comes from `footer`, so it changes in one place. */}
-                <a
-                  href={`mailto:${c.footer.email}`}
-                  className="t-body group self-start [overflow-wrap:anywhere]"
-                >
-                  <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                    {c.footer.email}
-                  </span>
-                </a>
-                <p className="t-body">{copy.responseNote}</p>
-              </section>
-            </div>
+            {/* The address comes from `footer`, so it changes in one place. */}
+            <a
+              href={`mailto:${c.footer.email}`}
+              className="t-h05 group self-start [overflow-wrap:anywhere]"
+            >
+              <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
+                {c.footer.email}
+              </span>
+            </a>
           </div>
 
-          {/* What to write about, where — the three doors that already exist. */}
+          {/* The three pathways, immediately underneath — whole cards are the
+              links, with the hover band the site's rows use, so they read as
+              destinations rather than paragraphs. ↗ for the application that
+              leaves the site, → for the pages that stay. */}
           <div className="mt-20 flex max-w-[1056px] flex-col gap-8">
             <h2 className="t-h02">{copy.routesHeading}</h2>
-            <div className="grid gap-8 md:grid-cols-3">
+            <div className="grid border-t border-border md:grid-cols-3 md:border-t-0">
               {copy.routes.map((r) => {
-                // The membership application lives on Tally; the other two
-                // doors are pages of this site. ↗ for the one that leaves,
-                // → for the ones that stay — the footer's own convention.
                 const external = r.href.startsWith("http");
                 return (
-                  <div key={r.title} className="flex flex-col gap-3 border-t border-border pt-5">
-                    <h3 className="t-body font-bold">{r.title}</h3>
+                  <a
+                    key={r.title}
+                    href={external ? r.href : `/${locale}${r.href}`}
+                    target={external ? "_blank" : undefined}
+                    rel={external ? "noreferrer" : undefined}
+                    className="group flex flex-col gap-3 border-b border-border py-6 transition-colors hover:bg-brand md:border-b-0 md:border-t md:px-5 md:py-8 md:first:pl-0 md:last:pr-0"
+                  >
+                    <h3 className="t-h05">{r.title}</h3>
                     <p className="t-body">{r.body}</p>
-                    <a
-                      href={external ? r.href : `/${locale}${r.href}`}
-                      target={external ? "_blank" : undefined}
-                      rel={external ? "noreferrer" : undefined}
-                      className="t-body group mt-auto self-start"
-                    >
-                      <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                        {r.label} {external ? "↗" : "→"}
+                    <span className="t-caption mt-auto inline-flex items-center gap-2 pt-3 font-medium">
+                      {r.label}
+                      <span
+                        aria-hidden
+                        className="transition-transform group-hover:translate-x-1"
+                      >
+                        {external ? "↗" : "→"}
                       </span>
                       {external && <span className="sr-only"> {c.footer.newWindow}</span>}
-                    </a>
-                  </div>
+                    </span>
+                  </a>
                 );
               })}
             </div>
           </div>
 
-          {/* Privacy and the social channels close the page. */}
-          <div className="mt-20 flex max-w-[516px] flex-col gap-8">
+          {/* The official details — reassurance, not the main event. */}
+          <div className="mt-24 flex max-w-[516px] flex-col gap-6">
+            <h2 className="t-caption font-bold">{copy.legalHeading}</h2>
+            <div className="flex flex-col gap-1">
+              <p className="t-body font-bold">{copy.orgName}</p>
+              <p className="t-body">
+                {copy.orgStatus} · {copy.orgUic}
+              </p>
+            </div>
             <p className="t-body">
+              <span className="t-caption block">{copy.addressLabel}</span>
+              {copy.addressLines.map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+            </p>
+            <p className="t-caption">
               {copy.privacyNote}{" "}
               <a href={`/${locale}/privacy`} className="group">
-                <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
+                <span className="border-b border-current transition-colors group-hover:border-transparent">
                   {copy.privacyLabel}
                 </span>
               </a>
               .
             </p>
-            <section className="flex flex-col gap-4" aria-label={copy.socialHeading}>
-              <h2 className="t-caption font-bold">{copy.socialHeading}</h2>
-              <ul className="flex flex-wrap gap-x-8 gap-y-3">
-                {c.footer.social.map((s) => (
-                  <li key={s.label}>
-                    <a href={s.href} target="_blank" rel="noreferrer" className="t-body group">
-                      <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
-                        {s.label}
-                      </span>
-                      <span className="sr-only"> {c.footer.newWindow}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
           </div>
         </main>
       </div>
 
-      {/* No strip here: <SiteFooter/> draws the brand strip across its own
-          top edge, and a second one put two bands above the footer. */}
+      {/* After the content on purpose: fixed-positioned, so it paints exactly
+          where it always does, but its recolour button is no longer an early
+          keyboard tab stop on a page whose job is the mailbox. */}
+      <PatternRail locale={locale} />
+
       <SiteFooter footer={c.footer} locale={locale} />
     </>
   );

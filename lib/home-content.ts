@@ -1086,8 +1086,6 @@ const bg = {
     accessibilityShort: "Достъпност",
     contactHeading: "Контакти",
     email: "info@bulgariandesigncouncil.org",
-    /** Линк към страницата за контакт, под имейла в същата колона. */
-    contactPage: "Свържи се с нас",
     /**
      * The legal status in words before the registry code — Ad Grants reviewers
      * must find the non-profit status "prominently displayed", and a bare
@@ -2010,8 +2008,6 @@ const en: typeof bg = {
     accessibilityShort: "Accessibility",
     contactHeading: "Contacts",
     email: "info@bulgariandesigncouncil.org",
-    /** Link to the contact page, under the email in the same column. */
-    contactPage: "Get in touch",
     /** Same code as the privacy policy gives; "UIC" is the wording used there. */
     uicStatus: "Registered Non-profit",
     /* Already spelled out — nothing for a tooltip to add. */

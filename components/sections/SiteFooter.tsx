@@ -210,14 +210,6 @@ export function SiteFooter({
                 </span>
               </a>
 
-              {/* The contact page, not just the mailbox: the page carries the
-                  registered details and says what to write about where. */}
-              <a href={`/${locale}/contact`} className="t-caption group self-start">
-                <span className="border-b-2 border-transparent transition-colors group-hover:border-current">
-                  {footer.contactPage}
-                </span>
-              </a>
-
               <ul className="flex flex-col gap-4">
                 {footer.social.map((s) => {
                   const Icon = SOCIAL_ICONS[s.label];
