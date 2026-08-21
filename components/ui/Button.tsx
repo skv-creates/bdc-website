@@ -33,6 +33,8 @@ type Props = {
   className?: string;
   type?: "button" | "submit";
   fullWidth?: boolean;
+  /** Only meaningful without `href` — the button form of the component. */
+  onClick?: () => void;
 };
 
 export function Button({
@@ -42,6 +44,7 @@ export function Button({
   className = "",
   type = "button",
   fullWidth = false,
+  onClick,
 }: Props) {
   // The two pill CTAs span the full width on phones and shrink to content from
   // sm up. `small` (the nav button) and `tertiary` (a text link) are excluded —
@@ -76,7 +79,7 @@ export function Button({
     );
   }
   return (
-    <button type={type} className={cls}>
+    <button type={type} className={cls} onClick={onClick}>
       {content}
     </button>
   );

@@ -17,27 +17,11 @@
  * remains the way in; nothing else on the page depends on it.
  */
 import { useEffect } from "react";
-
-declare global {
-  interface Window {
-    Tally?: { loadEmbeds: () => void };
-  }
-}
-
-const EMBED_SCRIPT = "https://tally.so/widgets/embed.js";
+import { withTally } from "@/lib/tally";
 
 export function ContactFormEmbed({ formId, title }: { formId: string; title: string }) {
   useEffect(() => {
-    if (window.Tally) {
-      window.Tally.loadEmbeds();
-      return;
-    }
-    if (document.querySelector(`script[src="${EMBED_SCRIPT}"]`)) return;
-    const script = document.createElement("script");
-    script.src = EMBED_SCRIPT;
-    script.async = true;
-    script.onload = () => window.Tally?.loadEmbeds();
-    document.body.appendChild(script);
+    withTally(() => window.Tally?.loadEmbeds());
   }, []);
 
   return (

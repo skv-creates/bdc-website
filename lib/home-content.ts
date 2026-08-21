@@ -212,6 +212,8 @@ const bg = {
     // The partner page: the one form this codebase hosts itself, so the
     // primary CTA stays on the site from click to confirmation.
     cta: { label: "Партньорство →", href: "/partner" },
+    /** Opens the Tally membership application as a popup — see lib/tally.ts. */
+    memberCta: { label: "Членувай" },
   },
 
   hero: {
@@ -1173,6 +1175,7 @@ const en: typeof bg = {
       { label: "Contact", href: "/contact" },
     ],
     cta: { label: "Partnership →", href: "/partner" },
+    memberCta: { label: "Become a member" },
   },
 
   hero: {
