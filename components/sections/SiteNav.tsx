@@ -173,12 +173,13 @@ export function SiteNav({
             <Logo variant="dark" locale={locale} className="h-8 w-auto md:h-10" />
           </a>
 
-          {/* desktop nav — one row starting at page-grid column 4, links
-              spaced by a fixed 20px gap (they no longer snap to a column
-              each). Watch the width when adding a link or lengthening a
-              label: the row once outgrew its columns at 1024 and the CTA
-              printed over the last link, swallowing its clicks. */}
-          <nav className="hidden lg:col-start-4 lg:col-span-5 lg:flex lg:items-center lg:gap-5 lg:justify-self-start">
+          {/* desktop nav — one row starting at page-grid column 4, links spaced
+              by a 16px gap at lg and the design's 20px from xl — the
+              Bulgarian labels miss the 1024 grid by a few pixels at 20px.
+              Watch the width when adding a link or lengthening a label: the
+              row once outgrew its columns at 1024 and the CTA printed over
+              the last link, swallowing its clicks. */}
+          <nav className="hidden lg:col-start-4 lg:col-span-4 lg:flex lg:items-center lg:gap-4 lg:justify-self-start xl:gap-5">
             {nav.links.map((l) =>
               initiatives && l.href === megaHref ? (
                 // A link that also discloses: hover opens the panel, click and
@@ -211,9 +212,11 @@ export function SiteNav({
             )}
           </nav>
 
-          {/* justify-end against cols 9–12 lands the CTA + language toggle on
-              the right edge, clear of the rail; the nav owns 4–8. */}
-          <div className="hidden items-center gap-4 lg:col-start-9 lg:col-span-4 lg:flex lg:justify-end">
+          {/* justify-end against cols 8–11 lands the CTA + language toggle on
+              the right edge of column 11, clear of the rail. Column 12 stays
+              empty on purpose — it is the breathing room before the rail, and
+              spanning into it once shoved EN against the pattern. */}
+          <div className="hidden items-center gap-4 lg:col-start-8 lg:col-span-4 lg:flex lg:justify-end">
             <Button variant="small" href={linkHref(nav.cta.href)}>{nav.cta.label}</Button>
             {/* inline-grid + min-h-6/min-w-6 so the two-letter toggle still
                 meets the 24×24 of WCAG 2.2 2.5.8; it measured 22×26. */}
