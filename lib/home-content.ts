@@ -212,8 +212,8 @@ const bg = {
     // The partner page: the one form this codebase hosts itself, so the
     // primary CTA stays on the site from click to confirmation.
     cta: { label: "Партньорство →", href: "/partner" },
-    /** Straight to the application at the foot of the membership page. */
-    memberCta: { label: "Членувай", href: "/membership#apply" },
+    /** Straight to the full-screen application page. */
+    memberCta: { label: "Членувай", href: "/membership/apply" },
   },
 
   hero: {
@@ -1175,7 +1175,7 @@ const en: typeof bg = {
       { label: "Contact", href: "/contact" },
     ],
     cta: { label: "Partnership →", href: "/partner" },
-    memberCta: { label: "Become a member", href: "/membership#apply" },
+    memberCta: { label: "Become a member", href: "/membership/apply" },
   },
 
   hero: {

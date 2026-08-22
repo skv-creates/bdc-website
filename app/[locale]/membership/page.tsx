@@ -4,14 +4,11 @@
  * The membership explainer and the application on one page: who can join,
  * the two categories side by side, what membership commits you to, how
  * admission works, how decisions are made — the statute in plain public
- * language — and the Tally form embedded at the foot, where every
- * membership button on the site lands (#apply). The statute itself is the
- * only official source the page points to; the closing line under the
- * form says the page summarises and does not replace it.
- *
- * The form sits last on purpose: TallyEmbed grows downward as its steps
- * need room, and at the end of the document that growth extends the page
- * below the visitor's hands instead of reflowing anything they can see.
+ * language. The application itself is NOT here: it runs full-screen at
+ * /membership/apply, which is where the header's Членувай and this page's
+ * own buttons lead. The statute is the only official source the page
+ * points to; the closing line says the page summarises and does not
+ * replace it.
  */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -20,9 +17,7 @@ import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { Button } from "@/components/ui/Button";
-import { TallyEmbed } from "@/components/ui/TallyEmbed";
 import { getContent, hasLocale } from "@/lib/home-content";
-import { MEMBERSHIP_FORM_ID } from "@/lib/tally";
 import { MEMBERSHIP_COPY } from "@/lib/membership";
 
 export async function generateMetadata({
@@ -56,6 +51,7 @@ export default async function MembershipPage({
   const c = getContent(locale);
   const copy = MEMBERSHIP_COPY[locale];
   const statuteHref = `/${locale}/statute`;
+  const applyHref = `/${locale}/membership/apply`;
 
   return (
     <>
@@ -101,9 +97,9 @@ export default async function MembershipPage({
 
             <p className="t-body max-w-[540px]">{copy.body}</p>
 
-            {/* ↓ because the application is on this page, at the foot. */}
-            <Button href="#apply" variant="primary" className="self-start">
-              {copy.applyCta} ↓
+            {/* → because the application is its own full-screen page. */}
+            <Button href={applyHref} variant="primary" className="self-start">
+              {copy.applyCta} →
             </Button>
           </div>
 
@@ -189,9 +185,10 @@ export default async function MembershipPage({
             </a>
           </section>
 
-          {/* The application. scroll-mt keeps the heading clear of the
-              sticky header when the #apply links land here. */}
-          <section id="apply" className="mt-20 flex max-w-[800px] scroll-mt-32 flex-col gap-6 md:mt-24">
+          {/* The close: what the application asks, where it lives, and the
+              two documents to read first. The form itself is the full-screen
+              page the button opens. */}
+          <section className="mt-20 flex max-w-[732px] flex-col gap-6 md:mt-24">
             <h2 className="t-h02">{copy.apply.heading}</h2>
             <p className="t-body">{copy.apply.intro}</p>
             <p className="t-body">{copy.apply.languageNote}</p>
@@ -210,7 +207,9 @@ export default async function MembershipPage({
               </a>
             </p>
 
-            <TallyEmbed formId={MEMBERSHIP_FORM_ID} title={copy.formTitle} />
+            <Button href={applyHref} variant="primary" className="self-start">
+              {copy.applyCta} →
+            </Button>
 
             <p className="t-caption">{copy.apply.dataUse}</p>
             <p className="t-caption">{copy.apply.disclaimer}</p>
