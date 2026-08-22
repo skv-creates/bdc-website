@@ -9,37 +9,58 @@
  * double what the page already says: no Tally title (the page's own heading
  * is the title), transparent background, left alignment.
  *
- * Deliberately NOT dynamicHeight: on a multi-step form every step has a
- * different height, so the iframe resized on every Напред and the page
- * reflowed under the visitor's hands — filling the form meant chasing it up
- * and down the page. A fixed frame holds still; a step taller than the
- * frame scrolls inside it, which is how every steady form on the web works.
- * The height is viewport-capped so the frame also fits a laptop screen
- * whole, controls included.
+ * The height: dynamic, but only ever growing. Two failure modes taught
+ * this shape. Pure dynamicHeight resized the frame on every Напред — every
+ * step is a different height — and the page reflowed under the visitor's
+ * hands. A fixed frame held still but scrolled internally, and the moment
+ * the inner scrollbar ran out the wheel escaped to the page and carried
+ * the visitor away from the form. So: dynamicHeight for a single scroll
+ * context (no inner scrollbar to fall out of), with a ratchet that turns
+ * every height Tally sets into a floor — the frame grows below the
+ * visitor's hands when a step needs room, and never shrinks back.
  *
  * The script loads after hydration via lib/tally.ts, so the page itself
  * stays prerendered and an ordinary page view ships no third-party
  * JavaScript. If the script never arrives (blocked, offline), the iframe
  * stays empty and nothing else on the page depends on it.
  */
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { withTally } from "@/lib/tally";
 
 export function TallyEmbed({ formId, title }: { formId: string; title: string }) {
+  const frame = useRef<HTMLIFrameElement>(null);
+
   useEffect(() => {
     withTally(() => window.Tally?.loadEmbeds());
   }, []);
 
+  // The ratchet: whatever height the widget sets becomes the minimum, so
+  // steps can only grow the frame, never bounce it back up.
+  useEffect(() => {
+    const el = frame.current;
+    if (!el) return;
+    const ratchet = () => {
+      const height = el.getBoundingClientRect().height;
+      const floor = parseFloat(el.style.minHeight || "0");
+      if (height > floor) el.style.minHeight = `${height}px`;
+    };
+    ratchet();
+    const ro = new ResizeObserver(ratchet);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <iframe
-      data-tally-src={`https://tally.so/embed/${formId}?alignLeft=1&hideTitle=1&transparentBackground=1`}
+      ref={frame}
+      data-tally-src={`https://tally.so/embed/${formId}?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1`}
       loading="lazy"
       width="100%"
       frameBorder="0"
       marginHeight={0}
       marginWidth={0}
       title={title}
-      className="h-[700px] max-h-[80svh] w-full"
+      className="min-h-[560px] w-full"
     />
   );
 }
