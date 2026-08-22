@@ -34,5 +34,12 @@ export function withTally(ready: () => void): void {
   document.body.appendChild(script);
 }
 
-/** The membership application — embedded on /membership. */
+/** The membership application — embedded full-screen on /membership/apply. */
 export const MEMBERSHIP_FORM_ID = "81PbQA";
+
+/**
+ * How many pages the application has — drives the page's own progress bar
+ * (TallyProgress), since Tally's events carry the current page but not the
+ * total. Update alongside the form if steps are added or removed in Tally.
+ */
+export const MEMBERSHIP_FORM_PAGES = 5;

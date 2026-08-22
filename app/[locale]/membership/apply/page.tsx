@@ -17,8 +17,9 @@ import { notFound } from "next/navigation";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { TallyEmbed } from "@/components/ui/TallyEmbed";
+import { TallyProgress } from "@/components/ui/TallyProgress";
 import { getContent, hasLocale } from "@/lib/home-content";
-import { MEMBERSHIP_FORM_ID } from "@/lib/tally";
+import { MEMBERSHIP_FORM_ID, MEMBERSHIP_FORM_PAGES } from "@/lib/tally";
 import { MEMBERSHIP_COPY } from "@/lib/membership";
 
 export async function generateMetadata({
@@ -86,10 +87,20 @@ export default async function MembershipApplyPage({
             <span className="t-caption font-bold">{copy.timeNote}</span>
           </div>
           <h1 className="sr-only">{copy.formTitle}</h1>
-          {/* The form column holds at 800px — the full page width made the
-              fields sprawl. */}
-          <div className="min-h-0 w-full max-w-[800px] flex-1">
-            <TallyEmbed formId={MEMBERSHIP_FORM_ID} title={copy.formTitle} />
+
+          {/* The page's own progress bar, full width — driven by the events
+              the embed forwards. */}
+          <TallyProgress formId={MEMBERSHIP_FORM_ID} pages={MEMBERSHIP_FORM_PAGES} />
+
+          {/* The form column holds at 720px, left aligned — the full page
+              width made the fields sprawl. Tally draws a second progress
+              bar in the iframe's top 24px (it cannot be styled or turned
+              off from outside), so the wrapper crops the first 28px: the
+              form's own content starts at 53px and is untouched. */}
+          <div className="min-h-0 w-full max-w-[720px] flex-1 overflow-hidden">
+            <div className="-mt-7 h-[calc(100%+28px)]">
+              <TallyEmbed formId={MEMBERSHIP_FORM_ID} title={copy.formTitle} />
+            </div>
           </div>
         </main>
       </div>
