@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/ui/Logo";
 import { MegaMenu } from "@/components/sections/MegaMenu";
 import { Button } from "@/components/ui/Button";
-import { openMembershipPopup } from "@/lib/tally";
 import type { Locale, SiteContent } from "@/lib/home-content";
 
 /* Match the page content column: gutter on the left, and on the right only
@@ -218,12 +217,12 @@ export function SiteNav({
               empty on purpose — it is the breathing room before the rail, and
               spanning into it once shoved EN against the pattern. */}
           <div className="hidden items-center gap-4 lg:col-start-8 lg:col-span-4 lg:flex lg:justify-end">
-            {/* Членувай opens the Tally membership application as a popup —
-                no navigation, and the script only loads on the first click.
-                From xl only: two pills plus four Bulgarian links do not fit
-                the 1024 grid, and at lg the partner CTA keeps the slot. */}
+            {/* Членувай leads to the membership page, where the application
+                is embedded. From xl only: two pills plus four Bulgarian links
+                do not fit the 1024 grid, and at lg the partner CTA keeps the
+                slot. */}
             <span className="hidden xl:contents">
-              <Button variant="small" onClick={openMembershipPopup}>
+              <Button variant="small" href={linkHref(nav.memberCta.href)}>
                 {nav.memberCta.label}
               </Button>
             </span>
@@ -317,14 +316,7 @@ export function SiteNav({
             {/* Pinned. The rule marks it off from the list that scrolls past. */}
             <div className="flex shrink-0 items-center gap-8 border-t border-border/20 pb-8 pe-8 pt-6">
               <div className="flex flex-1 flex-col gap-3">
-                <Button
-                  variant="secondary"
-                  fullWidth
-                  onClick={() => {
-                    setOpen(false);
-                    openMembershipPopup();
-                  }}
-                >
+                <Button variant="secondary" href={linkHref(nav.memberCta.href)} fullWidth>
                   {nav.memberCta.label}
                 </Button>
                 <Button variant="secondary" href={linkHref(nav.cta.href)} fullWidth>

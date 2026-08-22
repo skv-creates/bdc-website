@@ -49,6 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // page (noindexed), and a crawler-found arrival would count as a
     // conversion that never happened.
     { path: "/partner" },
+    { path: "/membership" },
     { path: "/contact" },
     ...events.map(({ slug, lastEdited }) => ({
       path: `/events/${slug}`,

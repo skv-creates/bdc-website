@@ -20,8 +20,7 @@ import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { getContent, hasLocale } from "@/lib/home-content";
-import { CONTACT_COPY, CONTACT_FORM_ID } from "@/lib/contact";
-import { ContactFormEmbed } from "@/components/contact/ContactFormEmbed";
+import { CONTACT_COPY } from "@/lib/contact";
 
 export async function generateMetadata({
   params,
@@ -110,11 +109,10 @@ export default async function ContactPage({
             <div className="grid border-t border-border md:grid-cols-3 md:border-t-0">
               {copy.routes.map((r) => {
                 const external = r.href.startsWith("http");
-                const hash = r.href.startsWith("#");
                 return (
                   <a
                     key={r.title}
-                    href={external || hash ? r.href : `/${locale}${r.href}`}
+                    href={external ? r.href : `/${locale}${r.href}`}
                     target={external ? "_blank" : undefined}
                     rel={external ? "noreferrer" : undefined}
                     className="group flex flex-col gap-3 border-b border-border py-6 transition-colors hover:bg-brand md:border-b-0 md:border-t md:px-5 md:py-8 md:first:pl-0 md:last:pr-0"
@@ -127,9 +125,7 @@ export default async function ContactPage({
                         aria-hidden
                         className="transition-transform group-hover:translate-x-1"
                       >
-                        {/* ↗ leaves the site, ↓ scrolls to the form below,
-                            → goes to another page here. */}
-                        {external ? "↗" : hash ? "↓" : "→"}
+                        {external ? "↗" : "→"}
                       </span>
                       {external && <span className="sr-only"> {c.footer.newWindow}</span>}
                     </span>
@@ -137,15 +133,6 @@ export default async function ContactPage({
                 );
               })}
             </div>
-          </div>
-
-          {/* The membership application, embedded — between the pathways and
-              the paperwork, where the Членство card's ↓ lands. scroll-mt
-              keeps the heading clear of the sticky header on arrival. */}
-          <div id="membership" className="mt-20 flex max-w-[732px] scroll-mt-32 flex-col gap-6">
-            <h2 className="t-h02">{copy.formHeading}</h2>
-            <p className="t-body max-w-[540px]">{copy.formLead}</p>
-            <ContactFormEmbed formId={CONTACT_FORM_ID} title={copy.formTitle} />
           </div>
 
           {/* The official details — reassurance, not the main event. */}
