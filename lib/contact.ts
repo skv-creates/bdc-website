@@ -1,17 +1,15 @@
 /**
- * Copy for the contact page (/[locale]/contact).
+ * Copy for the contact page (/[locale]/contact), per Figma 643:3969.
  *
- * One strong invitation, three clear paths, and the official details as
- * reassurance rather than the opening act: the page leads with the mailbox
- * and a plain promise about answering, sends each kind of message to the
- * door that is staffed for it, and keeps the registration data — which a
- * grants reviewer still needs to find — lower down where it reassures
- * without becoming the page.
+ * Three movements: the invitation with the mailbox as "the fastest way to
+ * reach us"; the three directions — partnership, membership, volunteering —
+ * each a bordered column closing with a row CTA; and the Council's official
+ * details in ruled rows, with the privacy note beside them. The email
+ * address itself comes from `footer` in lib/home-content.ts, and the
+ * registered office matches the statute page's wording.
  *
- * The email itself comes from `footer` in lib/home-content.ts, so an address
- * change stays a one-line edit. The registered office matches the statute
- * page's own wording (lib/home-content.ts, "Седалище"); if the seat moves,
- * both change together.
+ * The frame draws its CTA rows in DM Sans — a stray from another kit; the
+ * page sets them in the site's own face like every other row link.
  */
 
 export type Locale = "bg" | "en";
@@ -22,94 +20,105 @@ export const CONTACT_COPY: Record<
     eyebrow: string;
     title: string;
     lead: string;
-    /** The three pathways — whole cards are the links. */
+    /** The mailbox block beside the lead. */
+    reach: { label: string; note: string };
+    routesEyebrow: string;
     routesHeading: string;
     routes: { title: string; body: string; label: string; href: string }[];
-    /** The official details, lower down. */
-    legalHeading: string;
+    legalEyebrow: string;
+    privacyNote: string;
+    privacyLabel: string;
     orgName: string;
     orgStatus: string;
     orgUic: string;
     addressLabel: string;
     addressLines: string[];
-    privacyNote: string;
-    privacyLabel: string;
     metaTitle: string;
     metaDescription: string;
   }
 > = {
   bg: {
-    eyebrow: "Контакти",
+    eyebrow: "Контакт",
     title: "Идеите започват с разговор.",
     lead: "Пиши ни с въпрос, идея или предложение за обща работа. Четем всяко писмо и обикновено отговаряме до три работни дни.",
-    routesHeading: "Как искаш да се включиш?",
+    reach: {
+      label: "Най-прекият път до нас",
+      note: "Обикновено отговаряме до 3 работни дни.",
+    },
+    routesEyebrow: "Избери посока",
+    routesHeading: "Идеите намират почва, когато хората се съберат около тях.",
     routes: [
       {
-        title: "Партньорство",
+        title: "Партнирай с нас",
         body: "За организации, институции и компании, които виждат възможност за обща работа по инициатива, изследване или събитие.",
         label: "Предложи партньорство",
         href: "/partner",
       },
       {
-        title: "Членство",
+        title: "Членувай",
         body: "За хора и организации, които искат да допринасят дългосрочно за развитието на дизайна в България.",
-        label: "Кандидатствай за членство",
-        href: "/membership/apply",
+        label: "Прочети повече",
+        href: "/membership",
       },
       {
-        title: "Доброволчество",
-        body: "За хора, които искат да вложат време, опит или умения в конкретна наша инициатива. Не е необходимо да си дизайнер.",
-        label: "Стани доброволец",
+        title: "Стани доброволец",
+        body: "За хора, които искат да се включат в проект и да вложат време, опит или умения в конкретна наша инициатива.",
+        label: "Прочети повече",
         href: "/volunteer",
       },
     ],
-    legalHeading: "Официални данни",
+    legalEyebrow: "Официални данни на Съвета",
+    privacyNote: "Как работим с личните данни, които ни изпращаш, е описано в",
+    privacyLabel: "Политиката за поверителност",
     orgName: "Сдружение „Български дизайн съвет“",
     orgStatus: "Юридическо лице с нестопанска цел",
     orgUic: "ЕИК 208377927",
     addressLabel: "Седалище и адрес на управление",
-    addressLines: ["ул. „Винсент ван Гог“ №1, ап. 7", "кв. Лозенец, 1407 София, България"],
-    privacyNote: "Как работим с личните данни, които ни изпращаш, е описано в",
-    privacyLabel: "Политиката за поверителност",
-    metaTitle: "Контакти — Български Дизайн Съвет",
+    addressLines: ["ул. „Винсент ван Гог“ №1, ап. 7", "кв. Лозенец, 1407", "София, България"],
+    metaTitle: "Контакт — Български Дизайн Съвет",
     metaDescription:
       "Свържи се с Български дизайн съвет — пиши ни за партньорство, членство или доброволчество. Отговаряме до три работни дни.",
   },
   en: {
     // Translated from the Bulgarian, which is the source of truth here.
-    eyebrow: "Contacts",
+    eyebrow: "Contact",
     title: "Ideas start with a conversation.",
     lead: "Write to us with a question, an idea, or a proposal for working together. We read every message and usually reply within three working days.",
-    routesHeading: "How would you like to get involved?",
+    reach: {
+      label: "The fastest way to reach us",
+      note: "We usually reply within 3 working days.",
+    },
+    routesEyebrow: "Pick a direction",
+    routesHeading: "Ideas take root when people gather around them.",
     routes: [
       {
-        title: "Partnership",
+        title: "Partner with us",
         body: "For organisations, institutions and companies that see an opportunity to work together on an initiative, a study or an event.",
         label: "Propose a partnership",
         href: "/partner",
       },
       {
-        title: "Membership",
+        title: "Become a member",
         body: "For people and organisations who want to contribute to the long-term development of design in Bulgaria.",
-        label: "Apply for membership",
-        href: "/membership/apply",
+        label: "Read more",
+        href: "/membership",
       },
       {
-        title: "Volunteering",
-        body: "For people who want to put time, experience or skills into one of our initiatives. You do not need to be a designer.",
-        label: "Become a volunteer",
+        title: "Become a volunteer",
+        body: "For people who want to join a project and put time, experience or skills into one of our initiatives.",
+        label: "Read more",
         href: "/volunteer",
       },
     ],
-    legalHeading: "Official details",
+    legalEyebrow: "The Council's official details",
+    privacyNote: "How we handle the personal data you send us is described in the",
+    privacyLabel: "Privacy Policy",
     orgName: "Bulgarian Design Council Association",
     orgStatus: "Non-profit legal entity",
     orgUic: "UIC 208377927",
     addressLabel: "Registered office",
-    addressLines: ["1 Vincent van Gogh St, apt. 7", "Lozenets, 1407 Sofia, Bulgaria"],
-    privacyNote: "How we handle the personal data you send us is described in the",
-    privacyLabel: "Privacy Policy",
-    metaTitle: "Contacts — Bulgarian Design Council",
+    addressLines: ["1 Vincent van Gogh St, apt. 7", "Lozenets, 1407", "Sofia, Bulgaria"],
+    metaTitle: "Contact — Bulgarian Design Council",
     metaDescription:
       "Contact the Bulgarian Design Council — write to us about partnership, membership or volunteering. We reply within three working days.",
   },

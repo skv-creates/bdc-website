@@ -1,17 +1,16 @@
 /**
- * Contact — /bg/contact, /en/contact.
+ * Contact — /bg/contact, /en/contact (Figma 643:3969).
  *
- * Calm and direct, in three movements: the invitation — «Контакти», "Идеите
- * започват с разговор.", the answering promise and the mailbox itself; the
- * three pathways as selectable destinations — whole cards, hover band, each
- * leading to the door that is staffed for it; and the official details lower
- * down, where they reassure (a grants reviewer still needs to find them)
- * without being the page's opening experience.
+ * Three movements, per the frame: the invitation — «Контакт», "Идеите
+ * започват с разговор.", the lead on the left and the mailbox block on the
+ * right, headed "Най-прекият път до нас" with the pointer mark; the three
+ * directions under «Избери посока» — partnership, membership,
+ * volunteering — each a bordered column closing with a row CTA; and the
+ * Council's official details in ruled rows, the privacy note beside them.
  *
- * There is no form here on purpose: /partner already carries the one form
- * this codebase owns. And the pattern rail is rendered after the content —
- * it is position:fixed, so the page looks identical, but its recolour button
- * stops being the first thing the keyboard lands on.
+ * There is no form here on purpose: /partner carries the one form this
+ * codebase owns, and membership applies on its own page. The pattern rail
+ * renders after the content, as on the other conversion-adjacent pages.
  */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -21,6 +20,15 @@ import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { getContent, hasLocale } from "@/lib/home-content";
 import { CONTACT_COPY } from "@/lib/contact";
+
+/** The corner triangle prefixing the mailbox label — the site's LabelMark. */
+function LabelMark() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" className="shrink-0">
+      <polygon points="1,3 15,3 1,17" fill="currentColor" />
+    </svg>
+  );
+}
 
 export async function generateMetadata({
   params,
@@ -74,100 +82,135 @@ export default async function ContactPage({
         />
 
         <main id="main" tabIndex={-1} className="bdc-stop-11 pb-20 pt-20 md:pb-[72px] md:pt-[120px]">
-          {/* The invitation: eyebrow, the line, the promise, the mailbox. */}
-          <div className="flex max-w-[1056px] flex-col gap-8">
-            <div className="flex items-center gap-3">
+          {/* The invitation (643:3976): eyebrow, the two-line display title,
+              the lead left and the mailbox block right. */}
+          <section className="bdc-grid gap-y-12">
+            <div className="col-span-full flex items-center gap-3">
               <span
                 className="h-2 w-4 shrink-0"
-                style={{ background: "var(--tri-band)" }}
+                style={{ background: "var(--bdc-tomato)" }}
                 aria-hidden
               />
               <span className="t-caption">{copy.eyebrow}</span>
             </div>
 
-            <h1 className="t-h01 max-w-[732px]">{copy.title}</h1>
+            <h1 className="t-h01 col-span-full lg:col-span-8">{copy.title}</h1>
 
-            <p className="t-body max-w-[540px]">{copy.lead}</p>
+            <p className="t-body col-span-full lg:col-span-6">{copy.lead}</p>
 
-            {/* The address comes from `footer`, so it changes in one place. */}
-            <a
-              href={`mailto:${c.footer.email}`}
-              className="t-body group self-start font-bold [overflow-wrap:anywhere]"
-            >
-              <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                {c.footer.email}
+            {/* The mailbox (643:4065): pointer label, the address, the
+                promise — a ruled block in the right columns. */}
+            <div className="col-span-full flex flex-col gap-4 border-t border-border pt-3 lg:col-span-5 lg:col-start-7 lg:row-start-3">
+              <span className="t-label inline-flex items-center gap-3 font-bold">
+                <LabelMark />
+                {copy.reach.label}
               </span>
-            </a>
-          </div>
+              <a
+                href={`mailto:${c.footer.email}`}
+                className="t-body group self-start [overflow-wrap:anywhere]"
+              >
+                <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
+                  {c.footer.email}
+                </span>
+              </a>
+              <p className="t-body">{copy.reach.note}</p>
+            </div>
+          </section>
 
-          {/* The three pathways, immediately underneath — whole cards are the
-              links, with the hover band the site's rows use, so they read as
-              destinations rather than paragraphs. ↗ for the application that
-              leaves the site, → for the pages that stay. */}
-          <div className="mt-20 flex max-w-[1056px] flex-col gap-8">
-            <h2 className="t-h02">{copy.routesHeading}</h2>
-            <div className="grid border-t border-border md:grid-cols-3 md:border-t-0">
+          {/* The three directions (643:3984). */}
+          <section className="mt-20 flex flex-col gap-12 md:mt-24">
+            <div className="flex max-w-[684px] flex-col gap-8">
+              <div className="flex items-center gap-3">
+                <span
+                  className="h-2 w-4 shrink-0"
+                  style={{ background: "var(--bdc-tomato)" }}
+                  aria-hidden
+                />
+                <span className="t-caption">{copy.routesEyebrow}</span>
+              </div>
+              <h2 className="t-h02">{copy.routesHeading}</h2>
+            </div>
+
+            <div className="grid gap-8 md:grid-cols-3">
               {copy.routes.map((r) => {
-                const external = r.href.startsWith("http");
+                const href = `/${locale}${r.href}`;
                 return (
-                  <a
-                    key={r.title}
-                    href={external ? r.href : `/${locale}${r.href}`}
-                    target={external ? "_blank" : undefined}
-                    rel={external ? "noreferrer" : undefined}
-                    className="group flex flex-col gap-3 border-b border-border py-6 transition-colors hover:bg-brand md:border-b-0 md:border-t md:px-5 md:py-8 md:first:pl-0 md:last:pr-0"
-                  >
-                    <h3 className="t-h05">{r.title}</h3>
-                    <p className="t-body">{r.body}</p>
-                    <span className="t-caption mt-auto inline-flex items-center gap-2 pt-3 font-medium">
-                      {r.label}
-                      <span
-                        aria-hidden
-                        className="transition-transform group-hover:translate-x-1"
+                  <div key={r.title} className="flex flex-col gap-4 border-t border-border pt-3">
+                    <h3 className="t-h04">
+                      <a
+                        href={href}
+                        className="border-b-2 border-transparent transition-colors hover:border-current"
                       >
-                        {external ? "↗" : "→"}
+                        {r.title}
+                      </a>
+                    </h3>
+                    <p className="t-body">{r.body}</p>
+                    {/* The row CTA the frame closes each column with. The
+                        title link above is the accessible route to the same
+                        place; this row is the visual affordance. */}
+                    <a
+                      href={href}
+                      tabIndex={-1}
+                      aria-hidden
+                      className="group mt-auto flex min-h-[60px] items-center justify-between border-t border-border pt-2"
+                    >
+                      <span className="t-caption font-medium">{r.label}</span>
+                      <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                        →
                       </span>
-                      {external && <span className="sr-only"> {c.footer.newWindow}</span>}
-                    </span>
-                  </a>
+                    </a>
+                  </div>
                 );
               })}
             </div>
-          </div>
+          </section>
 
-          {/* The official details — reassurance, not the main event. */}
-          <div className="mt-24 flex max-w-[516px] flex-col gap-6">
-            <h2 className="t-caption font-bold">{copy.legalHeading}</h2>
-            <div className="flex flex-col gap-1">
-              <p className="t-body font-bold">{copy.orgName}</p>
-              <p className="t-body">
-                {copy.orgStatus} · {copy.orgUic}
-              </p>
+          {/* The official details (643:4020): the privacy note beside the
+              registration in ruled rows. */}
+          <section className="mt-20 flex flex-col gap-12 md:mt-24">
+            <div className="flex items-center gap-3">
+              <span
+                className="h-2 w-4 shrink-0"
+                style={{ background: "var(--bdc-tomato)" }}
+                aria-hidden
+              />
+              <span className="t-caption">{copy.legalEyebrow}</span>
             </div>
-            <p className="t-body">
-              <span className="t-caption block">{copy.addressLabel}</span>
-              {copy.addressLines.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-            </p>
-            <p className="t-caption">
-              {copy.privacyNote}{" "}
-              <a href={`/${locale}/privacy`} className="group">
-                <span className="border-b border-current transition-colors group-hover:border-transparent">
-                  {copy.privacyLabel}
-                </span>
-              </a>
-              .
-            </p>
-          </div>
+
+            <div className="flex flex-col gap-8 lg:flex-row lg:gap-8">
+              <p className="t-body lg:w-[330px] lg:shrink-0">
+                {copy.privacyNote}{" "}
+                <a href={`/${locale}/privacy`} className="group">
+                  <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
+                    {copy.privacyLabel}
+                  </span>
+                </a>
+                .
+              </p>
+
+              <div className="flex max-w-[704px] flex-1 flex-col gap-5">
+                <p className="t-h05 font-bold">{copy.orgName}</p>
+                <div className="flex flex-col gap-2 border-y border-border py-3 sm:flex-row sm:items-center sm:gap-8">
+                  <p className="t-body">{copy.orgStatus}</p>
+                  <p className="t-body">{copy.orgUic}</p>
+                </div>
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-8">
+                  <p className="t-label sm:w-[360px] sm:shrink-0">{copy.addressLabel}</p>
+                  <p className="t-body">
+                    {copy.addressLines.map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
         </main>
       </div>
 
-      {/* After the content on purpose: fixed-positioned, so it paints exactly
-          where it always does, but its recolour button is no longer an early
-          keyboard tab stop on a page whose job is the mailbox. */}
+      {/* After the content on purpose — see the membership pages. */}
       <PatternRail locale={locale} />
 
       <SiteFooter footer={c.footer} locale={locale} />
