@@ -146,6 +146,7 @@ export type FaqBlock =
   | { p: string }
   | { h: string }
   | { ul: string[] }
+  | { ol: string[] }
   | { link: { label: string; href: string } };
 export type FaqItem = { q: string; a: FaqBlock[] };
 export type FaqGroup = { title: string; items: FaqItem[] };

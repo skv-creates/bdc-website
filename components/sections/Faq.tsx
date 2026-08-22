@@ -36,6 +36,17 @@ function Answer({ blocks }: { blocks: FaqBlock[] }) {
             </ul>
           );
         }
+        if ("ol" in b) {
+          return (
+            <ol key={i} className="mt-3 list-decimal space-y-1.5 pl-5">
+              {b.ol.map((li, j) => (
+                <li key={j} className="t-body">
+                  {li}
+                </li>
+              ))}
+            </ol>
+          );
+        }
         return (
           <p key={i} className="t-body mt-3 first:mt-0">
             {b.p}
@@ -46,7 +57,9 @@ function Answer({ blocks }: { blocks: FaqBlock[] }) {
   );
 }
 
-function Item({ q, a }: { q: string; a: FaqBlock[] }) {
+/** One accordion row — exported for pages that build their own lists
+    (the membership page's obligations and Q&A use exactly this row). */
+export function FaqItem({ q, a }: { q: string; a: FaqBlock[] }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b-2 border-border">
@@ -87,7 +100,7 @@ export function Faq({ faq }: { faq: SiteContent["faq"] }) {
               <h3 className="t-h04">{group.title}</h3>
               <div className="mt-6 border-t-2 border-border">
                 {group.items.map((it) => (
-                  <Item key={it.q} q={it.q} a={it.a} />
+                  <FaqItem key={it.q} q={it.q} a={it.a} />
                 ))}
               </div>
             </div>

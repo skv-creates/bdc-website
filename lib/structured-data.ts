@@ -114,6 +114,7 @@ function faqBlockText(blocks: FaqBlock[]): string {
       if ("p" in b) return b.p;
       if ("h" in b) return b.h;
       if ("ul" in b) return b.ul.map((li) => `• ${li}`).join("\n");
+      if ("ol" in b) return b.ol.map((li, i) => `${i + 1}. ${li}`).join("\n");
       return b.link.label;
     })
     .join("\n\n");

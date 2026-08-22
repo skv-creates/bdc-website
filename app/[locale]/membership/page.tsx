@@ -1,23 +1,29 @@
 /**
- * Membership — /bg/membership, /en/membership.
+ * Membership — /bg/membership, /en/membership (Figma 636:3607).
  *
- * The membership explainer and the application on one page: who can join,
- * the two categories side by side, what membership commits you to, how
- * admission works, how decisions are made — the statute in plain public
- * language. The application itself is NOT here: it runs full-screen at
- * /membership/apply, which is where the header's Членувай and this page's
- * own buttons lead. The statute is the only official source the page
- * points to; the closing line says the page summarises and does not
- * replace it.
+ * The frame's movements, in order: the head — eyebrow with the time note,
+ * "Дизайнът има нужда от общ глас.", rule, the bold lede and the
+ * supporting paragraph side by side with the primary CTA; three
+ * heading-left/content-right sections (the two kinds of membership, who
+ * can join, the responsibility section closing with the statute link and
+ * the obligations accordion); the amber-marked "Готов си да
+ * кандидатстваш?" block; the Q&A accordion; and the closing photograph.
+ *
+ * Both CTAs lead to the full-screen application at /membership/apply.
+ * The accordion rows are the site's own FaqItem — the same component the
+ * home page's FAQ uses — so the two cannot drift apart. Link hrefs in the
+ * copy are site paths without a locale; localizeBlocks prefixes them.
  */
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { localeAlternates, openGraphBase } from "@/lib/seo";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
+import { FaqItem } from "@/components/sections/Faq";
 import { Button } from "@/components/ui/Button";
-import { getContent, hasLocale } from "@/lib/home-content";
+import { getContent, hasLocale, type FaqBlock } from "@/lib/home-content";
 import { MEMBERSHIP_COPY } from "@/lib/membership";
 
 export async function generateMetadata({
@@ -41,6 +47,15 @@ export async function generateMetadata({
   };
 }
 
+/** Copy stores link hrefs as bare site paths; the locale goes on here. */
+function localizeBlocks(blocks: FaqBlock[], locale: string): FaqBlock[] {
+  return blocks.map((b) =>
+    "link" in b && b.link.href.startsWith("/")
+      ? { link: { ...b.link, href: `/${locale}${b.link.href}` } }
+      : b,
+  );
+}
+
 export default async function MembershipPage({
   params,
 }: {
@@ -50,8 +65,8 @@ export default async function MembershipPage({
   if (!hasLocale(locale)) notFound();
   const c = getContent(locale);
   const copy = MEMBERSHIP_COPY[locale];
-  const statuteHref = `/${locale}/statute`;
   const applyHref = `/${locale}/membership/apply`;
+  const statuteHref = `/${locale}/statute`;
 
   return (
     <>
@@ -73,13 +88,13 @@ export default async function MembershipPage({
           initiatives={c.initiatives}
         />
 
-        <main id="main" tabIndex={-1} className="bdc-stop-11 pb-20 pt-20 md:pb-[72px] md:pt-[120px]">
-          {/* The head: eyebrow, title, the invitation, the one action. */}
+        <main id="main" tabIndex={-1} className="bdc-stop-11 pb-12 pt-20 md:pt-[120px]">
           <div className="flex max-w-[1056px] flex-col gap-12">
+            {/* The head (636:3618). */}
             <div className="flex flex-wrap items-center gap-3">
               <span
                 className="h-2 w-4 shrink-0"
-                style={{ background: "var(--tri-band)" }}
+                style={{ background: "var(--bdc-tomato)" }}
                 aria-hidden
               />
               <span className="t-caption">{copy.eyebrow}</span>
@@ -89,131 +104,113 @@ export default async function MembershipPage({
               <span className="t-caption font-bold">{copy.timeNote}</span>
             </div>
 
-            <h1 className="t-h01 max-w-[732px]">{copy.title}</h1>
+            <h1 className="t-h01 max-w-[800px]">{copy.title}</h1>
 
             <hr className="border-0 border-t border-border" />
 
-            <p className="t-h05 max-w-[620px]">{copy.lead}</p>
+            {/* The lede pair (636:3627): the bold claim and the CTA on the
+                left, the supporting paragraph on the right. */}
+            <div className="flex flex-col gap-8 lg:flex-row lg:gap-8">
+              <div className="flex flex-col gap-12 lg:max-w-[516px]">
+                <p className="t-h05 font-bold">{copy.ledeBold}</p>
+                <Button href={applyHref} variant="primary" className="self-start">
+                  {copy.applyCta} →
+                </Button>
+              </div>
+              <p className="t-body lg:max-w-[508px]">{copy.ledeBody}</p>
+            </div>
 
-            <p className="t-body max-w-[540px]">{copy.body}</p>
+            {/* Two kinds of membership (641:3939): heading in the left
+                columns, the categories stacked in the right. */}
+            <section className="bdc-grid gap-y-12 py-12">
+              <h2 className="t-h02 col-span-full lg:col-span-5">{copy.kinds.heading}</h2>
+              <div className="col-span-full flex flex-col gap-12 lg:col-span-6 lg:col-start-7 lg:row-span-2">
+                {copy.kinds.options.map((o) => (
+                  <div key={o.title} className="flex flex-col gap-5">
+                    <h3 className="t-h04">{o.title}</h3>
+                    {o.paras.map((p) => (
+                      <p key={p} className="t-body">
+                        {p}
+                      </p>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </section>
 
-            {/* → because the application is its own full-screen page. */}
-            <Button href={applyHref} variant="primary" className="self-start">
-              {copy.applyCta} →
-            </Button>
+            {/* For people and organisations (638:3866). */}
+            <section className="bdc-grid gap-y-12 py-12">
+              <h2 className="t-h02 col-span-full lg:col-span-5">{copy.people.heading}</h2>
+              <div className="col-span-full flex flex-col gap-12 opacity-80 lg:col-span-6 lg:col-start-7 lg:max-w-[516px]">
+                {copy.people.paras.map((p) => (
+                  <p key={p} className="t-body">
+                    {p}
+                  </p>
+                ))}
+              </div>
+            </section>
+
+            {/* Responsibility (638:3845): the agreement, the statute, and
+                the obligations as accordion rows. */}
+            <section className="bdc-grid gap-y-12 py-12">
+              <h2 className="t-h02 col-span-full lg:col-span-6">{copy.duties.heading}</h2>
+              <div className="col-span-full flex flex-col gap-5 lg:col-span-6 lg:col-start-7">
+                <p className="t-body">{copy.duties.body}</p>
+                <a href={statuteHref} className="t-body group inline-flex items-center gap-3 self-start font-bold">
+                  <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
+                    {copy.duties.statuteLabel}
+                  </span>
+                  <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </a>
+              </div>
+              <div className="col-span-full border-t-2 border-border lg:col-span-6 lg:col-start-7">
+                {copy.duties.faq.map((item) => (
+                  <FaqItem key={item.q} q={item.q} a={localizeBlocks(item.a, locale)} />
+                ))}
+              </div>
+            </section>
+
+            {/* Ready to apply (636:3630): the amber mark carries the second
+                half of the heading, as the frame draws it. */}
+            <section className="flex max-w-[516px] flex-col gap-8 pt-8">
+              <h2 className="t-h02">
+                {copy.ready.headingStart}
+                <mark
+                  className="text-text"
+                  style={{ background: "var(--bdc-amber)", boxDecorationBreak: "clone" }}
+                >
+                  {copy.ready.headingMark}
+                </mark>
+              </h2>
+              <p className="t-body">{copy.ready.body}</p>
+              <Button href={applyHref} variant="primary" className="self-start">
+                {copy.applyCta} →
+              </Button>
+            </section>
+
+            {/* Questions? Answers. (637:3788) */}
+            <section className="bdc-grid gap-y-12 py-12 lg:py-20">
+              <h2 className="t-h02 col-span-full lg:col-span-5">{copy.questions.heading}</h2>
+              <div className="col-span-full border-t-2 border-border lg:col-span-10 lg:col-start-3 lg:row-start-2">
+                {copy.questions.faq.map((item) => (
+                  <FaqItem key={item.q} q={item.q} a={localizeBlocks(item.a, locale)} />
+                ))}
+              </div>
+            </section>
           </div>
 
-          {/* Who can join — the two kinds of member, side by side. */}
-          <section className="mt-20 flex max-w-[1056px] flex-col gap-8 md:mt-24">
-            <h2 className="t-h02">{copy.who.heading}</h2>
-            <div className="grid gap-8 md:grid-cols-2">
-              {copy.who.groups.map((g) => (
-                <div key={g.title} className="flex flex-col gap-3 border-t border-border pt-5">
-                  <h3 className="t-h05">{g.title}</h3>
-                  {g.paras.map((p) => (
-                    <p key={p} className="t-body">
-                      {p}
-                    </p>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* The two categories, compared plainly. */}
-          <section className="mt-20 flex max-w-[1056px] flex-col gap-8 md:mt-24">
-            <h2 className="t-h02">{copy.ways.heading}</h2>
-            <div className="grid gap-8 md:grid-cols-2">
-              {copy.ways.options.map((o) => (
-                <div key={o.title} className="flex flex-col gap-3 border-t border-border pt-5">
-                  <h3 className="t-h05">{o.title}</h3>
-                  <p className="t-body">{o.body}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* What membership means — and commits you to. */}
-          <section className="mt-20 flex max-w-[732px] flex-col gap-6 md:mt-24">
-            <h2 className="t-h02">{copy.meaning.heading}</h2>
-            <p className="t-body">{copy.meaning.intro}</p>
-            <p className="t-body">{copy.meaning.commitmentsIntro}</p>
-            <ul className="flex list-disc flex-col gap-2 pl-6">
-              {copy.meaning.commitments.map((item) => (
-                <li key={item} className="t-body">
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <p className="t-body">
-              {copy.meaning.statuteNote}{" "}
-              <a href={statuteHref} className="group">
-                <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                  {copy.meaning.statuteLabel}
-                </span>
-              </a>
-              .
-            </p>
-          </section>
-
-          {/* Admission, step by step. */}
-          <section className="mt-20 flex max-w-[732px] flex-col gap-6 md:mt-24">
-            <h2 className="t-h02">{copy.admission.heading}</h2>
-            <ol className="flex list-decimal flex-col gap-3 pl-6">
-              {copy.admission.steps.map((step) => (
-                <li key={step} className="t-body">
-                  {step}
-                </li>
-              ))}
-            </ol>
-            <p className="t-body">{copy.admission.reapply}</p>
-          </section>
-
-          {/* How decisions are made — assembly and board, and the statute. */}
-          <section className="mt-20 flex max-w-[732px] flex-col gap-6 md:mt-24">
-            <h2 className="t-h02">{copy.decisions.heading}</h2>
-            {copy.decisions.paras.map((p) => (
-              <p key={p} className="t-body">
-                {p}
-              </p>
-            ))}
-            <a href={statuteHref} className="t-caption group inline-flex items-center gap-3 self-start font-medium">
-              {copy.decisions.statuteCta}
-              <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </a>
-          </section>
-
-          {/* The close: what the application asks, where it lives, and the
-              two documents to read first. The form itself is the full-screen
-              page the button opens. */}
-          <section className="mt-20 flex max-w-[732px] flex-col gap-6 md:mt-24">
-            <h2 className="t-h02">{copy.apply.heading}</h2>
-            <p className="t-body">{copy.apply.intro}</p>
-            <p className="t-body">{copy.apply.languageNote}</p>
-            <p className="t-body">
-              <span className="font-bold">{copy.apply.beforeLabel}</span>{" "}
-              <a href={statuteHref} className="group">
-                <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                  {copy.apply.statuteLabel}
-                </span>
-              </a>{" "}
-              ·{" "}
-              <a href={`/${locale}/privacy`} className="group">
-                <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                  {copy.apply.privacyLabel}
-                </span>
-              </a>
-            </p>
-
-            <Button href={applyHref} variant="primary" className="self-start">
-              {copy.applyCta} →
-            </Button>
-
-            <p className="t-caption">{copy.apply.dataUse}</p>
-            <p className="t-caption">{copy.apply.disclaimer}</p>
-          </section>
+          {/* The closing photograph (636:3636). */}
+          <div className="relative mt-8 aspect-square w-full overflow-hidden md:aspect-[1092/522]">
+            <Image
+              src="/figma/membership-cover.jpg"
+              alt={copy.photoAlt}
+              fill
+              sizes="(max-width: 1023px) 90vw, 80vw"
+              className="object-cover"
+            />
+          </div>
         </main>
       </div>
 
