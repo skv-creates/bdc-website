@@ -54,7 +54,7 @@ export const CONTACT_COPY: Record<
         title: "Членство",
         body: "За хора и организации, които искат да допринасят дългосрочно за развитието на дизайна в България.",
         label: "Кандидатствай за членство",
-        href: "/membership",
+        href: "/membership#apply",
       },
       {
         title: "Доброволчество",
@@ -92,7 +92,7 @@ export const CONTACT_COPY: Record<
         title: "Membership",
         body: "For people and organisations who want to contribute to the long-term development of design in Bulgaria.",
         label: "Apply for membership",
-        href: "/membership",
+        href: "/membership#apply",
       },
       {
         title: "Volunteering",
