@@ -61,18 +61,22 @@ export default async function MembershipThanksPage({
         <SiteNav nav={c.nav} ui={c.ui} locale={locale} path="/membership" initiatives={c.initiatives} />
 
         <main id="main" tabIndex={-1} className="bdc-stop-11 pb-20 pt-20 md:pb-[160px] md:pt-[120px]">
-          <div className="flex max-w-[732px] flex-col items-start gap-12">
-            <h1 className="t-h01">{copy.title}</h1>
-            <p className="t-body max-w-[540px]">{copy.body}</p>
-            <p className="t-body max-w-[540px]">
-              {copy.help}{" "}
-              <a href={`mailto:${c.footer.email}`} className="group [overflow-wrap:anywhere]">
-                <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                  {c.footer.email}
-                </span>
-              </a>
-              .
-            </p>
+          <div className="flex max-w-[1056px] flex-col items-start gap-12">
+            <h1 className="t-h01 max-w-[732px]">{copy.title}</h1>
+            {/* The two halves side by side, per the site's two-column grammar:
+                what happens next on the left, how to reach us on the right. */}
+            <div className="grid gap-8 md:grid-cols-2">
+              <p className="t-body">{copy.body}</p>
+              <p className="t-body">
+                {copy.help}{" "}
+                <a href={`mailto:${c.footer.email}`} className="group [overflow-wrap:anywhere]">
+                  <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
+                    {c.footer.email}
+                  </span>
+                </a>
+                .
+              </p>
+            </div>
             <Button href={`/${locale}/initiatives`}>{copy.backLabel}</Button>
           </div>
         </main>
