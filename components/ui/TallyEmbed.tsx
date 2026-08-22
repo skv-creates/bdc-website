@@ -1,66 +1,39 @@
 "use client";
 
 /**
- * A Tally form, inline.
+ * A Tally form in full-page mode, filling whatever box it is given.
  *
- * Tally's own embed recipe: an iframe holding the form URL in
- * `data-tally-src`, and their widget script, which finds such iframes and
- * copies the URL into `src`. The parameters strip the chrome that would
- * double what the page already says: no Tally title (the page's own heading
- * is the title), transparent background, left alignment.
- *
- * The height: dynamic, but only ever growing. Two failure modes taught
- * this shape. Pure dynamicHeight resized the frame on every Напред — every
- * step is a different height — and the page reflowed under the visitor's
- * hands. A fixed frame held still but scrolled internally, and the moment
- * the inner scrollbar ran out the wheel escaped to the page and carried
- * the visitor away from the form. So: dynamicHeight for a single scroll
- * context (no inner scrollbar to fall out of), with a ratchet that turns
- * every height Tally sets into a floor — the frame grows below the
- * visitor's hands when a step needs room, and never shrinks back.
+ * This is Tally's own full-page embed (the /r/ URL, not /embed/): the form
+ * behaves as an application — it owns all scrolling internally, one screen
+ * at a time. The page hosting it must not scroll; see /membership, which
+ * sizes this to everything below the header and locks the page. That is
+ * what finally ended the scroll fighting: two earlier shapes each failed —
+ * dynamic height reflowed the page on every step, a fixed frame's inner
+ * scrollbar handed the wheel to the page the moment it ran out — and the
+ * root cause both times was two scroll contexts. Full-page mode leaves one.
  *
  * The script loads after hydration via lib/tally.ts, so the page itself
  * stays prerendered and an ordinary page view ships no third-party
  * JavaScript. If the script never arrives (blocked, offline), the iframe
  * stays empty and nothing else on the page depends on it.
  */
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { withTally } from "@/lib/tally";
 
 export function TallyEmbed({ formId, title }: { formId: string; title: string }) {
-  const frame = useRef<HTMLIFrameElement>(null);
-
   useEffect(() => {
     withTally(() => window.Tally?.loadEmbeds());
   }, []);
 
-  // The ratchet: whatever height the widget sets becomes the minimum, so
-  // steps can only grow the frame, never bounce it back up.
-  useEffect(() => {
-    const el = frame.current;
-    if (!el) return;
-    const ratchet = () => {
-      const height = el.getBoundingClientRect().height;
-      const floor = parseFloat(el.style.minHeight || "0");
-      if (height > floor) el.style.minHeight = `${height}px`;
-    };
-    ratchet();
-    const ro = new ResizeObserver(ratchet);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
   return (
     <iframe
-      ref={frame}
-      data-tally-src={`https://tally.so/embed/${formId}?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1`}
+      data-tally-src={`https://tally.so/r/${formId}?transparentBackground=1&formEventsForwarding=1`}
       loading="lazy"
-      width="100%"
       frameBorder="0"
       marginHeight={0}
       marginWidth={0}
       title={title}
-      className="min-h-[560px] w-full"
+      className="h-full w-full"
     />
   );
 }
