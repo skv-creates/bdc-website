@@ -221,7 +221,7 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
     formTitle: "Заявление за членство в БДС",
     thanks: {
       metaTitle: "Благодарим — Български Дизайн Съвет",
-      title: "Благодарим за заявеното членство в Български дизайн съвет!",
+      title: "Благодарим за заявеното членство",
       body: "Кандидатурата Ви ще бъде разгледана от Управителния съвет и ще се свържем с Вас на посочения e-mail до няколко работни дни.",
       help: "При нужда от съдействие или възникнали въпроси можете да ни пишете на",
       backLabel: "Разгледайте инициативите ни",
@@ -405,7 +405,7 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
     formTitle: "BDC membership application",
     thanks: {
       metaTitle: "Thank you — Bulgarian Design Council",
-      title: "Thank you for applying for membership in the Bulgarian Design Council!",
+      title: "Thank you for applying for membership",
       body: "Your application will be reviewed by the Management Board, and we will contact you at the email you provided within a few working days.",
       help: "If you need assistance or have any questions, write to us at",
       backLabel: "Explore our initiatives",
