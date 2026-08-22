@@ -29,7 +29,12 @@ type Copy = {
     statuteLabel: string;
     faq: { q: string; a: FaqBlock[] }[];
   };
-  ready: { headingStart: string; headingMark: string; body: string };
+  ready: {
+    heading: string;
+    /** Rendered highlighted in amber, as the volunteer page draws it. */
+    bodyHighlight: string;
+    body: string;
+  };
   questions: { heading: string; faq: { q: string; a: FaqBlock[] }[] };
   photoAlt: string;
   formTitle: string;
@@ -132,9 +137,9 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
       ],
     },
     ready: {
-      headingStart: "Готов си да ",
-      headingMark: "кандидатстваш?",
-      body: "Попълването отнема около 3–5 минути. Формата е на български. Не е необходимо да си дизайнер, за да членуваш.",
+      heading: "Готов си да кандидатстваш?",
+      bodyHighlight: "Попълването отнема около 3–5 минути.",
+      body: "Формата е на български. Не е необходимо да си дизайнер, за да членуваш.",
     },
     questions: {
       heading: "Въпроси? Отговори.",
@@ -316,9 +321,9 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
       ],
     },
     ready: {
-      headingStart: "Ready to ",
-      headingMark: "apply?",
-      body: "Filling in the form takes about 3–5 minutes. The form is in Bulgarian. You do not need to be a designer to become a member.",
+      heading: "Ready to apply?",
+      bodyHighlight: "Filling in the form takes about 3–5 minutes.",
+      body: "The form is in Bulgarian. You do not need to be a designer to become a member.",
     },
     questions: {
       heading: "Questions? Answers.",

@@ -172,19 +172,20 @@ export default async function MembershipPage({
               </div>
             </section>
 
-            {/* Ready to apply (636:3630): the amber mark carries the second
-                half of the heading, as the frame draws it. */}
+            {/* Ready to apply (636:3630). The amber never touches the
+                heading — as on the volunteer page, the mark belongs to the
+                time sentence in the body. */}
             <section className="flex max-w-[516px] flex-col gap-8 pt-8">
-              <h2 className="t-h02">
-                {copy.ready.headingStart}
+              <h2 className="t-h02">{copy.ready.heading}</h2>
+              <p className="t-body">
                 <mark
                   className="text-text"
                   style={{ background: "var(--bdc-amber)", boxDecorationBreak: "clone" }}
                 >
-                  {copy.ready.headingMark}
-                </mark>
-              </h2>
-              <p className="t-body">{copy.ready.body}</p>
+                  {copy.ready.bodyHighlight}
+                </mark>{" "}
+                {copy.ready.body}
+              </p>
               <Button href={applyHref} variant="primary" className="self-start">
                 {copy.applyCta} →
               </Button>
