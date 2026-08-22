@@ -1,5 +1,6 @@
 /**
- * How many pages the membership application has — read from Tally itself.
+ * How many pages the membership application has — read from Tally itself,
+ * or null when it cannot be.
  *
  * The page's own progress bar (TallyProgress) needs the total, and Tally's
  * forwarded events carry only the current page. But the form's public page
@@ -9,14 +10,15 @@
  * added or removed in the Tally editor: the next deploy picks it up, no
  * hand edit.
  *
- * The apply page is prerendered, so this fetch happens at build, never on
- * a visitor's request. Any failure — network, markup change, missing
- * blocks — falls back to MEMBERSHIP_FORM_PAGES rather than failing the
- * build; a bar with a slightly stale total beats no site.
+ * No hardcoded count anywhere: when the fetch fails — network, markup
+ * change, missing blocks — this returns null and the apply page simply
+ * lets Tally's own bar show instead of drawing one from an invented
+ * number. The apply page is prerendered, so the fetch happens at build,
+ * never on a visitor's request.
  */
-import { MEMBERSHIP_FORM_ID, MEMBERSHIP_FORM_PAGES } from "@/lib/tally";
+import { MEMBERSHIP_FORM_ID } from "@/lib/tally";
 
-export async function getMembershipFormPages(): Promise<number> {
+export async function getMembershipFormPages(): Promise<number | null> {
   try {
     // force-cache is load-bearing: this version of Next defaults fetch to
     // no-store, which would silently turn the prerendered apply route
@@ -24,17 +26,17 @@ export async function getMembershipFormPages(): Promise<number> {
     const res = await fetch(`https://tally.so/r/${MEMBERSHIP_FORM_ID}`, {
       cache: "force-cache",
     });
-    if (!res.ok) return MEMBERSHIP_FORM_PAGES;
+    if (!res.ok) return null;
     const html = await res.text();
     const json = html.match(
       /__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/,
     )?.[1];
-    if (!json) return MEMBERSHIP_FORM_PAGES;
+    if (!json) return null;
     const blocks: { type?: string }[] =
       JSON.parse(json)?.props?.pageProps?.blocks ?? [];
     const breaks = blocks.filter((b) => b.type === "PAGE_BREAK").length;
-    return breaks > 0 ? breaks : MEMBERSHIP_FORM_PAGES;
+    return breaks > 0 ? breaks : null;
   } catch {
-    return MEMBERSHIP_FORM_PAGES;
+    return null;
   }
 }

@@ -46,7 +46,8 @@ export default async function MembershipApplyPage({
   if (!hasLocale(locale)) notFound();
   const c = getContent(locale);
   const copy = MEMBERSHIP_COPY[locale];
-  // Counted from the form itself at build time; falls back to the constant.
+  // Counted from the form itself at build time. null when Tally could not
+  // be read — then the page shows Tally's own bar instead of inventing one.
   const formPages = await getMembershipFormPages();
 
   return (
@@ -92,16 +93,18 @@ export default async function MembershipApplyPage({
           <h1 className="sr-only">{copy.formTitle}</h1>
 
           {/* The page's own progress bar, full width — driven by the events
-              the embed forwards. */}
-          <TallyProgress formId={MEMBERSHIP_FORM_ID} pages={formPages} />
+              the embed forwards. Only when the build could count the form's
+              pages; otherwise Tally's own bar below stays visible. */}
+          {formPages && <TallyProgress formId={MEMBERSHIP_FORM_ID} pages={formPages} />}
 
           {/* The form column holds at 720px, left aligned — the full page
-              width made the fields sprawl. Tally draws a second progress
-              bar in the iframe's top 24px (it cannot be styled or turned
-              off from outside), so the wrapper crops the first 28px: the
-              form's own content starts at 53px and is untouched. */}
+              width made the fields sprawl. Tally draws its own progress bar
+              in the iframe's top 24px (it cannot be styled or turned off
+              from outside); while our full-width bar stands in for it, the
+              wrapper crops those first 28px — the form's content starts at
+              53px and is untouched. */}
           <div className="min-h-0 w-full max-w-[720px] flex-1 overflow-hidden">
-            <div className="-mt-7 h-[calc(100%+28px)]">
+            <div className={formPages ? "-mt-7 h-[calc(100%+28px)]" : "h-full"}>
               <TallyEmbed formId={MEMBERSHIP_FORM_ID} title={copy.formTitle} />
             </div>
           </div>

@@ -37,10 +37,3 @@ export function withTally(ready: () => void): void {
 /** The membership application — embedded full-screen on /membership/apply. */
 export const MEMBERSHIP_FORM_ID = "81PbQA";
 
-/**
- * The fallback page count for the application's progress bar. The real
- * total is counted from the form itself at build time — see
- * lib/tally-pages.ts — and this value steps in only when that fetch
- * fails. Keep it roughly right, not sacred.
- */
-export const MEMBERSHIP_FORM_PAGES = 5;
