@@ -174,7 +174,7 @@ export default async function ContactPage({
 
             <div className="flex flex-col gap-8 lg:flex-row lg:gap-8">
               <div className="flex flex-col gap-4 lg:w-[330px] lg:shrink-0">
-                <p className="t-body">{copy.privacyNote}</p>
+                <p className="t-body font-bold">{copy.privacyNote}</p>
                 <Button variant="tertiary" href={`/${locale}/privacy`} className="self-start">
                   {copy.privacyLabel}
                 </Button>
