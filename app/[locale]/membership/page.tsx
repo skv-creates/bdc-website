@@ -93,32 +93,31 @@ export default async function MembershipPage({
 
             <hr className="border-0 border-t border-border" />
 
-            <p className="t-h05 max-w-[540px]">{copy.lead}</p>
+            <p className="t-h05 max-w-[620px]">{copy.lead}</p>
 
-            <div className="grid gap-8 md:grid-cols-2">
-              <div className="flex flex-col gap-5">
-                {copy.bodyLeft.map((p) => (
-                  <p key={p} className="t-body">
-                    {p}
-                  </p>
-                ))}
-              </div>
-              <div className="flex flex-col gap-5">
-                <p className="t-body">{copy.bodyRight}</p>
-                <a href={`/${locale}/statute`} className="t-body group self-start">
-                  <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                    {copy.statuteLabel}
-                  </span>
-                </a>
-              </div>
-            </div>
+            <p className="t-body max-w-[540px]">{copy.body}</p>
+
+            {/* ↓, not →: the application is on this page, right below. */}
+            <a
+              href="#application"
+              className="t-caption group inline-flex items-center gap-3 self-start font-medium"
+            >
+              {copy.startLabel}
+              <span aria-hidden className="transition-transform group-hover:translate-y-1">
+                ↓
+              </span>
+            </a>
           </div>
 
           {/* The application. No heading of its own — the page's title is its
               title, and the form opens with its own introduction; a second
               heading here would say the same thing a third time. The rule
-              marks where the reading ends and the filling-in begins. */}
-          <div className="mt-16 max-w-[732px] border-t border-border pt-10 md:mt-20">
+              marks where the reading ends and the filling-in begins;
+              scroll-mt keeps it clear of the sticky header on arrival. */}
+          <div
+            id="application"
+            className="mt-16 max-w-[732px] scroll-mt-32 border-t border-border pt-10 md:mt-20"
+          >
             <TallyEmbed formId={MEMBERSHIP_FORM_ID} title={copy.formTitle} />
           </div>
         </main>
