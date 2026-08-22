@@ -18,6 +18,7 @@ import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { TallyEmbed } from "@/components/ui/TallyEmbed";
 import { TallyProgress } from "@/components/ui/TallyProgress";
+import { TallyRedirect } from "@/components/ui/TallyRedirect";
 import { getContent, hasLocale } from "@/lib/home-content";
 import { MEMBERSHIP_FORM_ID } from "@/lib/tally";
 import { getMembershipFormPages } from "@/lib/tally-pages";
@@ -91,6 +92,13 @@ export default async function MembershipApplyPage({
             <span className="t-caption font-bold">{copy.timeNote}</span>
           </div>
           <h1 className="sr-only">{copy.formTitle}</h1>
+
+          {/* A submitted form leaves the Tally flow for the council's own
+              success screen — which is also the Ads conversion URL. */}
+          <TallyRedirect
+            formId={MEMBERSHIP_FORM_ID}
+            href={`/${locale}/membership/thanks`}
+          />
 
           {/* The page's own progress bar, full width — driven by the events
               the embed forwards. Only when the build could count the form's

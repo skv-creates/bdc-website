@@ -33,6 +33,15 @@ type Copy = {
   questions: { heading: string; faq: { q: string; a: FaqBlock[] }[] };
   photoAlt: string;
   formTitle: string;
+  /** The council's own success screen at /membership/thanks. */
+  thanks: {
+    metaTitle: string;
+    title: string;
+    body: string;
+    /** The помощ line; the email itself comes from footer.email. */
+    help: string;
+    backLabel: string;
+  };
   metaTitle: string;
   metaDescription: string;
 };
@@ -210,6 +219,13 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
     },
     photoAlt: "Членове на Български дизайн съвет работят заедно",
     formTitle: "Заявление за членство в БДС",
+    thanks: {
+      metaTitle: "Благодарим — Български Дизайн Съвет",
+      title: "Благодарим за заявеното членство в Български дизайн съвет!",
+      body: "Кандидатурата Ви ще бъде разгледана от Управителния съвет и ще се свържем с Вас на посочения e-mail до няколко работни дни.",
+      help: "При нужда от съдействие или възникнали въпроси можете да ни пишете на",
+      backLabel: "Разгледайте инициативите ни",
+    },
     metaTitle: "Членство — Български Дизайн Съвет",
     metaDescription:
       "Дизайнът има нужда от общ глас. Пълноправно и асоциирано членство в Български дизайн съвет — за хора и организации. Кандидатствайте онлайн.",
@@ -387,6 +403,13 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
     },
     photoAlt: "Members of the Bulgarian Design Council working together",
     formTitle: "BDC membership application",
+    thanks: {
+      metaTitle: "Thank you — Bulgarian Design Council",
+      title: "Thank you for applying for membership in the Bulgarian Design Council!",
+      body: "Your application will be reviewed by the Management Board, and we will contact you at the email you provided within a few working days.",
+      help: "If you need assistance or have any questions, write to us at",
+      backLabel: "Explore our initiatives",
+    },
     metaTitle: "Membership — Bulgarian Design Council",
     metaDescription:
       "Design needs a common voice. Full and associate membership in the Bulgarian Design Council — for people and organisations. Apply online.",
