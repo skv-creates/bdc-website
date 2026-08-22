@@ -53,21 +53,23 @@ export function Button({
   const width = fullWidth ? "w-full" : stretchOnMobile ? "w-full sm:w-auto" : "";
   const cls = `transition-colors duration-200 ${variants[variant]} ${width} ${className}`;
 
+  const external = href ? /^https?:\/\//.test(href) : false;
+
   // The arrow belongs to the tertiary component itself, so callers pass only a
   // label. aria-hidden because it is decoration — the label already says where
-  // the link goes.
+  // the link goes. Two arrows for two meanings, the site-wide rule: ↗ leaves
+  // the site, → stays on it.
   const content =
     variant === "tertiary" ? (
       <>
         <span>{children}</span>
-        <span aria-hidden>↗</span>
+        <span aria-hidden>{external ? "↗" : "→"}</span>
       </>
     ) : (
       children
     );
 
   if (href) {
-    const external = /^https?:\/\//.test(href);
     return (
       <a
         href={href}

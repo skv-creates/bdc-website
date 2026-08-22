@@ -18,6 +18,7 @@ import { localeAlternates, openGraphBase } from "@/lib/seo";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
+import { Button } from "@/components/ui/Button";
 import { getContent, hasLocale } from "@/lib/home-content";
 import { CONTACT_COPY } from "@/lib/contact";
 
@@ -145,20 +146,14 @@ export default async function ContactPage({
                       </a>
                     </h3>
                     <p className="t-body">{r.body}</p>
-                    {/* The row CTA the frame closes each column with. The
-                        title link above is the accessible route to the same
-                        place; this row is the visual affordance. */}
-                    <a
-                      href={href}
-                      tabIndex={-1}
-                      aria-hidden
-                      className="group mt-auto flex min-h-[60px] items-center justify-between border-t border-border pt-2"
-                    >
-                      <span className="t-caption font-medium">{r.label}</span>
-                      <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                        →
-                      </span>
-                    </a>
+                    {/* The tertiary button closes each column — quiet at
+                        rest, the full-row underline on hover, like every
+                        tertiary across the site. */}
+                    <div className="mt-auto pt-4">
+                      <Button variant="tertiary" href={href} fullWidth>
+                        {r.label}
+                      </Button>
+                    </div>
                   </div>
                 );
               })}
@@ -178,15 +173,12 @@ export default async function ContactPage({
             </div>
 
             <div className="flex flex-col gap-8 lg:flex-row lg:gap-8">
-              <p className="t-body lg:w-[330px] lg:shrink-0">
-                {copy.privacyNote}{" "}
-                <a href={`/${locale}/privacy`} className="group">
-                  <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                    {copy.privacyLabel}
-                  </span>
-                </a>
-                .
-              </p>
+              <div className="flex flex-col gap-4 lg:w-[330px] lg:shrink-0">
+                <p className="t-body">{copy.privacyNote}</p>
+                <Button variant="tertiary" href={`/${locale}/privacy`} className="self-start">
+                  {copy.privacyLabel}
+                </Button>
+              </div>
 
               <div className="flex max-w-[704px] flex-1 flex-col gap-5">
                 <p className="t-h05 font-bold">{copy.orgName}</p>

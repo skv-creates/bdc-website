@@ -156,14 +156,9 @@ export default async function MembershipPage({
               <h2 className="t-h02 col-span-full lg:col-span-6">{copy.duties.heading}</h2>
               <div className="col-span-full flex flex-col gap-5 lg:col-span-6 lg:col-start-7">
                 <p className="t-body">{copy.duties.body}</p>
-                <a href={statuteHref} className="t-body group inline-flex items-center gap-3 self-start font-bold">
-                  <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                    {copy.duties.statuteLabel}
-                  </span>
-                  <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                    →
-                  </span>
-                </a>
+                <Button variant="tertiary" href={statuteHref} className="self-start">
+                  {copy.duties.statuteLabel}
+                </Button>
               </div>
               <div className="col-span-full border-t-2 border-border lg:col-span-6 lg:col-start-7">
                 {copy.duties.faq.map((item) => (
