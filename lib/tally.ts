@@ -52,9 +52,9 @@ export function withTally(ready: () => void): void {
 export const MEMBERSHIP_FORM_ID = "81PbQA";
 
 /**
- * The popup configuration from the form's own share page, verbatim —
- * width, alignment, no duplicate title, the sunflower, auto-close after
- * submission.
+ * The popup configuration from the form's own share page — width,
+ * alignment, no duplicate title, auto-close after submission. No emoji:
+ * the share page's sample 🌻 is not the council's voice.
  */
 export function openMembershipPopup(): void {
   withTally(() =>
@@ -62,7 +62,6 @@ export function openMembershipPopup(): void {
       width: 380,
       alignLeft: true,
       hideTitle: true,
-      emoji: { text: "🌻", animation: "heart-beat" },
       autoClose: 5000,
     }),
   );
