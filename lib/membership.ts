@@ -18,6 +18,8 @@ export type Locale = "bg" | "en";
 
 type Copy = {
   eyebrow: string;
+  /** Beside the eyebrow: how long the application takes. */
+  timeNote: string;
   title: string;
   lead: string;
   body: string;
@@ -39,7 +41,6 @@ type Copy = {
     heading: string;
     intro: string;
     languageNote: string;
-    timeNote: string;
     beforeLabel: string;
     statuteLabel: string;
     privacyLabel: string;
@@ -54,6 +55,7 @@ type Copy = {
 export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
   bg: {
     eyebrow: "Членство в Български дизайн съвет",
+    timeNote: "Попълването отнема 3–5 минути.",
     title: "Членство в БДС",
     lead: "Обединяваме хора и организации, които искат да участват в развитието на дизайна в България и в работата, която превръща дизайна в национален капацитет.",
     body: "Членството е доброволно. Можете да кандидатствате като физическо лице или организация, за пълноправно или асоциирано членство.",
@@ -129,7 +131,6 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
         "Разкажете ни накратко за Вас или Вашата организация, с какво се занимавате и защо искате да станете част от БДС.",
       languageNote:
         "Формата е на български, защото това е работният език на сдружението и Общото събрание.",
-      timeNote: "Попълването отнема 3–5 минути.",
       beforeLabel: "Преди да кандидатствате:",
       statuteLabel: "Устав на БДС",
       privacyLabel: "Политика за поверителност",
@@ -146,6 +147,7 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
   en: {
     // Translated from the Bulgarian, which is the source of truth here.
     eyebrow: "Membership in the Bulgarian Design Council",
+    timeNote: "Filling it in takes 3–5 minutes.",
     title: "Membership in the BDC",
     lead: "We bring together people and organisations who want to take part in the development of design in Bulgaria and in the work that turns design into a national capability.",
     body: "Membership is voluntary. You can apply as an individual or an organisation, for full or associate membership.",
@@ -221,7 +223,6 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
         "Tell us briefly about yourself or your organisation, what you do, and why you want to become part of the BDC.",
       languageNote:
         "The form is in Bulgarian, because that is the working language of the association and its General Assembly.",
-      timeNote: "Filling it in takes 3–5 minutes.",
       beforeLabel: "Before you apply:",
       statuteLabel: "Statute of the BDC",
       privacyLabel: "Privacy Policy",

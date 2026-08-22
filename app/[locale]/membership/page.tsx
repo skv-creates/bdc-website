@@ -80,13 +80,17 @@ export default async function MembershipPage({
         <main id="main" tabIndex={-1} className="bdc-stop-11 pb-20 pt-20 md:pb-[72px] md:pt-[120px]">
           {/* The head: eyebrow, title, the invitation, the one action. */}
           <div className="flex max-w-[1056px] flex-col gap-12">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <span
                 className="h-2 w-4 shrink-0"
                 style={{ background: "var(--tri-band)" }}
                 aria-hidden
               />
               <span className="t-caption">{copy.eyebrow}</span>
+              <span aria-hidden className="opacity-40">
+                ·
+              </span>
+              <span className="t-caption font-bold">{copy.timeNote}</span>
             </div>
 
             <h1 className="t-h01 max-w-[732px]">{copy.title}</h1>
@@ -187,11 +191,10 @@ export default async function MembershipPage({
 
           {/* The application. scroll-mt keeps the heading clear of the
               sticky header when the #apply links land here. */}
-          <section id="apply" className="mt-20 flex max-w-[732px] scroll-mt-32 flex-col gap-6 md:mt-24">
+          <section id="apply" className="mt-20 flex max-w-[800px] scroll-mt-32 flex-col gap-6 md:mt-24">
             <h2 className="t-h02">{copy.apply.heading}</h2>
             <p className="t-body">{copy.apply.intro}</p>
             <p className="t-body">{copy.apply.languageNote}</p>
-            <p className="t-body font-bold">{copy.apply.timeNote}</p>
             <p className="t-body">
               <span className="font-bold">{copy.apply.beforeLabel}</span>{" "}
               <a href={statuteHref} className="group">
