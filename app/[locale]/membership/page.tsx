@@ -95,8 +95,6 @@ export default async function MembershipPage({
 
             <p className="t-h05 max-w-[620px]">{copy.lead}</p>
 
-            <p className="t-body max-w-[540px]">{copy.body}</p>
-
             {/* ↓, not →: the application is on this page, right below. */}
             <a
               href="#application"

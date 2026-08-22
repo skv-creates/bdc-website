@@ -15,7 +15,6 @@ export const MEMBERSHIP_COPY: Record<
     eyebrow: string;
     title: string;
     lead: string;
-    body: string;
     /** Scrolls to the embedded application below. */
     startLabel: string;
     /** The embedded application's accessible name. */
@@ -27,24 +26,22 @@ export const MEMBERSHIP_COPY: Record<
   bg: {
     eyebrow: "Членство в Български дизайн съвет",
     title: "Кандидатствай за членство",
-    lead: "Български дизайн съвет обединява хора и организации, които споделят мисията ни и искат да участват в развитието на дизайна в България.",
-    body: "Можете да кандидатствате като физическо лице или организация, за пълноправно или асоциирано членство.",
+    lead: "Обединяваме хора и организации, които споделят мисията ни и искат да участват в развитието на дизайна в България.",
     startLabel: "Започнете кандидатурата",
     formTitle: "Заявление за членство в БДС",
     metaTitle: "Членство — Български Дизайн Съвет",
     metaDescription:
-      "Кандидатствайте за членство в Български дизайн съвет — като физическо лице или организация, за пълноправно или асоциирано членство.",
+      "Кандидатствайте за членство в Български дизайн съвет — обединяваме хора и организации, които участват в развитието на дизайна в България.",
   },
   en: {
     // Translated from the Bulgarian, which is the source of truth here.
     eyebrow: "Membership in the Bulgarian Design Council",
     title: "Apply for membership",
-    lead: "The Bulgarian Design Council brings together people and organisations who share our mission and want to take part in the development of design in Bulgaria.",
-    body: "You can apply as an individual or an organisation, for full or associate membership.",
+    lead: "We bring together people and organisations who share our mission and want to take part in the development of design in Bulgaria.",
     startLabel: "Start your application",
     formTitle: "BDC membership application",
     metaTitle: "Membership — Bulgarian Design Council",
     metaDescription:
-      "Apply for membership in the Bulgarian Design Council — as an individual or an organisation, for full or associate membership.",
+      "Apply for membership in the Bulgarian Design Council — we bring together the people and organisations developing design in Bulgaria.",
   },
 };
