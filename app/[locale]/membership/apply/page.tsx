@@ -76,7 +76,7 @@ export default async function MembershipApplyPage({
           initiatives={c.initiatives}
         />
 
-        <main id="main" tabIndex={-1} className="flex min-h-0 flex-1 flex-col gap-6 pt-6">
+        <main id="main" tabIndex={-1} className="bdc-stop-11 flex min-h-0 flex-1 flex-col gap-6 pt-6">
           {/* The section eyebrow and the one practical fact — above the
               form's own progress bar, in the site's voice. */}
           <div className="flex flex-wrap items-center gap-3">
