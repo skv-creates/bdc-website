@@ -30,7 +30,7 @@ export function TallyEmbed({ formId, title }: { formId: string; title: string })
 
   return (
     <iframe
-      data-tally-src={`https://tally.so/embed/${formId}?hideTitle=1&transparentBackground=1&formEventsForwarding=1`}
+      data-tally-src={`https://tally.so/embed/${formId}?alignLeft=1&hideTitle=1&transparentBackground=1&formEventsForwarding=1`}
       loading="lazy"
       frameBorder="0"
       marginHeight={0}

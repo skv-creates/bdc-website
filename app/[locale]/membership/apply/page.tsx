@@ -74,9 +74,21 @@ export default async function MembershipApplyPage({
           initiatives={c.initiatives}
         />
 
-        <main id="main" tabIndex={-1} className="min-h-0 flex-1">
+        <main id="main" tabIndex={-1} className="flex min-h-0 flex-1 flex-col gap-6">
+          {/* The section eyebrow, above the form's own progress bar — the
+              page's one piece of site voice around the application. */}
+          <div className="flex items-center gap-3">
+            <span
+              className="h-2 w-4 shrink-0"
+              style={{ background: "var(--tri-band)" }}
+              aria-hidden
+            />
+            <span className="t-caption">{copy.eyebrow}</span>
+          </div>
           <h1 className="sr-only">{copy.formTitle}</h1>
-          <TallyEmbed formId={MEMBERSHIP_FORM_ID} title={copy.formTitle} />
+          <div className="min-h-0 flex-1">
+            <TallyEmbed formId={MEMBERSHIP_FORM_ID} title={copy.formTitle} />
+          </div>
         </main>
       </div>
 
