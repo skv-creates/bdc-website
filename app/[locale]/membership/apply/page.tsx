@@ -19,7 +19,8 @@ import { SiteNav } from "@/components/sections/SiteNav";
 import { TallyEmbed } from "@/components/ui/TallyEmbed";
 import { TallyProgress } from "@/components/ui/TallyProgress";
 import { getContent, hasLocale } from "@/lib/home-content";
-import { MEMBERSHIP_FORM_ID, MEMBERSHIP_FORM_PAGES } from "@/lib/tally";
+import { MEMBERSHIP_FORM_ID } from "@/lib/tally";
+import { getMembershipFormPages } from "@/lib/tally-pages";
 import { MEMBERSHIP_COPY } from "@/lib/membership";
 
 export async function generateMetadata({
@@ -45,6 +46,8 @@ export default async function MembershipApplyPage({
   if (!hasLocale(locale)) notFound();
   const c = getContent(locale);
   const copy = MEMBERSHIP_COPY[locale];
+  // Counted from the form itself at build time; falls back to the constant.
+  const formPages = await getMembershipFormPages();
 
   return (
     <>
@@ -90,7 +93,7 @@ export default async function MembershipApplyPage({
 
           {/* The page's own progress bar, full width — driven by the events
               the embed forwards. */}
-          <TallyProgress formId={MEMBERSHIP_FORM_ID} pages={MEMBERSHIP_FORM_PAGES} />
+          <TallyProgress formId={MEMBERSHIP_FORM_ID} pages={formPages} />
 
           {/* The form column holds at 720px, left aligned — the full page
               width made the fields sprawl. Tally draws a second progress

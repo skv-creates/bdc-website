@@ -38,8 +38,9 @@ export function withTally(ready: () => void): void {
 export const MEMBERSHIP_FORM_ID = "81PbQA";
 
 /**
- * How many pages the application has — drives the page's own progress bar
- * (TallyProgress), since Tally's events carry the current page but not the
- * total. Update alongside the form if steps are added or removed in Tally.
+ * The fallback page count for the application's progress bar. The real
+ * total is counted from the form itself at build time — see
+ * lib/tally-pages.ts — and this value steps in only when that fetch
+ * fails. Keep it roughly right, not sacred.
  */
 export const MEMBERSHIP_FORM_PAGES = 5;
