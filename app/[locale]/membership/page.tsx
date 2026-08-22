@@ -107,14 +107,13 @@ export default async function MembershipPage({
             </a>
           </div>
 
-          {/* The application. No heading of its own — the page's title is its
-              title, and the form opens with its own introduction; a second
-              heading here would say the same thing a third time. The rule
-              marks where the reading ends and the filling-in begins;
-              scroll-mt keeps it clear of the sticky header on arrival. */}
+          {/* The application. No heading and no rule of its own — the page's
+              title is its title, the form opens with its own introduction,
+              and its progress bar already marks where it begins. scroll-mt
+              keeps it clear of the sticky header on arrival. */}
           <div
             id="application"
-            className="mt-16 max-w-[732px] scroll-mt-32 border-t border-border pt-10 md:mt-20"
+            className="mt-12 max-w-[732px] scroll-mt-32 md:mt-16"
           >
             <TallyEmbed formId={MEMBERSHIP_FORM_ID} title={copy.formTitle} />
           </div>
