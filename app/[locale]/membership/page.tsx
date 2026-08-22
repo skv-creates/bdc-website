@@ -1,26 +1,24 @@
 /**
- * Membership — /bg/membership, /en/membership.
+ * Membership landing — /bg/membership, /en/membership.
  *
- * The application as the page, in Tally's full-page mode: the header on
- * top, the form filling everything under it, and the page itself never
- * scrolls — the form owns all movement, one screen at a time, which is
- * what ended the scroll fighting the inline embeds had (see TallyEmbed).
+ * The page the header's Членувай button, the contact page's Членство card,
+ * the sitemap and — later — membership ads all point at: the council's
+ * one-paragraph welcome and the single action, Започнете кандидатурата,
+ * which leads into the application at /membership/apply, where the form
+ * runs full-screen in Tally's own full-page mode.
  *
- * The title and lead stay in the document for search engines and screen
- * readers, visually hidden: the form's own opening screen says the same
- * things to sighted visitors, and saying them twice on one viewport made
- * the page start with an echo. No footer — a viewport-locked page has
- * nowhere to scroll to one, and an application flow closing over the form
- * is how checkout pages behave everywhere.
+ * Same shell and rhythm as the other standalone pages: eyebrow, display
+ * title, rule, lead, the action. The pattern rail renders after the
+ * content, as on /contact.
  */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { localeAlternates, openGraphBase } from "@/lib/seo";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
-import { TallyEmbed } from "@/components/ui/TallyEmbed";
+import { SiteFooter } from "@/components/sections/SiteFooter";
+import { Button } from "@/components/ui/Button";
 import { getContent, hasLocale } from "@/lib/home-content";
-import { MEMBERSHIP_FORM_ID } from "@/lib/tally";
 import { MEMBERSHIP_COPY } from "@/lib/membership";
 
 export async function generateMetadata({
@@ -60,12 +58,7 @@ export default async function MembershipPage({
         {c.ui.skipToContent}
       </a>
 
-      {/* The whole page is one viewport: header, then the form filling the
-          rest. overflow-hidden is what locks the page — all scrolling
-          belongs to the form. dvh, not vh, so mobile browser chrome
-          retracting does not leave a dead band at the bottom. */}
       <div
-        className="flex h-[100dvh] flex-col overflow-hidden"
         style={{
           paddingInlineStart: "var(--page-gutter)",
           paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))",
@@ -79,14 +72,35 @@ export default async function MembershipPage({
           initiatives={c.initiatives}
         />
 
-        <main id="main" tabIndex={-1} className="min-h-0 flex-1">
-          <h1 className="sr-only">{copy.title}</h1>
-          <p className="sr-only">{copy.lead}</p>
-          <TallyEmbed formId={MEMBERSHIP_FORM_ID} title={copy.formTitle} />
+        <main id="main" tabIndex={-1} className="bdc-stop-11 pb-20 pt-20 md:pb-[72px] md:pt-[120px]">
+          <div className="flex max-w-[1056px] flex-col gap-12">
+            <div className="flex items-center gap-3">
+              <span
+                className="h-2 w-4 shrink-0"
+                style={{ background: "var(--tri-band)" }}
+                aria-hidden
+              />
+              <span className="t-caption">{copy.eyebrow}</span>
+            </div>
+
+            <h1 className="t-h01 max-w-[732px]">{copy.title}</h1>
+
+            <hr className="border-0 border-t border-border" />
+
+            <p className="t-h05 max-w-[620px]">{copy.lead}</p>
+
+            {/* The one action. → because it opens the application page. */}
+            <Button href={`/${locale}/membership/apply`} variant="primary" className="self-start">
+              {copy.startLabel} →
+            </Button>
+          </div>
         </main>
       </div>
 
+      {/* After the content on purpose — see /contact. */}
       <PatternRail locale={locale} />
+
+      <SiteFooter footer={c.footer} locale={locale} />
     </>
   );
 }
