@@ -12,8 +12,8 @@
  */
 import { NextResponse } from "next/server";
 import { locales, type Locale } from "@/lib/i18n";
-import { PARTNER_TOPICS } from "@/lib/partner";
-import { PILOT_AREAS, PILOT_SUPPORT, type PilotArea, type PilotSupport } from "@/lib/pilot";
+import { PARTNER_COPY, PARTNER_TOPICS, type PartnerTopic } from "@/lib/partner";
+import { PILOT_AREAS, PILOT_COPY, PILOT_SUPPORT, type PilotArea, type PilotSupport } from "@/lib/pilot";
 
 const TO = "info@bulgariandesigncouncil.org";
 /** Must be on the Resend-verified domain, or Resend refuses to send. */
@@ -56,8 +56,10 @@ export async function POST(req: Request) {
   const tried = str(form.get("tried")).slice(0, 2000);
   const consent = str(form.get("consent"));
 
-  const initiative = (PARTNER_TOPICS as readonly string[]).includes(str(form.get("initiative")))
-    ? str(form.get("initiative"))
+  const initiative: PartnerTopic = (PARTNER_TOPICS as readonly string[]).includes(
+    str(form.get("initiative")),
+  )
+    ? (str(form.get("initiative")) as PartnerTopic)
     : "general";
   const area: PilotArea | "" = (PILOT_AREAS as readonly string[]).includes(str(form.get("area")))
     ? (str(form.get("area")) as PilotArea)
@@ -90,6 +92,13 @@ export async function POST(req: Request) {
     return back("?error=1");
   }
 
+  // The council reads its inbox in Bulgarian — the email carries the
+  // Bulgarian labels, whatever language the visitor filled the form in.
+  const bg = PILOT_COPY.bg;
+  const initiativeLabel = PARTNER_COPY.bg.form.topicLabels[initiative];
+  const areaLabel = bg.opportunity.areaLabels[area];
+  const supportLabel = bg.readiness.supportLabels[support];
+
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
@@ -97,26 +106,26 @@ export async function POST(req: Request) {
       from: FROM,
       to: [TO],
       reply_to: email,
-      subject: `Пилот / ${initiative}`,
+      subject: `Пилот / ${initiativeLabel}`,
       text: [
-        `Name: ${name}`,
-        `Email: ${email}`,
-        `Organisation: ${organisation}`,
-        `Role: ${role}`,
-        `Initiative: ${initiative}`,
-        `Area: ${area}`,
-        `Decision-maker support: ${support}`,
+        `${bg.about.name}: ${name}`,
+        `${bg.about.email}: ${email}`,
+        `${bg.about.organisation}: ${organisation}`,
+        `${bg.about.role}: ${role}`,
+        `${bg.initiative}: ${initiativeLabel}`,
+        `${bg.opportunity.area} ${areaLabel}`,
+        `${bg.readiness.support} ${supportLabel}`,
         `Locale: ${locale}`,
         "",
-        `What is not working well enough:`,
+        `${bg.opportunity.problem}`,
         problem,
         "",
-        `Who it affects:`,
+        `${bg.opportunity.affected}`,
         affected,
         "",
-        `The change wanted:`,
+        `${bg.opportunity.change}`,
         change,
-        ...(tried ? ["", "Already tried or researched:", tried] : []),
+        ...(tried ? ["", `${bg.opportunity.tried}`, tried] : []),
       ].join("\n"),
     }),
   });
