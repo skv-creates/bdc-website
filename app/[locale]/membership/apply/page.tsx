@@ -93,14 +93,6 @@ export default async function MembershipApplyPage({
             <Button variant="tertiary" href={`/${locale}/membership`}>
               {copy.aboutLabel}
             </Button>
-            <span aria-hidden className="opacity-40">
-              ·
-            </span>
-            {/* New tab on purpose: the form below holds the visitor's
-                half-typed answers, and this link must not cost them. */}
-            <Button variant="tertiary" href={`/${locale}/privacy`} newTab>
-              {copy.privacyLabel}
-            </Button>
           </div>
           <h1 className="sr-only">{copy.formTitle}</h1>
 
