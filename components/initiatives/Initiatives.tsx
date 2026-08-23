@@ -522,14 +522,15 @@ export function Card({
           <p className="t-body line-clamp-3 min-h-[4.2em]">{item.text}</p>
         </div>
 
-        {/* The system's own secondary pill (frame 500:1998), arrow in the
-            label like every pill on the site. z-10 lifts it above the
-            title's stretched link; the title is the accessible name, so
-            this stays out of the tab order to avoid double announcement. */}
-        <span className="mt-auto">
-          <span aria-hidden className="relative z-10 inline-block">
-            <Button href={href} variant="secondary">{`${seeMore} →`}</Button>
-          </span>
+        {/* The tertiary row link — quiet at rest, the full-row underline on
+            hover, arrow chosen by destination — like every other read-more
+            on the site. z-10 lifts it above the title's stretched link; the
+            title is the accessible name, so this stays out of the tab order
+            to avoid double announcement. */}
+        <span aria-hidden className="relative z-10 mt-auto self-start">
+          <Button href={href} variant="tertiary">
+            {seeMore}
+          </Button>
         </span>
       </div>
     </article>
