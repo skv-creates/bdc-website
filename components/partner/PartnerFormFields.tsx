@@ -78,6 +78,8 @@ export function PartnerFormFields({
         {f.privacyNotice}{" "}
         <a
           href={`/${locale}/privacy`}
+          target="_blank"
+          rel="noopener noreferrer"
           className="border-b-2 border-current transition-opacity hover:opacity-70"
         >
           {f.privacyLink}

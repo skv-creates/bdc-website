@@ -38,6 +38,9 @@ type Copy = {
     support: string;
     supportLabels: Record<PilotSupport, string>;
   };
+  /** Sentence before the consent box; `privacyLink` is its linked tail. */
+  privacyPrefix: string;
+  privacyLink: string;
   consent: string;
   submit: string;
 };
@@ -71,6 +74,8 @@ export const PILOT_COPY: Record<Locale, Copy> = {
         "not-yet": "Все още не",
       },
     },
+    privacyPrefix: "Прочетете как обработваме личните Ви данни в нашата",
+    privacyLink: "Политика за поверителност",
     consent:
       "Съгласявам се БДС да използва предоставените данни, за да разгледа запитването и да се свърже с мен.",
     submit: "Изпратете запитването",
@@ -104,6 +109,8 @@ export const PILOT_COPY: Record<Locale, Copy> = {
         "not-yet": "Not yet",
       },
     },
+    privacyPrefix: "Read how we process your personal data in our",
+    privacyLink: "Privacy Policy",
     consent:
       "I agree that the BDC may use the data provided to review this enquiry and contact me.",
     submit: "Send the enquiry",

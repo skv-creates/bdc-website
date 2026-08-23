@@ -134,6 +134,21 @@ export default async function VolunteerPage({
             <Button href={VOLUNTEER_FORM_URL} variant="primary">
               {copy.ctaLabel}
             </Button>
+            {/* The application form asks for personal data, so the policy is
+                offered right here — in a new tab, since the form itself opens
+                in one too and this page stays behind both. */}
+            <p className="t-caption mt-6 max-w-[52ch]">
+              {copy.privacyPrefix}{" "}
+              <a
+                href={`/${locale}/privacy`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-b-2 border-current transition-opacity hover:opacity-70"
+              >
+                {copy.privacyLink}
+              </a>
+              .
+            </p>
           </div>
 
           <div className="relative mt-20 aspect-square w-full overflow-hidden md:mt-24 md:aspect-[1092/522]">

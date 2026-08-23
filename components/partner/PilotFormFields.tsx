@@ -115,6 +115,21 @@ export function PilotFormFields({
         ))}
       </fieldset>
 
+      {/* The privacy policy, reachable without losing the half-filled form:
+          the drawer covers the footer's link, so this one opens a new tab. */}
+      <p className="t-caption max-w-[52ch]">
+        {f.privacyPrefix}{" "}
+        <a
+          href={`/${locale}/privacy`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="border-b-2 border-current transition-opacity hover:opacity-70"
+        >
+          {f.privacyLink}
+        </a>
+        .
+      </p>
+
       <label className="flex cursor-pointer items-start gap-3">
         <input
           type="checkbox"

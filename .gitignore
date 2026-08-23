@@ -66,3 +66,6 @@ storybook-static
 # checkout — so committing this directory is the one way Storybook could reach
 # the apex. Don't force-add it.
 public/bdc-storybook/
+
+# Local Codex working artifacts — never part of the site
+.codex-artifacts/

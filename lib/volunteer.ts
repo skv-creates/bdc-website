@@ -28,6 +28,9 @@ export const LANDING_COPY: Record<
     ctaHighlight: string;
     ctaBody: string;
     ctaLabel: string;
+    /** Privacy sentence under the CTA; `privacyLink` is its linked tail. */
+    privacyPrefix: string;
+    privacyLink: string;
     imageAlt: string;
     metaTitle: string;
     metaDescription: string;
@@ -48,6 +51,8 @@ export const LANDING_COPY: Record<
     ctaBody:
       "Ще прегледаме отговорите ти и при подходяща възможност ще се свържем за кратък разговор.",
     ctaLabel: "Стани част от екипа ни",
+    privacyPrefix: "Прочетете как обработваме личните Ви данни в нашата",
+    privacyLink: "Политика за поверителност",
     imageAlt: "Доброволци на Българския дизайн съвет работят заедно",
     metaTitle: "Стани доброволец — Български Дизайн Съвет",
     metaDescription:
@@ -69,6 +74,8 @@ export const LANDING_COPY: Record<
     ctaBody:
       "We'll read your answers, and if there's a good opportunity we'll get in touch for a short conversation.",
     ctaLabel: "Join our team",
+    privacyPrefix: "Read how we process your personal data in our",
+    privacyLink: "Privacy Policy",
     imageAlt: "Bulgarian Design Council volunteers working together",
     metaTitle: "Volunteer — Bulgarian Design Council",
     metaDescription:

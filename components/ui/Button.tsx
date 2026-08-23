@@ -36,6 +36,9 @@ type Props = {
   /** On the button form it is the action; on a link it can intercept the
       navigation (e.g. to open the same destination as a drawer). */
   onClick?: (e: MouseEvent<HTMLElement>) => void;
+  /** Open in a new tab even for an internal href — for links offered while
+      a visitor is mid-form, where navigating away would lose their input. */
+  newTab?: boolean;
 };
 
 export function Button({
@@ -46,6 +49,7 @@ export function Button({
   type = "button",
   fullWidth = false,
   onClick,
+  newTab = false,
 }: Props) {
   // The two pill CTAs span the full width on phones and shrink to content from
   // sm up. `small` (the nav button) and `tertiary` (a text link) are excluded —
@@ -76,7 +80,7 @@ export function Button({
         href={href}
         className={cls}
         onClick={onClick}
-        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        {...(external || newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       >
         {content}
       </a>
