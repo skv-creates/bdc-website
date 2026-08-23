@@ -173,29 +173,14 @@
      391:4821 — two cards sit fully in the column with the third peeking. It
      used to be 6, which showed one card and a sliver. */
   width: calc((100% - 10 * var(--grid-gap, 24px)) / 11 * 5 + 4 * var(--grid-gap, 24px));
-  /* Per Figma 500:1989 the cards sit on the page itself: grey at rest,
-     the page's white while the card is fully in the track's viewport —
-     the same IntersectionObserver focus the rose fill used to ride (the
-     track writes data-focus; see Initiatives.tsx). The top rule flips
-     with it: a hairline at rest, the 4px brand line in focus. */
-  background: #f3f3f3;
+  /* Per Figma 500:1989, and the review after it: the cards sit on the
+     page itself, every one of them — no grey resting fill. Position in
+     the track is told by the arrows and the peeking card, not by tint. */
+  background: transparent;
   transition: background-color 300ms ease-out;
 }
 
-.card[data-focus="in"] {
-  background: var(--color-page);
-}
 
-.cardRule {
-  height: 1px;
-  margin-bottom: 7px;
-  background: var(--color-border);
-  transition: height 120ms ease-out, background-color 120ms ease-out;
-}
-.card[data-focus="in"] .cardRule {
-  height: 4px;
-  background: var(--color-brand);
-}
 
 @media (max-width: 1023px) {
   .card { width: 66%; }

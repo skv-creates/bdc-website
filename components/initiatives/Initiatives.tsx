@@ -482,15 +482,17 @@ export function Card({
     <article
       // .card carries the flex/scroll-snap behaviour; .cardInside only overrides
       // the width, and is declared after it so it wins.
-      className={`${fluid ? "h-full" : `${styles.card} ${styles.cardInside}`} relative flex cursor-pointer flex-col gap-12 p-8`}
+      // py only: with the card on the page's own ground, side padding was a
+      // phantom inset — the rule, label and button sat 32px off the grid
+      // column the section heading starts on.
+      className={`${fluid ? "h-full" : `${styles.card} ${styles.cardInside}`} relative flex cursor-pointer flex-col gap-12 py-8`}
       style={style}
     >
-      {/* The ruled label (500:1990): the line across the card's top, the
-          category in bold caption under it. In the track the line is the
-          focus cue — hairline at rest, 4px brand in view (see module CSS);
-          the fluid grid keeps the brand line always. */}
+      {/* The ruled label (500:1990): the 4px brand line across the card's
+          top — every card, no resting variant — with the category in bold
+          caption under it. bg-brand follows the pattern rail's recolour. */}
       <div className="w-full">
-        <div className={fluid ? "mb-[7px] h-1 bg-brand" : styles.cardRule} />
+        <div className="mb-[7px] h-1 bg-brand" />
         <span className="t-caption font-bold">{item.label}</span>
       </div>
 
