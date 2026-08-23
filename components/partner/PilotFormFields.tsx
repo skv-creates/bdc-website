@@ -43,7 +43,7 @@ export function PilotFormFields({
       </div>
 
       <label className="flex flex-col gap-2">
-        <span className="t-caption font-bold">{f.initiative} *</span>
+        <span className="t-caption font-bold">{f.initiative}</span>
         <span className="relative block">
           <select
             name="initiative"
@@ -72,15 +72,15 @@ export function PilotFormFields({
       <fieldset className="flex flex-col gap-8 border-0 p-0">
         <legend className="t-h05 mb-6 font-bold">{f.about.legend}</legend>
         <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">{f.about.name} *</span>
+          <span className="t-caption font-bold">{f.about.name}</span>
           <input type="text" name="name" required autoComplete="name" className={field} />
         </label>
         <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">{f.about.email} *</span>
+          <span className="t-caption font-bold">{f.about.email}</span>
           <input type="email" name="email" required autoComplete="email" className={field} />
         </label>
         <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">{f.about.organisation} *</span>
+          <span className="t-caption font-bold">{f.about.organisation}</span>
           <input
             type="text"
             name="organisation"
@@ -90,7 +90,7 @@ export function PilotFormFields({
           />
         </label>
         <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">{f.about.role} *</span>
+          <span className="t-caption font-bold">{f.about.role}</span>
           <input
             type="text"
             name="role"
@@ -105,7 +105,7 @@ export function PilotFormFields({
         <legend className="t-h05 mb-6 font-bold">{f.opportunity.legend}</legend>
 
         <fieldset className="flex flex-col gap-3 border-0 p-0">
-          <legend className="t-caption mb-3 font-bold">{f.opportunity.area} *</legend>
+          <legend className="t-caption mb-3 font-bold">{f.opportunity.area}</legend>
           {PILOT_AREAS.map((a) => (
             <label key={a} className="flex cursor-pointer items-center gap-3">
               <input
@@ -121,19 +121,19 @@ export function PilotFormFields({
         </fieldset>
 
         <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">{f.opportunity.problem} *</span>
+          <span className="t-caption font-bold">{f.opportunity.problem}</span>
           <span className="t-caption opacity-70">{f.opportunity.problemHint}</span>
           <textarea name="problem" required rows={4} maxLength={3000} className={field} />
         </label>
 
         <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">{f.opportunity.affected} *</span>
+          <span className="t-caption font-bold">{f.opportunity.affected}</span>
           <span className="t-caption opacity-70">{f.opportunity.affectedHint}</span>
           <textarea name="affected" required rows={3} maxLength={2000} className={field} />
         </label>
 
         <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">{f.opportunity.change} *</span>
+          <span className="t-caption font-bold">{f.opportunity.change}</span>
           <textarea name="change" required rows={3} maxLength={2000} className={field} />
         </label>
 
@@ -148,7 +148,7 @@ export function PilotFormFields({
 
       <fieldset className="flex flex-col gap-3 border-0 p-0">
         <legend className="t-h05 mb-6 font-bold">{f.readiness.legend}</legend>
-        <p className="t-caption font-bold">{f.readiness.support} *</p>
+        <p className="t-caption font-bold">{f.readiness.support}</p>
         {PILOT_SUPPORT.map((sVal) => (
           <label key={sVal} className="flex cursor-pointer items-center gap-3">
             <input
