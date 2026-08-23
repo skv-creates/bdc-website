@@ -154,11 +154,11 @@
 .track {
   display: flex;
   gap: var(--grid-gap, 24px);
-  /* The cards carry no side padding — their text runs to the card edge — so
-     one gutter between them reads cramped. A full empty column instead:
-     card (5 cols) + gap (1 col + its two gutters) + card (5 cols) = the
-     whole 11-column row, and the second card still lands on the grid. */
-  --card-gap: calc((100% - 10 * var(--grid-gap, 24px)) / 11 + 2 * var(--grid-gap, 24px));
+  /* The cards carry no side padding — their text runs to the card edge —
+     so one gutter between them reads cramped, and a whole empty column
+     read hollow. A double gutter is the middle: clear separation without
+     the void. */
+  --card-gap: calc(2 * var(--grid-gap, 24px));
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   /* arrow motion is JS-driven (120ms ease-out); native scroll/swipe stays default */
