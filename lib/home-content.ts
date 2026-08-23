@@ -395,12 +395,12 @@ const bg = {
           ],
           actions: [
             { label: "Партнирай с нас", href: "/bg/partner?re=policy-lab" },
-            { label: "Предложи казус", href: "/bg/partner?re=policy-lab", variant: "secondary" },
+            { label: "Започни пилот →", href: "/bg/partner?re=policy-lab", variant: "secondary", form: "pilot" },
           ],
           team: {
             heading: "Да изградим заедно с(ъ)вета",
             text: "Инициативи като тази съществуват благодарение на хора, които даряват време, знания и енергия.",
-            cta: { label: "Включи се в проект", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
+            cta: { label: "Включи се в проект", href: "/bg/volunteer" },
             // The break is in the design (329:2180): the initiative name keeps
             // its own line under "Екипът зад".
             creditLabel: "Екипът зад\n„Лаборатория за политики“",
@@ -451,7 +451,7 @@ const bg = {
               variant: "primary",
             },
             {
-              label: "Започни пилот",
+              label: "Започни пилот →",
               href: "/bg/partner?re=bulgaria-by-design",
               variant: "secondary",
               form: "pilot",
@@ -526,9 +526,10 @@ const bg = {
               variant: "primary",
             },
             {
-              label: "Поканете ни",
+              label: "Започни пилот →",
               href: "/bg/partner?re=future-makers-lab",
               variant: "secondary",
+              form: "pilot",
             },
           ],
           feature: {
@@ -608,14 +609,15 @@ const bg = {
           ],
           actions: [
             {
-              label: "Искам да участвам ↗",
+              label: "Партнирай с нас",
               href: "/bg/partner?re=design-maturity",
               variant: "primary",
             },
             {
-              label: "Партнирай с нас",
+              label: "Започни пилот →",
               href: "/bg/partner?re=design-maturity",
               variant: "secondary",
+              form: "pilot",
             },
           ],
           feature: {
@@ -1339,12 +1341,12 @@ const en: typeof bg = {
           ],
           actions: [
             { label: "Partner with us", href: "/en/partner?re=policy-lab" },
-            { label: "Propose a case", href: "/en/partner?re=policy-lab", variant: "secondary" },
+            { label: "Start a pilot →", href: "/en/partner?re=policy-lab", variant: "secondary", form: "pilot" },
           ],
           team: {
             heading: "Let’s build the council together",
             text: "Initiatives like this one exist thanks to people who give their time, knowledge and energy.",
-            cta: { label: "Join a project", href: "https://ivory-sumac-e99.notion.site/30ac7693aa0380b18035f56657f28616?pvs=105" },
+            cta: { label: "Join a project", href: "/en/volunteer" },
             creditLabel: "The team behind\n“Policy Lab”",
             members: [
               "dobra-slavkova",
@@ -1386,12 +1388,12 @@ const en: typeof bg = {
           ],
           actions: [
             {
-              label: "Build a partnership",
+              label: "Partner with us",
               href: "/en/partner?re=bulgaria-by-design",
               variant: "primary",
             },
             {
-              label: "Start a pilot",
+              label: "Start a pilot →",
               href: "/en/partner?re=bulgaria-by-design",
               variant: "secondary",
               form: "pilot",
@@ -1455,14 +1457,15 @@ const en: typeof bg = {
           ],
           actions: [
             {
-              label: "Build a partnership",
+              label: "Partner with us",
               href: "/en/partner?re=future-makers-lab",
               variant: "primary",
             },
             {
-              label: "Invite us",
+              label: "Start a pilot →",
               href: "/en/partner?re=future-makers-lab",
               variant: "secondary",
+              form: "pilot",
             },
           ],
           feature: {
@@ -1540,14 +1543,15 @@ const en: typeof bg = {
           ],
           actions: [
             {
-              label: "I want to take part ↗",
+              label: "Partner with us",
               href: "/en/partner?re=design-maturity",
               variant: "primary",
             },
             {
-              label: "Partner with us",
+              label: "Start a pilot →",
               href: "/en/partner?re=design-maturity",
               variant: "secondary",
+              form: "pilot",
             },
           ],
           feature: {
