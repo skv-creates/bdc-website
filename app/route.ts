@@ -19,10 +19,12 @@ import { defaultLocale, hasLocale, locales } from "@/lib/i18n";
 const COOKIE = "NEXT_LOCALE";
 const ONE_YEAR = 60 * 60 * 24 * 365;
 
-/** Pick a locale: saved cookie → best Accept-Language match → default. */
-function detectLocale(req: NextRequest): string {
+/** Pick a locale: saved cookie → best Accept-Language match → default.
+    `negotiated` records whether the request itself decided — it is what
+    separates the temporary redirect from the permanent one below. */
+function detectLocale(req: NextRequest): { locale: string; negotiated: boolean } {
   const saved = req.cookies.get(COOKIE)?.value;
-  if (saved && hasLocale(saved)) return saved;
+  if (saved && hasLocale(saved)) return { locale: saved, negotiated: true };
 
   const header = req.headers.get("accept-language");
   if (header) {
@@ -34,17 +36,24 @@ function detectLocale(req: NextRequest): string {
       })
       .sort((a, b) => b.q - a.q);
     for (const { base } of ranked) {
-      if (hasLocale(base)) return base;
+      if (hasLocale(base)) return { locale: base, negotiated: true };
     }
   }
-  return defaultLocale;
+  return { locale: defaultLocale, negotiated: false };
 }
 
 export function GET(req: NextRequest): NextResponse {
-  const locale = detectLocale(req);
+  const { locale, negotiated } = detectLocale(req);
   const url = req.nextUrl.clone();
   url.pathname = `/${locale}`;
-  const res = NextResponse.redirect(url);
+  // 307 when the request itself chose the language (cookie or
+  // Accept-Language): that answer really is per-request, and a permanent
+  // redirect would let caches and browsers pin one language for everyone.
+  // 308 when the request sent no language signal at all — the fall-through
+  // to the default is deterministic, and that is exactly how search
+  // crawlers ask: a permanent redirect tells them / is /bg, canonically,
+  // rather than a detour to keep re-checking.
+  const res = NextResponse.redirect(url, negotiated ? 307 : 308);
   res.cookies.set(COOKIE, locale, { path: "/", maxAge: ONE_YEAR });
 
   // This response genuinely differs per request, and nothing said so. Without
@@ -68,8 +77,5 @@ export function GET(req: NextRequest): NextResponse {
     ].join(", "),
   );
 
-  // Stays a 307, not a 301: the destination really does depend on the request,
-  // and a permanent redirect would let caches and browsers pin one language
-  // forever for everyone.
   return res;
 }
