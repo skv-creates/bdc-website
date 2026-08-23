@@ -178,6 +178,9 @@ const bg = {
     showMore: "Виж още ({count})",
     /** The control inside an outbound-link panel that actually leaves the site. */
     openLink: "Отвори сайта",
+    /** До имейл адрес: копира го в клипборда; второто се обявява след успех. */
+    copyEmail: "Копирай имейла",
+    copied: "Копирано",
     switchLanguage: "English",
     /** Initiative card button on inside pages (Figma 351:1097). */
     seeMore: "Виж повече",
@@ -1151,6 +1154,8 @@ const en: typeof bg = {
     showMore: "Show more ({count})",
     /** The control inside an outbound-link panel that actually leaves the site. */
     openLink: "Open the site",
+    copyEmail: "Copy the email address",
+    copied: "Copied",
     switchLanguage: "Български",
     seeMore: "See more",
     readMore: "Read more",

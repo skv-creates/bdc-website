@@ -15,6 +15,7 @@ import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { Button } from "@/components/ui/Button";
+import { CopyEmail } from "@/components/ui/CopyEmail";
 import { getContent, hasLocale, locales } from "@/lib/home-content";
 import { MEMBERSHIP_COPY } from "@/lib/membership";
 
@@ -73,7 +74,12 @@ export default async function MembershipThanksPage({
                   <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
                     {c.footer.email}
                   </span>
-                </a>
+                </a>{" "}
+                <CopyEmail
+                  email={c.footer.email}
+                  label={c.ui.copyEmail}
+                  copiedLabel={c.ui.copied}
+                />
               </p>
             </div>
             <Button href={`/${locale}/initiatives`}>{copy.backLabel}</Button>
