@@ -488,11 +488,12 @@ export function Card({
       className={`${fluid ? "h-full" : `${styles.card} ${styles.cardInside}`} relative flex cursor-pointer flex-col gap-12 py-8`}
       style={style}
     >
-      {/* The ruled label (500:1990): the 4px brand line across the card's
-          top — every card, no resting variant — with the category in bold
-          caption under it. bg-brand follows the pattern rail's recolour. */}
+      {/* The ruled label (500:1990): the line across the card's top with
+          the category in bold caption under it. In the track the line is
+          the focus cue — brand 4px in view, hairline at rest (module CSS);
+          the fluid grid keeps the brand line always. */}
       <div className="w-full">
-        <div className="mb-[7px] h-1 bg-brand" />
+        <div className={fluid ? "mb-[7px] h-1 bg-brand" : styles.cardRule} />
         <span className="t-caption font-bold">{item.label}</span>
       </div>
 

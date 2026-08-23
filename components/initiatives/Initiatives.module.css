@@ -174,13 +174,36 @@
      used to be 6, which showed one card and a sliver. */
   width: calc((100% - 10 * var(--grid-gap, 24px)) / 11 * 5 + 4 * var(--grid-gap, 24px));
   /* Per Figma 500:1989, and the review after it: the cards sit on the
-     page itself, every one of them — no grey resting fill. Position in
-     the track is told by the arrows and the peeking card, not by tint. */
+     page itself, every one of them — no grey resting fill. What tells a
+     card's state is its top rule: the 4px brand line while the card is
+     fully in the track's viewport, a dark hairline while it rests — the
+     same IntersectionObserver focus the old rose fill rode (the track
+     writes data-focus; see Initiatives.tsx). */
   background: transparent;
   transition: background-color 300ms ease-out;
 }
 
 
+
+.cardRule {
+  /* Constant 4px box so the label under it never shifts; the line inside
+     grows from hairline to the full brand bar. */
+  position: relative;
+  height: 4px;
+  margin-bottom: 7px;
+}
+.cardRule::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: var(--color-border);
+  transition: height 120ms ease-out, background-color 120ms ease-out;
+}
+.card[data-focus="in"] .cardRule::after {
+  height: 4px;
+  background: var(--color-brand);
+}
 
 @media (max-width: 1023px) {
   .card { width: 66%; }
