@@ -74,7 +74,6 @@ export default async function MembershipThanksPage({
                     {c.footer.email}
                   </span>
                 </a>
-                .
               </p>
             </div>
             <Button href={`/${locale}/initiatives`}>{copy.backLabel}</Button>
