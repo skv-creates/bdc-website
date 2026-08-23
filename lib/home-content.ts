@@ -183,7 +183,7 @@ const bg = {
     copied: "Копирано",
     switchLanguage: "English",
     /** Initiative card button on inside pages (Figma 351:1097). */
-    seeMore: "Виж повече",
+    seeMore: "Прочети повече",
     /** Tertiary button under the landing showcase blurb (Figma 398:3188). */
     readMore: "Прочети повече",
     /** The analytics consent banner (components/ui/AnalyticsConsent). Nothing
@@ -1157,7 +1157,7 @@ const en: typeof bg = {
     copyEmail: "Copy the email address",
     copied: "Copied",
     switchLanguage: "Български",
-    seeMore: "See more",
+    seeMore: "Read more",
     readMore: "Read more",
     consent: {
       label: "Analytics cookie consent",

@@ -11,15 +11,6 @@ import type { Initiative, Locale, SiteContent } from "@/lib/home-content";
 const SCROLL_MS = 120;
 const easeOut = (t: number) => 1 - (1 - t) * (1 - t);
 
-/** Small corner triangle that prefixes each card label (Figma "highlight-detail"). */
-function LabelMark() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" className="shrink-0">
-      <polygon points="1,3 15,3 1,17" fill="currentColor" />
-    </svg>
-  );
-}
-
 /**
  * The section header, shared by both placements (332:3339 on the landing page,
  * 354:2459 inside): the section name as a small accented label, the standfirst
@@ -494,9 +485,13 @@ export function Card({
       className={`${fluid ? "h-full" : `${styles.card} ${styles.cardInside}`} relative flex cursor-pointer flex-col gap-12 p-8`}
       style={style}
     >
-      <div className="flex items-center gap-5">
-        <LabelMark />
-        <span className="text-[1.2rem] font-bold leading-[1.5] md:text-[24px]">{item.label}</span>
+      {/* The ruled label (500:1990): the line across the card's top, the
+          category in bold caption under it. In the track the line is the
+          focus cue — hairline at rest, 4px brand in view (see module CSS);
+          the fluid grid keeps the brand line always. */}
+      <div className="w-full">
+        <div className={fluid ? "mb-[7px] h-1 bg-brand" : styles.cardRule} />
+        <span className="t-caption font-bold">{item.label}</span>
       </div>
 
       {/* info-wrapper (391:4836): the title block, then 48px to the button.
@@ -531,9 +526,9 @@ export function Card({
             href={href}
             aria-hidden
             tabIndex={-1}
-            className="t-label relative z-10 inline-flex items-center justify-center rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
+            className="t-label relative z-10 inline-flex items-center justify-center gap-2 rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
           >
-            {seeMore}
+            {seeMore} <span aria-hidden>→</span>
           </Link>
         </span>
       </div>
