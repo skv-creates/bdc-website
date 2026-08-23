@@ -75,7 +75,7 @@ export function PartnerFormFields({
       </label>
 
       <p className="t-caption max-w-[52ch]">
-        {f.privacyNotice}{" "}
+        {f.privacyNotice} {f.privacyPrefix}{" "}
         <a
           href={`/${locale}/privacy`}
           target="_blank"
@@ -84,6 +84,7 @@ export function PartnerFormFields({
         >
           {f.privacyLink}
         </a>
+        .
       </p>
 
       <div className="sm:self-start">
