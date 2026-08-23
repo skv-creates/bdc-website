@@ -47,8 +47,8 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     eyebrow: "Пилотни програми",
     title: "Започнете пилот",
     lead: "Имате услуга, процес или среда, която може да работи по-добре? Разкажете ни къде виждате възможност за пилот.",
-    initiative: "Инициатива",
-    initiativeOther: "Друга идея за пилот",
+    initiative: "Пилотът е свързан с:",
+    initiativeOther: "Нова идея извън тези инициативи",
     about: {
       legend: "За Вас",
       name: "Име и фамилия",
@@ -80,8 +80,8 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     eyebrow: "Pilot programmes",
     title: "Start a pilot",
     lead: "Do you have a service, process or environment that could work better? Tell us where you see an opportunity for a pilot.",
-    initiative: "Initiative",
-    initiativeOther: "Another pilot idea",
+    initiative: "The pilot relates to:",
+    initiativeOther: "A new idea outside these initiatives",
     about: {
       legend: "About you",
       name: "Full name",
