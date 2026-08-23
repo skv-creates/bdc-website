@@ -53,11 +53,13 @@ export async function POST(req: Request) {
   const goal = str(form.get("goal")).slice(0, 5000);
   const consent = str(form.get("consent"));
 
-  const initiative: PartnerTopic = (PARTNER_TOPICS as readonly string[]).includes(
-    str(form.get("initiative")),
-  )
-    ? (str(form.get("initiative")) as PartnerTopic)
-    : "general";
+  const rawInitiative = str(form.get("initiative"));
+  const initiative: PartnerTopic | "other" =
+    rawInitiative === "other"
+      ? "other"
+      : (PARTNER_TOPICS as readonly string[]).includes(rawInitiative)
+        ? (rawInitiative as PartnerTopic)
+        : "general";
   const support: PilotSupport | "" = (PILOT_SUPPORT as readonly string[]).includes(
     str(form.get("support")),
   )
@@ -86,7 +88,8 @@ export async function POST(req: Request) {
   // The council reads its inbox in Bulgarian — the email carries the
   // Bulgarian labels, whatever language the visitor filled the form in.
   const bg = PILOT_COPY.bg;
-  const initiativeLabel = PARTNER_COPY.bg.form.topicLabels[initiative];
+  const initiativeLabel =
+    initiative === "other" ? PILOT_COPY.bg.initiativeOther : PARTNER_COPY.bg.form.topicLabels[initiative];
   const supportLabel = bg.readiness.supportLabels[support];
 
   const res = await fetch("https://api.resend.com/emails", {

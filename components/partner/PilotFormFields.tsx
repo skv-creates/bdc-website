@@ -56,6 +56,7 @@ export function PilotFormFields({
                 {topicLabels[t]}
               </option>
             ))}
+            <option value="other">{f.initiativeOther}</option>
           </select>
           <svg
             width="12"

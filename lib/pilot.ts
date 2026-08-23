@@ -18,8 +18,9 @@ type Copy = {
   eyebrow: string;
   title: string;
   lead: string;
-  timeNote: string;
   initiative: string;
+  /** The dropdown's extra option for a pilot outside the four initiatives. */
+  initiativeOther: string;
   about: {
     legend: string;
     name: string;
@@ -46,8 +47,8 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     eyebrow: "Пилотни програми",
     title: "Започнете пилот",
     lead: "Имате услуга, процес или среда, която може да работи по-добре? Разкажете ни къде виждате възможност за пилот.",
-    timeNote: "Попълването отнема около 3 минути.",
     initiative: "Инициатива",
+    initiativeOther: "Друго — предложете различен пилот",
     about: {
       legend: "За Вас",
       name: "Име и фамилия",
@@ -79,8 +80,8 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     eyebrow: "Pilot programmes",
     title: "Start a pilot",
     lead: "Do you have a service, process or environment that could work better? Tell us where you see an opportunity for a pilot.",
-    timeNote: "Filling it in takes about 3 minutes.",
     initiative: "Initiative",
+    initiativeOther: "Other — propose a different pilot",
     about: {
       legend: "About you",
       name: "Full name",
