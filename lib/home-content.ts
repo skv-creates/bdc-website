@@ -217,7 +217,7 @@ const bg = {
     // primary CTA stays on the site from click to confirmation.
     cta: { label: "Партньорство →", href: "/partner" },
     /** Straight to the full-screen application page. */
-    memberCta: { label: "Членувай", href: "/membership/apply" },
+    memberCta: { label: "Членувай →", href: "/membership/apply" },
   },
 
   hero: {
@@ -1181,7 +1181,7 @@ const en: typeof bg = {
       { label: "Contact", href: "/contact" },
     ],
     cta: { label: "Partnership →", href: "/partner" },
-    memberCta: { label: "Become a member", href: "/membership/apply" },
+    memberCta: { label: "Become a member →", href: "/membership/apply" },
   },
 
   hero: {
