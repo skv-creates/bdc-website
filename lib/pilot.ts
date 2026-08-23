@@ -48,7 +48,7 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     title: "Започнете пилот",
     lead: "Имате услуга, процес или среда, която може да работи по-добре? Разкажете ни къде виждате възможност за пилот.",
     initiative: "Инициатива",
-    initiativeOther: "Друго — предложете различен пилот",
+    initiativeOther: "Друга идея за пилот",
     about: {
       legend: "За Вас",
       name: "Име и фамилия",
@@ -81,7 +81,7 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     title: "Start a pilot",
     lead: "Do you have a service, process or environment that could work better? Tell us where you see an opportunity for a pilot.",
     initiative: "Initiative",
-    initiativeOther: "Other — propose a different pilot",
+    initiativeOther: "Another pilot idea",
     about: {
       legend: "About you",
       name: "Full name",
