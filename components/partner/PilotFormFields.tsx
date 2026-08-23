@@ -42,33 +42,36 @@ export function PilotFormFields({
         </label>
       </div>
 
-      <label className="flex flex-col gap-2">
-        <span className="t-caption font-bold">{f.initiative}</span>
-        <span className="relative block">
-          <select
+      {/* Radios, not a select: a native select's popup is drawn by the OS
+          and cannot wear the brand, and five options read better laid out
+          anyway — the same idiom as the readiness question below. */}
+      <fieldset className="flex flex-col gap-3 border-0 p-0">
+        <legend className="t-caption mb-3 font-bold">{f.initiative}</legend>
+        {initiatives.map((t) => (
+          <label key={t} className="flex cursor-pointer items-center gap-3">
+            <input
+              type="radio"
+              name="initiative"
+              value={t}
+              required
+              defaultChecked={t === defaultInitiative}
+              className="size-5 shrink-0 accent-current"
+            />
+            <span className="t-body">{topicLabels[t]}</span>
+          </label>
+        ))}
+        <label className="flex cursor-pointer items-center gap-3">
+          <input
+            type="radio"
             name="initiative"
+            value="other"
             required
-            defaultValue={defaultInitiative}
-            className={`${field} cursor-pointer appearance-none rounded-none pr-10`}
-          >
-            {initiatives.map((t) => (
-              <option key={t} value={t}>
-                {topicLabels[t]}
-              </option>
-            ))}
-            <option value="other">{f.initiativeOther}</option>
-          </select>
-          <svg
-            width="12"
-            height="8"
-            viewBox="0 0 12 8"
-            aria-hidden
-            className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2"
-          >
-            <polygon points="0,0 12,0 6,8" fill="currentColor" />
-          </svg>
-        </span>
-      </label>
+            defaultChecked={defaultInitiative === "other"}
+            className="size-5 shrink-0 accent-current"
+          />
+          <span className="t-body">{f.initiativeOther}</span>
+        </label>
+      </fieldset>
 
       <fieldset className="flex flex-col gap-8 border-0 p-0">
         <legend className="sr-only">{f.about.legend}</legend>

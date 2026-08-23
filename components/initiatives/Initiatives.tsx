@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 import styles from "./Initiatives.module.css";
 import { slotStyle } from "./patterns";
 import type { Initiative, Locale, SiteContent } from "@/lib/home-content";
@@ -521,18 +522,14 @@ export function Card({
           <p className="t-body line-clamp-3 min-h-[4.2em]">{item.text}</p>
         </div>
 
-        {/* aria-hidden + tabIndex -1: the title link above already exposes this
-            destination, and without it every card is announced and tabbed
-            through twice. */}
+        {/* The system's own secondary pill (frame 500:1998), arrow in the
+            label like every pill on the site. z-10 lifts it above the
+            title's stretched link; the title is the accessible name, so
+            this stays out of the tab order to avoid double announcement. */}
         <span className="mt-auto">
-          <Link
-            href={href}
-            aria-hidden
-            tabIndex={-1}
-            className="t-label relative z-10 inline-flex items-center justify-center gap-2 rounded-full border-2 border-current px-8 py-4 transition-colors hover:bg-text hover:text-text-invert"
-          >
-            {seeMore} <span aria-hidden>→</span>
-          </Link>
+          <span aria-hidden className="relative z-10 inline-block">
+            <Button href={href} variant="secondary">{`${seeMore} →`}</Button>
+          </span>
         </span>
       </div>
     </article>
