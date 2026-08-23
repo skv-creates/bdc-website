@@ -1,6 +1,8 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"main": ".open-next/worker.js",
+	// The entry wraps OpenNext's worker to edge-cache /_next/image responses
+	// (see worker-entry.js) — the generated handler transforms on every request.
+	"main": "worker-entry.js",
 	// The top-level config IS staging, deliberately: the existing `bdc-website`
 	// Worker already owns the staging custom domain, so keeping it as the default
 	// means this split costs staging no downtime. Production is a separate Worker
