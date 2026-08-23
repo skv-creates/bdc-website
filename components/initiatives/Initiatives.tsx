@@ -486,7 +486,7 @@ export function Card({
       // py only: with the card on the page's own ground, side padding was a
       // phantom inset — the rule, label and button sat 32px off the grid
       // column the section heading starts on.
-      className={`${fluid ? "h-full" : `${styles.card} ${styles.cardInside}`} relative flex cursor-pointer flex-col gap-12 py-8`}
+      className={`${fluid ? "h-full" : `${styles.card} ${styles.cardInside}`} relative flex cursor-pointer flex-col gap-12 py-8 pr-8`}
       style={style}
     >
       {/* The ruled label (500:1990): the line across the card's top with
