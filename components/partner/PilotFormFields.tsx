@@ -10,6 +10,7 @@
  * scans.
  */
 import { Button } from "@/components/ui/Button";
+import { SelectField } from "@/components/ui/SelectField";
 import { PARTNER_COPY, PARTNER_TOPICS, type Locale } from "@/lib/partner";
 import { PILOT_COPY, PILOT_SUPPORT } from "@/lib/pilot";
 
@@ -42,36 +43,18 @@ export function PilotFormFields({
         </label>
       </div>
 
-      {/* Radios, not a select: a native select's popup is drawn by the OS
-          and cannot wear the brand, and five options read better laid out
-          anyway — the same idiom as the readiness question below. */}
-      <fieldset className="flex flex-col gap-3 border-0 p-0">
-        <legend className="t-caption mb-3 font-bold">{f.initiative}</legend>
-        {initiatives.map((t) => (
-          <label key={t} className="flex cursor-pointer items-center gap-3">
-            <input
-              type="radio"
-              name="initiative"
-              value={t}
-              required
-              defaultChecked={t === defaultInitiative}
-              className="size-5 shrink-0 accent-current"
-            />
-            <span className="t-body">{topicLabels[t]}</span>
-          </label>
-        ))}
-        <label className="flex cursor-pointer items-center gap-3">
-          <input
-            type="radio"
-            name="initiative"
-            value="other"
-            required
-            defaultChecked={defaultInitiative === "other"}
-            className="size-5 shrink-0 accent-current"
-          />
-          <span className="t-body">{f.initiativeOther}</span>
-        </label>
-      </fieldset>
+      {/* A dropdown, but ours: the native popup cannot wear the brand, so
+          SelectField rebuilds the control on the combobox pattern — the
+          ruled field closed, a brand panel open. */}
+      <SelectField
+        name="initiative"
+        label={f.initiative}
+        defaultValue={defaultInitiative}
+        options={[
+          ...initiatives.map((t) => ({ value: t, label: topicLabels[t] })),
+          { value: "other", label: f.initiativeOther },
+        ]}
+      />
 
       <fieldset className="flex flex-col gap-8 border-0 p-0">
         <legend className="sr-only">{f.about.legend}</legend>

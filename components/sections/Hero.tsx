@@ -21,7 +21,7 @@ export function Hero({ hero }: { hero: SiteContent["hero"] }) {
       {/* body-medium — 24px/1.5 in the design system, i.e. .t-body-lg.
           Two paragraphs of bold/plain segments (585:3022): the first names
           the organisation and its non-profit form, in bold where drawn. */}
-      <div className="t-body-lg col-span-full flex flex-col gap-6 lg:col-span-6">
+      <div className="t-body col-span-full flex flex-col gap-6 lg:col-span-6">
         {hero.subheading.map((para, i) => (
           <p key={i}>
             {para.map((seg, j) =>
