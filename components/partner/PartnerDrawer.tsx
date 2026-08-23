@@ -1,0 +1,102 @@
+"use client";
+
+/**
+ * The partner form as a side drawer — what the initiative action buttons
+ * open instead of leaving the page.
+ *
+ * Built on the native <dialog>, which is what makes the accessibility
+ * hold together without re-implementing it: showModal() traps focus and
+ * inerts the page behind, Escape closes, and on close the browser returns
+ * focus to the button that opened it. On top of that: aria-labelledby
+ * names the dialog by its visible heading, the backdrop click closes, the
+ * page's scroll locks while it is open, the panel is a right-hand sheet
+ * on desktop and the full viewport on a phone, and every motion is
+ * wrapped in motion-safe so a reduced-motion visitor gets an instant
+ * open. The form inside is the same PartnerFormFields the /partner page
+ * renders — labels, honeypot and all — POSTing exactly the same way.
+ */
+import { useEffect, useId, useRef } from "react";
+import { PartnerFormFields } from "@/components/partner/PartnerFormFields";
+import { PARTNER_COPY, type Locale } from "@/lib/partner";
+
+export function PartnerDrawer({
+  open,
+  onClose,
+  locale,
+  topic,
+}: {
+  open: boolean;
+  onClose: () => void;
+  locale: Locale;
+  topic?: string;
+}) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const headingId = useId();
+  const copy = PARTNER_COPY[locale];
+
+  useEffect(() => {
+    const el = dialog.current;
+    if (!el) return;
+    if (open && !el.open) el.showModal();
+    if (!open && el.open) el.close();
+  }, [open]);
+
+  // The page behind the drawer must not scroll — same rule as the nav
+  // drawer, for the same reason.
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
+
+  return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <dialog
+      ref={dialog}
+      aria-labelledby={headingId}
+      onClose={onClose}
+      // A click that lands on the <dialog> itself is a click on the
+      // backdrop — the panel's own content sits in the inner div.
+      onClick={(e) => {
+        if (e.target === dialog.current) onClose();
+      }}
+      className="fixed m-0 h-dvh max-h-none w-full max-w-none bg-page p-0 backdrop:bg-[rgba(21,21,21,0.4)] sm:ml-auto sm:max-w-[600px] motion-safe:transition-transform"
+    >
+      <div className="flex h-full flex-col gap-10 overflow-y-auto overscroll-contain px-6 py-8 md:px-10 md:py-10">
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center gap-3">
+              <span
+                className="h-2 w-4 shrink-0"
+                style={{ background: "var(--tri-band)" }}
+                aria-hidden
+              />
+              <span className="t-caption">{copy.eyebrow}</span>
+            </div>
+            <h2 id={headingId} className="t-h03">
+              {copy.title}
+            </h2>
+          </div>
+          {/* 44px hit area, visible focus, named in the page's language. */}
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={locale === "bg" ? "Затвори" : "Close"}
+            className="flex size-11 shrink-0 items-center justify-center transition-colors hover:bg-brand"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+              <path d="M1 1l16 16M17 1L1 17" stroke="currentColor" strokeWidth="2" />
+            </svg>
+          </button>
+        </div>
+
+        <p className="t-body max-w-[52ch]">{copy.lead}</p>
+
+        <PartnerFormFields locale={locale} defaultTopic={topic} />
+      </div>
+    </dialog>
+  );
+}

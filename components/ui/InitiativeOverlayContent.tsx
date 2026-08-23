@@ -24,6 +24,7 @@
  */
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
+import { InitiativeActions } from "@/components/partner/InitiativeActions";
 import { ChecklistRows } from "@/components/ui/ChecklistRows";
 import type { Initiative } from "@/lib/home-content";
 
@@ -173,15 +174,9 @@ export function InitiativeOverlayContent({
           {/* Both CTAs sit here, straight under the body copy (Figma 351:1077)
               — they used to be split, one here and one in a closing row at the
               foot of the page. The page now ends on the checklist. */}
-          {d.actions && (
-            <div className="flex flex-wrap gap-6 py-12">
-              {d.actions.map((a) => (
-                <Button key={a.href + a.label} href={a.href} variant={a.variant ?? "primary"}>
-                  {a.label}
-                </Button>
-              ))}
-            </div>
-          )}
+          {/* Partner-form buttons open the form as a side drawer; the hrefs
+              stay as the no-JavaScript fallback. See InitiativeActions. */}
+          {d.actions && <InitiativeActions actions={d.actions} />}
 
           {/* Feature — label + statement on the left, body-medium column on the
               right. body-medium is 24px/1.5 in the design system, i.e. t-body-lg.

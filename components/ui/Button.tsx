@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 
 type Variant = "primary" | "secondary" | "small" | "tertiary";
 
@@ -33,8 +33,9 @@ type Props = {
   className?: string;
   type?: "button" | "submit";
   fullWidth?: boolean;
-  /** Only meaningful without `href` — the button form of the component. */
-  onClick?: () => void;
+  /** On the button form it is the action; on a link it can intercept the
+      navigation (e.g. to open the same destination as a drawer). */
+  onClick?: (e: MouseEvent<HTMLElement>) => void;
 };
 
 export function Button({
@@ -74,6 +75,7 @@ export function Button({
       <a
         href={href}
         className={cls}
+        onClick={onClick}
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       >
         {content}
