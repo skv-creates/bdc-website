@@ -16,6 +16,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
+import { Button } from "@/components/ui/Button";
 import { TallyEmbed } from "@/components/ui/TallyEmbed";
 import { TallyProgress } from "@/components/ui/TallyProgress";
 import { TallyRedirect } from "@/components/ui/TallyRedirect";
@@ -77,8 +78,8 @@ export default async function MembershipApplyPage({
         />
 
         <main id="main" tabIndex={-1} className="bdc-stop-11 flex min-h-0 flex-1 flex-col gap-6 pt-6">
-          {/* The section eyebrow and the one practical fact — above the
-              form's own progress bar, in the site's voice. */}
+          {/* The section eyebrow, and the way back to the explainer — the
+              page a visitor may want before committing to the form. */}
           <div className="flex flex-wrap items-center gap-3">
             <span
               className="h-2 w-4 shrink-0"
@@ -89,7 +90,9 @@ export default async function MembershipApplyPage({
             <span aria-hidden className="opacity-40">
               ·
             </span>
-            <span className="t-caption font-bold">{copy.timeNote}</span>
+            <Button variant="tertiary" href={`/${locale}/membership`}>
+              {copy.aboutLabel}
+            </Button>
           </div>
           <h1 className="sr-only">{copy.formTitle}</h1>
 

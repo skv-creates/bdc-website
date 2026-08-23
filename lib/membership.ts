@@ -17,6 +17,8 @@ export type Locale = "bg" | "en";
 type Copy = {
   eyebrow: string;
   timeNote: string;
+  /** On the apply page's eyebrow row: back to the membership explainer. */
+  aboutLabel: string;
   title: string;
   ledeBold: string;
   ledeBody: string;
@@ -55,6 +57,7 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
   bg: {
     eyebrow: "Членство в Български дизайн съвет",
     timeNote: "Попълването отнема 3–5 минути.",
+    aboutLabel: "Научете повече за членството",
     title: "Дизайнът има нужда от общ глас.",
     ledeBold:
       "Един дизайнер може да промени проект. Една организация може да промени практика. Заедно можем да променим средата, в която дизайнът се развива в България.",
@@ -239,6 +242,7 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
     // Translated from the Bulgarian, which is the source of truth here.
     eyebrow: "Membership in the Bulgarian Design Council",
     timeNote: "Filling it in takes 3–5 minutes.",
+    aboutLabel: "Learn more about membership",
     title: "Design needs a common voice.",
     ledeBold:
       "One designer can change a project. One organisation can change a practice. Together we can change the environment design develops in across Bulgaria.",
