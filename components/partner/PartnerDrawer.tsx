@@ -82,21 +82,19 @@ export function PartnerDrawer({
             scrolling back up. Negative margins let its background run the
             drawer's full width so content slides beneath, not beside. */}
         <div className="sticky top-0 z-10 -mx-6 flex items-center justify-between gap-6 bg-page px-6 py-6 md:-mx-10 md:px-10">
-          <div className="flex items-center gap-3">
-            <span
-              className="h-2 w-4 shrink-0"
-              style={{ background: "var(--tri-band)" }}
-              aria-hidden
-            />
-            <span className="t-caption">{pilot ? pilotCopy.eyebrow : copy.eyebrow}</span>
-            {pilot && (
-              <>
-                <span aria-hidden className="opacity-40">
-                  ·
-                </span>
-                <span className="t-caption font-bold">{pilotCopy.timeNote}</span>
-              </>
-            )}
+          {/* Stacked, not inline: the drawer is narrow and the pair wrapped
+              into two ragged columns. Same voice for both lines; the note
+              starts where the label's text does. */}
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-3">
+              <span
+                className="h-2 w-4 shrink-0"
+                style={{ background: "var(--tri-band)" }}
+                aria-hidden
+              />
+              <span className="t-caption">{pilot ? pilotCopy.eyebrow : copy.eyebrow}</span>
+            </div>
+            {pilot && <span className="t-caption pl-7">{pilotCopy.timeNote}</span>}
           </div>
           {/* 44px hit area, visible focus, named in the page's language. */}
           <button
