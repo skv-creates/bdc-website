@@ -29,16 +29,14 @@ type Copy = {
   };
   opportunity: {
     legend: string;
-    problem: string;
-    problemHint: string;
-    change: string;
+    goal: string;
+    goalHint: string;
   };
   readiness: {
     legend: string;
     support: string;
     supportLabels: Record<PilotSupport, string>;
   };
-  privacyLabel: string;
   consent: string;
   submit: string;
 };
@@ -48,7 +46,7 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     eyebrow: "Пилотни програми",
     title: "Започнете пилот",
     lead: "Имате услуга, процес или среда, която може да работи по-добре? Разкажете ни къде виждате възможност за пилот.",
-    timeNote: "Около 3 минути",
+    timeNote: "Попълването отнема около 3 минути.",
     initiative: "Инициатива",
     about: {
       legend: "За Вас",
@@ -59,10 +57,9 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     },
     opportunity: {
       legend: "Възможност за пилот",
-      problem: "Какво не работи достатъчно добре?",
-      problemHint:
-        "Опишете конкретната ситуация или затруднение — и кого засяга. Не е необходимо да имате готово решение.",
-      change: "Каква промяна искате да постигнете?",
+      goal: "Какво искате да постигнете чрез пилота?",
+      goalHint:
+        "Опишете настоящата ситуация, защо искате да започнете пилот и какво трябва да бъде различно след него. Не е необходимо да имате готово решение.",
     },
     readiness: {
       legend: "Готовност за пилот",
@@ -73,7 +70,6 @@ export const PILOT_COPY: Record<Locale, Copy> = {
         "not-yet": "Все още не",
       },
     },
-    privacyLabel: "Политика за поверителност",
     consent:
       "Съгласен/на съм БДС да използва предоставените данни, за да разгледа запитването и да се свърже с мен.",
     submit: "Изпратете запитването",
@@ -83,7 +79,7 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     eyebrow: "Pilot programmes",
     title: "Start a pilot",
     lead: "Do you have a service, process or environment that could work better? Tell us where you see an opportunity for a pilot.",
-    timeNote: "About 3 minutes",
+    timeNote: "Filling it in takes about 3 minutes.",
     initiative: "Initiative",
     about: {
       legend: "About you",
@@ -94,10 +90,9 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     },
     opportunity: {
       legend: "The pilot opportunity",
-      problem: "What is not working well enough?",
-      problemHint:
-        "Describe the concrete situation or difficulty — and who it affects. You do not need to have a ready solution.",
-      change: "What change do you want to achieve?",
+      goal: "What do you want to achieve through the pilot?",
+      goalHint:
+        "Describe the current situation, why you want to start a pilot, and what should be different after it. You do not need to have a ready solution.",
     },
     readiness: {
       legend: "Readiness for a pilot",
@@ -108,7 +103,6 @@ export const PILOT_COPY: Record<Locale, Copy> = {
         "not-yet": "Not yet",
       },
     },
-    privacyLabel: "Privacy Policy",
     consent:
       "I agree that the BDC may use the data provided to review this enquiry and contact me.",
     submit: "Send the enquiry",

@@ -70,7 +70,7 @@ export function PilotFormFields({
       </label>
 
       <fieldset className="flex flex-col gap-8 border-0 p-0">
-        <legend className="t-h05 mb-6 font-bold">{f.about.legend}</legend>
+        <legend className="sr-only">{f.about.legend}</legend>
         <label className="flex flex-col gap-2">
           <span className="t-caption font-bold">{f.about.name}</span>
           <input type="text" name="name" required autoComplete="name" className={field} />
@@ -102,22 +102,17 @@ export function PilotFormFields({
       </fieldset>
 
       <fieldset className="flex flex-col gap-8 border-0 p-0">
-        <legend className="t-h05 mb-6 font-bold">{f.opportunity.legend}</legend>
+        <legend className="sr-only">{f.opportunity.legend}</legend>
 
         <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">{f.opportunity.problem}</span>
-          <span className="t-caption opacity-70">{f.opportunity.problemHint}</span>
-          <textarea name="problem" required rows={4} maxLength={3000} className={field} />
-        </label>
-
-        <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">{f.opportunity.change}</span>
-          <textarea name="change" required rows={3} maxLength={2000} className={field} />
+          <span className="t-caption font-bold">{f.opportunity.goal}</span>
+          <span className="t-caption opacity-70">{f.opportunity.goalHint}</span>
+          <textarea name="goal" required rows={6} maxLength={5000} className={field} />
         </label>
       </fieldset>
 
       <fieldset className="flex flex-col gap-3 border-0 p-0">
-        <legend className="t-h05 mb-6 font-bold">{f.readiness.legend}</legend>
+        <legend className="sr-only">{f.readiness.legend}</legend>
         <p className="t-caption font-bold">{f.readiness.support}</p>
         {PILOT_SUPPORT.map((sVal) => (
           <label key={sVal} className="flex cursor-pointer items-center gap-3">
@@ -133,15 +128,6 @@ export function PilotFormFields({
         ))}
       </fieldset>
 
-      <p className="t-caption">
-        <a
-          href={`/${locale}/privacy`}
-          className="border-b-2 border-current transition-opacity hover:opacity-70"
-        >
-          {f.privacyLabel}
-        </a>
-      </p>
-
       <label className="flex cursor-pointer items-start gap-3">
         <input
           type="checkbox"
@@ -153,9 +139,9 @@ export function PilotFormFields({
       </label>
 
       <div className="sm:self-start">
-        <Button type="submit">
-          {f.submit} <span aria-hidden>→</span>
-        </Button>
+        {/* The arrow lives in the label with an ordinary space — exactly how
+            every primary on the site carries it (Членувай →). */}
+        <Button type="submit">{`${f.submit} →`}</Button>
       </div>
     </form>
   );

@@ -50,8 +50,7 @@ export async function POST(req: Request) {
   const email = str(form.get("email")).slice(0, 200);
   const organisation = str(form.get("organisation")).slice(0, 200);
   const role = str(form.get("role")).slice(0, 200);
-  const problem = str(form.get("problem")).slice(0, 3000);
-  const change = str(form.get("change")).slice(0, 2000);
+  const goal = str(form.get("goal")).slice(0, 5000);
   const consent = str(form.get("consent"));
 
   const initiative: PartnerTopic = (PARTNER_TOPICS as readonly string[]).includes(
@@ -70,8 +69,7 @@ export async function POST(req: Request) {
     !name ||
     !organisation ||
     !role ||
-    !problem ||
-    !change ||
+    !goal ||
     !support ||
     !consent ||
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -108,11 +106,8 @@ export async function POST(req: Request) {
         `${bg.readiness.support} ${supportLabel}`,
         `Locale: ${locale}`,
         "",
-        `${bg.opportunity.problem}`,
-        problem,
-        "",
-        `${bg.opportunity.change}`,
-        change,
+        `${bg.opportunity.goal}`,
+        goal,
       ].join("\n"),
     }),
   });

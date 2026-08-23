@@ -72,11 +72,8 @@ export function PartnerDrawer({
       ref={dialog}
       aria-labelledby={headingId}
       onClose={onClose}
-      // A click that lands on the <dialog> itself is a click on the
-      // backdrop — the panel's own content sits in the inner div.
-      onClick={(e) => {
-        if (e.target === dialog.current) onClose();
-      }}
+      // No backdrop-click close on purpose: a half-filled form is too easy
+      // to lose to a stray click. The ways out are the ✕ and Escape.
       className="fixed m-0 h-dvh max-h-none w-full max-w-none bg-page p-0 backdrop:bg-[rgba(21,21,21,0.4)] sm:ml-auto sm:max-w-[600px] motion-safe:transition-transform"
     >
       <div className="flex h-full flex-col gap-10 overflow-y-auto overscroll-contain px-6 pb-8 md:px-10 md:pb-10">
@@ -92,6 +89,14 @@ export function PartnerDrawer({
               aria-hidden
             />
             <span className="t-caption">{pilot ? pilotCopy.eyebrow : copy.eyebrow}</span>
+            {pilot && (
+              <>
+                <span aria-hidden className="opacity-40">
+                  ·
+                </span>
+                <span className="t-caption font-bold">{pilotCopy.timeNote}</span>
+              </>
+            )}
           </div>
           {/* 44px hit area, visible focus, named in the page's language. */}
           <button
@@ -111,8 +116,6 @@ export function PartnerDrawer({
         </h2>
 
         <p className="t-body max-w-[52ch]">{pilot ? pilotCopy.lead : (prompt ?? copy.lead)}</p>
-
-        {pilot && <p className="t-caption font-bold">{pilotCopy.timeNote}</p>}
 
         {pilot ? (
           <PilotFormFields locale={locale} defaultInitiative={topic} />
