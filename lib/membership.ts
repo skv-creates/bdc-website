@@ -63,7 +63,7 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
       "Един дизайнер може да промени проект. Една организация може да промени практика. Заедно можем да променим средата, в която дизайнът се развива в България.",
     ledeBody:
       "Членството Ви дава формална роля в посоката, която поемаме. Участвате в изграждането на общи позиции и получавате достъп до знанието, което събираме.",
-    applyCta: "Кандидатствайте за членство",
+    applyCta: "Членувай",
     kinds: {
       heading: "Два вида членство",
       options: [
@@ -248,7 +248,7 @@ export const MEMBERSHIP_COPY: Record<Locale, Copy> = {
       "One designer can change a project. One organisation can change a practice. Together we can change the environment design develops in across Bulgaria.",
     ledeBody:
       "Membership gives you a formal role in the direction we take. You take part in building common positions and gain access to the knowledge we gather.",
-    applyCta: "Apply for membership",
+    applyCta: "Become a member",
     kinds: {
       heading: "Two kinds of membership",
       options: [
