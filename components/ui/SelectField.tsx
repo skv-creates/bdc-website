@@ -20,12 +20,16 @@ export function SelectField({
   options,
   defaultValue,
   label,
+  queryParam,
 }: {
   name: string;
   options: { value: string; label: string }[];
   defaultValue?: string;
   /** The visible field label, rendered above the control. */
   label: string;
+  /** Preselect from ?param=<value> on mount — how the /partner page's
+      topic follows the ?re= the initiative buttons link with. */
+  queryParam?: string;
 }) {
   const initial = Math.max(
     0,
@@ -37,6 +41,18 @@ export function SelectField({
   const root = useRef<HTMLDivElement>(null);
   const listId = useId();
   const labelId = useId();
+
+  // The initiative buttons link to the page with ?re=<topic>; honour it.
+  useEffect(() => {
+    if (!queryParam) return;
+    const wanted = new URLSearchParams(window.location.search).get(queryParam);
+    const i = options.findIndex((o) => o.value === wanted);
+    if (i >= 0) {
+      setSelected(i);
+      setActive(i);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // A click outside closes without choosing.
   useEffect(() => {

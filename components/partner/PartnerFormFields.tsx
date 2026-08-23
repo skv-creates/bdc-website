@@ -8,6 +8,7 @@
  * arrow all travel with it so the two hosts cannot drift apart.
  */
 import { Button } from "@/components/ui/Button";
+import { SelectField } from "@/components/ui/SelectField";
 import { PARTNER_COPY, PARTNER_TOPICS, type Locale } from "@/lib/partner";
 
 const field =
@@ -16,14 +17,11 @@ const field =
 export function PartnerFormFields({
   locale,
   defaultTopic,
-  selectId,
   intent,
 }: {
   locale: Locale;
   /** Preselects the topic — the drawer passes the initiative's own. */
   defaultTopic?: string;
-  /** The /partner page names its select so its ?re= script can find it. */
-  selectId?: string;
   /** The specific ask behind a drawer send — leads the email's subject. */
   intent?: string;
 }) {
@@ -60,35 +58,16 @@ export function PartnerFormFields({
         <input type="email" name="email" required autoComplete="email" className={field} />
       </label>
 
-      <label className="flex flex-col gap-2">
-        <span className="t-caption font-bold">{f.topic}</span>
-        {/* appearance-none + rounded-none strip the OS's own pill and glyph
-            so the select reads as another ruled field; the solid triangle is
-            the site's corner-mark family, not the UA's. */}
-        <span className="relative block">
-          <select
-            id={selectId}
-            name="topic"
-            defaultValue={defaultTopic}
-            className={`${field} cursor-pointer appearance-none rounded-none pr-10`}
-          >
-            {PARTNER_TOPICS.map((t) => (
-              <option key={t} value={t}>
-                {f.topicLabels[t]}
-              </option>
-            ))}
-          </select>
-          <svg
-            width="12"
-            height="8"
-            viewBox="0 0 12 8"
-            aria-hidden
-            className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2"
-          >
-            <polygon points="0,0 12,0 6,8" fill="currentColor" />
-          </svg>
-        </span>
-      </label>
+      {/* The brand's own dropdown — the native popup cannot be styled. It
+          reads ?re= itself, replacing the old inline preselect script; the
+          drawer still passes the topic directly. */}
+      <SelectField
+        name="topic"
+        label={f.topic}
+        defaultValue={defaultTopic}
+        queryParam="re"
+        options={PARTNER_TOPICS.map((t) => ({ value: t, label: f.topicLabels[t] }))}
+      />
 
       <label className="flex flex-col gap-2">
         <span className="t-caption font-bold">{f.message}</span>

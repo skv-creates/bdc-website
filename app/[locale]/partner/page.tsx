@@ -94,7 +94,7 @@ export default async function PartnerPage({
               {f.error}
             </p>
 
-            <PartnerFormFields locale={locale} selectId="topic" />
+            <PartnerFormFields locale={locale} />
           </div>
 
           {/* Progressive enhancement only — the form works without it. */}
@@ -102,8 +102,6 @@ export default async function PartnerPage({
             dangerouslySetInnerHTML={{
               __html:
                 "var q=new URLSearchParams(location.search);" +
-                "var re=q.get('re');var s=document.getElementById('topic');" +
-                "if(re&&s&&[].some.call(s.options,function(o){return o.value===re}))s.value=re;" +
                 "if(q.get('error'))document.getElementById('form-error').hidden=false;",
             }}
           />
