@@ -182,12 +182,15 @@ export default async function ContactPage({
 
               <div className="flex max-w-[704px] flex-1 flex-col gap-5">
                 <p className="t-h05 font-bold">{copy.orgName}</p>
-                <div className="flex flex-col gap-2 border-y border-border py-3 sm:flex-row sm:items-center sm:gap-8">
+                {/* Halves, not a fixed label column: a 360px label inside a
+                    column that narrows with the viewport left the value a
+                    sliver and broke the address one word per line. */}
+                <div className="grid gap-2 border-y border-border py-3 md:grid-cols-2 md:items-center md:gap-8">
                   <p className="t-body">{copy.orgStatus}</p>
                   <p className="t-body">{copy.orgUic}</p>
                 </div>
-                <div className="flex flex-col gap-2 sm:flex-row sm:gap-8">
-                  <p className="t-label sm:w-[360px] sm:shrink-0">{copy.addressLabel}</p>
+                <div className="grid gap-2 md:grid-cols-2 md:gap-8">
+                  <p className="t-label">{copy.addressLabel}</p>
                   <p className="t-body">
                     {copy.addressLines.map((line) => (
                       <span key={line} className="block">
