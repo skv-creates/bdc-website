@@ -24,11 +24,18 @@ export function PartnerDrawer({
   onClose,
   locale,
   topic,
+  intent,
+  prompt,
 }: {
   open: boolean;
   onClose: () => void;
   locale: Locale;
   topic?: string;
+  /** The specific ask — the button's own label; heads the drawer and the
+      email's subject so a pilot never reads as a partnership. */
+  intent?: string;
+  /** The ask spelled out — the drawer's lead when the button carries one. */
+  prompt?: string;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const headingId = useId();
@@ -93,12 +100,12 @@ export function PartnerDrawer({
         </div>
 
         <h2 id={headingId} className="t-h03">
-          {copy.title}
+          {intent ?? copy.title}
         </h2>
 
-        <p className="t-body max-w-[52ch]">{copy.lead}</p>
+        <p className="t-body max-w-[52ch]">{prompt ?? copy.lead}</p>
 
-        <PartnerFormFields locale={locale} defaultTopic={topic} />
+        <PartnerFormFields locale={locale} defaultTopic={topic} intent={intent} />
       </div>
     </dialog>
   );

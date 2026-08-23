@@ -58,6 +58,10 @@ export async function POST(req: Request) {
   const organisation = str(form.get("organisation")).slice(0, 200);
   const email = str(form.get("email")).slice(0, 200);
   const message = str(form.get("message")).slice(0, 5000);
+  // The specific ask behind the send — "Започни пилот", "Предложи казус" —
+  // when the drawer opened from an initiative's own button. It leads the
+  // subject so the inbox can tell a pilot from a partnership at a glance.
+  const intent = str(form.get("intent")).slice(0, 120);
   const topic: PartnerTopic = (PARTNER_TOPICS as readonly string[]).includes(str(form.get("topic")))
     ? (str(form.get("topic")) as PartnerTopic)
     : "general";
@@ -78,12 +82,13 @@ export async function POST(req: Request) {
       from: FROM,
       to: [TO],
       reply_to: email,
-      subject: `Partnership / ${topic}`,
+      subject: intent ? `${intent} / ${topic}` : `Partnership / ${topic}`,
       text: [
         `Name: ${name}`,
         `Organisation: ${organisation || "—"}`,
         `Email: ${email}`,
         `Topic: ${topic}`,
+        ...(intent ? [`Intent: ${intent}`] : []),
         `Locale: ${locale}`,
         "",
         message,

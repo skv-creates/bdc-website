@@ -1,27 +1,38 @@
 "use client";
 
 /**
- * An initiative's action buttons — with the partner ones opening the form
- * as a side drawer instead of leaving the page.
+ * An initiative's action buttons.
  *
- * The hrefs in the content stay exactly what they were
- * ("/bg/partner?re=<topic>"): with JavaScript, a click intercepts and
- * opens PartnerDrawer with that topic preselected; without it, the link
- * navigates to the /partner page as before — the drawer is enhancement,
- * never the only path. Locale and topic are read from the href itself, so
- * the content stays the single source of truth.
+ * The primary — Партнирай с нас — is a plain navigation to the /partner
+ * page: the indexable landing that Google Ads points at, and the form in
+ * its full context. The secondary actions carry a specific ask — Започни
+ * пилот, Предложи казус — and open the form as a side drawer instead,
+ * with the button's label travelling as the enquiry's intent (it leads
+ * the email's subject) and its prompt as the drawer's lead. The hrefs
+ * stay what they were: without JavaScript every button is still the link
+ * to /partner — the drawer is enhancement, never the only path.
  */
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { PartnerDrawer } from "@/components/partner/PartnerDrawer";
 import type { Locale } from "@/lib/partner";
 
-type Action = { label: string; href: string; variant?: "primary" | "secondary" };
+type Action = {
+  label: string;
+  href: string;
+  variant?: "primary" | "secondary";
+  prompt?: string;
+};
 
 const PARTNER_HREF = /^\/(bg|en)\/partner(?:\?re=([a-z-]+))?$/;
 
 export function InitiativeActions({ actions }: { actions: Action[] }) {
-  const [drawer, setDrawer] = useState<{ locale: Locale; topic?: string } | null>(null);
+  const [drawer, setDrawer] = useState<{
+    locale: Locale;
+    topic?: string;
+    intent: string;
+    prompt?: string;
+  } | null>(null);
   const [open, setOpen] = useState(false);
 
   return (
@@ -29,16 +40,22 @@ export function InitiativeActions({ actions }: { actions: Action[] }) {
       <div className="flex flex-wrap gap-6 py-12">
         {actions.map((a) => {
           const partner = a.href.match(PARTNER_HREF);
+          const opensDrawer = partner && a.variant === "secondary";
           return (
             <Button
               key={a.href + a.label}
               href={a.href}
               variant={a.variant ?? "primary"}
               onClick={
-                partner
+                opensDrawer
                   ? (e) => {
                       e.preventDefault();
-                      setDrawer({ locale: partner[1] as Locale, topic: partner[2] });
+                      setDrawer({
+                        locale: partner[1] as Locale,
+                        topic: partner[2],
+                        intent: a.label,
+                        prompt: a.prompt,
+                      });
                       setOpen(true);
                     }
                   : undefined
@@ -55,6 +72,8 @@ export function InitiativeActions({ actions }: { actions: Action[] }) {
           onClose={() => setOpen(false)}
           locale={drawer.locale}
           topic={drawer.topic}
+          intent={drawer.intent}
+          prompt={drawer.prompt}
         />
       )}
     </>

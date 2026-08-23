@@ -17,18 +17,22 @@ export function PartnerFormFields({
   locale,
   defaultTopic,
   selectId,
+  intent,
 }: {
   locale: Locale;
   /** Preselects the topic — the drawer passes the initiative's own. */
   defaultTopic?: string;
   /** The /partner page names its select so its ?re= script can find it. */
   selectId?: string;
+  /** The specific ask behind a drawer send — leads the email's subject. */
+  intent?: string;
 }) {
   const f = PARTNER_COPY[locale].form;
 
   return (
     <form method="post" action="/api/partner" className="flex max-w-[540px] flex-col gap-8">
       <input type="hidden" name="locale" value={locale} />
+      {intent && <input type="hidden" name="intent" value={intent} />}
       {/* Honeypot: invisible to people, filled in by naive bots. The API
           pretends success when it arrives non-empty. aria-hidden + tabIndex
           so no real visitor — screen reader or keyboard — ever lands in it. */}
