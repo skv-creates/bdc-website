@@ -72,8 +72,15 @@ export type InitiativeDetail = {
     action?: { label: string; href: string };
   };
   /** Closing button row. `prompt` is the drawer's own lead when the button
-      opens the partner form as a side panel — the specific ask, in words. */
-  actions?: { label: string; href: string; variant?: "primary" | "secondary"; prompt?: string }[];
+      opens the partner form as a side panel — the specific ask, in words.
+      `form: "pilot"` opens the pilot enquiry instead of the partner form. */
+  actions?: {
+    label: string;
+    href: string;
+    variant?: "primary" | "secondary";
+    prompt?: string;
+    form?: "pilot";
+  }[];
   /**
    * "The team behind X" panel. `members` are member slugs (the photo filename
    * stem, as used by the Notion merge) — resolved to portraits by the page.
@@ -447,8 +454,7 @@ const bg = {
               label: "Започни пилот",
               href: "/bg/partner?re=bulgaria-by-design",
               variant: "secondary",
-              prompt:
-                "Разкажете ни къде да започнем пилот — организацията, контекстът и промяната, която искате да видите. Ще се свържем с Вас за първите стъпки.",
+              form: "pilot",
             },
           ],
           feature: {
@@ -1388,8 +1394,7 @@ const en: typeof bg = {
               label: "Start a pilot",
               href: "/en/partner?re=bulgaria-by-design",
               variant: "secondary",
-              prompt:
-                "Tell us where a pilot should start — the organisation, the context, and the change you want to see. We will get back to you about the first steps.",
+              form: "pilot",
             },
           ],
           feature: {

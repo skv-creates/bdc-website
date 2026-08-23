@@ -17,7 +17,9 @@
  */
 import { useEffect, useId, useRef } from "react";
 import { PartnerFormFields } from "@/components/partner/PartnerFormFields";
+import { PilotFormFields } from "@/components/partner/PilotFormFields";
 import { PARTNER_COPY, type Locale } from "@/lib/partner";
+import { PILOT_COPY } from "@/lib/pilot";
 
 export function PartnerDrawer({
   open,
@@ -26,6 +28,7 @@ export function PartnerDrawer({
   topic,
   intent,
   prompt,
+  mode = "partner",
 }: {
   open: boolean;
   onClose: () => void;
@@ -36,10 +39,14 @@ export function PartnerDrawer({
   intent?: string;
   /** The ask spelled out — the drawer's lead when the button carries one. */
   prompt?: string;
+  /** "pilot" swaps in the pilot enquiry — its own copy and its own form. */
+  mode?: "partner" | "pilot";
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const headingId = useId();
+  const pilot = mode === "pilot";
   const copy = PARTNER_COPY[locale];
+  const pilotCopy = PILOT_COPY[locale];
 
   useEffect(() => {
     const el = dialog.current;
@@ -84,7 +91,7 @@ export function PartnerDrawer({
               style={{ background: "var(--tri-band)" }}
               aria-hidden
             />
-            <span className="t-caption">{copy.eyebrow}</span>
+            <span className="t-caption">{pilot ? pilotCopy.eyebrow : copy.eyebrow}</span>
           </div>
           {/* 44px hit area, visible focus, named in the page's language. */}
           <button
@@ -100,12 +107,18 @@ export function PartnerDrawer({
         </div>
 
         <h2 id={headingId} className="t-h03">
-          {intent ?? copy.title}
+          {pilot ? pilotCopy.title : (intent ?? copy.title)}
         </h2>
 
-        <p className="t-body max-w-[52ch]">{prompt ?? copy.lead}</p>
+        <p className="t-body max-w-[52ch]">{pilot ? pilotCopy.lead : (prompt ?? copy.lead)}</p>
 
-        <PartnerFormFields locale={locale} defaultTopic={topic} intent={intent} />
+        {pilot && <p className="t-caption font-bold">{pilotCopy.timeNote}</p>}
+
+        {pilot ? (
+          <PilotFormFields locale={locale} defaultInitiative={topic} />
+        ) : (
+          <PartnerFormFields locale={locale} defaultTopic={topic} intent={intent} />
+        )}
       </div>
     </dialog>
   );

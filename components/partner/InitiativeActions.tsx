@@ -22,6 +22,7 @@ type Action = {
   href: string;
   variant?: "primary" | "secondary";
   prompt?: string;
+  form?: "pilot";
 };
 
 const PARTNER_HREF = /^\/(bg|en)\/partner(?:\?re=([a-z-]+))?$/;
@@ -32,6 +33,7 @@ export function InitiativeActions({ actions }: { actions: Action[] }) {
     topic?: string;
     intent: string;
     prompt?: string;
+    mode?: "partner" | "pilot";
   } | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -55,6 +57,7 @@ export function InitiativeActions({ actions }: { actions: Action[] }) {
                         topic: partner[2],
                         intent: a.label,
                         prompt: a.prompt,
+                        mode: a.form ?? "partner",
                       });
                       setOpen(true);
                     }
@@ -74,6 +77,7 @@ export function InitiativeActions({ actions }: { actions: Action[] }) {
           topic={drawer.topic}
           intent={drawer.intent}
           prompt={drawer.prompt}
+          mode={drawer.mode}
         />
       )}
     </>
