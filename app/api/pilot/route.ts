@@ -13,7 +13,7 @@
 import { NextResponse } from "next/server";
 import { locales, type Locale } from "@/lib/i18n";
 import { PARTNER_COPY, PARTNER_TOPICS, type PartnerTopic } from "@/lib/partner";
-import { PILOT_AREAS, PILOT_COPY, PILOT_SUPPORT, type PilotArea, type PilotSupport } from "@/lib/pilot";
+import { PILOT_COPY, PILOT_SUPPORT, type PilotSupport } from "@/lib/pilot";
 
 const TO = "info@bulgariandesigncouncil.org";
 /** Must be on the Resend-verified domain, or Resend refuses to send. */
@@ -51,9 +51,7 @@ export async function POST(req: Request) {
   const organisation = str(form.get("organisation")).slice(0, 200);
   const role = str(form.get("role")).slice(0, 200);
   const problem = str(form.get("problem")).slice(0, 3000);
-  const affected = str(form.get("affected")).slice(0, 2000);
   const change = str(form.get("change")).slice(0, 2000);
-  const tried = str(form.get("tried")).slice(0, 2000);
   const consent = str(form.get("consent"));
 
   const initiative: PartnerTopic = (PARTNER_TOPICS as readonly string[]).includes(
@@ -61,9 +59,6 @@ export async function POST(req: Request) {
   )
     ? (str(form.get("initiative")) as PartnerTopic)
     : "general";
-  const area: PilotArea | "" = (PILOT_AREAS as readonly string[]).includes(str(form.get("area")))
-    ? (str(form.get("area")) as PilotArea)
-    : "";
   const support: PilotSupport | "" = (PILOT_SUPPORT as readonly string[]).includes(
     str(form.get("support")),
   )
@@ -76,9 +71,7 @@ export async function POST(req: Request) {
     !organisation ||
     !role ||
     !problem ||
-    !affected ||
     !change ||
-    !area ||
     !support ||
     !consent ||
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -96,7 +89,6 @@ export async function POST(req: Request) {
   // Bulgarian labels, whatever language the visitor filled the form in.
   const bg = PILOT_COPY.bg;
   const initiativeLabel = PARTNER_COPY.bg.form.topicLabels[initiative];
-  const areaLabel = bg.opportunity.areaLabels[area];
   const supportLabel = bg.readiness.supportLabels[support];
 
   const res = await fetch("https://api.resend.com/emails", {
@@ -113,19 +105,14 @@ export async function POST(req: Request) {
         `${bg.about.organisation}: ${organisation}`,
         `${bg.about.role}: ${role}`,
         `${bg.initiative}: ${initiativeLabel}`,
-        `${bg.opportunity.area} ${areaLabel}`,
         `${bg.readiness.support} ${supportLabel}`,
         `Locale: ${locale}`,
         "",
         `${bg.opportunity.problem}`,
         problem,
         "",
-        `${bg.opportunity.affected}`,
-        affected,
-        "",
         `${bg.opportunity.change}`,
         change,
-        ...(tried ? ["", `${bg.opportunity.tried}`, tried] : []),
       ].join("\n"),
     }),
   });

@@ -1,9 +1,9 @@
 /**
  * The pilot enquiry form — what the "Започни пилот" drawer holds.
  *
- * Tailored to what starting a pilot actually needs: the initiative, who is
- * asking, where the opportunity is, what is not working, who it affects,
- * the change wanted, and whether a decision-maker stands behind it. A
+ * Tailored to what starting a pilot actually needs — and no more: the
+ * initiative, who is asking, what is not working (and for whom), the
+ * change wanted, and whether a decision-maker stands behind it. A
  * native HTML <form> POSTing to /api/pilot, no client JavaScript required;
  * the sections are real <fieldset>s with <legend>s, the choices real
  * radios, so a screen reader hears the same structure a sighted visitor
@@ -11,7 +11,7 @@
  */
 import { Button } from "@/components/ui/Button";
 import { PARTNER_COPY, PARTNER_TOPICS, type Locale } from "@/lib/partner";
-import { PILOT_AREAS, PILOT_COPY, PILOT_SUPPORT } from "@/lib/pilot";
+import { PILOT_COPY, PILOT_SUPPORT } from "@/lib/pilot";
 
 const field =
   "t-body w-full rounded-none border-0 border-b-2 border-border bg-transparent px-0 py-2 outline-none transition-colors focus:border-current";
@@ -104,22 +104,6 @@ export function PilotFormFields({
       <fieldset className="flex flex-col gap-8 border-0 p-0">
         <legend className="t-h05 mb-6 font-bold">{f.opportunity.legend}</legend>
 
-        <fieldset className="flex flex-col gap-3 border-0 p-0">
-          <legend className="t-caption mb-3 font-bold">{f.opportunity.area}</legend>
-          {PILOT_AREAS.map((a) => (
-            <label key={a} className="flex cursor-pointer items-center gap-3">
-              <input
-                type="radio"
-                name="area"
-                value={a}
-                required
-                className="size-5 shrink-0 accent-current"
-              />
-              <span className="t-body">{f.opportunity.areaLabels[a]}</span>
-            </label>
-          ))}
-        </fieldset>
-
         <label className="flex flex-col gap-2">
           <span className="t-caption font-bold">{f.opportunity.problem}</span>
           <span className="t-caption opacity-70">{f.opportunity.problemHint}</span>
@@ -127,22 +111,8 @@ export function PilotFormFields({
         </label>
 
         <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">{f.opportunity.affected}</span>
-          <span className="t-caption opacity-70">{f.opportunity.affectedHint}</span>
-          <textarea name="affected" required rows={3} maxLength={2000} className={field} />
-        </label>
-
-        <label className="flex flex-col gap-2">
           <span className="t-caption font-bold">{f.opportunity.change}</span>
           <textarea name="change" required rows={3} maxLength={2000} className={field} />
-        </label>
-
-        <label className="flex flex-col gap-2">
-          <span className="t-caption font-bold">
-            {f.opportunity.tried}{" "}
-            <span className="font-normal opacity-70">({f.opportunity.triedOptional})</span>
-          </span>
-          <textarea name="tried" rows={3} maxLength={2000} className={field} />
         </label>
       </fieldset>
 

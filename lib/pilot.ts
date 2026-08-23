@@ -2,23 +2,14 @@
  * Copy for the pilot enquiry — the drawer the initiatives' "Започни пилот"
  * button opens, and the /api/pilot endpoint behind it.
  *
- * A pilot is not a partnership: the form asks where a pilot could start —
- * the area, what is not working, who it affects, the change wanted, and
- * whether a decision-maker stands behind it. Values are locale-independent
- * slugs; the labels here are what a visitor reads, and the slugs are what
- * the email carries.
+ * A pilot is not a partnership: the form asks only what starting one
+ * needs — who is asking, what is not working (and for whom), the change
+ * wanted, and whether a decision-maker stands behind it. Choice values are
+ * locale-independent slugs; the visitor reads these labels, and the email
+ * carries the Bulgarian ones.
  */
 
 export type Locale = "bg" | "en";
-
-export const PILOT_AREAS = [
-  "public-service",
-  "digital-service",
-  "visual-environment",
-  "design-capability",
-  "other",
-] as const;
-export type PilotArea = (typeof PILOT_AREAS)[number];
 
 export const PILOT_SUPPORT = ["yes", "discussing", "not-yet"] as const;
 export type PilotSupport = (typeof PILOT_SUPPORT)[number];
@@ -38,15 +29,9 @@ type Copy = {
   };
   opportunity: {
     legend: string;
-    area: string;
-    areaLabels: Record<PilotArea, string>;
     problem: string;
     problemHint: string;
-    affected: string;
-    affectedHint: string;
     change: string;
-    tried: string;
-    triedOptional: string;
   };
   readiness: {
     legend: string;
@@ -74,23 +59,10 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     },
     opportunity: {
       legend: "Възможност за пилот",
-      area: "В коя област виждате възможност за пилот?",
-      areaLabels: {
-        "public-service": "Публична услуга или процес",
-        "digital-service": "Дигитална услуга или интерфейс",
-        "visual-environment": "Визуална и информационна среда",
-        "design-capability": "Дизайн способност в организацията",
-        other: "Друго",
-      },
       problem: "Какво не работи достатъчно добре?",
       problemHint:
-        "Опишете конкретната ситуация или затруднение. Не е необходимо да имате готово решение.",
-      affected: "Кого засяга?",
-      affectedHint:
-        "Посочете хората или групите, които използват услугата, средата или процеса.",
+        "Опишете конкретната ситуация или затруднение — и кого засяга. Не е необходимо да имате готово решение.",
       change: "Каква промяна искате да постигнете?",
-      tried: "Какво вече сте опитали или проучили?",
-      triedOptional: "По желание",
     },
     readiness: {
       legend: "Готовност за пилот",
@@ -122,23 +94,10 @@ export const PILOT_COPY: Record<Locale, Copy> = {
     },
     opportunity: {
       legend: "The pilot opportunity",
-      area: "Where do you see an opportunity for a pilot?",
-      areaLabels: {
-        "public-service": "A public service or process",
-        "digital-service": "A digital service or interface",
-        "visual-environment": "The visual and information environment",
-        "design-capability": "Design capability in the organisation",
-        other: "Other",
-      },
       problem: "What is not working well enough?",
       problemHint:
-        "Describe the concrete situation or difficulty. You do not need to have a ready solution.",
-      affected: "Who does it affect?",
-      affectedHint:
-        "Name the people or groups who use the service, environment or process.",
+        "Describe the concrete situation or difficulty — and who it affects. You do not need to have a ready solution.",
       change: "What change do you want to achieve?",
-      tried: "What have you already tried or researched?",
-      triedOptional: "Optional",
     },
     readiness: {
       legend: "Readiness for a pilot",
