@@ -387,7 +387,7 @@ const bg = {
           ],
           actions: [
             { label: "Партнирай с нас", href: "/bg/partner?re=policy-lab" },
-            { label: "Предложи казус", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
+            { label: "Предложи казус", href: "/bg/partner?re=policy-lab", variant: "secondary" },
           ],
           team: {
             heading: "Да изградим заедно с(ъ)вета",
@@ -444,7 +444,7 @@ const bg = {
             },
             {
               label: "Започни пилот",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Pilot%20%2F%20Bulgaria%20by%20Design",
+              href: "/bg/partner?re=bulgaria-by-design",
               variant: "secondary",
             },
           ],
@@ -518,7 +518,7 @@ const bg = {
             },
             {
               label: "Поканете ни",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Invitation%20%2F%20Future%20Makers%20Lab",
+              href: "/bg/partner?re=future-makers-lab",
               variant: "secondary",
             },
           ],
@@ -552,7 +552,7 @@ const bg = {
             ],
             action: {
               label: "Да създадем лаборатория",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=New%20lab%20%2F%20Future%20Makers%20Lab",
+              href: "/bg/partner?re=future-makers-lab",
             },
           },
           team: {
@@ -600,7 +600,7 @@ const bg = {
           actions: [
             {
               label: "Искам да участвам ↗",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=%D0%98%D1%81%D0%BA%D0%B0%D0%BC%20%D0%B4%D0%B0%20%D1%83%D1%87%D0%B0%D1%81%D1%82%D0%B2%D0%B0%D0%BC%20%2F%20%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD%20%D0%B7%D1%80%D1%8F%D0%BB%D0%BE%D1%81%D1%82",
+              href: "/bg/partner?re=design-maturity",
               variant: "primary",
             },
             {
@@ -639,7 +639,7 @@ const bg = {
             ],
             action: {
               label: "Включи се в пилота",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=%D0%9F%D0%B8%D0%BB%D0%BE%D1%82%20%2F%20%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD%20%D0%B7%D1%80%D1%8F%D0%BB%D0%BE%D1%81%D1%82",
+              href: "/bg/partner?re=design-maturity",
             },
           },
           team: {
@@ -1330,7 +1330,7 @@ const en: typeof bg = {
           ],
           actions: [
             { label: "Partner with us", href: "/en/partner?re=policy-lab" },
-            { label: "Propose a case", href: "mailto:info@bulgariandesigncouncil.org?subject=Case%20proposal%20%2F%20Policy%20Lab", variant: "secondary" },
+            { label: "Propose a case", href: "/en/partner?re=policy-lab", variant: "secondary" },
           ],
           team: {
             heading: "Let’s build the council together",
@@ -1383,7 +1383,7 @@ const en: typeof bg = {
             },
             {
               label: "Start a pilot",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Pilot%20%2F%20Bulgaria%20by%20Design",
+              href: "/en/partner?re=bulgaria-by-design",
               variant: "secondary",
             },
           ],
@@ -1451,7 +1451,7 @@ const en: typeof bg = {
             },
             {
               label: "Invite us",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Invitation%20%2F%20Future%20Makers%20Lab",
+              href: "/en/partner?re=future-makers-lab",
               variant: "secondary",
             },
           ],
@@ -1485,7 +1485,7 @@ const en: typeof bg = {
             ],
             action: {
               label: "Let's build a lab",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=New%20lab%20%2F%20Future%20Makers%20Lab",
+              href: "/en/partner?re=future-makers-lab",
             },
           },
           team: {
@@ -1531,7 +1531,7 @@ const en: typeof bg = {
           actions: [
             {
               label: "I want to take part ↗",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Take%20part%20%2F%20Design%20Maturity",
+              href: "/en/partner?re=design-maturity",
               variant: "primary",
             },
             {
@@ -1570,7 +1570,7 @@ const en: typeof bg = {
             ],
             action: {
               label: "Join the pilot",
-              href: "mailto:info@bulgariandesigncouncil.org?subject=Pilot%20%2F%20Design%20Maturity",
+              href: "/en/partner?re=design-maturity",
             },
           },
           team: {
