@@ -76,7 +76,10 @@ export function FaqItem({ q, a }: { q: string; a: FaqBlock[] }) {
         className="grid transition-[grid-template-rows] duration-[120ms] ease-out"
         style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
       >
-        <div className="overflow-hidden" aria-hidden={!open}>
+        {/* inert, not just aria-hidden: the answers carry real links, and a
+            hidden-but-focusable link is an axe violation (aria-hidden-focus)
+            and a keyboard trap into invisible content. */}
+        <div className="overflow-hidden" inert={!open || undefined}>
           <Answer blocks={a} />
         </div>
       </div>
