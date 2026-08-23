@@ -331,8 +331,6 @@ const bg = {
     heading: "Инициативи",
     /** Standfirst beside the heading in the related-initiatives section. */
     lede: "Идеите намират почва, когато хората се съберат около тях.",
-    /** The mega menu's link to the /initiatives index page. */
-    allLabel: "Всички инициативи",
     /** The /initiatives index page's own copy (Figma 604:4917). */
     index: {
       title: "Дизайнът в действие.",
@@ -1276,7 +1274,6 @@ const en: typeof bg = {
   initiatives: {
     heading: "Initiatives",
     lede: "Ideas take root when people gather around them.",
-    allLabel: "All initiatives",
     /** The /initiatives index page's own copy (Figma 604:4917). */
     index: {
       title: "Design in action.",

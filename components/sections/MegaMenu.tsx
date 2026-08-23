@@ -161,22 +161,10 @@ export function MegaMenu({
           ))}
         </ul>
 
-        {/* The one destination the rows can't offer: the index page that
-            collects and explains all the initiatives — the crawlable URL the
-            mega-menu button itself is not. Its top rule closes the list, and
-            it uses the same seven-column grid as every row: the label ends in
-            page column 10 while the arrow starts on page column 11. */}
-        <a
-          href={`/${locale}/initiatives`}
-          onClick={onNavigate}
-          className="group bdc-grid items-center border-t border-border py-3"
-          style={{ ["--grid-cols" as string]: 7 }}
-        >
-          <span className="t-caption col-span-2 col-start-5 justify-self-end border-b-2 border-transparent pb-0.5 transition-colors group-hover:border-current">
-            {initiatives.allLabel}
-          </span>
-          <span className="t-caption col-start-7" aria-hidden>→</span>
-        </a>
+        {/* A bottom rule closes the list — the "all initiatives" link that
+            used to sit here went when the nav's Инициативи became a real
+            link to the index page itself. */}
+        <div className="border-t border-border" />
       </div>
     </div>
   );

@@ -154,6 +154,11 @@
 .track {
   display: flex;
   gap: var(--grid-gap, 24px);
+  /* The cards carry no side padding — their text runs to the card edge — so
+     one gutter between them reads cramped. A full empty column instead:
+     card (5 cols) + gap (1 col + its two gutters) + card (5 cols) = the
+     whole 11-column row, and the second card still lands on the grid. */
+  --card-gap: calc((100% - 10 * var(--grid-gap, 24px)) / 11 + 2 * var(--grid-gap, 24px));
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   /* arrow motion is JS-driven (120ms ease-out); native scroll/swipe stays default */
@@ -161,6 +166,9 @@
   -ms-overflow-style: none;
   /* room so the snapped card's shadow/edge isn't clipped */
   padding-block: 2px;
+}
+@media (min-width: 1024px) {
+  .track { gap: var(--card-gap); }
 }
 .track::-webkit-scrollbar {
   display: none;
