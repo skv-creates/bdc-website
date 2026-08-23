@@ -13,7 +13,10 @@
  * A hidden input holds the value, so the surrounding native form POSTs
  * exactly as it would with a real <select>.
  */
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+
+/** Never fires — the URL's query is fixed for the life of the page view. */
+const subscribeToNothing = () => () => {};
 
 export function SelectField({
   name,
@@ -31,28 +34,30 @@ export function SelectField({
       topic follows the ?re= the initiative buttons link with. */
   queryParam?: string;
 }) {
-  const initial = Math.max(
+  // The initiative buttons link to the page with ?re=<topic>; honour it.
+  // Derived, not set in an effect: null on the server, the query's value
+  // on the client, and the visitor's own choice wins from the first click.
+  const queryValue = useSyncExternalStore(
+    subscribeToNothing,
+    () => (queryParam ? new URLSearchParams(window.location.search).get(queryParam) : null),
+    () => null,
+  );
+  const defaultIndex = Math.max(
     0,
     options.findIndex((o) => o.value === defaultValue),
   );
-  const [selected, setSelected] = useState(initial);
+  const queryIndex = options.findIndex((o) => o.value === queryValue);
+  const [chosen, setChosen] = useState<number | null>(null);
+  const selected = chosen ?? (queryIndex >= 0 ? queryIndex : defaultIndex);
+
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(initial);
+  const [activeState, setActiveState] = useState<number | null>(null);
+  const active = activeState ?? selected;
+  const setActive = setActiveState;
+  const setSelected = setChosen;
   const root = useRef<HTMLDivElement>(null);
   const listId = useId();
   const labelId = useId();
-
-  // The initiative buttons link to the page with ?re=<topic>; honour it.
-  useEffect(() => {
-    if (!queryParam) return;
-    const wanted = new URLSearchParams(window.location.search).get(queryParam);
-    const i = options.findIndex((o) => o.value === wanted);
-    if (i >= 0) {
-      setSelected(i);
-      setActive(i);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // A click outside closes without choosing.
   useEffect(() => {
@@ -80,10 +85,10 @@ export function SelectField({
     if (!open) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActive((i) => Math.min(i + 1, options.length - 1));
+      setActive(Math.min(active + 1, options.length - 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setActive((i) => Math.max(i - 1, 0));
+      setActive(Math.max(active - 1, 0));
     } else if (e.key === "Home") {
       e.preventDefault();
       setActive(0);
