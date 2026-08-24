@@ -1,33 +1,6 @@
-# Immutable caching for the build's content-hashed assets.
-#   https://developers.cloudflare.com/workers/static-assets/headers
-#   https://opennext.js.org/cloudflare/caching#static-assets-caching
-#
-# Everything under /_next/static carries a content hash in its filename, so a
-# changed file is a changed URL and a year-long cache can never go stale. This
-# is the one bit of Cloudflare's autoconfig PR (#2) that main never picked up.
-/_next/static/*
-  Cache-Control: public,max-age=31536000,immutable
-
-# The site's photography. This rule is what makes next/image cacheable at all:
-# OpenNext's /_next/image handler copies NO Cache-Control onto its transformed
-# responses unless the source asset's own response says "immutable"
-# (createImageResponse in @opennextjs/cloudflare's images template). Without
-# it, every image view — every hover, every navigation — re-ran a ~1s
-# transform in the request path and the browser cached none of it.
-#
-# The cost of "immutable": replacing a photograph under the SAME filename
-# leaves returning visitors on the old one. Give a changed image a new name.
-# The events sync names files by event slug, so an event whose pictures are
-# swapped in Notion needs its old files deleted rather than overwritten.
-/figma/*
-  Cache-Control: public,max-age=31536000,immutable
-
-# The staging-only Storybook build. Staging's robots.txt already disallows
-# everything, but that is a request made to well-behaved crawlers about a host
-# they have to fetch first; X-Robots-Tag travels with the response itself and
-# is the half that still applies if this path is ever linked from somewhere
-# that is indexed. These are static files, so Next's noindex metadata — which
-# every other staging page gets from app/[locale]/layout.tsx — never touches
-# them.
-/bdc-storybook/*
-  X-Robots-Tag: noindex, nofollow
+# Cloudflare Workers static-assets headers.
+# The /_img variants are content-addressed by their source: a picture is
+# replaced by adding a file under a new name (event sync writes
+# slug-numbered files), so the URLs are safe to cache forever.
+/_img/*
+  Cache-Control: public, max-age=31536000, immutable
