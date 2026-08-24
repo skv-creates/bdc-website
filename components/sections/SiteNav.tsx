@@ -54,6 +54,25 @@ export function SiteNav({
   const megaHref = "/initiatives";
 
   /**
+   * Hover may open the menu only after the pointer has been somewhere other
+   * than the trigger once this page load. Click the trigger and the next
+   * page loads with the cursor still parked on it — without this gate, the
+   * first pixel of movement reopened the menu over the page just navigated
+   * to. A ref, not state: crossing the threshold must not re-render.
+   */
+  const megaTrigger = useRef<HTMLAnchorElement | null>(null);
+  const hoverArmed = useRef(false);
+  useEffect(() => {
+    const arm = (e: MouseEvent) => {
+      if (e.target instanceof Node && megaTrigger.current?.contains(e.target)) return;
+      hoverArmed.current = true;
+      document.removeEventListener("mousemove", arm);
+    };
+    document.addEventListener("mousemove", arm);
+    return () => document.removeEventListener("mousemove", arm);
+  }, []);
+
+  /**
    * The logo always goes home — including from the home page itself.
    *
    * It used to be `path ? \`/${locale}\` : "#"`, so on the home page, and on
@@ -189,10 +208,11 @@ export function SiteNav({
                 // panel's own rows, so the @modal interceptor stays out of it.
                 <a
                   key={l.label}
+                  ref={megaTrigger}
                   href={linkHref(l.href)}
                   aria-expanded={mega}
                   aria-haspopup="true"
-                  onMouseEnter={() => setMega(true)}
+                  onMouseEnter={() => hoverArmed.current && setMega(true)}
                   className={`t-caption whitespace-nowrap border-b-2 transition-colors ${
                     mega ? "border-current" : "border-transparent hover:border-current"
                   }`}
