@@ -120,7 +120,8 @@ gh pr list --state open
 - **Never delete an unmerged branch without asking.** Print its SHA first so it
   can be recovered, say what unique work it carries, and let the user decide.
 - Never delete `main` or `staging`.
-- Never `push --force` to `main` or `staging`.
+- Never `push --force` to `main` or `staging` — with one exception: an
+  approved leak rewrite (below), and then only `--force-with-lease`.
 - Keep at most one long-lived branch besides these two.
 
 ## Repo gotchas that bite during a deploy
@@ -145,6 +146,11 @@ gh pr list --state open
   is manual-only and needs a separately configured read-only secret to run.
 - **This repo is public and permanent.** No credential ever goes in a file, a
   commit, or a transcript. If one leaks, rotating it is the fix, not a revert.
+- **Both deploy scripts end by warming the image cache**
+  (`scripts/warm-image-cache.mjs`): every `/_next/image` variant the pages
+  emit is fetched so no visitor pays the ~0.5s cold transform. If images
+  feel slow or "buggy" right after a deploy, run the warmer before
+  debugging anything else.
 - **`/bdc-storybook` is staging-only, by construction.** `npm run deploy` builds
   Storybook into `public/bdc-storybook`; that directory is gitignored, and
   `npm run deploy:production` runs `scripts/assert-no-storybook.mjs` and refuses
@@ -153,6 +159,37 @@ gh pr list --state open
   public/bdc-storybook` and re-run. Never commit the directory, and never
   weaken the guard to get a deploy through.
   The URL needs its trailing slash: `/bdc-storybook/`.
+
+## Committing: stage by named path, never `git add -A`
+
+`git add -A` once swept a 52MB local working directory
+(`.codex-artifacts/`) into this public repo and forced a history rewrite.
+List the exact files in every `git add`. Before committing, glance at
+`git status` for untracked directories that are not yours — anything you
+did not create gets ignored or left alone, not committed.
+
+## If something leaks into history
+
+The tree is easy; history is the hard part, and a push makes it public.
+
+1. **Stop before merging to `main`.** A contaminated `staging` merged into
+   `main` puts the blobs on the default branch permanently.
+2. Remove the files from the tree at once (`git rm -r --cached`, add a
+   `.gitignore` entry, push) so the bleeding stops while the rewrite is
+   agreed.
+3. Rebuild the branch from the last clean commit: cherry-pick each later
+   commit with `--no-commit`, unstage the offending paths, re-commit with
+   the original messages. If the leaked paths still exist untracked on
+   disk, **move the directory aside first** — cherry-pick refuses to
+   apply over untracked files it would overwrite.
+4. Verify: `git log <clean>..HEAD --name-only | grep <path>` finds
+   nothing, and the final tree diffs empty against the old tip.
+5. `git push --force-with-lease origin staging` — **only with the user's
+   explicit approval**, never on your own initiative.
+6. Locally: `git reflog expire --expire=now --all && git gc --prune=now`.
+7. Be honest about the remainder: GitHub keeps force-pushed-away objects
+   until its own GC, fetchable by exact SHA. For sensitive content that
+   means a GitHub Support request; for harmless bulk, auto-GC suffices.
 
 ## Commit style
 
@@ -170,3 +207,8 @@ Event cover: let the frame take the photograph's proportions
 Say plainly: which commit is on staging, which is live, what you verified, and
 what is waiting for approval. If the build failed or a check was skipped, say so
 with the output — never round a partial deploy up to "done".
+
+Verification happens on the deployed origin, not localhost: curl the
+changed pages (status + TTFB) and one `/_next/image` URL, and run the
+browser check the change calls for — the `verify-in-browser` skill has the
+recipes.
