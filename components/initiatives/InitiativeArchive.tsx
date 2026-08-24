@@ -11,7 +11,7 @@
  * four of them, and the home-page carousel already taught us what lazy
  * loading does to a stacked crossfade (see Initiatives.tsx).
  */
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { Locale, SiteContent } from "@/lib/home-content";
 
@@ -36,6 +36,32 @@ export function InitiativeArchive({
   const items = initiatives.items;
   const [active, setActive] = useState(0);
   const shown = items[active];
+
+  /**
+   * The cover follows the scroll, not just the pointer. Hover alone was a
+   * trap: scroll with the mouse resting over the photograph — or anywhere
+   * outside the list — and the cover never changed, which read as the page
+   * being broken. A row crossing the middle band of the viewport now
+   * activates itself; hovering or focusing a row still overrides, and the
+   * last signal wins, which is what a hand and a scroll wheel both expect.
+   */
+  const rows = useRef<(HTMLLIElement | null)[]>([]);
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const i = rows.current.indexOf(e.target as HTMLLIElement);
+          if (i >= 0) setActive(i);
+        }
+      },
+      // Only the middle slice of the viewport counts, so exactly one row
+      // holds it at a time and half-visible rows at the edges don't flicker.
+      { rootMargin: "-40% 0px -40% 0px" },
+    );
+    for (const el of rows.current) if (el) io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   return (
     <div className="bdc-grid">
@@ -86,6 +112,7 @@ export function InitiativeArchive({
           return (
             <li
               key={it.slug}
+              ref={(el) => void (rows.current[i] = el)}
               onMouseEnter={() => setActive(i)}
               onFocus={() => setActive(i)}
               className="flex flex-col gap-4 border-t border-border py-6 lg:py-8"
