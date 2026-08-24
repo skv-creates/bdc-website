@@ -35,7 +35,7 @@ for (const page of pages) {
   for (const m of html.matchAll(/(?:src|srcSet)="([^"]+)"/gi)) {
     for (const part of m[1].split(",")) {
       const url = part.trim().split(/\s+/)[0].replace(/&amp;/g, "&");
-      if (url.startsWith("/_next/image?")) variants.add(url);
+      if (url.startsWith("/_next/image?") || (url.startsWith("/_img/") && url.endsWith(".webp"))) variants.add(url);
     }
   }
 }

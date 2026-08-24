@@ -69,3 +69,7 @@ public/bdc-storybook/
 
 # Local Codex working artifacts — never part of the site
 .codex-artifacts/
+
+# Build-time image variants (scripts/prerender-images.mjs) — generated, never committed
+public/_img/
+.image-cache/

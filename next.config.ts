@@ -62,6 +62,18 @@ const nextConfig: NextConfig = {
    */
   images: {
     /**
+     * Build-time variants, not request-time transforms. The runtime
+     * /_next/image route's edge cache is per-datacentre — warm in Sofia,
+     * cold (0.5–0.9s per image) everywhere else, which is what a visitor
+     * or reviewer abroad experienced as "the site is slow". The loader
+     * maps every request onto files scripts/prerender-images.mjs rendered
+     * into public/_img/, which serve fast from every location. The
+     * deviceSizes/qualities lists below are the grid that script renders
+     * — keep them in step.
+     */
+    loader: "custom",
+    loaderFile: "./lib/image-loader.ts",
+    /**
      * Next 16 changed the default to `[75]` and — importantly — *coerces* any
      * higher `quality` prop down to the nearest allowed value rather than
      * erroring. So without this every photograph on the site was re-encoded at
