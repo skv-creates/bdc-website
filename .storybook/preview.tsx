@@ -81,7 +81,7 @@ const preview: Preview = {
        * one page that says how to read the others sat fifth.
        */
       storySort: {
-        order: ['Foundations', ['Start here', '*'], '*'],
+        order: ['Foundations', ['Start here', '*'], '*', 'AI', ['Start here', '*']],
       },
     },
 

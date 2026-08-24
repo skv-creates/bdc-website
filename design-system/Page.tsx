@@ -24,15 +24,18 @@ export function Page({
   title,
   lede,
   children,
+  eyebrow = 'Foundations',
 }: {
   title: string;
   lede: ReactNode;
   children: ReactNode;
+  /** The section name over the title — the AI pages pass their own. */
+  eyebrow?: string;
 }) {
   return (
     <article className="min-h-screen px-8 pb-32 pt-16 md:px-16">
       <header className="max-w-[68ch]">
-        <p className="t-caption uppercase tracking-[0.12em] ds-muted">Foundations</p>
+        <p className="t-caption uppercase tracking-[0.12em] ds-muted">{eyebrow}</p>
         <h1 className="t-h02 mt-3">{title}</h1>
         <div className="t-body-lg mt-6 ds-muted">{lede}</div>
       </header>

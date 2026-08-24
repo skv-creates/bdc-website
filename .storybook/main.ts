@@ -13,6 +13,7 @@ const config: StorybookConfig = {
    * should move, get renamed and get deleted together.
    */
   "stories": [
+    "../ai/**/*.stories.@(js|jsx|mjs|ts|tsx)",
     "../design-system/**/*.mdx",
     "../design-system/**/*.stories.@(js|jsx|mjs|ts|tsx)",
     "../components/**/*.mdx",
