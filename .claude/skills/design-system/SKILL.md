@@ -105,6 +105,21 @@ spacing. The design's separation often lives *inside* a component (card
 `pr-[32px]`) rather than in the container gap; the code mirrors that
 structure, not just the visual result.
 
+## Interaction rules the hard way taught
+
+- **Hover is never the only driver.** Content that should follow the
+  visitor's position follows the *scroll* (IntersectionObserver on a
+  mid-viewport band), with hover/focus as overrides — last signal wins.
+  The /initiatives archive cover looked frozen to anyone scrolling with
+  the pointer parked elsewhere.
+- **Hover menus arm only after the pointer has left the trigger** once
+  per page load — otherwise clicking the trigger lands the next page
+  with the cursor parked on it and the first pixel of movement reopens
+  the menu over the destination (SiteNav's mega-menu gate).
+- **A mailto link always brings the copy button** (`components/ui/CopyEmail.tsx`)
+  beside it: mailto is silent on machines with no mail app configured,
+  and a silent click reads as broken.
+
 ## Colour accents
 
 - The **amber highlight** (`--bdc-amber` mark) belongs only on the

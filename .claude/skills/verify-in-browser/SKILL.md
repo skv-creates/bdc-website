@@ -107,6 +107,43 @@ to compare runs, and treat curl/navigation-timing numbers as the tiebreaker.
 CLS 0 and a11y 100 are the fixed expectations; perf ≥ ~85 lab is the
 normal band (SEO caps at 92 — see site-audit).
 
+## Measuring from the rest of the world
+
+Local curls only ever measure your own nearest datacentre. For anything
+speed-related, verify from several regions with Globalping's free API —
+this is how the "fast site" that was only fast in one country was finally
+caught:
+
+```bash
+curl -s -X POST https://api.globalping.io/v1/measurements \
+  -H 'Content-Type: application/json' -d '{
+  "type": "http", "target": "bulgariandesigncouncil.org",
+  "locations": [{"country":"US"},{"country":"DE"},{"country":"JP"},{"country":"AU"}],
+  "measurementOptions": { "request": { "method": "GET", "path": "/bg" }, "protocol": "HTTPS" }
+}'
+# then GET https://api.globalping.io/v1/measurements/<id> until finished
+```
+
+Expected bands: first-ever touch at a region ~250–350ms for an image and
+up to ~900ms TTFB for a page (one-time edge warm-up, TLS included);
+repeats 20–110ms. Run the same probe twice — the second number is what
+almost every visitor gets. The deploys warm the deploy machine's own
+nearest colo automatically.
+
+## Pointer-parked testing
+
+Two hover traps only surface when the mouse is NOT where a test would
+naturally put it:
+
+- Scroll-linked content: park the pointer away from the component (e.g.
+  over the photo column) and scroll — hover-driven behaviour can fake a
+  passing test while pure scrolling does nothing. The archive cover bug
+  shipped because every probe's pointer happened to hover the rows.
+- Hover menus: click the trigger, land on the destination page with the
+  cursor still parked on it, twitch the mouse 2px — the menu must NOT
+  reopen over the page just reached (SiteNav arms hover only after the
+  pointer has been elsewhere once per load).
+
 ## After every deploy
 
 Curl the deployed origin (page status + one image's latency), then run the

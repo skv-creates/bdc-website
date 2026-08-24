@@ -146,6 +146,11 @@ gh pr list --state open
   is manual-only and needs a separately configured read-only secret to run.
 - **This repo is public and permanent.** No credential ever goes in a file, a
   commit, or a transcript. If one leaks, rotating it is the fix, not a revert.
+- **Both deploy scripts start by pre-rendering image variants**
+  (`scripts/prerender-images.mjs` → `public/_img/`, sharp, mtime-cached
+  in `.image-cache/`). New photographs need nothing special — drop the
+  file under `public/` and the next build renders its variants. Both
+  output dirs are gitignored.
 - **Both deploy scripts end by warming the image cache**
   (`scripts/warm-image-cache.mjs`): every `/_next/image` variant the pages
   emit is fetched so no visitor pays the ~0.5s cold transform. If images

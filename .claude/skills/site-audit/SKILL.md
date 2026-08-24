@@ -62,6 +62,16 @@ request indexing for them.
   deliberate council policy (see AGENTS.md). LCP is the H1 webfont swap;
   fonts are already display:swap + preloaded — don't chase it.
 
+## 5a. Speed, measured globally
+
+Never sign off speed from one location — the reviewers sit in the US,
+the council sits wherever it sits, and per-edge caches make one warm
+region look like a fast site. Probe at least US + EU + Asia via
+Globalping (recipe in the verify-in-browser skill): images first-touch
+≤ ~350ms and repeats ≤ ~110ms everywhere, page TTFB warm ≤ ~150ms.
+Anything structurally slower in a whole region is a release blocker —
+that pattern is what several Ad Grants denials were actually citing.
+
 ## 6. Consent and privacy
 
 - **No tracking loads at all** while `GA4_MEASUREMENT_ID` in
