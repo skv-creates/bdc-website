@@ -17,6 +17,7 @@ import { notFound } from "next/navigation";
 import { localeAlternates, openGraphBase } from "@/lib/seo";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
+import { CopyEmail } from "@/components/ui/CopyEmail";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { Button } from "@/components/ui/Button";
 import { getContent, hasLocale } from "@/lib/home-content";
@@ -106,14 +107,20 @@ export default async function ContactPage({
                 <LabelMark />
                 {copy.reach.label}
               </span>
-              <a
-                href={`mailto:${c.footer.email}`}
-                className="t-body group self-start [overflow-wrap:anywhere]"
-              >
-                <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
-                  {c.footer.email}
-                </span>
-              </a>
+              {/* mailto is silent on a machine with no mail app configured —
+                  the copy button beside it is the path that always works. */}
+              <span className="t-body inline-flex items-center gap-2 self-start">
+                <a href={`mailto:${c.footer.email}`} className="group [overflow-wrap:anywhere]">
+                  <span className="border-b-2 border-current transition-colors group-hover:border-transparent">
+                    {c.footer.email}
+                  </span>
+                </a>
+                <CopyEmail
+                  email={c.footer.email}
+                  label={c.ui.copyEmail}
+                  copiedLabel={c.ui.copied}
+                />
+              </span>
               <p className="t-body">{copy.reach.note}</p>
             </div>
           </section>
