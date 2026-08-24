@@ -81,9 +81,11 @@ the page in place (`location.pathname` unchanged).
 
 - **Pages**: `curl -s -o /dev/null -w 'ttfb %{time_starttransfer}s'` —
   healthy is well under 150ms warm.
-- **Images**: `/_next/image?...` twice with `-H 'Accept: image/webp'` —
-  warm is 40–70ms; ~0.5s means a cold transform (see site-audit: run the
-  warmer, don't debug the client).
+- **Images**: grep `/_img/...webp` URLs out of the page HTML and curl
+  those — warm is 40–70ms, a cold edge node ~100–300ms, and the response
+  must carry `cache-control: ...immutable`. Never claim global speed
+  from a single-location measurement: the old per-datacentre transform
+  cache made Sofia fast while every other location stayed slow.
 - **Real-world load**: `performance.getEntriesByType('navigation')[0]` in
   the page — responseStart / loadEventEnd.
 

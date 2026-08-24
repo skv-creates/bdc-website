@@ -41,12 +41,17 @@ request indexing for them.
 ## 5. Speed
 
 - Pages: TTFB well under 150ms warm; fully loaded sub-second on broadband.
-- Images: `/_next/image` warm ≈ **40–70ms** (edge-cached by
-  `worker-entry.js`). ~0.5s responses mean cold transforms — run
-  `node scripts/warm-image-cache.mjs` (it also runs automatically at the
-  end of `npm run deploy` and `deploy:production`) before debugging
-  anything else. Symptoms of a cold cache: "buggy" crossfades, laggy
-  hover reveals, everything feeling slow after a deploy.
+- Images: build-time static WebP under `/_img/` —
+  `scripts/prerender-images.mjs` renders every variant during the build
+  and `lib/image-loader.ts` points all image URLs at them — served with
+  immutable caching and fast from every Cloudflare location. This
+  replaced the request-time `/_next/image` transforms, whose
+  per-datacentre cache was only ever warm where it had been measured
+  from: exactly what a reviewer abroad experienced as a slow site.
+  Health check: any `/_img/...webp` URL returns 200 `image/webp` with
+  `cache-control: ...immutable`, ~**40–70ms** warm. If a page ever emits
+  `/_next/image` URLs again, the custom loader in `next.config.ts` got
+  dropped — that is the regression to look for.
 - Lighthouse mobile (see verify-in-browser for the recipe) on `/bg`,
   `/en`, `/bg/membership` and the campaign landing pages (`/bg/partner`,
   `/bg/volunteer`, `/bg/about`, the four initiative pages). Expected:
