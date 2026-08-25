@@ -175,9 +175,9 @@ const bg = {
   /** The standing invitation under every event body — the page's one CTA. */
   eventCta: {
     heading: "Харесва ти какво правим?",
-    body: "Стани част от Съвета — или ни пиши за партньорство.",
-    memberLabel: "Членувай",
+    body: "Пиши ни за партньорство или кандидатствай за членство в Съвета.",
     partnerLabel: "Партнирай с нас",
+    memberLabel: "Кандидатствай за членство",
   },
   ui: {
     skipToContent: "Прескочи към съдържанието",
@@ -1158,9 +1158,9 @@ const en: typeof bg = {
 
   eventCta: {
     heading: "Like what we are doing?",
-    body: "Become part of the Council — or write to us about a partnership.",
-    memberLabel: "Join",
+    body: "Write to us about a partnership, or apply for membership of the Council.",
     partnerLabel: "Partner with us",
+    memberLabel: "Apply for membership",
   },
   ui: {
     skipToContent: "Skip to content",

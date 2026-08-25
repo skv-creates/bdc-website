@@ -197,12 +197,12 @@ function EventCta({
       <div className="flex max-w-[632px] flex-col gap-6">
         <h2 className="t-h04">{cta.heading}</h2>
         <p className="t-body">{cta.body}</p>
-        {/* One primary and one quiet tertiary — a row of equal buttons would
-            flatten the hierarchy. */}
-        <div className="mt-2 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
-          <Button href={`/${locale}/membership`}>{`${cta.memberLabel} \u2192`}</Button>
-          <Button variant="tertiary" href={`/${locale}/partner`}>
-            {cta.partnerLabel}
+        {/* Partnership leads, membership seconds — primary and secondary
+            pills, the same pairing the initiative pages carry. */}
+        <div className="mt-2 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-5">
+          <Button href={`/${locale}/partner`}>{`${cta.partnerLabel} \u2192`}</Button>
+          <Button variant="secondary" href={`/${locale}/membership`}>
+            {cta.memberLabel}
           </Button>
         </div>
       </div>
