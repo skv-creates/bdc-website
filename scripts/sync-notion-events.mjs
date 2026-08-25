@@ -225,6 +225,10 @@ async function bodyBlocks(pageId) {
       // column_list. Those carry nothing themselves, so without descending
       // into them the images in the first row of the gallery are invisible to
       // this script while the ones below it are not — a confusing half-result.
+      // Callouts and toggles are the editors' annotation space: internal
+      // notes, reminders, anything that must never reach the site. The sync
+      // ignores them wholesale — write notes there freely.
+      if (b.type === "callout" || b.type === "toggle") continue;
       if (b.type === "column_list" || b.type === "column") {
         out.push(...(await bodyBlocks(b.id)));
         continue;
@@ -319,8 +323,20 @@ function splitBody(blocks) {
       if (target === images) images.push({ url: b.url, alt: captionAlt(b.caption) });
       continue;
     }
-    const t = b.text.trim();
+    let t = b.text.trim();
     if (!t) continue;
+    // A marker written with Shift+Enter arrives glued to its paragraph as
+    // one block ("BG\n\nИмахме..."). Peel it off the front so the label is
+    // recognised there too instead of leaking onto the page.
+    const nl = t.indexOf("\n");
+    if (nl > 0) {
+      const first = t.slice(0, nl).trim();
+      if (IMG_MARK.test(first) || EN_MARK.test(first) || BG_MARK.test(first)) {
+        target = IMG_MARK.test(first) ? images : EN_MARK.test(first) ? en : bg;
+        t = t.slice(nl).trim();
+        if (!t) continue;
+      }
+    }
     if (IMG_MARK.test(t)) { target = images; continue; }
     if (EN_MARK.test(t)) { target = en; continue; }
     if (BG_MARK.test(t)) { target = bg; continue; }
