@@ -21,16 +21,25 @@ From every sitemap page, collect every internal `href` and `src`, and HEAD
 each with `redirect: 'manual'`: **zero broken, zero unexpected
 redirects**. (Known-good: ~71 distinct internal links.)
 
-## 3. Redirect contract
+## 3. Root and redirect contract
 
-- `/` → **308** → `/bg` for clients with no language signal (crawlers);
-  **307** to the negotiated locale when a cookie or Accept-Language
-  decided (`app/route.ts`). Both carry hreflang Link headers.
-- `www.` and `http://` → 301 to the https apex.
-- Search Console listing the bare root under **"Page with redirect" is
-  expected and permanent** — a redirecting URL can never itself be
-  indexed; `/bg` is the indexed homepage. Do not "fix" this.
+- **`/` serves the Bulgarian homepage directly — 200, not a redirect**
+  (a rewrite to the prerendered `/bg` in `next.config.ts`; the page's
+  canonical and hreflang say `/bg` is the official address, so Google
+  sees one homepage, not two). This replaced a 308: the bare domain is
+  what people type, share, and submit to review forms — including the
+  Ad Grants form — and for weeks it answered with an empty redirect
+  while every audit called that "standard practice". The user flagged
+  it two days before it was fixed; the lesson is recorded below.
+- `www.` and `http://` → 301 to the https apex. `/bg` and `/en` still
+  serve directly.
 - Unknown URLs return a real 404.
+
+**Lesson:** when the site owner says something on their site feels
+wrong, investigate it as a signal before rebutting it with the
+textbook. "Technically correct and standard" was the answer here for
+two denial cycles; the owner's instinct — "the address we submit
+should be a page, not a bounce" — was the fix.
 
 ## 4. noindex discipline
 
