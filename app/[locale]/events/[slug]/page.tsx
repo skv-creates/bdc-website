@@ -23,6 +23,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { EventOverlayContent } from "@/components/ui/EventOverlayContent";
 import { PatternRail } from "@/components/pattern-rail/PatternRail";
+import { Button } from "@/components/ui/Button";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { getEvent, getEventSlugs } from "@/lib/events";
@@ -127,6 +128,23 @@ export default async function EventPage({
             locale={locale}
             variant="page"
           />
+
+          {/* The standing invitation — every event ends with the site's one
+              clear next step instead of falling straight into the footer.
+              One primary and one quiet tertiary, per the design system:
+              a row of equal buttons would flatten the hierarchy. */}
+          <section className="bdc-stop-11 mt-20 border-t-2 border-border pt-10 md:mt-24">
+            <div className="flex max-w-[632px] flex-col gap-6">
+              <h2 className="t-h04">{c.eventCta.heading}</h2>
+              <p className="t-body">{c.eventCta.body}</p>
+              <div className="mt-2 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
+                <Button href={`/${locale}/membership`}>{`${c.eventCta.memberLabel} →`}</Button>
+                <Button variant="tertiary" href={`/${locale}/partner`}>
+                  {c.eventCta.partnerLabel}
+                </Button>
+              </div>
+            </div>
+          </section>
         </main>
       </div>
 

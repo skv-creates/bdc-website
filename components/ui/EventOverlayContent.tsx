@@ -201,6 +201,11 @@ export function EventOverlayContent({
 
   const inPage = variant === "page";
   const col = columns(inPage);
+  // With no photograph there is nothing to share the row with: the five-column
+  // text slot left half the grid standing empty and the copy reading squeezed.
+  // The prose column with the 65ch cap is the right home for a text-only
+  // event — full reading width, line length still bounded by measure.
+  const textCol = event.covers[0] ? col.text : col.prose;
 
   return (
     <div
@@ -215,7 +220,7 @@ export function EventOverlayContent({
       }`}
       style={inPage ? undefined : { paddingInlineEnd: "calc(var(--rail-w) + var(--rail-clear))" }}
     >
-      <div className={`${col.text} flex flex-col gap-8`}>
+      <div className={`${textCol} ${event.covers[0] ? "" : MEASURE} flex flex-col gap-8`}>
         <h1 className="t-h03">{event.name}</h1>
 
         <EventMeta event={event} />
@@ -293,6 +298,11 @@ function EventOverlayGallery({
 
   const inPage = variant === "page";
   const col = columns(inPage);
+  // With no photograph there is nothing to share the row with: the five-column
+  // text slot left half the grid standing empty and the copy reading squeezed.
+  // The prose column with the 65ch cap is the right home for a text-only
+  // event — full reading width, line length still bounded by measure.
+  const textCol = event.covers[0] ? col.text : col.prose;
 
   return (
     <div
@@ -301,7 +311,7 @@ function EventOverlayGallery({
     >
       {/* event-info-wrapper (449:1705) — five of the twelve columns, so the
           title wraps as it does in the frame instead of running the full width. */}
-      <div className={`${col.text} flex flex-col gap-8`}>
+      <div className={`${textCol} ${event.covers[0] ? "" : MEASURE} flex flex-col gap-8`}>
         <h1 className="t-h03">{event.name}</h1>
 
         <EventMeta event={event} />

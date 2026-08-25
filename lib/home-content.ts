@@ -172,6 +172,13 @@ const bg = {
   },
 
   // Non-visible / control-surface strings (aria-labels, carousel arrows).
+  /** The standing invitation under every event body — the page's one CTA. */
+  eventCta: {
+    heading: "Харесва ти какво правим?",
+    body: "Стани част от Съвета — или ни пиши за партньорство.",
+    memberLabel: "Членувай",
+    partnerLabel: "Партнирай с нас",
+  },
   ui: {
     skipToContent: "Прескочи към съдържанието",
     home: "Начало",
@@ -1149,6 +1156,12 @@ const en: typeof bg = {
     titleTemplate: "%s — Bulgarian Design Council",
   },
 
+  eventCta: {
+    heading: "Like what we are doing?",
+    body: "Become part of the Council — or write to us about a partnership.",
+    memberLabel: "Join",
+    partnerLabel: "Partner with us",
+  },
   ui: {
     skipToContent: "Skip to content",
     home: "Home",
