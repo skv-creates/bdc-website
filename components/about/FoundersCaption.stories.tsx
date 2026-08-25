@@ -82,7 +82,9 @@ export const OpensTheSharedBioAndReturnsFocus: Story = {
       const dialog = await canvas.findByRole("dialog", { name: profile.member.name });
       await expect(dialog).toHaveTextContent(profile.member.bio);
       const close = canvas.getByRole("button", { name: "Close" });
-      await expect(close).toHaveFocus();
+      // The panel focuses Close in a passive effect — after paint, so the
+      // assertion must wait for it like every other async step here does.
+      await waitFor(() => expect(close).toHaveFocus());
 
       // Exercise both supported keyboard and pointer dismissal paths while
       // proving every founder returns the reader to the name they selected.

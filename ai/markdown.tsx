@@ -81,7 +81,13 @@ export function Markdown({ source, demote = 1 }: { source: string; demote?: numb
       i++;
       while (i < lines.length && !lines[i].startsWith('```')) buf.push(lines[i++]);
       blocks.push(
-        <pre key={k++} className="my-6 max-w-full overflow-x-auto bg-black/[0.05] p-4 text-[15px] leading-relaxed">
+        // tabIndex: a scrollable region a keyboard can't reach is an axe
+        // violation (scrollable-region-focusable).
+        <pre
+          key={k++}
+          tabIndex={0}
+          className="my-6 max-w-full overflow-x-auto bg-black/[0.05] p-4 text-[15px] leading-relaxed focus-visible:outline-2 focus-visible:outline-current"
+        >
           <code>{buf.join('\n')}</code>
         </pre>,
       );
@@ -113,7 +119,11 @@ export function Markdown({ source, demote = 1 }: { source: string; demote?: numb
       i--;
       const [head, ...body] = rows;
       blocks.push(
-        <div key={k++} className="my-6 max-w-full overflow-x-auto">
+        <div
+          key={k++}
+          tabIndex={0}
+          className="my-6 max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-current"
+        >
           <table className="t-caption w-full max-w-[68ch] border-collapse text-left">
             <thead>
               <tr>

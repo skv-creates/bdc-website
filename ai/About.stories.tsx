@@ -114,7 +114,10 @@ export const WhatThisIs: Story = {
         title="What is in this repository"
         intro="Everything AI-related that we keep in the project. The pages next to this one show the real documents, word for word."
       >
-        <div className="max-w-full overflow-x-auto">
+        <div
+          tabIndex={0}
+          className="max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-current"
+        >
           <table className="t-caption w-full max-w-[80ch] border-collapse text-left">
             <thead>
               <tr>
