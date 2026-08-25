@@ -19,18 +19,18 @@ export const EVENTS_INDEX_COPY: Record<
   }
 > = {
   bg: {
-    eyebrow: "Какво правим — на живо и онлайн",
+    eyebrow: "Какво правим",
     title: "Събития",
-    lead: "Срещи, лекции и работилници, които събират дизайн общността и я свързват с институциите, бизнеса и образованието. Най-новото е най-отгоре.",
+    lead: "Документираме развитието на Български дизайн съвет: събитията, които организираме и в които участваме, новите партньорства, ключовите постижения и какво следва.",
     metaTitle: "Събития — Български Дизайн Съвет",
     metaDescription:
       "Събитията на Български дизайн съвет — срещи, лекции и работилници, с дати, описания и снимки. Най-новите най-отгоре.",
   },
   en: {
     // Translated from the Bulgarian, which is the source of truth here.
-    eyebrow: "What we do — in person and online",
+    eyebrow: "What we do",
     title: "Events",
-    lead: "Meetings, lectures and workshops that bring the design community together and connect it with institutions, business and education. Newest first.",
+    lead: "We document the development of the Bulgarian Design Council: the events we organise and take part in, new partnerships, key milestones and what comes next.",
     metaTitle: "Events — Bulgarian Design Council",
     metaDescription:
       "Events of the Bulgarian Design Council — meetings, lectures and workshops, with dates, descriptions and photographs. Newest first.",
