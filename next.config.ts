@@ -15,6 +15,21 @@ const nextConfig: NextConfig = {
    * `/privacy` is canonical. Preserve previously shared `/policy` links as
    * permanent redirects rather than turning them into 404s.
    */
+  /**
+   * The bare root SERVES the Bulgarian homepage — a rewrite, not a redirect.
+   *
+   * It used to 308 to /bg, which was correct plumbing and a real liability:
+   * the URL a person types, shares, and submits to a review form answered
+   * with an empty redirect instead of a website. Ad Grants reviews fetch
+   * exactly that URL. Now / renders the same prerendered page as /bg; the
+   * page's own metadata already declares /bg canonical with hreflang
+   * alternates, so search engines keep one address for it. A visitor who
+   * prefers English is one click away, and every internal link still says
+   * /bg or /en explicitly.
+   */
+  async rewrites() {
+    return [{ source: "/", destination: "/bg" }];
+  },
   async redirects() {
     return [
       {
