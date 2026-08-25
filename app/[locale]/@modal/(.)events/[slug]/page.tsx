@@ -28,7 +28,12 @@ export default async function InterceptedEventModal({
 
   return (
     <OverlayPanel homeHref={`/${locale}`} intercepted>
-      <EventOverlayContent event={event} ui={getContent(locale).ui} locale={locale} />
+      <EventOverlayContent
+        event={event}
+        ui={getContent(locale).ui}
+        locale={locale}
+        cta={getContent(locale).eventCta}
+      />
     </OverlayPanel>
   );
 }

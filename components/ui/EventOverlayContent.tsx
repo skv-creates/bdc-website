@@ -7,6 +7,7 @@
  * members (name / role / bio / photo) will slot into <OverlayPanel/> the same way.
  */
 import Image from "next/image";
+import { Button } from "@/components/ui/Button";
 import { PhotoCarousel } from "@/components/ui/PhotoCarousel";
 import { VideoEmbed } from "@/components/ui/VideoEmbed";
 import { ExternalLink } from "@/components/ui/ExternalLink";
@@ -174,17 +175,55 @@ function columns(inPage: boolean) {
   };
 }
 
+/** The standing invitation under every event body — copy from lib/home-content. */
+export type EventCtaCopy = {
+  heading: string;
+  body: string;
+  memberLabel: string;
+  partnerLabel: string;
+};
+
+function EventCta({
+  cta,
+  locale,
+  className,
+}: {
+  cta: EventCtaCopy;
+  locale: Locale;
+  className: string;
+}) {
+  return (
+    <section className={`${className} mt-16 border-t-2 border-border pt-10`}>
+      <div className="flex max-w-[632px] flex-col gap-6">
+        <h2 className="t-h04">{cta.heading}</h2>
+        <p className="t-body">{cta.body}</p>
+        {/* One primary and one quiet tertiary — a row of equal buttons would
+            flatten the hierarchy. */}
+        <div className="mt-2 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
+          <Button href={`/${locale}/membership`}>{`${cta.memberLabel} \u2192`}</Button>
+          <Button variant="tertiary" href={`/${locale}/partner`}>
+            {cta.partnerLabel}
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function EventOverlayContent({
   event,
   ui,
   locale,
   variant = "overlay",
+  cta,
 }: {
   event: BdcEvent;
   ui: OverlayUi;
   locale: Locale;
   /** Which shell this is inside. See `columns` above. */
   variant?: "overlay" | "page";
+  /** Rendered under the body in both shells when supplied. */
+  cta?: EventCtaCopy;
 }) {
   // Two or more pictures makes this an "event with photo carousel". With one
   // picture the original side-by-side layout is still the right shape, and
@@ -196,6 +235,7 @@ export function EventOverlayContent({
         ui={ui}
         locale={locale}
         variant={variant}
+        cta={cta}
       />
     );
 
@@ -269,6 +309,8 @@ export function EventOverlayContent({
           />
         </div>
       )}
+
+      {cta && <EventCta cta={cta} locale={locale} className={col.wide} />}
     </div>
   );
 }
@@ -288,11 +330,13 @@ function EventOverlayGallery({
   ui,
   locale,
   variant,
+  cta,
 }: {
   event: BdcEvent;
   ui: OverlayUi;
   locale: Locale;
   variant: "overlay" | "page";
+  cta?: EventCtaCopy;
 }) {
   const [intro, ...rest] = paragraphs(event.description);
 
@@ -362,6 +406,8 @@ function EventOverlayGallery({
           ))}
         </div>
       )}
+
+      {cta && <EventCta cta={cta} locale={locale} className={col.wide} />}
     </div>
   );
 }
