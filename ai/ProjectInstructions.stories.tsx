@@ -23,11 +23,11 @@ export const AgentsMd: Story = {
     <Page
       eyebrow="AI"
       title="AGENTS.md"
-      lede="Loaded into every Claude session automatically. It carries the decisions a newcomer — human or model — would otherwise re-derive or get wrong: deploys, Notion syncs, the crawler policy, what must never be committed."
+      lede="The welcome document. The assistant reads it automatically at the start of every work session. It holds the knowledge a newcomer — a person or an AI — would otherwise have to rediscover: how publishing works, where the texts come from, what must stay private."
     >
-      <Note title="Rendered from the file itself">
-        This page imports AGENTS.md at build time — it always shows the current text, never a
-        copy. Edit the file, rebuild, and this page follows.
+      <Note title="This is the real document">
+        The page reads AGENTS.md itself — it is not a copy. When someone edits the file, this
+        page shows the new text after the next publish.
       </Note>
       <div className="mt-8">
         <Markdown source={agentsMd} />

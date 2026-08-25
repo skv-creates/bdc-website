@@ -2,9 +2,10 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Page, Note, Section } from '../design-system/Page';
 
 /**
- * The plain-language answer to "what is all this AI stuff called, and did
- * we build our own?" — kept here so it outlives the chat it was first
- * answered in. The neighbouring pages render the actual files.
+ * The plain-language explanation of how this project works with AI —
+ * written for the team: designers, not engineers, and not native English
+ * speakers. Short sentences, everyday words, every term explained the
+ * first time it appears. The neighbouring pages show the actual files.
  */
 const meta = {
   title: 'AI/Start here',
@@ -17,39 +18,39 @@ type Story = StoryObj<typeof meta>;
 
 const INVENTORY: { file: string; kind: string; role: string }[] = [
   {
-    file: 'AGENTS.md (via CLAUDE.md)',
-    kind: 'Project instructions',
-    role: 'Loaded into every session automatically — the repo’s institutional memory: deploys, Notion syncs, crawler policy, secrets discipline.',
+    file: 'AGENTS.md',
+    kind: 'The welcome document',
+    role: 'The assistant reads this every time it starts. It explains how our project works: how the website goes live, where the texts come from, what must stay secret.',
   },
   {
     file: '.claude/skills/design-system/',
-    kind: 'Skill · /design-system',
-    role: 'The layout, type, button and copy contract — the corrections that used to be re-taught every session.',
+    kind: 'Guide: design rules',
+    role: 'Our visual rules — which button goes where, text sizes, spacing, how cards look. So the assistant does not break the design.',
   },
   {
     file: '.claude/skills/verify-in-browser/',
-    kind: 'Skill · /verify-in-browser',
-    role: 'Real-browser verification recipes: puppeteer, mobile profiles, honeypot form tests, global latency probes.',
+    kind: 'Guide: checking the site',
+    role: 'How to open the website in a real browser and test it — on phone sizes too — before saying "it works".',
   },
   {
     file: '.claude/skills/site-audit/',
-    kind: 'Skill · /site-audit',
-    role: 'The Ad Grants / SEO / speed runbook with known-good numbers for every check.',
+    kind: 'Guide: health check',
+    role: 'A full check-up list for the website: speed, broken links, Google requirements. Used before the Ad Grants application.',
   },
   {
     file: '.claude/skills/accessibility/',
-    kind: 'Skill · /accessibility',
-    role: 'WCAG AA baseline and the proven dialog/combobox/inert patterns, plus the responsive matrix.',
+    kind: 'Guide: accessibility',
+    role: 'How to make everything usable for people with disabilities — keyboard, screen readers, small screens.',
   },
   {
     file: '.claude/skills/ship-to-staging/',
-    kind: 'Skill · /ship-to-staging',
-    role: 'Staging-first release flow: what "deploy" means, named-path commits, leak recovery, post-deploy verification.',
+    kind: 'Guide: publishing',
+    role: 'How changes go online: always to the test site first, and to the real site only when a person says so.',
   },
   {
-    file: 'scripts/*.mjs',
-    kind: 'Automation (not AI)',
-    role: 'The machinery the skills point at: Notion syncs, image prerender, cache warmer, production guards.',
+    file: 'scripts/',
+    kind: 'Small helper programs',
+    role: 'Not AI — normal programs the guides mention: preparing images, syncing events from Notion, safety checks before publishing.',
   },
 ];
 
@@ -57,43 +58,69 @@ export const WhatThisIs: Story = {
   render: () => (
     <Page
       eyebrow="AI"
-      title="How this repo works with Claude"
-      lede="The names for everything, what lives where, and the one sentence that answers most questions: Claude Code is the harness; this repo teaches it with instructions and skills."
+      title="How we work with AI"
+      lede="We use an AI assistant to help build and maintain this website. This page explains, in simple words, what the assistant is, what we wrote for it, and what all the names mean."
     >
-      <Section
-        title="Did we build our own harness?"
-        intro="No — and knowing why is the fastest way to understand the setup."
-      >
+      <Section title="The short version" intro="">
         <div className="t-body max-w-[68ch] space-y-4">
           <p>
-            The <strong>harness</strong> is the program that wraps an AI model with tools,
-            permissions and context. Ours is <strong>Claude Code</strong> — run as its CLI
-            inside the Warp terminal. Warp is just the window; the <code>claude</code> command
-            is the harness. Claude Code also exists as a desktop app, a web app and IDE
-            extensions — all the same harness in different clothes.
-          </p>
-          <p>
-            What this repository owns is the harness&rsquo;s <em>configuration</em>: the
-            project instructions it loads on every session, and six skills it can invoke.
-            There are no custom subagents (the built-in Explore/Plan agents ship with the
-            harness), no MCP servers defined in-repo (the Figma and Notion connections live at
-            the user level), and no Claude hooks — <code>.githooks/pre-commit</code> is an
-            ordinary git hook guarding against committed secrets.
+            We use an AI assistant called <strong>Claude</strong>. It works inside a program
+            called <strong>Claude Code</strong>, which we did not build — it comes from
+            Anthropic, the company that makes Claude. What <em>we</em> wrote is a set of
+            documents that teach the assistant how <em>our</em> project works — and those
+            documents are what you see in this section.
           </p>
         </div>
       </Section>
 
       <Section
-        title="The inventory"
-        intro="Everything AI-related that is tracked in this repository. The Skills and Project instructions pages beside this one render the real files."
+        title="A useful picture: a workshop and a new colleague"
+        intro="Two images that make everything else easy to place."
+      >
+        <div className="t-body max-w-[68ch] space-y-4">
+          <p>
+            Think of <strong>Claude Code</strong> as a <strong>workshop</strong>. Inside it,
+            the AI assistant has tools: it can read our files, change them, test the website,
+            and publish it. People sometimes call this workshop a &ldquo;harness&rdquo; — an
+            engineering word you may hear. We did not build the workshop. We only work in it.
+          </p>
+          <p>
+            Now think of the assistant as a <strong>new colleague</strong>. A new colleague is
+            smart but knows nothing about our project on day one. So we wrote two kinds of
+            documents for them:
+          </p>
+          <ul className="list-disc space-y-2 ps-5">
+            <li>
+              <strong>A welcome document</strong> (the file <code>AGENTS.md</code>). The
+              assistant reads it automatically every time it starts work. It says how our
+              website is published, where our texts live, and what must never be shared.
+            </li>
+            <li>
+              <strong>Guides for specific jobs</strong> (called <strong>skills</strong>).
+              Each one is like a recipe: step-by-step instructions for one kind of task —
+              checking the design rules, testing the site, publishing safely. When a task
+              matches a recipe, the assistant follows it instead of guessing.
+            </li>
+          </ul>
+          <p>
+            Every mistake the assistant made and we corrected — a wrong button style, a broken
+            layout, a slow image — was written into these documents. That way the correction
+            is permanent: the next work session starts already knowing it.
+          </p>
+        </div>
+      </Section>
+
+      <Section
+        title="What is in this repository"
+        intro="Everything AI-related that we keep in the project. The pages next to this one show the real documents, word for word."
       >
         <div className="max-w-full overflow-x-auto">
           <table className="t-caption w-full max-w-[80ch] border-collapse text-left">
             <thead>
               <tr>
-                <th className="border-b-2 border-border py-2 pr-6 font-bold">Where</th>
+                <th className="border-b-2 border-border py-2 pr-6 font-bold">Where it lives</th>
                 <th className="border-b-2 border-border py-2 pr-6 font-bold">What it is</th>
-                <th className="border-b-2 border-border py-2 font-bold">What it does</th>
+                <th className="border-b-2 border-border py-2 font-bold">What it is for</th>
               </tr>
             </thead>
             <tbody>
@@ -111,15 +138,37 @@ export const WhatThisIs: Story = {
         </div>
       </Section>
 
-      <Section title="Vocabulary" intro="The terms, one line each.">
+      <Section
+        title="Words you may hear, in plain language"
+        intro="Short definitions, so these terms are familiar when they come up in messages or meetings."
+      >
         <dl className="t-body max-w-[68ch] space-y-4">
           {(
             [
-              ['Harness', 'The runtime around the model: tools, permissions, context. Here: the Claude Code CLI.'],
-              ['Skill', 'A repo-checked runbook the harness loads when relevant, or on demand as /name.'],
-              ['Project instructions', 'AGENTS.md — read automatically at the start of every session.'],
-              ['Subagent', 'A helper agent the harness can spawn (Explore, Plan…). None are custom to this repo.'],
-              ['MCP server', 'A connector giving the harness external tools (Figma, Notion). Configured per user, not in the repo.'],
+              [
+                'Claude',
+                'The AI assistant itself — the "colleague". Made by a company called Anthropic.',
+              ],
+              [
+                'Claude Code (a "harness")',
+                'The workshop the assistant works inside. It gives the assistant its tools. We run it in the terminal.',
+              ],
+              [
+                'Skill',
+                'A recipe we wrote: step-by-step instructions for one kind of job. We have five.',
+              ],
+              [
+                'AGENTS.md (project instructions)',
+                'The welcome document the assistant reads at the start of every work session.',
+              ],
+              [
+                'Agent / subagent',
+                'A helper the assistant can send off with one task — explore something, plan something — which then reports back. These come built into Claude Code; we did not make our own.',
+              ],
+              [
+                'MCP',
+                'A connector that plugs the assistant into another tool we use — for example Figma (our designs) or Notion (our texts). These connections belong to the person using the assistant, not to the project.',
+              ],
             ] as const
           ).map(([term, def]) => (
             <div key={term}>
@@ -130,10 +179,36 @@ export const WhatThisIs: Story = {
         </dl>
       </Section>
 
-      <Note title="None of this reaches the website">
-        These files never enter the site build, and this Storybook itself exists only on
-        staging — the production deploy refuses to build while it is present. Nothing on this
-        page can affect visitors, crawlers, or the Ad Grants review.
+      <Section title="Common questions" intro="">
+        <dl className="t-body max-w-[68ch] space-y-6">
+          <div>
+            <dt className="t-label font-bold">Did we build our own AI system?</dt>
+            <dd className="ds-muted mt-1">
+              No. The AI and its workshop come from Anthropic. Our part is the documents
+              that teach it about this project — the welcome document and the five guides.
+            </dd>
+          </div>
+          <div>
+            <dt className="t-label font-bold">Can visitors of our website see any of this?</dt>
+            <dd className="ds-muted mt-1">
+              No. These documents never become part of the website. Even this Storybook exists
+              only on the test site (staging), never on bulgariandesigncouncil.org.
+            </dd>
+          </div>
+          <div>
+            <dt className="t-label font-bold">Can the assistant publish to the real website by itself?</dt>
+            <dd className="ds-muted mt-1">
+              No. The publishing guide is strict: everything goes to the test site first, and
+              the real website is published only when a person clearly asks for it.
+            </dd>
+          </div>
+        </dl>
+      </Section>
+
+      <Note title="These pages always show the truth">
+        The Skills and Project instructions pages next to this one are not copies — they read
+        the real documents at build time. If someone edits a document, these pages show the
+        edit after the next publish. They can never be out of date.
       </Note>
     </Page>
   ),
