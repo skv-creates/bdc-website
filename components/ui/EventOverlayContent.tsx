@@ -183,7 +183,7 @@ export type EventCtaCopy = {
   partnerLabel: string;
 };
 
-function EventCta({
+export function EventCta({
   cta,
   locale,
   className,

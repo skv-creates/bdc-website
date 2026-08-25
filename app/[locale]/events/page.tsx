@@ -19,6 +19,7 @@ import { PatternRail } from "@/components/pattern-rail/PatternRail";
 import { SiteNav } from "@/components/sections/SiteNav";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { ActivitiesList } from "@/components/sections/ActivitiesList";
+import { EventCta } from "@/components/ui/EventOverlayContent";
 import { getContent, hasLocale } from "@/lib/home-content";
 import { getEvents } from "@/lib/events";
 import { EVENTS_INDEX_COPY } from "@/lib/events-index";
@@ -96,6 +97,10 @@ export default async function EventsPage({
           <div className="bdc-grid">
             <ActivitiesList events={events} locale={locale} />
           </div>
+
+          {/* The index is a landing page too — it closes with the same next
+              step every event page carries, not with a bare end of list. */}
+          <EventCta cta={c.eventCta} locale={locale} className="mt-4" />
         </main>
       </div>
 
