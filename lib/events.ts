@@ -111,15 +111,19 @@ type RawEvent = {
 };
 
 /**
- * Editorial removals that must survive regeneration of events.generated.json.
+ * Editorial removals now happen in Notion, not here.
  *
- * Event galleries are synced from Notion wholesale. Keeping the exclusion at
- * the data boundary means a later manual sync cannot silently republish a
- * photograph that has been explicitly withdrawn from the public event page.
+ * This set once hid a withdrawn assembly portrait by filename. Two things
+ * ended that approach: the photograph was removed from the Notion gallery
+ * itself (the correct, permanent fix — the sync can never bring back what
+ * its source no longer holds), and image files are now named by a hash of
+ * their content, so a filename written here would not survive the next
+ * sync anyway. If a picture must ever be withdrawn again: delete it from
+ * the event's "Images to be used:" section in Notion and re-run the sync.
+ * The set stays as the seam where a render-side exclusion would go if an
+ * emergency ever demands one faster than a sync.
  */
-const HIDDEN_EVENT_COVERS = new Set([
-  "/figma/events/parvo-obshto-sabranie-na-bds-2.jpg",
-]);
+const HIDDEN_EVENT_COVERS = new Set<string>([]);
 
 /** The synced rows. */
 const GENERATED: RawEvent[] = (generatedEvents.events ?? []).map((e) => ({

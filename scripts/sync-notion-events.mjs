@@ -18,6 +18,7 @@
  * Notion state produce byte-identical files, which is what lets the workflow
  * decide "nothing changed, don't commit".
  */
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 // Already in the tree — next uses it for image optimisation — so this costs no
 // new dependency. Without it the originals would be committed as they arrive:
@@ -343,9 +344,14 @@ function splitBody(blocks) {
  * megabytes into a public repository, permanently, for pictures the site
  * serves at 540px tall.
  *
- * Named after the slug so re-syncing overwrites in place. Anything previously
- * written for this slug is cleared first: extensions change, and an event that
- * drops from six pictures to three would otherwise leave the tail behind.
+ * Named after the slug plus a hash of the picture's own bytes. The hash is
+ * what makes replacement safe: these files are served with a year-long
+ * immutable cache (public/_headers), so a changed photograph under the SAME
+ * name would keep showing its old self to every browser and edge node that
+ * had cached it — including a photograph someone asked to have withdrawn.
+ * Different bytes → different name → caches can't serve yesterday's picture.
+ * Anything previously written for this slug is cleared first, so removed or
+ * renamed pictures leave no orphaned files behind.
  */
 async function galleryImages(urls, slug) {
   if (urls.length === 0) return [];
@@ -357,7 +363,11 @@ async function galleryImages(urls, slug) {
   // matching its own event.
   const owned = (file) => {
     const base = file.replace(/\.[^.]+$/, "");
-    return base === slug || new RegExp(`^${slug}-\\d+$`).test(base);
+    return (
+      base === slug ||
+      new RegExp(`^${slug}-\\d+$`).test(base) ||
+      new RegExp(`^${slug}-\\d+-[0-9a-f]{8}$`).test(base)
+    );
   };
   for (const stale of readdirSync(IMG_DIR)) {
     if (owned(stale)) rmSync(join(IMG_DIR, stale));
@@ -373,11 +383,14 @@ async function galleryImages(urls, slug) {
       continue;
     }
 
-    const name = i === 0 ? `${slug}.jpg` : `${slug}-${i + 1}.jpg`;
-    const info = await sharp(Buffer.from(await res.arrayBuffer()))
+    const encoded = await sharp(Buffer.from(await res.arrayBuffer()))
       .resize({ width: 2400, withoutEnlargement: true })
       .jpeg({ quality: 88, progressive: true, mozjpeg: true })
-      .toFile(join(IMG_DIR, name));
+      .toBuffer({ resolveWithObject: true });
+    const digest = createHash("sha1").update(encoded.data).digest("hex").slice(0, 8);
+    const name = `${slug}-${i + 1}-${digest}.jpg`;
+    writeFileSync(join(IMG_DIR, name), encoded.data);
+    const info = encoded.info;
 
     // `alt` is null when the Notion caption is empty. It is carried through as
     // null rather than dropped so the renderer can tell "nobody has described
