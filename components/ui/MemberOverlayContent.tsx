@@ -11,6 +11,7 @@
 import Image from "next/image";
 import { LinkedIn } from "@/components/ui/icons";
 import type { Member } from "@/lib/home-content";
+import { roleForms } from "@/lib/role-forms";
 
 export function MemberOverlayContent({
   member,
@@ -20,6 +21,7 @@ export function MemberOverlayContent({
   /** Locale-correct fallback copy, from the content dictionary. */
   bioPlaceholder: string;
 }) {
+  const { full: roleFull, abbr: roleAbbr } = roleForms(member.role);
   return (
     <div
       className="bdc-grid gap-y-10 px-6 pt-16 md:px-0 lg:gap-y-0 lg:pt-20"
@@ -45,14 +47,27 @@ export function MemberOverlayContent({
       </div>
 
       {/* Info — page grid cols 8–12 on desktop; stacks under the portrait on
-          tablet, sharing its col-2 start so both align to one edge. */}
-      <div className="col-span-full flex flex-col gap-8 md:col-start-2 md:col-span-6 lg:col-start-8 lg:col-span-5">
+          tablet, sharing its col-2 start so both align to one edge.
+          @container: the column's width decides which form of the role fits —
+          see the role row below. */}
+      <div className="@container col-span-full flex flex-col gap-8 md:col-start-2 md:col-span-6 lg:col-start-8 lg:col-span-5">
         <h1 className="t-h02">{member.name}</h1>
 
         {/* Role and LinkedIn share one row, the mark pushed to the far edge of
-            the info column — same on desktop and mobile. */}
+            the info column — same on desktop and mobile.
+            The title is written out in full — „Заместник-председател /
+            Съосновател" — dropping to the abbreviation only where the line
+            would wrap: the full string (measured 334px bold) plus the
+            LinkedIn mark and its gap (40px) need 374px of column. */}
         <div className="flex items-center justify-between gap-4">
-          <p className="t-caption font-bold">{member.role}</p>
+          {roleFull === roleAbbr ? (
+            <p className="t-caption font-bold">{roleFull}</p>
+          ) : (
+            <p className="t-caption font-bold">
+              <span className="@max-[376px]:hidden">{roleFull}</span>
+              <span className="hidden @max-[376px]:inline">{roleAbbr}</span>
+            </p>
+          )}
           {member.linkedin && (
             <a
               href={member.linkedin}

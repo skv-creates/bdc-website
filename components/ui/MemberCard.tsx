@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { Member } from "@/lib/home-content";
+import { roleForms } from "@/lib/role-forms";
 
 /**
  * Board member card. On hover/focus (driven by `showAlt` from the parent, not
@@ -25,8 +26,14 @@ export function MemberCard({
    * pays the network cost for cards someone actually hovers. Ten portraits
    * per page-view saved for everyone else.
    */
+  // Grid cards carry the role only. Notion stores the full title
+  // ("Председател / Съосновател") for the overlay; everything from the
+  // first " / " onward is trimmed here so the cards stay one line.
+  const { full, abbr } = roleForms(role.split(" / ")[0]);
   return (
-    <figure className="flex flex-col gap-3">
+    // @container: the card's own width decides which form of the role fits —
+    // see the figcaption below.
+    <figure className="@container flex flex-col gap-3">
       {/* Brand box behind; the inner photo insets 16px on hover (absolute inset,
           so the brand shows evenly on all four sides — padding + aspect-ratio
           dropped the bottom edge). */}
@@ -62,10 +69,20 @@ export function MemberCard({
       </div>
       <figcaption>
         <p className="t-body font-bold">{name}</p>
-        {/* Grid cards carry the role only. Notion stores the full title
-            ("Председател / Съосновател") for the overlay; everything from the
-            first " / " onward is trimmed here so the cards stay one line. */}
-        <p className="t-caption">{role.split(" / ")[0]}</p>
+        {/* The title written out in full — „Заместник-председател" — dropping
+            to the abbreviation only when the card is too narrow to hold the
+            full word on one line (measured 204px at t-caption's 16px;
+            threshold set with a little slack — the narrowest card the grids
+            produce is 259px, so the fallback is belt only). Both spans render
+            so the swap is pure CSS. */}
+        {full === abbr ? (
+          <p className="t-caption">{full}</p>
+        ) : (
+          <p className="t-caption">
+            <span className="@max-[212px]:hidden">{full}</span>
+            <span className="hidden @max-[212px]:inline">{abbr}</span>
+          </p>
+        )}
       </figcaption>
     </figure>
   );
