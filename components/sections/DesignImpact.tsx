@@ -2,9 +2,12 @@
  * "Защо дизайнът е важен" — two sourced statistics between the mission and the
  * initiatives (Figma 355:3200).
  *
- * The stats sit in columns 2–4 and 6–8: a full column of air between them, so
- * the two figures read as separate claims rather than a table. Below md they
- * stack, since three columns on a phone is about forty characters a line.
+ * The stats sit in columns 2–5 and 6–9 on the 11-column desktop grid. At md
+ * the grid is only 8 columns, so the pair tightens to 2–4 and 5–8 — the wider
+ * box goes to "≤ 80%", the widest figure; keeping the desktop spans there
+ * pushed the second stat into an implicit ninth column and clipped it under
+ * the pattern rail. Below md they stack, since three columns on a phone is
+ * about forty characters a line.
  *
  * The whole section starts on column 2, indented to match the mission band
  * above it. The two grids are siblings rather than one nested inside the other
@@ -36,8 +39,10 @@ export function DesignImpact({ designImpact }: { designImpact: SiteContent["desi
           return (
             <div
               key={stat.value}
-              className={`col-span-full flex flex-col gap-6 md:col-span-4 ${
-                i > 0 ? "md:col-start-6" : "md:col-start-2"
+              className={`col-span-full flex flex-col gap-6 ${
+                i > 0
+                  ? "md:col-start-5 md:col-span-4 lg:col-start-6"
+                  : "md:col-start-2 md:col-span-3 lg:col-span-4"
               }`}
             >
               {/* aria-hidden on the marker: it is a typographic pointer to the
