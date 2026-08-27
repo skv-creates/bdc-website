@@ -57,8 +57,9 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_EVENTS_DATA_SOURCE_ID: ${{ vars.NOTION_EVENTS_DATA_SOURCE_ID }}
-          # Which Notion column counts as publishable. Set the variable to move
-          # the site to e.g. "Обявено" without touching this workflow.
+          # Which Notion columns count as publishable — a comma-separated list,
+          # default "Готово за публикуване, Публикувано". Set the variable to
+          # move the site to other columns without touching this workflow.
           NOTION_EVENTS_STATUS: ${{ vars.NOTION_EVENTS_STATUS }}
         run: npm run sync:events
 

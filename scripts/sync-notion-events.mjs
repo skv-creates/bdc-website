@@ -9,9 +9,12 @@
  * configured and dispatched. There is no schedule and no repository token by
  * default.
  *
- * Only rows whose Статус matches NOTION_EVENTS_STATUS are pulled — default
- * "Готово за публикуване". Change the variable, not this file, when the
- * editors move to a different column.
+ * Only rows whose Статус matches NOTION_EVENTS_STATUS are pulled — a
+ * comma-separated list, default "Готово за публикуване, Публикувано".
+ * Both stay publishable on purpose: rows are flipped to Публикувано after a
+ * sync, and a single-status filter would drop every already-published event
+ * from the JSON on the next run. Change the variable, not this file, when the
+ * editors move to different columns.
  *
  * Output is deterministic: rows sorted newest first, object keys written in a
  * fixed order. Two people (or a person and a manually dispatched job) syncing the same
@@ -56,7 +59,10 @@ function loadEnv() {
 loadEnv();
 const TOKEN = process.env.NOTION_TOKEN;
 const SOURCE = process.env.NOTION_EVENTS_DATA_SOURCE_ID;
-const STATUS = process.env.NOTION_EVENTS_STATUS || "Готово за публикуване";
+const STATUSES = (process.env.NOTION_EVENTS_STATUS || "Готово за публикуване, Публикувано")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 if (!TOKEN || !SOURCE) {
   console.error(
     "Missing NOTION_TOKEN or NOTION_EVENTS_DATA_SOURCE_ID.\n" +
@@ -227,8 +233,23 @@ async function bodyBlocks(pageId) {
       // this script while the ones below it are not — a confusing half-result.
       // Callouts and toggles are the editors' annotation space: internal
       // notes, reminders, anything that must never reach the site. The sync
-      // ignores them wholesale — write notes there freely.
-      if (b.type === "callout" || b.type === "toggle") continue;
+      // ignores them wholesale — write notes there freely. One exception: the
+      // page template writes the section markers themselves as callouts — an
+      // empty callout holding a single heading ("Описание (BG)",
+      // "Description (EN)", "Images to be used"). Those are structure, not
+      // notes, so the marker text is surfaced for splitBody to switch on;
+      // a callout with any text of its own (like the red "DO NOT INCLUDE"
+      // box, whose children are the rejected pictures) stays invisible.
+      if (b.type === "callout" || b.type === "toggle") {
+        if (b.type === "callout" && b.has_children && !plain(b.callout?.rich_text)) {
+          const kids = await api(`blocks/${b.id}/children?page_size=10`);
+          const first = kids.results.find((k) => plain(k[k.type]?.rich_text));
+          const t = first ? plain(first[first.type].rich_text) : "";
+          if (EN_MARK.test(t) || BG_MARK.test(t) || IMG_MARK.test(t))
+            out.push({ type: first.type, text: t });
+        }
+        continue;
+      }
       if (b.type === "column_list" || b.type === "column") {
         out.push(...(await bodyBlocks(b.id)));
         continue;
@@ -280,7 +301,7 @@ const BG_MARK = /^\s*(##\s*)?(описание \(bg\)|bg)\s*:?\s*$/i;
  * description has to stop here; without it the heading itself lands in the
  * English copy as a stray final paragraph.
  */
-const IMG_MARK = /^\s*(##\s*)?(images to be used|снимки)\s*:?\s*$/i;
+const IMG_MARK = /^\s*(##\s*)?(images to be used|снимки)\s*:?\s*(\[[^\]]*\])?\s*$/i;
 
 /**
  * Read a picture's caption as alt text, in both languages.
@@ -427,7 +448,7 @@ function fallbackSlug(row, nameBg, nameEn) {
   return derived;
 }
 
-const rows = (await allRows()).filter((r) => select(r, "Статус") === STATUS);
+const rows = (await allRows()).filter((r) => STATUSES.includes(select(r, "Статус")));
 
 // Bodies are one request per row, so only the published rows are fetched.
 const bodies = new Map(
@@ -441,8 +462,16 @@ const events = rows
     // Body first, property second: the property is a summary, the body is the
     // description the editors actually write.
     const body = bodies.get(row.id) ?? { bg: "", en: "", images: [] };
-    const descBg = body.bg || text(row, "Описание");
-    const descEn = body.en || text(row, "Description (EN)");
+    // The template invites writing the title as the body's first (bold)
+    // paragraph. The site already renders the name above the description, so
+    // that paragraph would show the title twice back to back.
+    const dropTitle = (desc, name) => {
+      const nl = desc.indexOf("\n\n");
+      const first = (nl === -1 ? desc : desc.slice(0, nl)).trim();
+      return first === name.trim() ? (nl === -1 ? "" : desc.slice(nl + 2)) : desc;
+    };
+    const descBg = dropTitle(body.bg, nameBg) || text(row, "Описание");
+    const descEn = dropTitle(body.en, nameEn) || text(row, "Description (EN)");
     const date = prop(row, "Дата")?.date?.start?.slice(0, 10) ?? "";
     return {
       // Slug column first: it is the only thing here that is allowed to
@@ -476,7 +505,7 @@ if (events.length === 0) {
   // Writing an empty list would silently blank the section; lib/events.ts falls
   // back to its mock only when the file is empty, which is not what a bad sync
   // should look like. Fail instead and leave the committed JSON alone.
-  console.error(`No rows with Статус = "${STATUS}". Leaving ${OUT} untouched.`);
+  console.error(`No rows with Статус in [${STATUSES.join(", ")}]. Leaving ${OUT} untouched.`);
   process.exit(1);
 }
 
