@@ -42,7 +42,11 @@ export function DesignImpact({ designImpact }: { designImpact: SiteContent["desi
               className={`col-span-full flex flex-col gap-6 ${
                 i > 0
                   ? "md:col-start-5 md:col-span-4 lg:col-start-6"
-                  : "md:col-start-2 md:col-span-3 lg:col-span-4"
+                  : // lg:col-start-2 restated: lg:col-span-4 is the grid-column
+                    // shorthand and sits in the later lg layer, so alone it
+                    // resets the start md:col-start-2 set and the stat
+                    // auto-placed at column 1, one column left of the heading.
+                    "md:col-start-2 md:col-span-3 lg:col-start-2 lg:col-span-4"
               }`}
             >
               {/* aria-hidden on the marker: it is a typographic pointer to the
