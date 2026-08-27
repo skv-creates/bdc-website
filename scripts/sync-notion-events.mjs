@@ -42,6 +42,7 @@ const FORMAT = {
   "На живо": "live",
   Онлайн: "online",
   Хибридно: "hybrid",
+  Резултат: "result",
 };
 
 /** Minimal .env.local reader — avoids a dependency for three variables. */

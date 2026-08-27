@@ -74,7 +74,7 @@ export type BdcEvent = {
 /**
  * Event-type key → accent colour + bilingual label. Extend as new types appear.
  *
- * The first three mirror Notion's "Формат" select, which is the only
+ * The first four mirror Notion's "Формат" select, which is the only
  * categorising column the Събития tab has — so it is what the third column of
  * the list shows. The rest predate the Notion wiring and are kept for the
  * older content types retained for compatibility with committed rows.
@@ -83,6 +83,7 @@ const TYPE_META = {
   live: { accent: "var(--bdc-tomato)", label: { bg: "На живо", en: "In person" } },
   online: { accent: "var(--bdc-lavender)", label: { bg: "Онлайн", en: "Online" } },
   hybrid: { accent: "var(--bdc-orange)", label: { bg: "Хибридно", en: "Hybrid" } },
+  result: { accent: "var(--bdc-indigo)", label: { bg: "Резултат", en: "Result" } },
   conference: { accent: "var(--bdc-tomato)", label: { bg: "Конференция", en: "Conference" } },
   workshop: { accent: "var(--bdc-orange)", label: { bg: "Работилница", en: "Workshop" } },
   lecture: { accent: "var(--bdc-lavender)", label: { bg: "Лекция", en: "Lecture" } },
