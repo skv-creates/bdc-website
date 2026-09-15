@@ -21,7 +21,7 @@ import type { SiteContent } from "@/lib/home-content";
 /** Only the strings this overlay needs, so callers pass `content.ui` as-is. */
 type OverlayUi = Pick<
   SiteContent["ui"],
-  "prev" | "next" | "pause" | "play" | "opensInNewTab" | "openLink" | "register"
+  "prev" | "next" | "pause" | "play" | "opensInNewTab" | "openLink" | "register" | "loading"
 >;
 
 /**
@@ -364,9 +364,9 @@ export function EventOverlayContent({
             <div className={`lg:sticky ${inPage ? "lg:top-28" : "lg:top-20"}`}>
               <LumaEmbed
                 src={embed}
-                href={event.registrationUrl!}
                 name={event.name}
                 registerLabel={ui.register}
+                loadingLabel={ui.loading}
               />
             </div>
           </div>

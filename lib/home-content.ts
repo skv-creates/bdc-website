@@ -196,6 +196,9 @@ const bg = {
     /** The registration button under an event body. The destination is the
         provider's site (Luma, Eventbrite…), so it carries the new-tab notice. */
     register: "Регистрирай се",
+    /** Under the event title on the card that stands in for a third-party
+        signup form until it paints. */
+    loading: "Зарежда се…",
     /** До имейл адрес: копира го в клипборда; второто се обявява след успех. */
     copyEmail: "Копирай имейла",
     copied: "Копирано",
@@ -1180,6 +1183,7 @@ const en: typeof bg = {
     /** The control inside an outbound-link panel that actually leaves the site. */
     openLink: "Open the site",
     register: "Register",
+    loading: "Loading…",
     copyEmail: "Copy the email address",
     copied: "Copied",
     switchLanguage: "Български",
