@@ -8,6 +8,7 @@
  */
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
+import { LumaEmbed } from "@/components/ui/LumaEmbed";
 import { PhotoCarousel } from "@/components/ui/PhotoCarousel";
 import { VideoEmbed } from "@/components/ui/VideoEmbed";
 import { ExternalLink } from "@/components/ui/ExternalLink";
@@ -49,26 +50,6 @@ function EventMeta({ event }: { event: BdcEvent }) {
       <span className="t-caption">{event.dateLong}</span>
       {event.location && <span className="t-caption">{event.location}</span>}
     </div>
-  );
-}
-
-/**
- * Luma's own signup form, in the slot the cover image would otherwise take.
- *
- * The address comes from the row's Регистрация column via `lumaEmbedUrl`; no
- * event is named here. 760px is the height at which the "simple" embed shows
- * the ticket form without its own inner scrollbar; the width is the column's.
- */
-function LumaEmbed({ src, title }: { src: string; title: string }) {
-  return (
-    <iframe
-      src={src}
-      height={760}
-      loading="lazy"
-      className="block w-full border-0"
-      allow="fullscreen; payment"
-      title={title}
-    />
   );
 }
 
@@ -381,7 +362,12 @@ export function EventOverlayContent({
                 the panel scrolls on its own and only its top padding applies.
                 Below lg the grid stacks and the form simply follows the body. */}
             <div className={`lg:sticky ${inPage ? "lg:top-28" : "lg:top-20"}`}>
-              <LumaEmbed src={embed} title={`${ui.register} — ${event.name}`} />
+              <LumaEmbed
+                src={embed}
+                href={event.registrationUrl!}
+                name={event.name}
+                registerLabel={ui.register}
+              />
             </div>
           </div>
         )
