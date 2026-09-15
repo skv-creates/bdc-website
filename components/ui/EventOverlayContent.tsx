@@ -8,12 +8,12 @@
  */
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { LumaEmbed } from "@/components/ui/LumaEmbed";
+import { LumaRegistration } from "@/components/ui/LumaRegistration";
 import { PhotoCarousel } from "@/components/ui/PhotoCarousel";
 import { VideoEmbed } from "@/components/ui/VideoEmbed";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { youtubeId } from "@/lib/youtube";
-import { lumaEmbedUrl } from "@/lib/events";
+import { lumaEventId } from "@/lib/events";
 import type { BdcEvent } from "@/lib/events";
 import type { Locale } from "@/lib/home-content";
 import type { SiteContent } from "@/lib/home-content";
@@ -21,7 +21,15 @@ import type { SiteContent } from "@/lib/home-content";
 /** Only the strings this overlay needs, so callers pass `content.ui` as-is. */
 type OverlayUi = Pick<
   SiteContent["ui"],
-  "prev" | "next" | "pause" | "play" | "opensInNewTab" | "openLink" | "register" | "loading"
+  | "prev"
+  | "next"
+  | "pause"
+  | "play"
+  | "opensInNewTab"
+  | "openLink"
+  | "register"
+  | "registration"
+  | "registrationNote"
 >;
 
 /**
@@ -51,19 +59,6 @@ function EventMeta({ event }: { event: BdcEvent }) {
       {event.location && <span className="t-caption">{event.location}</span>}
     </div>
   );
-}
-
-/**
- * The Notion body often ends with a "Кога и къде / When and where" block —
- * date, hours, venue, street. Beside the Luma embed, which shows the same
- * facts in its own header, that block is a second copy of the same
- * information, so it is dropped from the rendered copy when the embed is on
- * the page. It stays in the JSON, and in every other layout.
- */
-const VENUE_BLOCK = /\n\n(?:Кога и къде|When and where)\s*\n[\s\S]*$/i;
-
-function withoutVenueBlock(description: string) {
-  return description.replace(VENUE_BLOCK, "");
 }
 
 /** The registration button — for any registration URL the embed does not take. */
@@ -282,12 +277,12 @@ export function EventOverlayContent({
   // The prose column with the 65ch cap is the right home for a text-only
   // event — full reading width, line length still bounded by measure.
   //
-  // The Luma embed counts as something to share the row with: it stands in
-  // for the missing photograph, and the copy keeps the five-column slot.
-  const embed = event.covers[0] ? undefined : lumaEmbedUrl(event.registrationUrl);
-  const side = Boolean(event.covers[0] || embed);
+  // The registration card counts as something to share the row with: it
+  // stands in for the missing photograph, and the copy keeps the five-column
+  // slot.
+  const luma = event.covers[0] ? undefined : lumaEventId(event.registrationUrl);
+  const side = Boolean(event.covers[0] || luma);
   const textCol = side ? col.text : col.prose;
-  const description = embed ? withoutVenueBlock(event.description) : event.description;
 
   return (
     <div
@@ -314,7 +309,7 @@ export function EventOverlayContent({
             here rather than storing HTML — the JSON stays plain text, which is
             what the sync can regenerate losslessly. */}
         <div className="flex flex-col gap-6">
-          {paragraphs(description).map((p) => (
+          {paragraphs(event.description).map((p) => (
             <Para key={p} text={p} ui={ui} className={PROSE} />
           ))}
         </div>
@@ -351,31 +346,26 @@ export function EventOverlayContent({
           />
         </div>
       ) : (
-        embed && (
+        luma && (
           <div className={col.cover}>
-            {/* Sticky from lg up, where the embed shares the row with the copy.
-                The copy runs well past the form's height, so without this the
+            {/* Sticky from lg up, where the card shares the row with the copy.
+                The copy runs well past the card's height, so without this the
                 signup has scrolled away by the last paragraphs. The grid cell
                 stretches to the row, so the inner box has the whole column
                 to travel. Offsets: the page has the sticky site header above
                 (scroll-margin-top in base.css is 7rem for the same reason);
                 the panel scrolls on its own and only its top padding applies.
-                Below lg the grid stacks and the form simply follows the body. */}
+                Below lg the grid stacks and the card simply follows the body. */}
             <div className={`lg:sticky ${inPage ? "lg:top-28" : "lg:top-20"}`}>
-              <LumaEmbed
-                src={embed}
-                name={event.name}
-                registerLabel={ui.register}
-                loadingLabel={ui.loading}
-              />
+              <LumaRegistration eventId={luma} href={event.registrationUrl!} ui={ui} />
             </div>
           </div>
         )
       )}
 
-      {/* Signup that the embed has not already covered: a non-Luma provider,
-          or a Luma event whose slot the photograph is using. */}
-      {event.registrationUrl && !embed && (
+      {/* Signup the card has not already covered: a non-Luma provider, or a
+          Luma event whose slot the photograph is using. */}
+      {event.registrationUrl && !luma && (
         <RegisterButton href={event.registrationUrl} ui={ui} className={col.prose} />
       )}
 

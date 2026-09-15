@@ -114,11 +114,14 @@ An empty field means no registration; clear it and sync when signup closes.
 What the URL turns into depends on the event:
 
 - A Luma address (`https://luma.com/<slug>`, `lu.ma` also works) on an event
-  with **no cover image** becomes the Luma embed, sitting where the cover would
-  have been. The embed shows the date and venue itself, so a trailing
-  **Кога и къде** / **When and where** block in the Notion body is dropped from
-  the rendered copy (it stays in the JSON, and on any event without the embed).
-  `lumaEmbedUrl` in lib/events.ts decides what counts as embeddable.
+  with **no cover image** becomes a registration card where the cover would
+  have been: a heading, a Register button and a note, all ours and rendered
+  with the page. The button opens Luma's checkout as a modal via Luma's own
+  checkout-button script (components/ui/LumaCheckout.tsx); without the script
+  it is a plain link to the event on Luma. Luma's embedded form was tried in
+  that slot and rejected: it is Luma's client-rendered app and took about 1.5s
+  after the page was ready to show a button, however the connection was
+  warmed. `lumaEventId` in lib/events.ts decides what counts as a Luma URL.
 - Any other URL, or a Luma one on an event that has covers (single or gallery),
   becomes a **Регистрирай се / Register** `Button` under the body on both the
   standalone page and the intercepted overlay. `Button` handles the external

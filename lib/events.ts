@@ -201,15 +201,15 @@ function localize(raw: RawEvent, locale: Locale): BdcEvent {
 }
 
 /**
- * The Luma embed for a registration URL, or undefined when there is none.
+ * The Luma event id for a registration URL, or undefined when it is not one.
  *
- * Luma resolves the public short slug (`https://luma.com/ftez3nt2`) inside its
- * embed route just as it does the `evt-…` id, so the address an editor pastes
- * from the browser bar is enough — there is no second field to keep in step.
- * Anything that is not a single-segment Luma URL gets no embed and falls back
- * to the plain registration button.
+ * Luma's checkout script and embed route both resolve the public short slug
+ * (`https://luma.com/ftez3nt2`) just as they do the `evt-…` id, so the address
+ * an editor pastes from the browser bar is enough — there is no second field
+ * to keep in step. Anything that is not a single-segment Luma URL gets no
+ * checkout modal and falls back to the plain registration button.
  */
-export function lumaEmbedUrl(href?: string): string | undefined {
+export function lumaEventId(href?: string): string | undefined {
   if (!href) return undefined;
   let url: URL;
   try {
@@ -220,7 +220,7 @@ export function lumaEmbedUrl(href?: string): string | undefined {
   if (!/^(www\.)?(luma\.com|lu\.ma)$/.test(url.hostname)) return undefined;
   const [slug, ...rest] = url.pathname.split("/").filter(Boolean);
   if (!slug || rest.length) return undefined;
-  return `https://luma.com/embed/event/${slug}/simple`;
+  return slug;
 }
 
 /** Newest first. */

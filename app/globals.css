@@ -14,3 +14,17 @@
 /* Tokens and base styles. Kept in a separate file so Storybook can compile
    the same rules with its own source scanning — see .storybook/preview.css. */
 @import "./base.css";
+
+/* Luma's checkout modal (components/ui/LumaCheckout.tsx) keeps its iframe
+   scaled to nothing behind a spinner until the frame's load event, which on
+   their page fires some six seconds after the form is painted — they keep
+   fetching route chunks and analytics. Show the modal from the start instead:
+   the frame is transparent until Luma paints, so the spinner stays visible
+   through it until then, and the form appears the moment it exists. If Luma
+   renames these classes the override simply stops applying and their default
+   behaviour returns. `!important` because their stylesheet is injected by
+   the script after ours, at the same specificity. */
+.luma-checkout--overlay .luma-checkout--modal {
+  transform: scale(1) !important;
+  opacity: 1 !important;
+}
