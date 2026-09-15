@@ -193,6 +193,9 @@ const bg = {
     showMore: "Виж още ({count})",
     /** The control inside an outbound-link panel that actually leaves the site. */
     openLink: "Отвори сайта",
+    /** The registration button under an event body. The destination is the
+        provider's site (Luma, Eventbrite…), so it carries the new-tab notice. */
+    register: "Регистрирай се",
     /** До имейл адрес: копира го в клипборда; второто се обявява след успех. */
     copyEmail: "Копирай имейла",
     copied: "Копирано",
@@ -1176,6 +1179,7 @@ const en: typeof bg = {
     showMore: "Show more ({count})",
     /** The control inside an outbound-link panel that actually leaves the site. */
     openLink: "Open the site",
+    register: "Register",
     copyEmail: "Copy the email address",
     copied: "Copied",
     switchLanguage: "Български",

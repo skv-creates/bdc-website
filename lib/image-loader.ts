@@ -26,5 +26,9 @@ export default function imageLoader({
   // Remote URLs and SVGs pass through: SVG scales natively and would only
   // lose from rasterisation, and the script renders neither.
   if (/^https?:\/\//.test(src) || /\.svg$/i.test(src)) return src;
+  // The prerender pass runs as part of deploy, but ordinary `npm run dev`
+  // intentionally does not write generated files. Serve the source asset in
+  // development so local pages never emit broken /_img URLs.
+  if (process.env.NODE_ENV !== "production") return src;
   return `/_img${src}.w${width}.q${quality ?? 75}.webp`;
 }

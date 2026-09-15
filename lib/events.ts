@@ -58,6 +58,8 @@ export type BdcEvent = {
    * be worse than omitting it. Empty string for online events.
    */
   location: string;
+  /** Registration destination from Notion; absent for events without a signup. */
+  registrationUrl?: string;
   /**
    * Cover images (overlay). Empty for most rows; the list never uses them.
    * An array because a Notion "Hero-image" cell holds several files, and two
@@ -101,6 +103,7 @@ type RawEvent = {
   name: Record<Locale, string>;
   description: Record<Locale, string>;
   location?: string;
+  registrationUrl?: string;
   covers?: EventImage[];
   /**
    * Notion's last_edited_time (date part), stamped by the sync — the one real
@@ -134,6 +137,7 @@ const GENERATED: RawEvent[] = (generatedEvents.events ?? []).map((e) => ({
   name: e.name as Record<Locale, string>,
   description: e.description as Record<Locale, string>,
   location: e.location ?? "",
+  registrationUrl: (e as { registrationUrl?: string }).registrationUrl,
   // Downloaded from the row's "Hero-image" by the sync and committed under
   // public/figma/events — a Notion file URL is signed and expires in an hour,
   // so it cannot be baked into a static build. Rows without any are the norm;
@@ -192,7 +196,31 @@ function localize(raw: RawEvent, locale: Locale): BdcEvent {
         ? LOCATION_EN[raw.location] ?? raw.location
         : raw.location ?? "",
     covers: raw.covers ?? [],
+    registrationUrl: raw.registrationUrl,
   };
+}
+
+/**
+ * The Luma embed for a registration URL, or undefined when there is none.
+ *
+ * Luma resolves the public short slug (`https://luma.com/ftez3nt2`) inside its
+ * embed route just as it does the `evt-…` id, so the address an editor pastes
+ * from the browser bar is enough — there is no second field to keep in step.
+ * Anything that is not a single-segment Luma URL gets no embed and falls back
+ * to the plain registration button.
+ */
+export function lumaEmbedUrl(href?: string): string | undefined {
+  if (!href) return undefined;
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return undefined;
+  }
+  if (!/^(www\.)?(luma\.com|lu\.ma)$/.test(url.hostname)) return undefined;
+  const [slug, ...rest] = url.pathname.split("/").filter(Boolean);
+  if (!slug || rest.length) return undefined;
+  return `https://luma.com/embed/event/${slug}/simple`;
 }
 
 /** Newest first. */

@@ -104,6 +104,26 @@ Three things worth knowing before you touch it:
   pages and 404'd the old addresses. Leave a Slug empty and the sync falls back
   to transliterating the Bulgarian title, and warns while it does.
 
+## Event registration
+
+The event's **Регистрация** URL column in Notion is the only source of a signup
+destination. Set or clear it there, then run `npm run sync:events`. Never
+hardcode a signup destination in a component or hand-edit the generated JSON.
+An empty field means no registration; clear it and sync when signup closes.
+
+What the URL turns into depends on the event:
+
+- A Luma address (`https://luma.com/<slug>`, `lu.ma` also works) on an event
+  with **no cover image** becomes the Luma embed, sitting where the cover would
+  have been. The embed shows the date and venue itself, so a trailing
+  **Кога и къде** / **When and where** block in the Notion body is dropped from
+  the rendered copy (it stays in the JSON, and on any event without the embed).
+  `lumaEmbedUrl` in lib/events.ts decides what counts as embeddable.
+- Any other URL, or a Luma one on an event that has covers (single or gallery),
+  becomes a **Регистрирай се / Register** `Button` under the body on both the
+  standalone page and the intercepted overlay. `Button` handles the external
+  link with the new-tab notice; registration opens on the provider's site.
+
 ## Event with photo carousel
 
 An event whose Notion page has an **`## Images to be used:`** section with two

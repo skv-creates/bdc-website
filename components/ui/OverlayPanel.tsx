@@ -70,7 +70,17 @@ export function OverlayPanel({
       // Let React commit the parent's state change before focusing its trigger.
       // Otherwise the browser can move focus back to <body> when it removes the
       // currently focused close button later in the same commit.
-      window.setTimeout(() => restoreFocusRef.current?.focus(), 0);
+      //
+      // Only if focus really did fall to <body>, though. The unmount cleanup
+      // below restores it synchronously in the common case, and a reader who
+      // has already opened the next panel by the time this fires has its
+      // Close button focused — this timer used to yank that focus back to the
+      // previous trigger, which is what the FoundersCaption story caught.
+      window.setTimeout(() => {
+        const active = document.activeElement;
+        if (active && active !== document.body) return;
+        restoreFocusRef.current?.focus();
+      }, 0);
     };
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       dismissAndRestoreFocus();

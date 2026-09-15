@@ -474,6 +474,7 @@ const events = rows
     const descBg = dropTitle(body.bg, nameBg) || text(row, "Описание");
     const descEn = dropTitle(body.en, nameEn) || text(row, "Description (EN)");
     const date = prop(row, "Дата")?.date?.start?.slice(0, 10) ?? "";
+    const registrationUrl = prop(row, "Регистрация")?.url;
     return {
       // Slug column first: it is the only thing here that is allowed to
       // decide a URL. The title-derived fallback is for a row nobody has
@@ -482,6 +483,7 @@ const events = rows
       date,
       type: FORMAT[select(row, "Формат")] ?? "live",
       location: text(row, "Локация"),
+      ...(registrationUrl ? { registrationUrl: stripTracking(registrationUrl) } : {}),
       name: { bg: nameBg, en: nameEn },
       description: { bg: descBg, en: descEn || descBg },
       // The one real modification date this site holds — the sitemap uses it
